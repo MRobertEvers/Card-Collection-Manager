@@ -10,6 +10,7 @@
 #include <sstream>
 #include <iostream>
 #include <functional>
+#include <set>
 #include <map>
 
 /*
@@ -130,7 +131,8 @@ Config::GetFullKey(char aiKeyCode)
    return Config::NotFoundString;
 }
 
-string Config::GetHash(string& aszHashingString)
+string 
+Config::GetHash(string& aszHashingString)
 {
    MD5* md5Hasher = new MD5(aszHashingString);
    string szResult = md5Hasher->hexdigest();
@@ -142,23 +144,35 @@ vector<string>
 Config::GetPairedKeys( const string& aszKey )
 {
    auto iters_val_range = m_maplstPairedKeys.equal_range(aszKey);
-   return vector<string>(iters_val_range.first, iters_val_range.second);
+   set<string> setRetval;
+   for( auto iter_keys = iters_val_range.first;
+        iter_keys != iters_val_range.second;
+        ++iter_keys ) 
+   {
+      setRetval.insert(iter_keys->first);
+      setRetval.insert(iter_keys->second);
+   }
+   return vector<string>(setRetval.begin(), setRetval.end());
 }
 
-vector<pair<string, string>> Config::GetPairedKeysList()
+vector<pair<string, string>>
+Config::GetPairedKeysList()
 {
    return vector<pair<string,string>>(m_maplstPairedKeys.begin(), m_maplstPairedKeys.end());
 }
-vector<string> Config::GetIdentifyingAttributes()
+vector<string> 
+Config::GetIdentifyingAttributes()
 {
    return m_lstIdentifyingAttributes;
 }
-vector<string> Config::GetStaticAttributes()
+vector<string> 
+Config::GetStaticAttributes()
 {
    return m_lstStaticAttributes;
 }
 
-vector<string> Config::GetPerCollectionMetaTags()
+vector<string>
+Config::GetPerCollectionMetaTags()
 {
    return m_lstPerCollectionMetaTags;
 }

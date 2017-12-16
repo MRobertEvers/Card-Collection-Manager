@@ -18,6 +18,12 @@
     <Filter Include="Support">
       <UniqueIdentifier>{8b62c086-0c04-4ac6-ae60-cadf5a97051d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CollectionObjects">
+      <UniqueIdentifier>{1e5193e2-5ba2-49de-88e5-6488874bcde3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CollectionObjects\DataHelpers">
+      <UniqueIdentifier>{c6e03043-a8c9-4b8d-998d-2bbf4d107504}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Collection\Collection.h">
@@ -38,13 +44,37 @@
     <ClInclude Include="src\Collection\SourceObject.h">
       <Filter>Collection</Filter>
     </ClInclude>
-    <ClInclude Include="src\Collection\CollectionObject.h">
-      <Filter>Collection</Filter>
-    </ClInclude>
     <ClInclude Include="src\Support\Config.h">
       <Filter>Support</Filter>
     </ClInclude>
     <ClInclude Include="src\Support\StringHelper.h">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StringInterface.h">
+      <Filter>StoreFront</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Support\TypeDefs.h">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Support\MD5.h">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\CollectionObject.h">
+      <Filter>CollectionObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Addressing\Addresser.h">
+      <Filter>CollectionObjects\DataHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\CopyItem.h">
+      <Filter>CollectionObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\TraitItem.h">
+      <Filter>CollectionObjects\DataHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\MetaTag.h">
+      <Filter>CollectionObjects\DataHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Support\TryGet.h">
       <Filter>Support</Filter>
     </ClInclude>
   </ItemGroup>
@@ -64,13 +94,7 @@
     <ClCompile Include="src\stdafx.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Collection\StoreFrontEntry.cpp">
-      <Filter>StoreFront</Filter>
-    </ClCompile>
     <ClCompile Include="src\Collection\SourceObject.cpp">
-      <Filter>Collection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\CollectionObject.cpp">
       <Filter>Collection</Filter>
     </ClCompile>
     <ClCompile Include="src\Support\Config.cpp">
@@ -78,6 +102,30 @@
     </ClCompile>
     <ClCompile Include="src\Support\StringHelper.cpp">
       <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StringInterface.cpp">
+      <Filter>StoreFront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StoreFrontEntry.cpp">
+      <Filter>StoreFront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Support\MD5.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\CollectionObject.cpp">
+      <Filter>CollectionObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Addressing\Addresser.cpp">
+      <Filter>CollectionObjects\DataHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\CopyItem.cpp">
+      <Filter>CollectionObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\TraitItem.cpp">
+      <Filter>CollectionObjects\DataHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\MetaTag.cpp">
+      <Filter>CollectionObjects\DataHelpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

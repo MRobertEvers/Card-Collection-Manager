@@ -17,6 +17,6 @@ public:
    static std::string convertToSearchString(const std::string& aszSearch);
 
 private:
-   static bool StringHelper::isSearchCharacter(char c);
+   static bool isSearchCharacter(char c);
 };
 

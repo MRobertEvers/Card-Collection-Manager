@@ -1,7 +1,8 @@
 #pragma once
 #include<vector>
-
-typedef std::pair<std::string, std::string> Tag;
+#include<map>
+#include<string>
+#include "TypeDefs.h"
 
 enum TagHelperType : int
 {

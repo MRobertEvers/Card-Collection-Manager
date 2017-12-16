@@ -1,6 +1,11 @@
 #pragma once
 #include<string>
 #include<vector>
+
+#include "../rapidxml-1.13\rapidxml_print.hpp"
+#include "../rapidxml-1.13\rapidxml.hpp"
+#include "../rapidxml-1.13\rapidxml_utils.hpp"
+
 #include "SourceObject.h"
 #include "CollectionObject.h"
 
@@ -30,11 +35,17 @@ public:
    // aszFilePath: The full path the file with the form defined above.
    void LoadLib(string aszFilePath);
 
-
-   // Return the cache location if successful, -1 otherwise.
+   // LoadCard
+   //  Return the cache location if aszCardName is found in the database, 
+   //  -1 otherwise. Loads a card into the cache if not already loaded.
    int LoadCard(string aszCardName);
 
+   // ClearCache
+   //  Deletes all collection objects in the cache.
    void ClearCache();
+
+   // IsLoaded
+   //  Returns whether the source is loaded successfully.
    bool IsLoaded();
 
 private:

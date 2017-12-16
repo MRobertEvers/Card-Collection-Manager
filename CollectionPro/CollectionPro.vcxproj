@@ -119,28 +119,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Addressing\Addresser.h" />
     <ClInclude Include="src\Collection\Collection.h" />
     <ClInclude Include="src\Collection\CollectionObject.h" />
     <ClInclude Include="src\Collection\CollectionSource.h" />
+    <ClInclude Include="src\Collection\CopyItem.h" />
+    <ClInclude Include="src\Collection\MetaTag.h" />
     <ClInclude Include="src\Collection\SourceObject.h" />
+    <ClInclude Include="src\Collection\TraitItem.h" />
     <ClInclude Include="src\Debug.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\StoreFront.h" />
+    <ClInclude Include="src\StringInterface.h" />
     <ClInclude Include="src\Support\Config.h" />
+    <ClInclude Include="src\Support\MD5.h" />
     <ClInclude Include="src\Support\StringHelper.h" />
+    <ClInclude Include="src\Support\TryGet.h" />
+    <ClInclude Include="src\Support\TypeDefs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Addressing\Addresser.cpp" />
     <ClCompile Include="src\Collection\Collection.cpp" />
     <ClCompile Include="src\Collection\CollectionObject.cpp" />
     <ClCompile Include="src\Collection\CollectionSource.cpp" />
+    <ClCompile Include="src\Collection\CopyItem.cpp" />
+    <ClCompile Include="src\Collection\MetaTag.cpp" />
     <ClCompile Include="src\Collection\SourceObject.cpp" />
-    <ClCompile Include="src\Collection\StoreFrontEntry.cpp" />
+    <ClCompile Include="src\Collection\TraitItem.cpp" />
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\StoreFront.cpp" />
+    <ClCompile Include="src\StoreFrontEntry.cpp" />
+    <ClCompile Include="src\StringInterface.cpp" />
     <ClCompile Include="src\Support\Config.cpp" />
+    <ClCompile Include="src\Support\MD5.cpp" />
     <ClCompile Include="src\Support\StringHelper.cpp" />
   </ItemGroup>
   <ItemGroup>

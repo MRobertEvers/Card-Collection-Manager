@@ -62,6 +62,61 @@ CollectionSource::LoadLib(string aszFilePath) {
    m_bIsLoaded = true;
 }
 
+
+int CollectionSource::LoadCard(std::string aszCardName) {
+   Config* config = Config::Instance();
+   std::string szCardName = StringHelper::Str_Trim(aszCardName, ' ');
+
+   // Since it is faster to look in the cache, check that first.
+   int iCacheLocation = findInCache(szCardName, false);
+   if( iCacheLocation == -1 ) {
+
+      // Look in the Source Object Buffer for a matching item.
+      // If the card is found in the buffer, create a CollectionItem and cache it.
+      int iFound = findInBuffer(szCardName, false);
+      if( iFound != -1 ) {
+         SourceObject* oSource = &m_vecCardDataBuffer.at(iFound);
+
+         // Get the static Attrs
+         std::vector<Tag> lstStaticAttrs = oSource->GetAttributes(m_AllCharBuff);
+
+         // Build the trait items from each of the ID attrs and their
+         // allowed values.
+         auto lstAttrRestrictions = oSource->GetIDAttrRestrictions(m_AllCharBuff);
+
+         std::vector<TraitItem> lstIdentifyingTraits;
+         auto iter_Traits = lstAttrRestrictions.begin();
+         for( ; iter_Traits != lstAttrRestrictions.end(); ++iter_Traits ) {
+            TraitItem newTrait(iter_Traits->first,
+               iter_Traits->second,
+               config->GetPairedKeysList());
+            lstIdentifyingTraits.push_back(newTrait);
+         }
+
+         CollectionItem oCard(aszCardName, lstStaticAttrs,
+            lstIdentifyingTraits);
+
+         // Store the location of the CollectionItem in the cache
+         oSource->SetCacheIndex(m_vecCardCache.size());
+
+         // Cache the CollectionItem
+         m_lstoCardCache.push_back(oCard);
+      }
+   }
+
+   return iCacheLocation;
+}
+
+void
+CollectionSource::ClearCache() {
+   m_vecCardCache.clear();
+}
+
+bool
+CollectionSource::IsLoaded() {
+   return m_bIsLoaded;
+}
+
 void 
 CollectionSource::loadCard(rapidxml::xml_node<char> * xmlNode_Card) {
    Config* config = Config::Instance();
@@ -85,7 +140,6 @@ CollectionSource::getNewSourceObject() {
    m_vecCardDataBuffer.push_back(SourceObject(m_iAllCharBuffSize));
    return &m_vecCardDataBuffer.back();
 }
-
 
 int
 CollectionSource::findInBuffer(string aszCardName, bool abCaseSensitive) {
@@ -136,15 +190,17 @@ CollectionSource::findInCache(string aszName,
    auto iter_ColObj = m_vecCardCache.begin();
    int index = 0;
    for( ; iter_ColObj != m_vecCardCache.end(); ++iter_ColObj ) {
+      /*
       if( iter_ColObj->GetName() == aszName ) {
          return index;
       }
-      index++;
+      index++;*/
    }
    return -1;
 }
 
-void CollectionSource::resetBuffer() {
+void 
+CollectionSource::resetBuffer() {
    m_vecCardCache.clear();
    m_vecCardDataBuffer.clear();
 
@@ -153,9 +209,11 @@ void CollectionSource::resetBuffer() {
    m_AllCharBuff = new char[ms_iMaxBufferSize];
 }
 
-void CollectionSource::finalizeBuffer() {
+void 
+CollectionSource::finalizeBuffer() {
    char* newBufferSize = new char[m_iAllCharBuffSize];
    memcpy(newBufferSize, m_AllCharBuff, m_iAllCharBuffSize);
    delete[] m_AllCharBuff;
    m_AllCharBuff = newBufferSize;
 }
+
