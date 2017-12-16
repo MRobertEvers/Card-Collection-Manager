@@ -1,7 +1,17 @@
 #include "SourceObject.h"
+#include "../Support/Config.h"
+#include "../Support/StringHelper.h"
 
-SourceObject::SourceObject() {
+SourceObject::SourceObject(unsigned int aiOffset) {
+   for( int i = 0; i < 5; i++ ) {
+      m_iOffsetAndIndex[i] = 0;
+   }
 
+   for( int i = 0; i < ms_iNumKeys; i++ ) {
+      m_pLstKeyVals[i] = 0;
+   }
+
+   SetBufferOffset(aiOffset);
 }
 
 SourceObject::~SourceObject() {
@@ -152,6 +162,7 @@ SourceObject::insertAttribute(const std::string& value,
    char* aplstCharBuf,
    unsigned int aiMaxBuffSize,
    char acLocation) {
+
    // Get the insertion location. -1 is the end of the list.
    unsigned int iInsertion = acLocation;
 

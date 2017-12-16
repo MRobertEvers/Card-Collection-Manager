@@ -30,9 +30,35 @@ public:
    // aszFilePath: The full path the file with the form defined above.
    void LoadLib(string aszFilePath);
 
+
+   // Return the cache location if successful, -1 otherwise.
+   int LoadCard(string aszCardName);
+
+   void ClearCache();
+   bool IsLoaded();
+
 private:
    bool m_bIsLoaded;
    vector<SourceObject> m_vecCardDataBuffer;
    vector<CollectionObject> m_vecCardCache;
+
+   // Used for caching searches over 5 chars.
+   vector<pair<string, vector<SourceObject>>> m_lstSearchCache;
+
+   void loadCard(rapidxml::xml_node<char> * xmlNode_Card);
+   
+   SourceObject* getNewSourceObject();
+
+   int findInBuffer(string aszName, bool abCaseSensitive);
+   int findInCache(string aszName, bool abCaseSensitive);
+
+   void resetBuffer();
+   void finalizeBuffer();
+
+   char* m_AllCharBuff;
+   unsigned int m_iAllCharBuffSize;
+
+private:
+   static const unsigned int ms_iMaxBufferSize = 5000000;
 };
 

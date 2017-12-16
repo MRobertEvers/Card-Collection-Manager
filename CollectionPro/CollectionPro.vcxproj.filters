@@ -44,6 +44,9 @@
     <ClInclude Include="src\Support\Config.h">
       <Filter>Support</Filter>
     </ClInclude>
+    <ClInclude Include="src\Support\StringHelper.h">
+      <Filter>Support</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp">
@@ -71,6 +74,9 @@
       <Filter>Collection</Filter>
     </ClCompile>
     <ClCompile Include="src\Support\Config.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Support\StringHelper.cpp">
       <Filter>Support</Filter>
     </ClCompile>
   </ItemGroup>

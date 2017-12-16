@@ -127,6 +127,7 @@
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\StoreFront.h" />
     <ClInclude Include="src\Support\Config.h" />
+    <ClInclude Include="src\Support\StringHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp" />
@@ -140,6 +141,7 @@
     </ClCompile>
     <ClCompile Include="src\StoreFront.cpp" />
     <ClCompile Include="src\Support\Config.cpp" />
+    <ClCompile Include="src\Support\StringHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="src\Resource\MtGSource.xml" />
