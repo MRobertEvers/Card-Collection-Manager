@@ -35,9 +35,12 @@ CollectionObject::CollectionObject( const string& aszItemName,
                                     const vector<Tag>& alstCommon,
                                     const vector<TraitItem>& alstRestrictions )
 {
-   m_szName               = aszItemName;
-   m_lstCommonTraits      = alstCommon;
-   m_lstIdentifyingTraits = alstRestrictions;
+   m_szName          = aszItemName;
+   m_lstCommonTraits = map<string,string>(alstCommon.begin(), alstCommon.end());
+
+   for( auto trait : alstRestrictions ) {
+      m_lstIdentifyingTraits.insert(make_pair(trait.GetKeyName(), trait));
+   }
 }
 
 
@@ -215,22 +218,23 @@ CollectionObject::GetProtoType() const
    string szResult;
    
    // Start with static common traits
-   vector<Tag> lstAllCommonTraits(m_lstCommonTraits);
+   vector<Tag> lstAllCommonTraits( m_lstCommonTraits.begin(),
+                                   m_lstCommonTraits.end() );
 
    // Include identifying traits
    // These appear as <Key>, *Val1::Val2...
-   for each (TraitItem trait in m_lstIdentifyingTraits)
+   for( auto trait : m_lstIdentifyingTraits )
    {
-      auto vals = trait.GetAllowedValues();
+      auto vals = trait.second.GetAllowedValues();
       strIface.ListToDelimStr(vals.cbegin(), vals.cend(), szResult);
       
-      lstAllCommonTraits.push_back(make_pair(trait.GetKeyName(), szResult));
+      lstAllCommonTraits.push_back(make_pair(trait.second.GetKeyName(), szResult));
    }
 
    return CollectionObject::ToCardLine(Address(), "", lstAllCommonTraits);
 }
 
-vector<TraitItem> 
+std::map<string, TraitItem>
 CollectionObject::GetIdentifyingTraits()
 {
    return m_lstIdentifyingTraits;
@@ -239,15 +243,17 @@ CollectionObject::GetIdentifyingTraits()
 // Returns the first trait key that has the input value
 bool 
 CollectionObject::MatchIdentifyingTrait( const std::string& aszValue, 
-                                       std::string& rszKey )
+                                         std::string& rszKey )
 {
    for( auto trait : m_lstIdentifyingTraits )
    {
-      auto values = trait.GetAllowedValues();
-      int iFoundVal = ListHelper::List_Find(aszValue, values);
-      if( iFoundVal != -1 )
+      auto values = trait.second.GetAllowedValues();
+      auto iter_found = find( values.begin(),
+                              values.end(),
+                              aszValue);
+      if( iter_found != values.end() )
       {
-         rszKey = trait.GetKeyName();
+         rszKey = trait.second.GetKeyName();
          return true;
       }
    }
@@ -261,21 +267,26 @@ CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
                                      const string& aszTraitValue,
                                      bool bSession ) const
 {
-   const static function<string(const TraitItem& )> fnTraitExtractor =
-      [](const TraitItem& item )->string { return item.GetKeyName(); };
+   auto iter_found = m_lstIdentifyingTraits.find(aszTraitKey);
+   if( iter_found == m_lstIdentifyingTraits.end() ) {
+      Debug::Log("CollectionObject", "Treid to set non-existant trait");
+      return false; 
+   }
 
-   int iFound;
-   iFound = ListHelper::List_Find( aszTraitKey, m_lstIdentifyingTraits,
-                                   fnTraitExtractor );
-   if( iFound == -1 ) { return false; }
-
-   TraitItem trait = m_lstIdentifyingTraits[iFound];
-   iFound = ListHelper::List_Find( aszTraitValue, trait.GetAllowedValues() );
-   if( iFound == -1 ) { return false; }
+   TraitItem trait = iter_found->second;
+   auto vecAllowVals = trait.GetAllowedValues();
+   auto iter_found_val = find( vecAllowVals.begin(),
+                               vecAllowVals.end(),
+                               aszTraitValue );
+   if( iter_found_val == vecAllowVals.end()) {
+      Debug::Log("CollectionObject", "Treid to set trait to unallowed value");
+      return false; 
+   }
 
    // Set the trait
    aptItem->SetIdentifyingAttribute( aszTraitKey, aszTraitValue, bSession );
-   setCopyPairAttrs( aptItem, aszTraitKey, iFound );
+   setCopyPairAttrs( aptItem, aszTraitKey,
+                     distance(vecAllowVals.begin(), iter_found_val) );
 }
 
 // Sets all the ident traits to their defaults.
@@ -283,8 +294,9 @@ void
 CollectionObject::SetIdentifyingTraitDefaults( CopyItem* aptItem ) const
 {
    // Include default values for IDAttrs NOT specified.
-   for( auto IDAttrs : m_lstIdentifyingTraits )
+   for( auto IDAttrsPair : m_lstIdentifyingTraits )
    {
+      auto IDAttrs = IDAttrsPair.second;
       SetIdentifyingTrait( aptItem, IDAttrs.GetKeyName(), IDAttrs.GetDefaultValue(), false );
    }
 }
@@ -308,28 +320,34 @@ CollectionObject::setCopyPairAttrs( CopyItem* aptItem, const string& aszKey, int
 
    // Find any traits paied with the key.
    vector<Tag> lstPairs = Config::Instance()->GetPairedKeysList();
-   for each (Tag var in lstPairs)
+   for(Tag var : lstPairs)
    {
-      if( ( var.first == aszKey ) &&
-          ( ListHelper::List_Find(var.second, lstPartners) == -1 ) )
+      string szSearch = "";
+      if( var.first == aszKey )
       {
-         lstPartners.push_back(var.second);
+         szSearch = var.second;
       }
-      else if( ( var.second == aszKey ) &&
-               ( ListHelper::List_Find(var.first, lstPartners) == -1 ) )
+      else if( var.second == aszKey )
       {
-         lstPartners.push_back(var.first);
+         szSearch = var.first;
+      }
+
+      if( szSearch != "" ) {
+         auto iter_found = find(lstPartners.begin(), lstPartners.end(), szSearch);
+         if( iter_found == lstPartners.end() ) {
+            lstPartners.push_back(szSearch);
+         }
       }
    }
 
    // Search for the trait and asign it.
-   for each (string szKey in lstPartners)
+   for(string szKey : lstPartners)
    {
       // Verify the trait is an identifying trait.
-      int iIsAttr = ListHelper::List_Find(szKey, m_lstIdentifyingTraits, fnExtractor);
-      if (iIsAttr != -1)
+      auto iter_attr = m_lstIdentifyingTraits.find(szKey);
+      if (iter_attr != m_lstIdentifyingTraits.end())
       {
-         TraitItem foundTrait = m_lstIdentifyingTraits.at(iIsAttr);
+         TraitItem foundTrait = iter_attr->second;
          aptItem->SetIdentifyingAttribute( szKey, foundTrait.GetAllowedValues().at( iVal ), false );
       }
    }
@@ -352,26 +370,6 @@ CollectionObject::ParseCardLine( const string& aszLine,
    }
    else
    {
-      return false;
-   }
-
-   return true;
-}
-
-bool
-CollectionObject::ParseCardLine( const string& aszLine,
-                                 PseudoIdentifier& rPIdentifier ) {
-   StringInterface parser;
-   string szName, szDetails, szMeta;
-   unsigned int iCount;
-
-   bool bGoodParse = parser.ParseCardLine( aszLine, iCount, szName,
-                                           szDetails, szMeta );
-   if( bGoodParse ) {
-      // Output the details
-      rPIdentifier = PseudoIdentifier(iCount, szName, szDetails, szMeta);
-   }
-   else {
       return false;
    }
 

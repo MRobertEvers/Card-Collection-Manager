@@ -93,14 +93,14 @@ int CollectionSource::LoadCard(std::string aszCardName) {
             lstIdentifyingTraits.push_back(newTrait);
          }
 
-         CollectionItem oCard(aszCardName, lstStaticAttrs,
+         CollectionObject oCard(aszCardName, lstStaticAttrs,
             lstIdentifyingTraits);
 
          // Store the location of the CollectionItem in the cache
          oSource->SetCacheIndex(m_vecCardCache.size());
 
          // Cache the CollectionItem
-         m_lstoCardCache.push_back(oCard);
+         m_vecCardCache.push_back(oCard);
       }
    }
 

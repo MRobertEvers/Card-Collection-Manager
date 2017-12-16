@@ -529,9 +529,9 @@ Location::~Location()
 // Returns true if this location is a super set of ANY of the
 // subaddresses in aAddress.
 bool 
-Location::IsSpecifiedBy( const Address& aAddress, Address& rAddrIn ) const
+Location::IsSpecifiedBy( const Address& aAddress ) const
 {
-   rAddrIn = Address(aAddress.GetMain());
+   //rAddrIn = Address(aAddress.GetMain());
 
    if (aAddress.GetMain() != GetMain()) { return false; }
 
@@ -542,7 +542,7 @@ Location::IsSpecifiedBy( const Address& aAddress, Address& rAddrIn ) const
       bool bIsSuper = isSuperSet(GetAddress(), iSub);
       if( bIsSuper ) 
       {
-         rAddrIn.AddSubAddress(iSub);
+         //rAddrIn.AddSubAddress(iSub);
       } 
       bFoundSubAddressMatch |= bIsSuper;
    }

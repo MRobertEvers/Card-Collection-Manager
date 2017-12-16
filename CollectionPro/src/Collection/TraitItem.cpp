@@ -1,4 +1,5 @@
 #include "TraitItem.h"
+#include "../Support/Config.h"
 
 TraitItem::TraitItem( const std::string& aszKeyname,
                       const std::vector<std::string>& alstKeyVals, 
@@ -6,11 +7,12 @@ TraitItem::TraitItem( const std::string& aszKeyname,
 {
    Config* config = Config::Instance();
    m_szKeyName = aszKeyname;
-   m_lstPossibleValues = alstKeyVals;
+   m_lstPossibleValues = std::set<std::string>( alstKeyVals.begin(), 
+                                                alstKeyVals.end() );
 
    if (m_lstPossibleValues.size() == 0)
    {
-      m_lstPossibleValues.push_back("");
+      m_lstPossibleValues.insert("");
    }
 
    std::vector<Tag>::const_iterator iter_Tags = alstPairedTraits.cbegin();
@@ -38,15 +40,16 @@ std::string TraitItem::GetKeyName() const
 
 std::string TraitItem::GetDefaultValue() const
 {
-   return m_lstPossibleValues[0];
+   return *m_lstPossibleValues.begin();
 }
 
 std::vector<std::string> TraitItem::GetAllowedValues()
 {
-   return m_lstPossibleValues;
+   return std::vector<std::string>( m_lstPossibleValues.begin(), 
+                                    m_lstPossibleValues.end() );
 }
 
 bool TraitItem::IsAllowedValue(std::string aszTestVal)
 {
-   return ListHelper::List_Find(aszTestVal, m_lstPossibleValues) != -1;
+   return m_lstPossibleValues.find(aszTestVal) != m_lstPossibleValues.end();
 }

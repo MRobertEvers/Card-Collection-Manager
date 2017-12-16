@@ -83,7 +83,7 @@ public:
    Location(const std::string& aszMain, unsigned int aiSA);
    ~Location();
 
-   bool IsSpecifiedBy(const Address& aAddr, Address& rAddrIn = Address()) const;
+   bool IsSpecifiedBy(const Address& aAddr) const;
    std::vector<unsigned int> GetAddresses() const override;
    unsigned int GetAddress() const;
 

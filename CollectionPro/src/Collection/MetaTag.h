@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "Config.h"
+#include "../Support/TypeDefs.h"
 
 enum MetaTagType : unsigned short
 {

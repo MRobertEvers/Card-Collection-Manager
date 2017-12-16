@@ -1,8 +1,8 @@
 #pragma once
 #include<string>
 #include<vector>
-#include"ListHelper.h"
-#include "Config.h"
+#include<set>
+#include "../Support/TypeDefs.h"
 
 class TraitItem
 {
@@ -20,7 +20,7 @@ public:
 
 private:
    std::vector<std::string> m_lstPairedValues;
-   std::vector<std::string> m_lstPossibleValues;
+   std::set<std::string> m_lstPossibleValues;
    std::string m_szKeyName;
 };
 
