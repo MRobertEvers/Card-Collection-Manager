@@ -1,0 +1,7 @@
+It's interesting that the trick that I use isn't in the answers:
+Create stdafx.h and stdafx.cpp in the root folder of the project.
+Go to project properties -> precompiled headers. Change to "use".
+Go to stdafx.cpp, right-click properties -> precompiled headers. Change to "create".
+Go to project properties -> advanced; change "Force include files" to stdafx.h;%(ForcedIncludeFiles)
+Don't change any CPP file; keep your header files as they are. Build as-is.
+No typing, no RSI, no hassle with include paths, no other pain and misery. And the beauty is that it will still work when you move your solution to another platform. Awesome.

@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Collection">
+      <UniqueIdentifier>{018d2b1f-5efd-4e51-a478-af59730cda5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StoreFront">
+      <UniqueIdentifier>{b4b8fbad-c28e-4bde-b908-9c6335f08e36}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Collection\Collection.h">
+      <Filter>Collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StoreFront.h">
+      <Filter>StoreFront</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\CollectionSource.h">
+      <Filter>Collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debug.h">
+      <Filter>StoreFront</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\SourceObject.h">
+      <Filter>Collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\CollectionObject.h">
+      <Filter>Collection</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Collection\Collection.cpp">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StoreFront.cpp">
+      <Filter>StoreFront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\CollectionSource.cpp">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Debug.cpp">
+      <Filter>StoreFront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\StoreFrontEntry.cpp">
+      <Filter>StoreFront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\SourceObject.cpp">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\CollectionObject.cpp">
+      <Filter>Collection</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="src\Resource\MtGSource.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+  </ItemGroup>
+</Project>
