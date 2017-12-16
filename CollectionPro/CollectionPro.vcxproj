@@ -126,6 +126,7 @@
     <ClInclude Include="src\Debug.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\StoreFront.h" />
+    <ClInclude Include="src\Support\Config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp" />
@@ -138,6 +139,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\StoreFront.cpp" />
+    <ClCompile Include="src\Support\Config.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="src\Resource\MtGSource.xml" />

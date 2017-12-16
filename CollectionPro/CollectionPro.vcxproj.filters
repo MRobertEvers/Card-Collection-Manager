@@ -15,6 +15,9 @@
     <Filter Include="StoreFront">
       <UniqueIdentifier>{b4b8fbad-c28e-4bde-b908-9c6335f08e36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Support">
+      <UniqueIdentifier>{8b62c086-0c04-4ac6-ae60-cadf5a97051d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Collection\Collection.h">
@@ -37,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="src\Collection\CollectionObject.h">
       <Filter>Collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Support\Config.h">
+      <Filter>Support</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +69,9 @@
     </ClCompile>
     <ClCompile Include="src\Collection\CollectionObject.cpp">
       <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Support\Config.cpp">
+      <Filter>Support</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
