@@ -1,7 +1,9 @@
 #pragma once
 #include<vector>
+#include<functional>
 #include<map>
 #include<string>
+
 #include "TypeDefs.h"
 
 enum TagHelperType : int
@@ -38,6 +40,7 @@ public:
    std::vector<std::string> GetStaticAttributes();
    std::vector<std::string> GetPerCollectionMetaTags();
 
+   const std::function<std::string(const Tag&)> GetTagHelper(TagHelperType aiMode = Key) const;
    std::string GetHexID( unsigned long aulValue );
 
    bool IsPairedKey(const std::string& aszKey);

@@ -9,7 +9,6 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <functional>
 #include <set>
 #include <map>
 
@@ -175,6 +174,16 @@ vector<string>
 Config::GetPerCollectionMetaTags()
 {
    return m_lstPerCollectionMetaTags;
+}
+
+const function<string(const Tag&)> 
+Config::GetTagHelper(TagHelperType aiMode) const {
+   if( aiMode == Key ) {
+      return [](Tag atag)->std::string { return atag.first; };;
+   }
+   else {
+      return [](Tag atag)->std::string { return atag.second; };;
+   }
 }
 
 string Config::GetHexID( unsigned long aulValue )

@@ -40,6 +40,23 @@ public:
    //  -1 otherwise. Loads a card into the cache if not already loaded.
    int LoadCard(string aszCardName);
 
+   TryGet<CollectionObject> GetCardPrototype(int aiCacheIndex);
+   TryGet<CollectionObject> GetCardPrototype(std::string aszCardName);
+
+   // This needs to be called whenever a child collection adds a card.
+   // It will let other collections know that they need to check their lists.
+   void NotifyNeedToSync(const Location& aAddrForcedSync);
+   bool IsSyncNeeded(const Location& aAddrNeedSync);
+
+   std::vector<int>
+      GetCollectionCache(Location aAddrColID,
+         CollectionObjectType aColItemType = CollectionObjectType::All);
+   std::vector<std::shared_ptr<CopyItem>>
+      GetCollection(Location aAddrColID,
+         CollectionObjectType aColItemType = CollectionObjectType::All);
+
+   std::vector<std::string> GetAllCardsStartingWith(std::string aszText);
+
    // ClearCache
    //  Deletes all collection objects in the cache.
    void ClearCache();
@@ -55,6 +72,10 @@ private:
 
    // Used for caching searches over 5 chars.
    vector<pair<string, vector<SourceObject>>> m_lstSearchCache;
+
+   // Tracks whether a certain collection, identified by its location id,
+   // needs to sync.
+   map<Location, bool> m_mapSync;
 
    void loadCard(rapidxml::xml_node<char> * xmlNode_Card);
    

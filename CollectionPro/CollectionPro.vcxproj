@@ -120,18 +120,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Addressing\Addresser.h" />
+    <ClInclude Include="src\Collection\Action.h" />
+    <ClInclude Include="src\Collection\AddAction.h" />
+    <ClInclude Include="src\Collection\AddFromAction.h" />
+    <ClInclude Include="src\Collection\ChangeAction.h" />
     <ClInclude Include="src\Collection\Collection.h" />
+    <ClInclude Include="src\Collection\CollectionDeltaClass.h" />
+    <ClInclude Include="src\Collection\CollectionDetails.h" />
+    <ClInclude Include="src\Collection\CollectionFactory.h" />
+    <ClInclude Include="src\Collection\CollectionIO.h" />
     <ClInclude Include="src\Collection\CollectionObject.h" />
     <ClInclude Include="src\Collection\CollectionSource.h" />
+    <ClInclude Include="src\Collection\CollectionTracker.h" />
     <ClInclude Include="src\Collection\CopyItem.h" />
     <ClInclude Include="src\Collection\MetaTag.h" />
+    <ClInclude Include="src\Collection\RemoveAction.h" />
+    <ClInclude Include="src\Collection\ReplaceAction.h" />
     <ClInclude Include="src\Collection\SourceObject.h" />
     <ClInclude Include="src\Collection\TraitItem.h" />
+    <ClInclude Include="src\Collection\Transaction.h" />
+    <ClInclude Include="src\Collection\TransactionManager.h" />
     <ClInclude Include="src\Debug.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\StoreFront.h" />
     <ClInclude Include="src\StringInterface.h" />
     <ClInclude Include="src\Support\Config.h" />
+    <ClInclude Include="src\Support\ListHelper.h" />
     <ClInclude Include="src\Support\MD5.h" />
     <ClInclude Include="src\Support\StringHelper.h" />
     <ClInclude Include="src\Support\TryGet.h" />
@@ -139,13 +153,26 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Addressing\Addresser.cpp" />
+    <ClCompile Include="src\Collection\Action.cpp" />
+    <ClCompile Include="src\Collection\AddAction.cpp" />
+    <ClCompile Include="src\Collection\AddFromAction.cpp" />
+    <ClCompile Include="src\Collection\ChangeAction.cpp" />
     <ClCompile Include="src\Collection\Collection.cpp" />
+    <ClCompile Include="src\Collection\CollectionDeltaClass.cpp" />
+    <ClCompile Include="src\Collection\CollectionDetails.cpp" />
+    <ClCompile Include="src\Collection\CollectionFactory.cpp" />
+    <ClCompile Include="src\Collection\CollectionIO.cpp" />
     <ClCompile Include="src\Collection\CollectionObject.cpp" />
     <ClCompile Include="src\Collection\CollectionSource.cpp" />
+    <ClCompile Include="src\Collection\CollectionTracker.cpp" />
     <ClCompile Include="src\Collection\CopyItem.cpp" />
     <ClCompile Include="src\Collection\MetaTag.cpp" />
+    <ClCompile Include="src\Collection\RemoveAction.cpp" />
+    <ClCompile Include="src\Collection\ReplaceAction.cpp" />
     <ClCompile Include="src\Collection\SourceObject.cpp" />
     <ClCompile Include="src\Collection\TraitItem.cpp" />
+    <ClCompile Include="src\Collection\Transaction.cpp" />
+    <ClCompile Include="src\Collection\TransactionManager.cpp" />
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -154,6 +181,7 @@
     <ClCompile Include="src\StoreFrontEntry.cpp" />
     <ClCompile Include="src\StringInterface.cpp" />
     <ClCompile Include="src\Support\Config.cpp" />
+    <ClCompile Include="src\Support\ListHelper.cpp" />
     <ClCompile Include="src\Support\MD5.cpp" />
     <ClCompile Include="src\Support\StringHelper.cpp" />
   </ItemGroup>

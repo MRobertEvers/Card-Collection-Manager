@@ -30,6 +30,7 @@ enum FindType : int
 //  Acts as a manager of Copy Items.
 class CollectionObject
 {
+public:
    // Aids in the construction of CopyItems
    class PseudoIdentifier
    {
