@@ -24,9 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -36,11 +33,14 @@
     <ClCompile Include="vcCollectionsMenuList.cpp">
       <Filter>Views\Overview\Components</Filter>
     </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Views</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFront.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MainWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StorefrontConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -52,6 +52,12 @@
     </ClInclude>
     <ClInclude Include="vcCollectionsMenuList.h">
       <Filter>Views\Overview\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h">
+      <Filter>Views</Filter>
+    </ClInclude>
+    <ClInclude Include="StoreFront.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

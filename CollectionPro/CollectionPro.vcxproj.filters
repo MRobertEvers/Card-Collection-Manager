@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -29,6 +25,19 @@
     </Filter>
     <Filter Include="Collection\DataHelpers\Actions">
       <UniqueIdentifier>{82d99396-4570-4498-a060-9ca0cb79c23a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{5d54d0ad-8374-4d43-8e61-8361ce3170fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Support\JSON">
+      <UniqueIdentifier>{e27a6258-bc61-48c4-bf84-a9c264bd4dfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Support\XML">
+      <UniqueIdentifier>{892c6ca2-ce05-48be-8b24-aeea355aa21f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +134,36 @@
     <ClInclude Include="src\Support\ListHelper.h">
       <Filter>Support</Filter>
     </ClInclude>
+    <ClInclude Include="src\Tests\AddressTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tests\CollectionItemTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tests\CollectionTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tests\CopyTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Support\JSONImporter.h">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rapidxml-1.13\rapidxml.hpp">
+      <Filter>Support\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rapidxml-1.13\rapidxml_iterators.hpp">
+      <Filter>Support\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rapidxml-1.13\rapidxml_print.hpp">
+      <Filter>Support\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rapidxml-1.13\rapidxml_utils.hpp">
+      <Filter>Support\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\json\json.hpp">
+      <Filter>Support\JSON</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp">
@@ -216,6 +255,24 @@
     </ClCompile>
     <ClCompile Include="src\Support\ListHelper.cpp">
       <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\AddressTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\CollectionItemTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\CollectionTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tests\CopyTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Support\JSONImporter.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\json\jsoncpp.cpp">
+      <Filter>Support\JSON</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

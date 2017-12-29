@@ -141,15 +141,25 @@
     <ClInclude Include="src\Collection\Transaction.h" />
     <ClInclude Include="src\Collection\TransactionManager.h" />
     <ClInclude Include="src\Debug.h" />
+    <ClInclude Include="src\json\json.hpp" />
+    <ClInclude Include="src\rapidxml-1.13\rapidxml.hpp" />
+    <ClInclude Include="src\rapidxml-1.13\rapidxml_iterators.hpp" />
+    <ClInclude Include="src\rapidxml-1.13\rapidxml_print.hpp" />
+    <ClInclude Include="src\rapidxml-1.13\rapidxml_utils.hpp" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\StoreFront.h" />
     <ClInclude Include="src\StringInterface.h" />
     <ClInclude Include="src\Support\Config.h" />
+    <ClInclude Include="src\Support\JSONImporter.h" />
     <ClInclude Include="src\Support\ListHelper.h" />
     <ClInclude Include="src\Support\MD5.h" />
     <ClInclude Include="src\Support\StringHelper.h" />
     <ClInclude Include="src\Support\TryGet.h" />
     <ClInclude Include="src\Support\TypeDefs.h" />
+    <ClInclude Include="src\Tests\AddressTest.h" />
+    <ClInclude Include="src\Tests\CollectionItemTest.h" />
+    <ClInclude Include="src\Tests\CollectionTest.h" />
+    <ClInclude Include="src\Tests\CopyTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Addressing\Addresser.cpp" />
@@ -174,6 +184,7 @@
     <ClCompile Include="src\Collection\Transaction.cpp" />
     <ClCompile Include="src\Collection\TransactionManager.cpp" />
     <ClCompile Include="src\Debug.cpp" />
+    <ClCompile Include="src\json\jsoncpp.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -181,9 +192,14 @@
     <ClCompile Include="src\StoreFrontEntry.cpp" />
     <ClCompile Include="src\StringInterface.cpp" />
     <ClCompile Include="src\Support\Config.cpp" />
+    <ClCompile Include="src\Support\JSONImporter.cpp" />
     <ClCompile Include="src\Support\ListHelper.cpp" />
     <ClCompile Include="src\Support\MD5.cpp" />
     <ClCompile Include="src\Support\StringHelper.cpp" />
+    <ClCompile Include="src\Tests\AddressTest.cpp" />
+    <ClCompile Include="src\Tests\CollectionItemTest.cpp" />
+    <ClCompile Include="src\Tests\CollectionTest.cpp" />
+    <ClCompile Include="src\Tests\CopyTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="src\Resource\MtGSource.xml" />
