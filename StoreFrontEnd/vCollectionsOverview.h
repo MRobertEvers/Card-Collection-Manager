@@ -5,10 +5,20 @@
 class vCollectionsOverview : public wxPanel
 {
 public:
+   enum
+   {
+      Load_Collection = 0x0,
+      Add_Collection = 0x1
+   };
+
    vCollectionsOverview(wxWindow* aptParent, wxWindowID aiWID);
    ~vCollectionsOverview();
 
+   void OnLoadCollection(wxCommandEvent &);
+
 private:
+   wxDECLARE_EVENT_TABLE();
+
    vcCollectionsMenuList* m_vcCollectionsPanel;
 
    void buildCollectionsPreview();
