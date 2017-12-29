@@ -2,6 +2,10 @@
 
 // Fixed WS_EX_LAYOUTRTL not defined by updating the preprocessor definition; WINVER=0x0500
 
+// When a wxWindow is destroyed, it automatically deletes 
+// all its children.These children are all the objects that
+// received the window as the parent - argument in their constructors.
+
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 #include <wx/aui/framemanager.h>

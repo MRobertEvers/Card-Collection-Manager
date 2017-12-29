@@ -36,8 +36,10 @@ vCollectionsOverview::buildCollectionSelector()
 
 
 void
-vCollectionsOverview::OnLoadCollection(wxCommandEvent &)
+vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
 {
-   m_vcCollectionsPanel->AddCollectionOption("EventCol");
-
+   m_vcCollectionsPanel->AddCollectionOption(std::to_string(awxEvt.GetInt()));
+   
+   // This event is handled.
+   awxEvt.StopPropagation();
 }

@@ -8,13 +8,14 @@ public:
    enum
    {
       Load_Collection = 0x0,
-      Add_Collection = 0x1
+      Add_Collection = 0x1,
+      View_Collection = 0x2
    };
 
    vCollectionsOverview(wxWindow* aptParent, wxWindowID aiWID);
    ~vCollectionsOverview();
 
-   void OnLoadCollection(wxCommandEvent &);
+   void OnLoadCollection(wxCommandEvent& awxEvt);
 
 private:
    wxDECLARE_EVENT_TABLE();
