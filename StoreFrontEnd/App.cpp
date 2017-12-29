@@ -6,7 +6,7 @@ bool MyApp::OnInit() {
    if( !wxApp::OnInit() )
       return false;
 
-   MyFrame *frame = new MyFrame("StoreFrontPro");
+   MainFrame *frame = new MainFrame("StoreFrontPro");
    frame->Show(true);
 
    return true;

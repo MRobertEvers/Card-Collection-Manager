@@ -1,27 +1,26 @@
 #include "MainWindow.h"
 #include "StorefrontConfig.h"
-#include "CollectionsOverview.h"
+#include "vCollectionsOverview.h"
 
 
 // Events can be tied at run-time. This is compile time.
-wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
-EVT_MENU(Minimal_Quit, MyFrame::OnQuit)
-EVT_MENU(Minimal_About, MyFrame::OnAbout)
+wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
+EVT_MENU(Menu_Quit, MainFrame::OnQuit)
+EVT_MENU(Menu_About, MainFrame::OnAbout)
 wxEND_EVENT_TABLE()
 
-
-MyFrame::MyFrame(const wxString& title)
+MainFrame::MainFrame(const wxString& title)
    : wxFrame(NULL, sfMAIN_WINDOW, title) {
    // set the frame icon
    SetIcon(wxICON(sample));
 
    // create a menu bar
    wxMenu *fileMenu = new wxMenu;
-   fileMenu->Append(Minimal_Quit, "E&xit\tAlt-X", "Quit this program");
+   fileMenu->Append(Menu_Quit, "E&xit\tAlt-X", "Quit this program");
 
    // the "About" item should be in the help menu
    wxMenu *helpMenu = new wxMenu;
-   helpMenu->Append(Minimal_About, "&About\tF1", "Show about dialog");
+   helpMenu->Append(Menu_About, "&About\tF1", "Show about dialog");
 
    // now append the freshly created menu to the menu bar...
    wxMenuBar *menuBar = new wxMenuBar();
@@ -35,19 +34,19 @@ MyFrame::MyFrame(const wxString& title)
    CreateStatusBar(2);
    SetStatusText("StoreFrontPro!");
 
-   CollectionsOverview* ptColO = new CollectionsOverview(this, 8);
+   vCollectionsOverview* ptColO = new vCollectionsOverview(this, 8);
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    boxSizer->Add(ptColO, 1, wxEXPAND);
 }
 
 void 
-MyFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
+MainFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
    // true is to force the frame to close
    Close(true);
 }
 
 void 
-MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
+MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
    wxMessageBox(wxString::Format
    (
       "Welcome to %s!\n"

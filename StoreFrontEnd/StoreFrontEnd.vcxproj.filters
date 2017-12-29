@@ -13,23 +13,32 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Views">
+      <UniqueIdentifier>{0e663d4e-02a6-4035-9ea6-51471ebf9067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Overview">
+      <UniqueIdentifier>{e4ff053b-b998-403d-8446-59ab4bcdec5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Overview\Components">
+      <UniqueIdentifier>{0290169f-9ba2-4200-b4fc-253db1f52915}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CollectionsOverview.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="App.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vCollectionsOverview.cpp">
+      <Filter>Views\Overview</Filter>
+    </ClCompile>
+    <ClCompile Include="vcCollectionsMenuList.cpp">
+      <Filter>Views\Overview\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CollectionsOverview.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StorefrontConfig.h">
@@ -37,6 +46,12 @@
     </ClInclude>
     <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vCollectionsOverview.h">
+      <Filter>Views\Overview</Filter>
+    </ClInclude>
+    <ClInclude Include="vcCollectionsMenuList.h">
+      <Filter>Views\Overview\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
