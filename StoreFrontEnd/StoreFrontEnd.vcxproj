@@ -132,10 +132,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
     <ClCompile Include="CollectionsOverview.cpp" />
     <ClCompile Include="MainWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App.h" />
     <ClInclude Include="CollectionsOverview.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="StorefrontConfig.h" />

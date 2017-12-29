@@ -21,6 +21,9 @@
     <ClCompile Include="CollectionsOverview.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindow.h">
@@ -30,6 +33,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StorefrontConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

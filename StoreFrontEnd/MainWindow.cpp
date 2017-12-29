@@ -2,16 +2,13 @@
 #include "StorefrontConfig.h"
 #include "CollectionsOverview.h"
 
-// 'Main program' equivalent: the program execution "starts" here
-bool MyApp::OnInit() {
-   if( !wxApp::OnInit() )
-      return false;
 
-   MyFrame *frame = new MyFrame("StoreFrontPro");
-   frame->Show(true);
+// Events can be tied at run-time. This is compile time.
+wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
+EVT_MENU(Minimal_Quit, MyFrame::OnQuit)
+EVT_MENU(Minimal_About, MyFrame::OnAbout)
+wxEND_EVENT_TABLE()
 
-   return true;
-}
 
 MyFrame::MyFrame(const wxString& title)
    : wxFrame(NULL, sfMAIN_WINDOW, title) {
