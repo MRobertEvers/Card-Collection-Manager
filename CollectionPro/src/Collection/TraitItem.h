@@ -20,7 +20,9 @@ public:
 
 private:
    std::vector<std::string> m_lstPairedValues;
-   std::set<std::string> m_lstPossibleValues;
+
+   // This must be a vector to maintain ordering.
+   std::vector<std::string> m_lstPossibleValues;
    std::string m_szKeyName;
 };
 

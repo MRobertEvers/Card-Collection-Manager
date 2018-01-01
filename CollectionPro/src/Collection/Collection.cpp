@@ -315,8 +315,6 @@ Collection::GetCollectionList( MetaTagType atagType,
                                CopyItem::HashType ahashType ) 
 {
    vector<string> lstRetVal;
-   TryGet<CollectionObject> item;
-   vector<shared_ptr<CopyItem>> lstCopies;
    
    // <hash, (card name, count)>
    // Its multi because some hashes clash between cards.
@@ -326,8 +324,8 @@ Collection::GetCollectionList( MetaTagType atagType,
    vector<int> lstCol = getCollection();
    for( auto iItem : lstCol ) 
    {
-      item = m_ptrCollectionSource->GetCardPrototype(iItem);
-      lstCopies = item->FindCopies(GetIdentifier(), All);
+      auto item = m_ptrCollectionSource->GetCardPrototype(iItem);
+      auto lstCopies = item->FindCopies(GetIdentifier(), All);
       mapCardHashes.clear();
 
       for( auto copy : lstCopies )
@@ -379,7 +377,6 @@ Collection::GetShortList()
    // <hash, (card name, UID List)>
    multimap<string, pair<string, vector<string>>> mapSeenHashes;
    map<string, pair<string, vector<string>>> mapCardHashes;
-   vector<Tag> vecUIDPairs;
 
    vector<int> lstCol = getCollection();
    for( auto& iItem : lstCol )
@@ -414,6 +411,7 @@ Collection::GetShortList()
 
    string szUIDKey = CopyItem::GetUIDKey();
    vector<string> vecNewRetval;
+   vector<Tag> vecUIDPairs;
    for( auto& pCard : mapSeenHashes )
    {
       int iCount = pCard.second.second.size();

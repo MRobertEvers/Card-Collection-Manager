@@ -1,21 +1,24 @@
 #include "TraitItem.h"
+#include <algorithm>
 #include "../Support/Config.h"
 
-TraitItem::TraitItem( const std::string& aszKeyname,
-                      const std::vector<std::string>& alstKeyVals, 
-                      const std::vector<Tag>& alstPairedTraits )
+using namespace std;
+
+TraitItem::TraitItem( const string& aszKeyname,
+                      const vector<string>& alstKeyVals, 
+                      const vector<Tag>& alstPairedTraits )
 {
    Config* config = Config::Instance();
    m_szKeyName = aszKeyname;
-   m_lstPossibleValues = std::set<std::string>( alstKeyVals.begin(), 
-                                                alstKeyVals.end() );
+   m_lstPossibleValues = vector<string>( alstKeyVals.begin(), 
+                                         alstKeyVals.end() );
 
    if (m_lstPossibleValues.size() == 0)
    {
-      m_lstPossibleValues.insert("");
+      m_lstPossibleValues.push_back("");
    }
 
-   std::vector<Tag>::const_iterator iter_Tags = alstPairedTraits.cbegin();
+   vector<Tag>::const_iterator iter_Tags = alstPairedTraits.cbegin();
    for (; iter_Tags != alstPairedTraits.cend(); ++iter_Tags)
    {
       if (aszKeyname == iter_Tags->first)
@@ -33,23 +36,26 @@ TraitItem::~TraitItem()
 {
 }
 
-std::string TraitItem::GetKeyName() const
+string TraitItem::GetKeyName() const
 {
    return m_szKeyName;
 }
 
-std::string TraitItem::GetDefaultValue() const
+string TraitItem::GetDefaultValue() const
 {
    return *m_lstPossibleValues.begin();
 }
 
-std::vector<std::string> TraitItem::GetAllowedValues()
+vector<string> TraitItem::GetAllowedValues()
 {
-   return std::vector<std::string>( m_lstPossibleValues.begin(), 
-                                    m_lstPossibleValues.end() );
+   return vector<string>( m_lstPossibleValues.begin(), 
+                          m_lstPossibleValues.end() );
 }
 
-bool TraitItem::IsAllowedValue(std::string aszTestVal)
+bool TraitItem::IsAllowedValue(string aszTestVal)
 {
-   return m_lstPossibleValues.find(aszTestVal) != m_lstPossibleValues.end();
+   auto iter_find = find( m_lstPossibleValues.begin(), 
+                          m_lstPossibleValues.end(), 
+                          aszTestVal );
+   return iter_find != m_lstPossibleValues.end();
 }
