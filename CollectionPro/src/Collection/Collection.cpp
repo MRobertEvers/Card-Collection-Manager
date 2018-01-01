@@ -181,15 +181,18 @@ Collection::InitializeCollection() {
 
 // Loads the data file of the collection.
 bool
-Collection::InitializeCollection(string aszFileName,
-   vector<string>& rlstInitializeLines) {
-   if( !m_ptrCollectionDetails->IsInitialized() ) {
+Collection::InitializeCollection( string aszFileName,
+                                  vector<string>& rlstInitializeLines ) 
+{
+   if( !m_ptrCollectionDetails->IsInitialized() ) 
+   {
       vector<string> lstCardLines;
       vector<string> lstFileLines;
       CollectionIO loader;
       string szName;
 
-      if( !loader.GetFileLines(aszFileName, lstFileLines) ) {
+      if( !loader.GetFileLines(aszFileName, lstFileLines) )
+      {
          return false;
       }
 
@@ -208,8 +211,9 @@ Collection::InitializeCollection(string aszFileName,
 }
 
 void
-Collection::LoadCollection(string aszFileName,
-   CollectionFactory* aoFactory) {
+Collection::LoadCollection( const string& aszFileName,
+                            CollectionFactory* aoFactory )
+{
    map<int, list<CopyItem*>> mapNewlyAddedItems;
    map<int, list<CopyItem*>> mapExistingItems;
    vector<string> lstDummyList;
@@ -819,16 +823,19 @@ void Collection::loadDeltaLine(const string& aszLine) {
 // Can also take the form Name [id1=val1,id2=val2]
 // Can also take the form Name [val1,val2]
 void
-Collection::expandAdditionLine(string& rszLine) {
+Collection::expandAdditionLine(string& rszLine) 
+{
    string szKey, szDetails, szName, szId, szCount;
 
    int iDetEnd = rszLine.find_first_of(']');
    int iNameStart = rszLine.find_first_of(' ');
-   if( iNameStart == string::npos ) {
+   if( iNameStart == string::npos ) 
+   {
       iNameStart = 0;
    }
 
-   if( iDetEnd == rszLine.size() - 1 ) {
+   if( iDetEnd == rszLine.size() - 1 )
+   {
       int iDetStart = rszLine.find_first_of('[');
       szCount = rszLine.substr(0, iNameStart);
       szName = rszLine.substr(iNameStart, iDetStart - iNameStart);

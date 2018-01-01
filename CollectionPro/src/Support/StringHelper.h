@@ -14,7 +14,7 @@ public:
    static std::vector<std::string> Str_CmdLineParse(const std::string& srz);
    static std::vector<std::string> Str_Split(const std::string& aszSplit, const std::string& aszDelim);
    static std::vector<std::string> SplitIntoLines(const std::string& aszString);
-   static std::string convertToSearchString(const std::string& aszSearch);
+   static void convertToSearchString(std::string& aszSearch);
 
 private:
    static bool isSearchCharacter(char c);

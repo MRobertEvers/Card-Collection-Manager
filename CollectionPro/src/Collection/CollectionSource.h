@@ -81,8 +81,8 @@ private:
    
    SourceObject* getNewSourceObject();
 
-   int findInBuffer(string aszName, bool abCaseSensitive);
-   int findInCache(string aszName, bool abCaseSensitive);
+   int findInBuffer(const string& aszName);
+   int findInCache(const string& aszName);
 
    void resetBuffer();
    void finalizeBuffer();

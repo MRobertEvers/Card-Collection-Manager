@@ -87,27 +87,48 @@ StoreFront::ConfigIsLoaded()
    return Config::Instance()->IsLoaded();
 }
 
-void StoreFront::SaveCollection(std::string aszCollectionName)
+void 
+StoreFront::SaveCollection(const string& aszCollectionName)
 {
    m_ColFactory->SaveCollection(aszCollectionName);
 }
 
-std::string StoreFront::LoadCollection(std::string aszCollectionFile)
+string 
+StoreFront::LoadCollection(const string& aszCollectionFile)
 {
    return m_ColFactory->LoadCollectionFromFile(aszCollectionFile);
 }
 
-std::string StoreFront::CreateNewCollection(std::string aszCollectionName, std::string aszParent)
+string 
+StoreFront::CreateNewCollection( const string& aszCollectionName,
+                                 const string& aszParent )
 {
    return m_ColFactory->CreateNewCollection(aszCollectionName, aszParent);
 }
 
-std::vector<std::string> StoreFront::GetLoadedCollections()
+vector<string> 
+StoreFront::GetLoadedCollections()
 {
    return m_ColFactory->GetLoadedCollections();
 }
 
-std::vector<std::string> StoreFront::GetCollectionMetaData(std::string aszCollection)
+// Requires Collection ID
+string 
+StoreFront::GetCollectionName(const string& aszCollectionID)
+{
+   if( m_ColFactory->CollectionExists(aszCollectionID) )
+   {
+      return m_ColFactory->GetCollection(aszCollectionID)->GetName();
+   }
+   else
+   {
+      return Config::NotFoundString;
+   }
+}
+
+// Requires Collection ID
+vector<string> 
+StoreFront::GetCollectionMetaData(const string& aszCollection)
 {
    if( m_ColFactory->CollectionExists(aszCollection) )
    {
@@ -115,13 +136,13 @@ std::vector<std::string> StoreFront::GetCollectionMetaData(std::string aszCollec
    }
    else
    {
-      std::vector<std::string> noRetval;
+      vector<string> noRetval;
       return noRetval;
    }
 }
 
-std::vector<std::string>
-StoreFront::GetCollectionList(std::string aszCollection, int aiVisibility)
+vector<string>
+StoreFront::GetCollectionList(const string& aszCollection, int aiVisibility)
 {
    if( m_ColFactory->CollectionExists(aszCollection) )
    {
@@ -131,18 +152,20 @@ StoreFront::GetCollectionList(std::string aszCollection, int aiVisibility)
       }
       else
       {
-         return m_ColFactory->GetCollection(aszCollection)->GetCollectionList((MetaTagType)aiVisibility);
+         return m_ColFactory->GetCollection(aszCollection)->
+            GetCollectionList((MetaTagType)aiVisibility);
       }
    }
    else
    {
-      std::vector<std::string> lstEmpty;
+      vector<string> lstEmpty;
       return lstEmpty;
    }
 }
 
 void
-StoreFront::SetAttribute(string aszCardName, string aszUID, string aszKey, string aszVal)
+StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
+                          const string& aszKey, const string& aszVal )
 {
    auto item = m_ColSource->GetCardPrototype(aszCardName);
    if( item.Good() )
@@ -156,7 +179,7 @@ StoreFront::SetAttribute(string aszCardName, string aszUID, string aszKey, strin
 }
 
 vector<pair<string, string>>
-StoreFront::GetMetaTags(string aszCardName, string aszUID)
+StoreFront::GetMetaTags(const string& aszCardName, const string& aszUID)
 {
    vector<pair<string, string>> vecRetval;
    auto item = m_ColSource->GetCardPrototype(aszCardName);
@@ -173,7 +196,8 @@ StoreFront::GetMetaTags(string aszCardName, string aszUID)
 }
 
 vector<pair<string, string>>
-StoreFront::GetIdentifyingAttributes(string aszCardName, string aszUID)
+StoreFront::GetIdentifyingAttributes( const string& aszCardName,
+                                      const string& aszUID )
 {
    vector<pair<string, string>> vecRetval;
    auto item = m_ColSource->GetCardPrototype(aszCardName);
@@ -190,7 +214,7 @@ StoreFront::GetIdentifyingAttributes(string aszCardName, string aszUID)
 }
 
 string
-StoreFront::GetCardString(string aszCardname, string aszUID)
+StoreFront::GetCardString(const string& aszCardname, const string& aszUID)
 {
    auto item = m_ColSource->GetCardPrototype(aszCardname);
    if( item.Good() )
@@ -205,8 +229,8 @@ StoreFront::GetCardString(string aszCardname, string aszUID)
    return "";
 }
 
-std::string
-StoreFront::GetCardPrototype(std::string aszCardName)
+string
+StoreFront::GetCardPrototype(const string& aszCardName)
 {
    int iValidCard = m_ColSource->LoadCard(aszCardName);
    if( iValidCard != -1 )
@@ -219,8 +243,8 @@ StoreFront::GetCardPrototype(std::string aszCardName)
    }
 }
 
-std::vector<std::string>
-StoreFront::GetAllCardsStartingWith(std::string aszSearch)
+vector<string>
+StoreFront::GetAllCardsStartingWith(const string& aszSearch)
 {
    return m_ColSource->GetAllCardsStartingWith(aszSearch);
 }
@@ -231,22 +255,27 @@ StoreFront::GetPairedAttributes()
    return Config::Instance()->GetPairedKeysList();
 }
 
-std::string StoreFront::GetImagesPath()
+string 
+StoreFront::GetImagesPath()
 {
    return Config::Instance()->GetImagesFolder();
 }
 
-string StoreFront::GetSourceFilePath()
+string 
+StoreFront::GetSourceFilePath()
 {
    return Config::Instance()->GetSourceFile();
 }
 
-string StoreFront::GetImportSourceFilePath()
+string 
+StoreFront::GetImportSourceFilePath()
 {
    return Config::Instance()->GetImportSourceFile();
 }
 
-void StoreFront::SubmitBulkChanges(std::string aszCollection, std::vector<std::string> alstChanges)
+void 
+StoreFront::SubmitBulkChanges( const string& aszCollection,
+                               vector<string> alstChanges )
 {
    if( m_ColFactory->CollectionExists(aszCollection) )
    {
@@ -254,7 +283,8 @@ void StoreFront::SubmitBulkChanges(std::string aszCollection, std::vector<std::s
    }
 }
 
-void StoreFront::ImportCollectionSource()
+void 
+StoreFront::ImportCollectionSource()
 {
    JSONImporter JI;
    JI.ImportJSON(Config::Instance()->GetImportSourceFile());

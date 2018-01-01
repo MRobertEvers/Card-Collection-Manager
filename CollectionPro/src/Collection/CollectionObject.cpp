@@ -287,6 +287,8 @@ CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
    aptItem->SetIdentifyingAttribute( aszTraitKey, aszTraitValue, bSession );
    setCopyPairAttrs( aptItem, aszTraitKey,
                      distance(vecAllowVals.begin(), iter_found_val) );
+
+   return true;
 }
 
 // Sets all the ident traits to their defaults.

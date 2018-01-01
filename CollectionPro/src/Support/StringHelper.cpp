@@ -179,19 +179,21 @@ StringHelper::SplitIntoLines(const std::string& aszString)
    return lstLines;
 }
 
-
-std::string 
-StringHelper::convertToSearchString(const std::string& aszSearch)
+void
+StringHelper::convertToSearchString(std::string& aszSearch)
 {
-   std::string szRetval = "";
-   for( size_t i = 0; i < aszSearch.size(); i++ )
+   size_t iSize = aszSearch.size();
+   for( size_t i = 0; i < iSize; i++ )
    {
-      if( isSearchCharacter(aszSearch[i]) )
+      if( !isSearchCharacter(aszSearch[i]) )
       {
-         szRetval += aszSearch[i];
+         aszSearch[i] = ' ';
+      }
+      else
+      {
+         aszSearch[i] = ::tolower(aszSearch[i]);
       }
    }
-   return szRetval;
 }
 
 bool 

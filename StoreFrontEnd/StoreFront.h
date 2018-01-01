@@ -1,9 +1,16 @@
 #pragma once
-#include "../CollectionPro/src/Support/"
 
-class StoreFront
+#include "../CollectionPro/src/StoreFront.h"
+
+class StoreFrontEnd
 {
+public:
+   StoreFrontEnd();
+   ~StoreFrontEnd();
 
+public:
+   static StoreFront* Instance();
+  
 private:
-   static 
+   static StoreFront* m_ptInstance;
 };

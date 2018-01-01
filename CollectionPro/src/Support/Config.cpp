@@ -33,6 +33,7 @@ const char* Config::NotFoundString = "NF";
 const char* Config::CollectionDefinitionKey = ":";
 bool Config::ms_bTestMode = false;
 
+#include <stdio.h>
 Config::Config()
 {
    m_bIsFileConfig = false;
@@ -47,6 +48,7 @@ Config::Config()
       initConfigSettings(file);
       m_bIsFileConfig = true;
    }
+   file.close();
 }
 
 

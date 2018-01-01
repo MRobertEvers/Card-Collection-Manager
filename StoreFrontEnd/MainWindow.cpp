@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 #include "StorefrontConfig.h"
 #include "vCollectionsOverview.h"
-
+#include "StoreFront.h"
 
 // Events can be tied at run-time. This is compile time.
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
@@ -10,7 +10,10 @@ EVT_MENU(Menu_About, MainFrame::OnAbout)
 wxEND_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title)
-   : wxFrame(NULL, sfMAIN_WINDOW, title) {
+   : wxFrame(NULL, sfMAIN_WINDOW, title)
+{
+   StoreFrontEnd::Instance();
+
    // set the frame icon
    SetIcon(wxICON(sample));
 
@@ -37,6 +40,11 @@ MainFrame::MainFrame(const wxString& title)
    vCollectionsOverview* ptColO = new vCollectionsOverview(this, 8);
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    boxSizer->Add(ptColO, 1, wxEXPAND);
+}
+
+MainFrame::~MainFrame()
+{
+
 }
 
 void 

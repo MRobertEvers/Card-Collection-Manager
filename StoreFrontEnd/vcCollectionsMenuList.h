@@ -10,6 +10,7 @@ public:
    {
       List = 0x0
    };
+
    vcCollectionsMenuList(wxWindow* aptParent);
    ~vcCollectionsMenuList();
 

@@ -276,7 +276,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="src\Resource\MtGSource.xml">
+    <Xml Include="src\Resource\Config.xml">
       <Filter>Resource Files</Filter>
     </Xml>
   </ItemGroup>

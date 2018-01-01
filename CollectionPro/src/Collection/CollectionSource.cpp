@@ -17,13 +17,18 @@ using namespace rapidxml;
 using namespace std;
 
 CollectionSource::CollectionSource() {
-
+   m_bIsLoaded = false;
+   resetBuffer();
 }
 
 CollectionSource::~CollectionSource() {
+   m_vecCardCache.clear();
+   m_vecCardDataBuffer.clear();
 
+   delete[] m_AllCharBuff;
 }
 
+// The source file needs to be handled independently of this .exe.
 void 
 CollectionSource::LoadLib(string aszFilePath) {
    Config* config = Config::Instance();
@@ -63,18 +68,21 @@ CollectionSource::LoadLib(string aszFilePath) {
 }
 
 
-int CollectionSource::LoadCard(std::string aszCardName) {
+int CollectionSource::LoadCard(std::string aszCardName)
+{
    Config* config = Config::Instance();
    std::string szCardName = StringHelper::Str_Trim(aszCardName, ' ');
 
    // Since it is faster to look in the cache, check that first.
-   int iCacheLocation = findInCache(szCardName, false);
-   if( iCacheLocation == -1 ) {
+   int iCacheLocation = findInCache(szCardName);
+   if( iCacheLocation == -1 )
+   {
 
       // Look in the Source Object Buffer for a matching item.
       // If the card is found in the buffer, create a CollectionObject and cache it.
-      int iFound = findInBuffer(szCardName, false);
-      if( iFound != -1 ) {
+      int iFound = findInBuffer(szCardName);
+      if( iFound != -1 )
+      {
          SourceObject* oSource = &m_vecCardDataBuffer.at(iFound);
 
          // Get the static Attrs
@@ -86,20 +94,22 @@ int CollectionSource::LoadCard(std::string aszCardName) {
 
          std::vector<TraitItem> lstIdentifyingTraits;
          auto iter_Traits = lstAttrRestrictions.begin();
-         for( ; iter_Traits != lstAttrRestrictions.end(); ++iter_Traits ) {
-            TraitItem newTrait(iter_Traits->first,
-               iter_Traits->second,
-               config->GetPairedKeysList());
+         for( ; iter_Traits != lstAttrRestrictions.end(); ++iter_Traits )
+         {
+            TraitItem newTrait( iter_Traits->first,
+                                iter_Traits->second,
+                                config->GetPairedKeysList() );
             lstIdentifyingTraits.push_back(newTrait);
          }
 
-         CollectionObject oCard(aszCardName, lstStaticAttrs,
-            lstIdentifyingTraits);
+         CollectionObject oCard( aszCardName, lstStaticAttrs,
+                                 lstIdentifyingTraits );
 
          // Store the location of the CollectionObject in the cache
          oSource->SetCacheIndex(m_vecCardCache.size());
 
          // Cache the CollectionObject
+         iCacheLocation = m_vecCardCache.size();
          m_vecCardCache.push_back(oCard);
       }
    }
@@ -109,9 +119,11 @@ int CollectionSource::LoadCard(std::string aszCardName) {
 
 
 TryGet<CollectionObject>
-CollectionSource::GetCardPrototype(int aiCacheIndex) {
+CollectionSource::GetCardPrototype(int aiCacheIndex)
+{
    TryGet<CollectionObject> ColRetVal;
-   if( aiCacheIndex < m_vecCardCache.size() ) {
+   if( aiCacheIndex < m_vecCardCache.size() ) 
+   {
       ColRetVal.Set(&m_vecCardCache.at(aiCacheIndex));
    }
 
@@ -119,7 +131,8 @@ CollectionSource::GetCardPrototype(int aiCacheIndex) {
 }
 
 TryGet<CollectionObject>
-CollectionSource::GetCardPrototype(std::string aszCardName) {
+CollectionSource::GetCardPrototype(std::string aszCardName)
+{
    int iCacheIndex = LoadCard(aszCardName);
    return GetCardPrototype(iCacheIndex);
 }
@@ -127,26 +140,33 @@ CollectionSource::GetCardPrototype(std::string aszCardName) {
 // Notifies all collections other than the input collection that they
 // need to sync.
 void
-CollectionSource::NotifyNeedToSync(const Location& aAddrForcedSync) {
+CollectionSource::NotifyNeedToSync(const Location& aAddrForcedSync) 
+{
    for( auto iter_SyncCols = m_mapSync.begin();
              iter_SyncCols != m_mapSync.end();
-             ++iter_SyncCols ) {
-      if( iter_SyncCols->first != aAddrForcedSync ) {
+             ++iter_SyncCols )
+   {
+      if( iter_SyncCols->first != aAddrForcedSync )
+      {
          iter_SyncCols->second = true;
       }
-      else {
+      else
+      {
          iter_SyncCols->second = false;
       }
    }
 }
 
 bool 
-CollectionSource::IsSyncNeeded(const Location& aAddrNeedSync) {
+CollectionSource::IsSyncNeeded(const Location& aAddrNeedSync)
+{
    auto oFound = m_mapSync.find(aAddrNeedSync);
-   if( oFound != m_mapSync.end() ) {
+   if( oFound != m_mapSync.end() ) 
+   {
       return oFound->second;
    }
-   else {
+   else 
+   {
       m_mapSync.insert(make_pair(aAddrNeedSync, false));
       return false;
    }
@@ -154,11 +174,14 @@ CollectionSource::IsSyncNeeded(const Location& aAddrNeedSync) {
 
 vector<int>
 CollectionSource::GetCollectionCache( Location aAddrColID,
-                                      CollectionObjectType aColItemType ) {
+                                      CollectionObjectType aColItemType ) 
+{
    std::vector<int> lstRetVal;
 
-   for( size_t i = 0; i < m_vecCardCache.size(); i++ ) {
-      if( m_vecCardCache[i].FindCopies(aAddrColID, aColItemType).size() > 0 ) {
+   for( size_t i = 0; i < m_vecCardCache.size(); i++ ) 
+   {
+      if( m_vecCardCache[i].FindCopies(aAddrColID, aColItemType).size() > 0 )
+      {
          lstRetVal.push_back(i);
       }
    }
@@ -167,15 +190,18 @@ CollectionSource::GetCollectionCache( Location aAddrColID,
 }
 
 std::vector<std::shared_ptr<CopyItem>>
-CollectionSource::GetCollection(Location aAddrColID,
-   CollectionObjectType aColItemType) {
+CollectionSource::GetCollection( Location aAddrColID,
+                                 CollectionObjectType aColItemType) 
+{
    std::vector<std::shared_ptr<CopyItem>> lstRetVal;
 
-   for( auto& item : m_vecCardCache ) {
+   for( auto& item : m_vecCardCache ) 
+   {
       auto lstCopies = item.FindCopies(aAddrColID, aColItemType);
 
       auto iter_Copy = lstCopies.begin();
-      for( ; iter_Copy != lstCopies.end(); ++iter_Copy ) {
+      for( ; iter_Copy != lstCopies.end(); ++iter_Copy ) 
+      {
          lstRetVal.push_back(*iter_Copy);
       }
    }
@@ -184,33 +210,40 @@ CollectionSource::GetCollection(Location aAddrColID,
 }
 
 std::vector<std::string>
-CollectionSource::GetAllCardsStartingWith(std::string aszText) {
+CollectionSource::GetAllCardsStartingWith(std::string aszText) 
+{
    std::vector<std::string> lstCards;
 
    bool bActiveCache = aszText.size() > 2;
 
-   if( !bActiveCache ) {
+   if( !bActiveCache ) 
+   {
       m_lstSearchCache.clear();
    }
 
    // Check if the search is cached already
-   if( bActiveCache ) {
+   if( bActiveCache ) 
+   {
       int iEnd = m_lstSearchCache.size();
-      for( int i = iEnd - 1; i >= 0; i-- ) {
-         std::pair<std::string, std::vector<SourceObject>>
-            pairICache = m_lstSearchCache[i];
-         if( pairICache.first == aszText ) {
+      for( int i = iEnd - 1; i >= 0; i-- ) 
+      {
+         auto pairICache = m_lstSearchCache[i];
+         if( pairICache.first == aszText ) 
+         {
             auto iter_Result = pairICache.second.begin();
-            for( ; iter_Result != pairICache.second.end(); ++iter_Result ) {
+            for( ; iter_Result != pairICache.second.end(); ++iter_Result ) 
+            {
                lstCards.push_back((iter_Result)->GetName(m_AllCharBuff));
             }
 
             return lstCards;
          }
-         else if( aszText.substr(0, pairICache.first.size()) == pairICache.first ) {
+         else if( aszText.substr(0, pairICache.first.size()) == pairICache.first )
+         {
             break;
          }
-         else {
+         else 
+         {
             m_lstSearchCache.pop_back();
          }
       }
@@ -220,10 +253,12 @@ CollectionSource::GetAllCardsStartingWith(std::string aszText) {
    //  the sublist.
    std::vector<SourceObject>* lstSearchList;
    std::vector<SourceObject> lstCache;
-   if( bActiveCache && m_lstSearchCache.size() > 0 ) {
+   if( bActiveCache && m_lstSearchCache.size() > 0 ) 
+   {
       lstSearchList = &m_lstSearchCache[m_lstSearchCache.size() - 1].second;
    }
-   else {
+   else 
+   {
       lstSearchList = &m_vecCardDataBuffer;
    }
 
@@ -231,33 +266,41 @@ CollectionSource::GetAllCardsStartingWith(std::string aszText) {
    std::vector<std::string> lstOthers;
 
    std::vector<SourceObject>::iterator iter_Cards = lstSearchList->begin();
-   for( ; iter_Cards != lstSearchList->end(); ++iter_Cards ) {
+   for( ; iter_Cards != lstSearchList->end(); ++iter_Cards )
+   {
       std::string szCard = iter_Cards->GetName(m_AllCharBuff);
       std::transform(szCard.begin(), szCard.end(), szCard.begin(), ::tolower);
       size_t iFindIndex = 0;
       iFindIndex = szCard.find(aszText);
-      if( iFindIndex != std::string::npos ) {
-         if( iFindIndex == 0 ) {
+      if( iFindIndex != std::string::npos ) 
+      {
+         if( iFindIndex == 0 ) 
+         {
             lstStartCards.push_back(iter_Cards->GetName(m_AllCharBuff));
          }
-         else {
+         else 
+         {
             lstOthers.push_back(iter_Cards->GetName(m_AllCharBuff));
          }
 
-         if( bActiveCache ) {
+         if( bActiveCache ) 
+         {
             lstCache.push_back(*iter_Cards);
          }
       }
    }
 
-   for( std::string sz : lstStartCards ) {
+   for( std::string sz : lstStartCards ) 
+   {
       lstCards.push_back(sz);
    }
-   for( std::string sz : lstOthers ) {
+   for( std::string sz : lstOthers )
+   {
       lstCards.push_back(sz);
    }
 
-   if( bActiveCache ) {
+   if( bActiveCache ) 
+   {
       m_lstSearchCache.push_back(std::make_pair(aszText, lstCache));
    }
 
@@ -266,17 +309,20 @@ CollectionSource::GetAllCardsStartingWith(std::string aszText) {
 
 
 void
-CollectionSource::ClearCache() {
+CollectionSource::ClearCache()
+{
    m_vecCardCache.clear();
 }
 
 bool
-CollectionSource::IsLoaded() {
+CollectionSource::IsLoaded() 
+{
    return m_bIsLoaded;
 }
 
 void 
-CollectionSource::loadCard(rapidxml::xml_node<char> * xmlNode_Card) {
+CollectionSource::loadCard(rapidxml::xml_node<char> * xmlNode_Card) 
+{
    Config* config = Config::Instance();
    SourceObject* sO = getNewSourceObject();
 
@@ -294,21 +340,20 @@ CollectionSource::loadCard(rapidxml::xml_node<char> * xmlNode_Card) {
 }
 
 SourceObject* 
-CollectionSource::getNewSourceObject() {
+CollectionSource::getNewSourceObject()
+{
    m_vecCardDataBuffer.push_back(SourceObject(m_iAllCharBuffSize));
    return &m_vecCardDataBuffer.back();
 }
 
 int
-CollectionSource::findInBuffer(string aszCardName, bool abCaseSensitive) {
+CollectionSource::findInBuffer( const string& aszCardName ) 
+{
    // Binary search chokes on all sorts of characters so Im just 
    // using linear search.
-   string szCardNameFixed = StringHelper::convertToSearchString(aszCardName);
-   if( !abCaseSensitive ) {
-      transform(szCardNameFixed.begin(),
-         szCardNameFixed.end(),
-         szCardNameFixed.begin(), ::tolower);
-   }
+   string szCardNameFixed = aszCardName;
+
+   StringHelper::convertToSearchString(szCardNameFixed);
 
    int iSize = m_vecCardDataBuffer.size();
    int iLeft = 0;
@@ -326,11 +371,7 @@ CollectionSource::findInBuffer(string aszCardName, bool abCaseSensitive) {
       }
 
       szName = m_vecCardDataBuffer.at(middle).GetName(m_AllCharBuff);
-      szName = StringHelper::convertToSearchString(szName);
-      if( !abCaseSensitive ) {
-         transform(szName.begin(), szName.end(),
-            szName.begin(), ::tolower);
-      }
+      StringHelper::convertToSearchString(szName);
 
       if( szName == szCardNameFixed )
          return middle;
@@ -343,22 +384,24 @@ CollectionSource::findInBuffer(string aszCardName, bool abCaseSensitive) {
 }
 
 int
-CollectionSource::findInCache(string aszName,
-   bool abCaseSensitive) {
+CollectionSource::findInCache( const string& aszName ) 
+{
    auto iter_ColObj = m_vecCardCache.begin();
    int index = 0;
-   for( ; iter_ColObj != m_vecCardCache.end(); ++iter_ColObj ) {
-      /*
-      if( iter_ColObj->GetName() == aszName ) {
+   for( ; iter_ColObj != m_vecCardCache.end(); ++iter_ColObj )
+   {
+      if( iter_ColObj->GetName() == aszName ) 
+      {
          return index;
       }
-      index++;*/
+      index++;
    }
    return -1;
 }
 
 void 
-CollectionSource::resetBuffer() {
+CollectionSource::resetBuffer()
+{
    m_vecCardCache.clear();
    m_vecCardDataBuffer.clear();
 
@@ -368,7 +411,8 @@ CollectionSource::resetBuffer() {
 }
 
 void 
-CollectionSource::finalizeBuffer() {
+CollectionSource::finalizeBuffer() 
+{
    char* newBufferSize = new char[m_iAllCharBuffSize];
    memcpy(newBufferSize, m_AllCharBuff, m_iAllCharBuffSize);
    delete[] m_AllCharBuff;

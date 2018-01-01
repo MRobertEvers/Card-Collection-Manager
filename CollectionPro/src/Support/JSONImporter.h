@@ -50,12 +50,10 @@ private:
                        std::basic_string<char, std::char_traits<char>, std::allocator<char>> szTwo ) const
       {
          std::string szOneLow = szOne;
-         szOneLow = StringHelper::convertToSearchString(szOneLow);
-         transform(szOneLow.begin(), szOneLow.end(), szOneLow.begin(), ::tolower);
+         StringHelper::convertToSearchString(szOneLow);
 
          std::string szTwoLow = szTwo;
-         szTwoLow = StringHelper::convertToSearchString(szTwoLow);
-         transform(szTwoLow.begin(), szTwoLow.end(), szTwoLow.begin(), ::tolower);
+         StringHelper::convertToSearchString(szTwoLow);
 
          return szOneLow < szTwoLow;
       }

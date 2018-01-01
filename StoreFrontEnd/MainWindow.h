@@ -8,6 +8,7 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+#include "StoreFront.h"
 #include <wx/aui/framemanager.h>
 
 #ifndef WX_PRECOMP
@@ -25,6 +26,7 @@ class MainFrame : public wxFrame
 {
 public:
    MainFrame(const wxString& title);
+   ~MainFrame();
 
    void OnQuit(wxCommandEvent& event);
    void OnAbout(wxCommandEvent& event);
@@ -33,4 +35,5 @@ private:
    wxDECLARE_EVENT_TABLE();
 
    wxAuiManager m_UIMgr;
+   StoreFront* m_ptStoreFront;
 };

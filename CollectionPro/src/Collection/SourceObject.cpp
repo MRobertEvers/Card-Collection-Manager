@@ -34,7 +34,7 @@ SourceObject::AddAttribute(
    }
 
    unsigned int iSizeIncrease = insertAttribute(value, aplstCharBuf,
-      aiMaxBuffSize, iInsertion);
+                                                aiMaxBuffSize, iInsertion);
 
    // Shift all field codes down
    for (int i = ms_iNumKeys - 2; i >= iInsertion; --i) {
@@ -175,12 +175,12 @@ SourceObject::insertAttribute(const std::string& value,
    unsigned int iBufferOffAfterCopy = iBufferOffset + iAdditionalSize;
 
    memcpy_s(aplstCharBuf + iBufferOffAfterCopy,
-      aiMaxBuffSize - iBufferOffAfterCopy,
-      aplstCharBuf + iBufferOffset, iPostBuffSize);
+            aiMaxBuffSize - iBufferOffAfterCopy,
+            aplstCharBuf + iBufferOffset, iPostBuffSize);
 
    memcpy_s(aplstCharBuf + iBufferOffset,
-      aiMaxBuffSize - iBufferOffset,
-      value.c_str(), iAdditionalSize);
+            aiMaxBuffSize - iBufferOffset,
+            value.c_str(), iAdditionalSize);
 
    return value.size();
 }

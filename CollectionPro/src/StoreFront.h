@@ -21,28 +21,29 @@ public:
 
    // Collection Manager Accessors
    //
-   string CreateNewCollection(string aszCollectionName, string aszParent);
-   string LoadCollection(string aszCollectionFile);
+   string CreateNewCollection(const string& aszCollectionName, const string& aszParent);
+   string LoadCollection(const string& aszCollectionFile);
    vector<string> GetLoadedCollections();
 
    // Collection Accessors
    //
-   void SaveCollection(string aszCollectionName);
-   void SubmitBulkChanges(string aszCollection, vector<string> alstChanges);
-   vector<string> GetCollectionMetaData(string aszCollection);
-   vector<string> GetCollectionList(string aszCollection, int aiVisibility);
+   void SaveCollection(const string& aszCollectionName);
+   void SubmitBulkChanges(const string& aszCollection, vector<string> alstChanges);
+   string GetCollectionName(const string& aszCollectionID);
+   vector<string> GetCollectionMetaData(const string& aszCollection);
+   vector<string> GetCollectionList(const string& aszCollection, int aiVisibility);
 
    // Card Accessors
    //
-   void SetAttribute(string aszCardName, string aszUID, string aszKey, string aszVal);
-   vector<pair<string, string>> GetMetaTags(string aszCardName, string aszUID);
-   vector<pair<string, string>> GetIdentifyingAttributes(string aszCardName, string aszUID);
-   string GetCardString(string aszCardname, string aszUID);
+   void SetAttribute(const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal);
+   vector<pair<string, string>> GetMetaTags(const string& aszCardName, const string& aszUID);
+   vector<pair<string, string>> GetIdentifyingAttributes(const string& aszCardName, const string& aszUID);
+   string GetCardString(const string& aszCardname, const string& aszUID);
 
    // Source Accessors
    //
-   vector<string> GetAllCardsStartingWith(string aszSearch);
-   string GetCardPrototype(string aszCardName);
+   vector<string> GetAllCardsStartingWith(const string& aszSearch);
+   string GetCardPrototype(const string& aszCardName);
    void ImportCollectionSource();
 
    // Config accessors

@@ -64,7 +64,7 @@ public:
    bool InitializeCollection(std::string aszFileName,
       std::vector<std::string>& rlstInitializeLines);
    void LoadCollection(
-      std::string aszFileName,
+      const std::string& aszFileName,
       CollectionFactory* aoFactory);
    void LoadChanges(std::vector<std::string> aszLines);
 
