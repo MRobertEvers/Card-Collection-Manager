@@ -78,6 +78,7 @@ private:
    map<Location, bool> m_mapSync;
 
    void loadCard(rapidxml::xml_node<char> * xmlNode_Card);
+   int loadCardToCache(unsigned int iDataBuffInd);
    
    SourceObject* getNewSourceObject();
 

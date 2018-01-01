@@ -68,49 +68,22 @@ CollectionSource::LoadLib(string aszFilePath) {
 }
 
 
-int CollectionSource::LoadCard(std::string aszCardName)
+int
+CollectionSource::LoadCard(string aszCardName)
 {
    Config* config = Config::Instance();
-   std::string szCardName = StringHelper::Str_Trim(aszCardName, ' ');
+   string szCardName = StringHelper::Str_Trim(aszCardName, ' ');
 
    // Since it is faster to look in the cache, check that first.
    int iCacheLocation = findInCache(szCardName);
    if( iCacheLocation == -1 )
    {
-
       // Look in the Source Object Buffer for a matching item.
       // If the card is found in the buffer, create a CollectionObject and cache it.
       int iFound = findInBuffer(szCardName);
       if( iFound != -1 )
       {
-         SourceObject* oSource = &m_vecCardDataBuffer.at(iFound);
-
-         // Get the static Attrs
-         std::vector<Tag> lstStaticAttrs = oSource->GetAttributes(m_AllCharBuff);
-
-         // Build the trait items from each of the ID attrs and their
-         // allowed values.
-         auto lstAttrRestrictions = oSource->GetIDAttrRestrictions(m_AllCharBuff);
-
-         std::vector<TraitItem> lstIdentifyingTraits;
-         auto iter_Traits = lstAttrRestrictions.begin();
-         for( ; iter_Traits != lstAttrRestrictions.end(); ++iter_Traits )
-         {
-            TraitItem newTrait( iter_Traits->first,
-                                iter_Traits->second,
-                                config->GetPairedKeysList() );
-            lstIdentifyingTraits.push_back(newTrait);
-         }
-
-         CollectionObject oCard( aszCardName, lstStaticAttrs,
-                                 lstIdentifyingTraits );
-
-         // Store the location of the CollectionObject in the cache
-         oSource->SetCacheIndex(m_vecCardCache.size());
-
-         // Cache the CollectionObject
-         iCacheLocation = m_vecCardCache.size();
-         m_vecCardCache.push_back(oCard);
+         iCacheLocation = loadCardToCache(iFound);
       }
    }
 
@@ -131,7 +104,7 @@ CollectionSource::GetCardPrototype(int aiCacheIndex)
 }
 
 TryGet<CollectionObject>
-CollectionSource::GetCardPrototype(std::string aszCardName)
+CollectionSource::GetCardPrototype(string aszCardName)
 {
    int iCacheIndex = LoadCard(aszCardName);
    return GetCardPrototype(iCacheIndex);
@@ -176,7 +149,7 @@ vector<int>
 CollectionSource::GetCollectionCache( Location aAddrColID,
                                       CollectionObjectType aColItemType ) 
 {
-   std::vector<int> lstRetVal;
+   vector<int> lstRetVal;
 
    for( size_t i = 0; i < m_vecCardCache.size(); i++ ) 
    {
@@ -189,11 +162,11 @@ CollectionSource::GetCollectionCache( Location aAddrColID,
    return lstRetVal;
 }
 
-std::vector<std::shared_ptr<CopyItem>>
+vector<shared_ptr<CopyItem>>
 CollectionSource::GetCollection( Location aAddrColID,
                                  CollectionObjectType aColItemType) 
 {
-   std::vector<std::shared_ptr<CopyItem>> lstRetVal;
+   vector<shared_ptr<CopyItem>> lstRetVal;
 
    for( auto& item : m_vecCardCache ) 
    {
@@ -209,10 +182,10 @@ CollectionSource::GetCollection( Location aAddrColID,
    return lstRetVal;
 }
 
-std::vector<std::string>
-CollectionSource::GetAllCardsStartingWith(std::string aszText) 
+vector<string>
+CollectionSource::GetAllCardsStartingWith(string aszText) 
 {
-   std::vector<std::string> lstCards;
+   vector<string> lstCards;
 
    bool bActiveCache = aszText.size() > 2;
 
@@ -251,8 +224,8 @@ CollectionSource::GetAllCardsStartingWith(std::string aszText)
 
    // If there are still entries in the searchCache, and we are here, then we only need to search
    //  the sublist.
-   std::vector<SourceObject>* lstSearchList;
-   std::vector<SourceObject> lstCache;
+   vector<SourceObject>* lstSearchList;
+   vector<SourceObject> lstCache;
    if( bActiveCache && m_lstSearchCache.size() > 0 ) 
    {
       lstSearchList = &m_lstSearchCache[m_lstSearchCache.size() - 1].second;
@@ -262,17 +235,17 @@ CollectionSource::GetAllCardsStartingWith(std::string aszText)
       lstSearchList = &m_vecCardDataBuffer;
    }
 
-   std::vector<std::string> lstStartCards;
-   std::vector<std::string> lstOthers;
+   vector<string> lstStartCards;
+   vector<string> lstOthers;
 
-   std::vector<SourceObject>::iterator iter_Cards = lstSearchList->begin();
+   vector<SourceObject>::iterator iter_Cards = lstSearchList->begin();
    for( ; iter_Cards != lstSearchList->end(); ++iter_Cards )
    {
-      std::string szCard = iter_Cards->GetName(m_AllCharBuff);
-      std::transform(szCard.begin(), szCard.end(), szCard.begin(), ::tolower);
+      string szCard = iter_Cards->GetName(m_AllCharBuff);
+      transform(szCard.begin(), szCard.end(), szCard.begin(), ::tolower);
       size_t iFindIndex = 0;
       iFindIndex = szCard.find(aszText);
-      if( iFindIndex != std::string::npos ) 
+      if( iFindIndex != string::npos ) 
       {
          if( iFindIndex == 0 ) 
          {
@@ -290,18 +263,18 @@ CollectionSource::GetAllCardsStartingWith(std::string aszText)
       }
    }
 
-   for( std::string sz : lstStartCards ) 
+   for( string sz : lstStartCards ) 
    {
       lstCards.push_back(sz);
    }
-   for( std::string sz : lstOthers )
+   for( string sz : lstOthers )
    {
       lstCards.push_back(sz);
    }
 
    if( bActiveCache ) 
    {
-      m_lstSearchCache.push_back(std::make_pair(aszText, lstCache));
+      m_lstSearchCache.push_back(make_pair(aszText, lstCache));
    }
 
    return lstCards;
@@ -337,6 +310,41 @@ CollectionSource::loadCard(rapidxml::xml_node<char> * xmlNode_Card)
 
       xmlNode_CardAttribute = xmlNode_CardAttribute->next_sibling();
    }
+}
+
+int 
+CollectionSource::loadCardToCache(unsigned int iDataBuffInd)
+{
+   Config* config = Config::Instance();
+   SourceObject* oSource = &m_vecCardDataBuffer.at(iDataBuffInd);
+   string szCardName = oSource->GetName(m_AllCharBuff);
+
+   // Get the static Attrs
+   vector<Tag> lstStaticAttrs = oSource->GetAttributes(m_AllCharBuff);
+
+   // Build the trait items from each of the ID attrs and their
+   // allowed values.
+   auto lstAttrRestrictions = oSource->GetIDAttrRestrictions(m_AllCharBuff);
+
+   vector<TraitItem> lstIdentifyingTraits;
+   auto iter_Traits = lstAttrRestrictions.begin();
+   for( ; iter_Traits != lstAttrRestrictions.end(); ++iter_Traits )
+   {
+      TraitItem newTrait( iter_Traits->first,
+                          iter_Traits->second,
+                          config->GetPairedKeysList() );
+      lstIdentifyingTraits.push_back(newTrait);
+   }
+
+   CollectionObject oCard( szCardName, lstStaticAttrs,
+                           lstIdentifyingTraits );
+
+   // Store the location of the CollectionObject in the cache
+   oSource->SetCacheIndex(m_vecCardCache.size());
+
+   // Cache the CollectionObject
+   m_vecCardCache.push_back(oCard);
+   return m_vecCardCache.size() - 1;
 }
 
 SourceObject* 

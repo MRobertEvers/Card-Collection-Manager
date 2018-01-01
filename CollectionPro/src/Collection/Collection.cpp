@@ -309,47 +309,57 @@ Collection::LoadChanges(vector<string> lstLines) {
    }
 }
 
-// TODO: Fix bug where sometimes this miscounts things.
 vector<string>
-Collection::GetCollectionList(MetaTagType atagType,
-   bool abCollapsed,
-   CopyItem::HashType ahashType) {
-   bool aiCollapsed = abCollapsed;
-   static const function<string(const pair<string, int>&)> fnExtractor
-      = [](const pair<string, int>& pVal)->string { return pVal.first; };
-
+Collection::GetCollectionList( MetaTagType atagType,
+                               bool abCollapsed,
+                               CopyItem::HashType ahashType ) 
+{
    vector<string> lstRetVal;
    TryGet<CollectionObject> item;
    vector<shared_ptr<CopyItem>> lstCopies;
-   map<string, int> mapSeenHashes;
-   vector<pair<string, int>> lstSeenHashes;
+   
+   // <hash, (card name, count)>
+   // Its multi because some hashes clash between cards.
+   multimap<string, pair<string, unsigned int>> mapSeenHashes;
+   map<string, pair<string, unsigned int>> mapCardHashes;
 
    vector<int> lstCol = getCollection();
-   for( auto iItem : lstCol ) {
+   for( auto iItem : lstCol ) 
+   {
       item = m_ptrCollectionSource->GetCardPrototype(iItem);
       lstCopies = item->FindCopies(GetIdentifier(), All);
+      mapCardHashes.clear();
 
-      for( auto copy : lstCopies ) {
+      for( auto copy : lstCopies )
+      {
          string szHash = copy->GetHash(ahashType);
-         int iCounted = ListHelper::List_Find(szHash, lstSeenHashes,
-            fnExtractor);
-         if( (!aiCollapsed) || (iCounted == -1) ) {
-            string szRep = item->CopyToString(copy.get(), atagType,
-               GetIdentifier());
-            lstRetVal.push_back(szRep);
-            lstSeenHashes.push_back(make_pair(szHash, 1));
+         auto iter_Counted = mapCardHashes.find(szHash);
+         if( (!abCollapsed) || (iter_Counted == mapCardHashes.end()) )
+         {
+            string szRep = item->CopyToString( copy.get(), atagType,
+                                               GetIdentifier() );
+            auto pairCard = make_pair(szRep, 1);
+            mapCardHashes.insert(make_pair(szHash, pairCard));
          }
-         else if( iCounted != -1 ) {
-            lstSeenHashes[iCounted].second++;
+         else if( iter_Counted != mapCardHashes.end() )
+         {
+            iter_Counted->second.second++;
          }
       }
+
+      mapSeenHashes.insert(mapCardHashes.begin(), mapCardHashes.end());
    }
 
-   if( aiCollapsed ) {
+   if( abCollapsed )
+   {
       vector<string> lstNewRetVal;
-      for( size_t i = 0; i < lstRetVal.size(); i++ ) {
-         int iCounted = lstSeenHashes[i].second;
-         lstNewRetVal.push_back("x" + to_string(iCounted) + " " + lstRetVal[i]);
+      for( auto& pCard : mapSeenHashes )
+      {
+         string szCard = pCard.second.first;
+         int iCount = pCard.second.second;
+
+         string szLine = "x" + to_string(iCount) + " " + szCard;
+         lstNewRetVal.push_back(szLine);
       }
 
       lstRetVal.clear();
@@ -361,52 +371,64 @@ Collection::GetCollectionList(MetaTagType atagType,
 
 
 // Returns each item in this collection with a list of its UIDs.
-std::vector<std::string>
-Collection::GetShortList() {
-   static const function<string(const pair<string, vector<string>>&)> fnExtractor
-      = [](const pair<string, vector<string>>& pVal)->string { return pVal.first; };
-
-   vector<string> lstRetVal;
-   TryGet<CollectionObject> item;
-   vector<shared_ptr<CopyItem>> lstCopies;
-   vector<pair<string, vector<string>>> lstSeenHashes;
-   string szUIDKey = CopyItem::GetUIDKey();
+vector<string>
+Collection::GetShortList() 
+{
    StringInterface stringIface;
+
+   // <hash, (card name, UID List)>
+   multimap<string, pair<string, vector<string>>> mapSeenHashes;
+   map<string, pair<string, vector<string>>> mapCardHashes;
    vector<Tag> vecUIDPairs;
-   string szUIDTagLine;
 
    vector<int> lstCol = getCollection();
-   for( auto& iItem : lstCol ) {
-      item = m_ptrCollectionSource->GetCardPrototype(iItem);
-      lstCopies = item->FindCopies(GetIdentifier(), All);
+   for( auto& iItem : lstCol )
+   {
+      auto item = m_ptrCollectionSource->GetCardPrototype(iItem);
+      auto lstCopies = item->FindCopies(GetIdentifier(), All);
+      mapCardHashes.clear();
 
-      for( auto& copy : lstCopies ) {
+      for( auto& copy : lstCopies ) 
+      {
          string szHash = copy->GetHash();
-         int iCounted = ListHelper::List_Find(szHash, lstSeenHashes,
-            fnExtractor);
-         if( iCounted == -1 ) {
+         string szCopyUID = copy->GetUID();
+
+         auto iter_Counted = mapCardHashes.find(szHash);
+         if( iter_Counted == mapCardHashes.end() )
+         {
+            auto vecOnlyUID = vector<string> { szCopyUID };
             string szRep = item->CopyToString(copy.get(), None);
-            lstRetVal.push_back(szRep);
-            lstSeenHashes.push_back(make_pair(szHash, vector<string>(1, copy->GetUID())));
+            auto pairCardAndUID = make_pair(szRep, vecOnlyUID);
+
+            auto pairHashUID = make_pair(szHash, pairCardAndUID);
+            mapCardHashes.insert(pairHashUID);
          }
-         else if( iCounted != -1 ) {
-            lstSeenHashes[iCounted].second.push_back(copy->GetUID());
+         else
+         {
+            iter_Counted->second.second.push_back(szCopyUID);
          }
       }
+
+      mapSeenHashes.insert(mapCardHashes.begin(), mapCardHashes.end());
    }
 
+   string szUIDKey = CopyItem::GetUIDKey();
    vector<string> vecNewRetval;
-   for( size_t i = 0; i < lstRetVal.size(); i++ ) {
-      int iCounted = lstSeenHashes[i].second.size();
-      string szNewLine = "x" + to_string(iCounted) + " " + lstRetVal[i];
+   for( auto& pCard : mapSeenHashes )
+   {
+      int iCount = pCard.second.second.size();
+      string szCard = pCard.second.first;
+
+      string szLine = "x" + to_string(iCount) + " " + szCard;
 
       vecUIDPairs.clear();
-      for( auto& szUID : lstSeenHashes[i].second ) {
+      for( auto& szUID : pCard.second.second )
+      {
          vecUIDPairs.push_back(make_pair(szUIDKey, szUID));
       }
 
-      szNewLine = stringIface.ToCardLine(szNewLine, vector<Tag>(), vecUIDPairs);
-      vecNewRetval.push_back(szNewLine);
+      szLine = stringIface.ToCardLine(szLine, vector<Tag>(), vecUIDPairs);
+      vecNewRetval.push_back(szLine);
    }
 
    return vecNewRetval;
@@ -648,7 +670,7 @@ bool Collection::loadOverheadLine(const string& aszLine) {
 
 // Expects the input to be of the form : Key = "Value"
 void
-Collection::loadCollectionDataLine(const std::string& aszData) {
+Collection::loadCollectionDataLine(const string& aszData) {
    string szBaseLine = aszData.substr(2);
    vector<string> lstSplitLine = StringHelper::Str_Split(szBaseLine, "=");
 
@@ -890,7 +912,7 @@ Collection::expandAdditionLine(string& rszLine)
 
 // This will ignore any meta tags.
 void
-Collection::collapseCardLine(std::string& rszLine) {
+Collection::collapseCardLine(string& rszLine) {
    Config* config = Config::Instance();
    string szFirstKey = "";
    vector<Tag> vecPairedKeys;
