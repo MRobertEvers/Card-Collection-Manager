@@ -135,6 +135,8 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="StoreFront.cpp" />
+    <ClCompile Include="vcCollectionDeckBoxItemList.cpp" />
+    <ClCompile Include="vCollectionDeckBox.cpp" />
     <ClCompile Include="vCollectionsOverview.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="vcCollectionsMenuList.cpp" />
@@ -142,6 +144,8 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="StoreFront.h" />
+    <ClInclude Include="vcCollectionDeckBoxItemList.h" />
+    <ClInclude Include="vCollectionDeckBox.h" />
     <ClInclude Include="vCollectionsOverview.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="StorefrontConfig.h" />

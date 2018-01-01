@@ -16,6 +16,7 @@ public:
    ~vCollectionsOverview();
 
    void OnLoadCollection(wxCommandEvent& awxEvt);
+   void OnViewCollection(wxCommandEvent& awxEvt);
 
 private:
    wxDECLARE_EVENT_TABLE();

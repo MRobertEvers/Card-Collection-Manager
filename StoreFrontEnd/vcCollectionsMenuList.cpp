@@ -3,7 +3,7 @@
 #include <wx/button.h>
 
 wxBEGIN_EVENT_TABLE(vcCollectionsMenuList, wxPanel)
-EVT_BUTTON(vCollectionsOverview::Load_Collection, vcCollectionsMenuList::onViewCollection)
+EVT_BUTTON(vCollectionsOverview::View_Collection, vcCollectionsMenuList::onViewCollection)
 EVT_LIST_ITEM_SELECTED(List, vcCollectionsMenuList::onItemSelection)
 EVT_LIST_ITEM_DESELECTED(List, vcCollectionsMenuList::onItemDeselection)
 wxEND_EVENT_TABLE()
@@ -32,7 +32,8 @@ vcCollectionsMenuList::~vcCollectionsMenuList()
 void 
 vcCollectionsMenuList::AddCollectionOption(std::string aszCollectionName)
 {
-   m_wxListControl->InsertItem( 0, aszCollectionName );
+   m_wxListControl->InsertItem( m_wxListControl->GetItemCount(),
+                                aszCollectionName );
 }
 
 void 
@@ -40,13 +41,13 @@ vcCollectionsMenuList::buildButtons()
 {
    wxButton* loadButt = new wxButton( this, 
                                       vCollectionsOverview::Load_Collection,
-                                      "Load Collection");
+                                      "Load Collection" );
    wxButton* viewButt = new wxButton( this, 
                                       vCollectionsOverview::View_Collection,
-                                      "View Collection");
+                                      "View Collection" );
    wxButton* addButt = new wxButton( this, 
                                      vCollectionsOverview::Add_Collection,
-                                     "Add Collection");
+                                     "Add Collection" );
 
    this->GetSizer()->Add(loadButt, wxSizerFlags().Expand());
    this->GetSizer()->Add(viewButt, wxSizerFlags().Expand());
@@ -58,6 +59,9 @@ vcCollectionsMenuList::onViewCollection(wxCommandEvent& awxEvt)
 {
    awxEvt.SetInt(m_iSelection);
 
+   auto szItem = m_wxListControl->GetItemText(m_iSelection);
+   awxEvt.SetString(szItem);
+
    // This allows for the continued propagation of the event.
    awxEvt.Skip(true);
 }
@@ -66,10 +70,12 @@ void
 vcCollectionsMenuList::onItemSelection(wxListEvent& awxEvt)
 {
    m_iSelection = awxEvt.GetIndex();
+   awxEvt.StopPropagation();
 }
 
 void 
 vcCollectionsMenuList::onItemDeselection(wxListEvent& awxEvt)
 {
    m_iSelection = -1;
+   awxEvt.StopPropagation();
 }

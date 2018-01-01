@@ -309,6 +309,7 @@ Collection::LoadChanges(vector<string> lstLines) {
    }
 }
 
+// TODO: Fix bug where sometimes this miscounts things.
 vector<string>
 Collection::GetCollectionList(MetaTagType atagType,
    bool abCollapsed,

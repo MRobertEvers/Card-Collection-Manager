@@ -15,14 +15,15 @@ public:
    CollectionFactory(CollectionSource* aoColSource);
    ~CollectionFactory();
 
-   bool CollectionExists(std::string aszCollectionName);
+   bool CollectionExists(std::string aszCollectionID);
    bool CollectionExists(const Location& aAddrColID);
-   TryGet<Collection> GetCollection(std::string aszCollectionName) const;
+   TryGet<Collection> GetCollection(std::string aszCollectionID) const;
    TryGet<Collection> GetCollection(const Location& aAddrColID) const;
+   std::string GetCollectionID(const std::string& aszCollectionName);
 
-   void SaveCollection(std::string aszCollectionName) const;
+   void SaveCollection(std::string aszCollectionID) const;
    std::string LoadCollectionFromFile(std::string aszColFile);
-   std::string CreateNewCollection(std::string aszColName, std::string aszParent = "");
+   std::string CreateNewCollection(std::string aszColName, std::string aszParentID = "");
 
    std::vector<std::string> GetLoadedCollections();
 

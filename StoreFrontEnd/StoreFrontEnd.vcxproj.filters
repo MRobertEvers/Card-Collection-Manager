@@ -22,6 +22,12 @@
     <Filter Include="Views\Overview\Components">
       <UniqueIdentifier>{0290169f-9ba2-4200-b4fc-253db1f52915}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Deckbox">
+      <UniqueIdentifier>{f37700cb-e82e-40ca-b01e-d99f94b16bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Deckbox\Components">
+      <UniqueIdentifier>{a3566811-f2d1-45a5-b14f-3f28a82b0af9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -38,6 +44,12 @@
     </ClCompile>
     <ClCompile Include="StoreFront.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vCollectionDeckBox.cpp">
+      <Filter>Views\Deckbox</Filter>
+    </ClCompile>
+    <ClCompile Include="vcCollectionDeckBoxItemList.cpp">
+      <Filter>Views\Deckbox\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +70,12 @@
     </ClInclude>
     <ClInclude Include="StoreFront.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vCollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
+    </ClInclude>
+    <ClInclude Include="vcCollectionDeckBoxItemList.h">
+      <Filter>Views\Deckbox\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

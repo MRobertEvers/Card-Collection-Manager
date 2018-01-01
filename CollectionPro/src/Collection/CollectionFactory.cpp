@@ -159,9 +159,9 @@ CollectionFactory::GetLoadedCollections()
 }
 
 bool 
-CollectionFactory::CollectionExists(string aszCollectionName)
+CollectionFactory::CollectionExists(string aszCollectionID)
 {
-   return CollectionExists(Location(aszCollectionName));
+   return CollectionExists(Location(aszCollectionID));
 }
 
 bool 
@@ -171,9 +171,9 @@ CollectionFactory::CollectionExists(const Location& aAddrColID)
 }
 
 TryGet<Collection> 
-CollectionFactory::GetCollection(string aszCollectionName) const
+CollectionFactory::GetCollection(string aszCollectionID) const
 {
-   return GetCollection(Location(aszCollectionName));
+   return GetCollection(Location(aszCollectionID));
 }
 
 TryGet<Collection> 
@@ -195,6 +195,24 @@ CollectionFactory::GetCollection(const Location& aAddrColID) const
    }
 
    return oRetVal;
+}
+
+string 
+CollectionFactory::GetCollectionID(const std::string& aszCollectionName)
+{
+   vector<shared_ptr<Collection>>::const_iterator iter_cols;
+   for ( iter_cols  = m_lstCollections.cbegin();
+         iter_cols != m_lstCollections.cend(); 
+         ++iter_cols)
+   {
+      Collection* curr_Col = iter_cols->get();
+      if ( aszCollectionName == curr_Col->GetName())
+      {
+         return curr_Col->GetIdentifier().GetFullAddress();
+      }
+   }
+
+   return Config::NotFoundString;
 }
 
 // Returns true if the action was performed.

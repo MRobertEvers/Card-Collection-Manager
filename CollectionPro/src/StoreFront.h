@@ -30,6 +30,7 @@ public:
    void SaveCollection(const string& aszCollectionName);
    void SubmitBulkChanges(const string& aszCollection, vector<string> alstChanges);
    string GetCollectionName(const string& aszCollectionID);
+   string GetCollectionID(const string& aszCollectionName);
    vector<string> GetCollectionMetaData(const string& aszCollection);
    vector<string> GetCollectionList(const string& aszCollection, int aiVisibility);
 

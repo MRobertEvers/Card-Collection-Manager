@@ -31,9 +31,17 @@ public:
    void OnQuit(wxCommandEvent& event);
    void OnAbout(wxCommandEvent& event);
 
+   void OnViewCollection(wxCommandEvent& event);
+
 private:
    wxDECLARE_EVENT_TABLE();
 
-   wxAuiManager m_UIMgr;
-   StoreFront* m_ptStoreFront;
+   wxPanel* m_CurrentPanel;
+
+   void buildMenus();
+
+   void viewCollectionsOverview();
+   void viewCollection(const wxString& aszColName);
+
+   void setView(wxPanel* awxNewPanel);
 };

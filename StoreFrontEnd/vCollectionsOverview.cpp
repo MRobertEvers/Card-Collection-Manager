@@ -68,3 +68,9 @@ vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
    // This event is handled.
    awxEvt.StopPropagation();
 }
+
+void 
+vCollectionsOverview::OnViewCollection(wxCommandEvent& awxEvt)
+{
+   
+}

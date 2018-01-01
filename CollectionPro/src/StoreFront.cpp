@@ -126,6 +126,12 @@ StoreFront::GetCollectionName(const string& aszCollectionID)
    }
 }
 
+string 
+StoreFront::GetCollectionID(const string& aszCollectionName)
+{
+   return m_ColFactory->GetCollectionID(aszCollectionName);
+}
+
 // Requires Collection ID
 vector<string> 
 StoreFront::GetCollectionMetaData(const string& aszCollection)
