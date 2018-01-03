@@ -8,6 +8,8 @@ public:
    vCollectionDeckBox(wxWindow* aptParent, wxWindowID aiWID, const wxString& aszColID);
    ~vCollectionDeckBox();
 
+   void ShowCollectionEditor();
+
 private:
    vcCollectionDeckBoxItemList* m_vcItemList;
    wxString m_wxszColID;

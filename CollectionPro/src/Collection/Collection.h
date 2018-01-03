@@ -13,66 +13,119 @@ class CollectionFactory;
 class Collection
 {
 public:
+   class Query 
+   {
+   public:
+      Query(bool Collapsed = false) { Default(Collapsed); }
+
+      void Default(bool Collapsed = false)
+      {
+         m_bCollapsed = Collapsed;
+         // MetaTags are include in hash calculation if not selected here.
+         m_htHash = CopyItem::HashType::Default;
+         m_mttMetaType = MetaTagType::Visible;
+         m_bIsShort = false;
+         m_bIncludeCount = true;
+         m_bUIDs = false;
+      }
+      void UIDs() { Default(true); m_bUIDs = true; }
+      Query& Short() { m_bIsShort = true; return *this; }
+      Query& IncludeCount() { m_bIncludeCount = true; }
+      Query& HashType(CopyItem::HashType hashType) { m_htHash = hashType; return *this; }
+      Query& HashAny() { m_htHash = CopyItem::HashType::Default; return *this; }
+      Query& HashIDs() { m_htHash = CopyItem::HashType::Ids; return *this; }
+      Query& HashMeta() { m_htHash = CopyItem::HashType::Meta; return *this; }
+      Query& SearchFor(const string& Search) { m_szSearch = Search; return *this; }
+      Query& IncludeMetaType(MetaTagType mtType) { m_mttMetaType = mtType; return *this; }
+      Query& AnyMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Any; return *this; }
+      Query& NoMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::None; return *this; }
+      Query& PublicMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Public; return *this; }
+      Query& IgnoredMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Ignored; return *this; }
+      Query& TrackingMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Tracking; return *this; }
+      Query& HiddenMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Hidden; return *this; }
+
+      bool GetIncludeCount() { return m_bIncludeCount; }
+      bool GetShort() { return m_bIsShort; }
+      string GetSearch() { return m_szSearch; }
+      bool GetCollapsed() { return m_bCollapsed; }
+      CopyItem::HashType GetHashType() { return m_htHash; }
+      MetaTagType GetMetaType() { return m_mttMetaType; }
+      bool GetUIDs() { return m_bUIDs; }
+
+   private:
+      bool m_bUIDs;
+      bool m_bIsShort;
+      string m_szSearch;
+      bool m_bCollapsed;
+      bool m_bIncludeCount;
+      CopyItem::HashType m_htHash;
+      MetaTagType m_mttMetaType;
+   };
+
    Collection(
-      std::string aszName,
+      string aszName,
       CollectionSource* aoSource,
-      std::string aszID = "");
+      string aszID = "");
    ~Collection();
 
-   std::string GetName();
+   string GetName();
    Location  GetIdentifier();
    unsigned int GetChildCount();
    void ChildAdded();
 
    void AddItem(
-      std::string aszName,
-      std::vector<Tag> alstAttrs = std::vector<Tag>(),
-      std::vector<Tag> alstMetaTags = std::vector<Tag>(),
+      string aszName,
+      vector<Tag> alstAttrs = vector<Tag>(),
+      vector<Tag> alstMetaTags = vector<Tag>(),
       bool abCloseTransaction = true);
 
    void AddItemFrom(
-      std::string aszName,
-      std::string aszUID,
+      string aszName,
+      string aszUID,
       const Location& aAddress,
       bool abCloseTransaction = true);
 
    void RemoveItem(
-      std::string aszName,
-      std::string aszUID,
+      string aszName,
+      string aszUID,
       bool abCloseTransaction = true);
 
    void ChangeItem(
-      std::string aszName,
-      std::string aszUID,
-      std::vector<Tag> alstIdChanges,
-      std::vector<Tag> alstMetaChanges,
+      string aszName,
+      string aszUID,
+      vector<Tag> alstIdChanges,
+      vector<Tag> alstMetaChanges,
       bool abCloseTransaction = true);
 
    void ReplaceItem(
-      std::string aszName,
-      std::string aszUID,
-      std::string aszNewName,
-      std::vector<Tag> alstIdChanges,
-      std::vector<Tag> alstMetaChanges,
+      string aszName,
+      string aszUID,
+      string aszNewName,
+      vector<Tag> alstIdChanges,
+      vector<Tag> alstMetaChanges,
       bool abCloseTransaction = true);
 
-   std::vector<std::string> GetMetaData();
+   vector<string> GetMetaData();
 
    void SaveCollection();
 
    bool InitializeCollection();
-   bool InitializeCollection(std::string aszFileName,
-      std::vector<std::string>& rlstInitializeLines);
+   bool InitializeCollection(string aszFileName,
+      vector<string>& rlstInitializeLines);
    void LoadCollection(
-      const std::string& aszFileName,
+      const string& aszFileName,
       CollectionFactory* aoFactory);
-   void LoadChanges(std::vector<std::string> aszLines);
+   void LoadChanges(vector<string> aszLines);
 
-   std::vector<std::string> GetCollectionList(
+   vector<string> QueryCollection( Query aiQueryParms );
+
+   vector<string> GetCollectionList(
       MetaTagType atagType = Visible,
       bool abCollapsed = true,
       CopyItem::HashType ahashType = CopyItem::HashType::Default);
-   std::vector<std::string> GetShortList();
+
+
+   vector<string> GetShortList();
 
    bool IsLoaded = false;
 
@@ -85,62 +138,62 @@ private:
    CollectionTracker* m_ptrCollectionTracker;
    TransactionManager* m_ptrTransactionManager;
 
-   std::vector<std::pair<std::string, Tag>> m_lstTaggedItems;
+   vector<pair<string, Tag>> m_lstTaggedItems;
 
-   std::vector<int> m_lstItemCacheIndexes;
-   std::vector<int> getCollection();
+   vector<int> m_lstItemCacheIndexes;
+   vector<int> getCollection();
 
    // These all locate by name and hash for a second 
    // time so we dont risk dangling references.
    CopyItem* addItem(
-      const std::string& aszName,
-      const std::vector<Tag>& alstAttrs,
-      const std::vector<Tag>& alstMetaTags);
+      const string& aszName,
+      const vector<Tag>& alstAttrs,
+      const vector<Tag>& alstMetaTags);
 
    void addItemFrom(
-      const std::string& aszName,
-      const std::string& aszUID,
+      const string& aszName,
+      const string& aszUID,
       const Identifier& aAddress);
 
    void removeItem(
-      const std::string& aszName,
-      const std::string& aszUID);
+      const string& aszName,
+      const string& aszUID);
 
    void changeItem(
-      const std::string& aszName,
-      const std::string& aszUID,
-      const std::vector<Tag>& alstChanges,
-      const std::vector<Tag>& alstMetaChanges);
+      const string& aszName,
+      const string& aszUID,
+      const vector<Tag>& alstChanges,
+      const vector<Tag>& alstMetaChanges);
 
    void replaceItem(
-      const std::string& aszName,
-      const std::string& aszUID,
-      const std::string& aszNewName,
-      const std::vector<Tag>& alstChanges,
-      const std::vector<Tag>& alstMetaChanges);
+      const string& aszName,
+      const string& aszUID,
+      const string& aszNewName,
+      const vector<Tag>& alstChanges,
+      const vector<Tag>& alstMetaChanges);
 
    void registerItem(int aiCacheIndex);
    void unregisterItem(int aiCacheIndex);
 
    void modifyItem(
       CopyItem* aptCopy,
-      const std::vector<Tag>& alstChanges,
-      const std::vector<Tag>& alstMetaChanges);
+      const vector<Tag>& alstChanges,
+      const vector<Tag>& alstMetaChanges);
 
    void loadMetaTagFile();
 
-   void loadOverheadFile(std::vector<std::string>& rlstUnprocessedLines);
-   bool loadOverheadLine(const std::string& aszLine);
-   void loadCollectionDataLine(const std::string& aszData);
+   void loadOverheadFile(vector<string>& rlstUnprocessedLines);
+   bool loadOverheadLine(const string& aszLine);
+   void loadCollectionDataLine(const string& aszData);
 
-   void loadInterfaceLine(const std::string& aszLine);
+   void loadInterfaceLine(const string& aszLine);
 
-   void loadAdditionLine(const std::string& aszLine);
-   void loadRemoveLine(const std::string& aszLine);
-   void loadDeltaLine(const std::string& aszLine);
+   void loadAdditionLine(const string& aszLine);
+   void loadRemoveLine(const string& aszLine);
+   void loadDeltaLine(const string& aszLine);
 
-   void expandAdditionLine(std::string& aszLine);
-   void collapseCardLine(std::string& aszLine);
+   void expandAdditionLine(string& aszLine);
+   void collapseCardLine(string& aszLine);
 
    void saveHistory();
    void saveMeta();

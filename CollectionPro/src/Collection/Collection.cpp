@@ -2,6 +2,7 @@
 
 #include <ctime>
 #include <iomanip>
+#include <algorithm>
 
 #include "../Support/ListHelper.h"
 #include "../Support/StringHelper.h"
@@ -309,6 +310,157 @@ Collection::LoadChanges(vector<string> lstLines) {
    }
 }
 
+vector<string> 
+Collection::QueryCollection(Query aiQueryParms)
+{
+   struct ItemData
+   {
+   public:
+      ItemData() {};
+      ItemData(const ItemData& other)
+      {
+         Name = other.Name;
+         Hash = other.Hash;
+         Count = other.Count;
+         Front = other.Front;
+         Item = other.Item;
+         Copy = other.Copy;
+         UIDs = vector<string>(other.UIDs);
+      }
+      string Name;
+      string Hash;
+      unsigned int Count = 1;
+      bool Front = true;
+      CollectionObject* Item;
+      CopyItem* Copy;
+      vector<string> UIDs;
+   };
+
+   // 1. Count Each item with the same hash if collapsed, otherwise, just add the item and continue.
+   // <hash, (card name, count)>
+   // Its multi because some hashes clash between cards.
+   // These are unused if this is not a collapsed search.
+   multimap<string, ItemData> mapSeenHashes;
+   map<string, ItemData> mapCardHashes;
+   for( auto iItem : getCollection() )
+   {
+      auto item = m_ptrCollectionSource->GetCardPrototype(iItem);
+      ItemData cardData;
+      cardData.Name = item->GetName();
+      cardData.Item = item.Value();
+
+      // 1. If we are only looking for certain card names, restrict here
+      // so we can save time by skipping this iteration.
+      if( aiQueryParms.GetSearch() != "" )
+      {
+         string szSearch = aiQueryParms.GetSearch();
+         transform(szSearch.begin(), szSearch.end(), szSearch.begin(), ::tolower);
+         string szName = cardData.Name;
+         transform(szName.begin(), szName.end(), szName.begin(), ::tolower);
+
+         auto iFindName = szName.find(szSearch);
+         cardData.Front = iFindName == 0;
+         if( iFindName == string::npos )
+         {
+            continue;
+         }
+      }
+
+      // 1. Count each occurence of an identical hash within a card if collapsing,
+      // otherwise add it.
+      mapCardHashes.clear();
+      auto lstCopies = item->FindCopies(GetIdentifier(), All);
+      for( auto copy : lstCopies )
+      {
+         // Look for copies that match.
+         cardData.Hash = copy->GetHash(aiQueryParms.GetHashType());
+         auto iter_Counted = mapCardHashes.find(cardData.Hash);
+         if( ( aiQueryParms.GetCollapsed() ) &&
+             ( iter_Counted != mapCardHashes.end() ) )
+         {
+            // If we are collapsing, and there is a match, count it. Otherwise, add card data.
+            iter_Counted->second.Count++; 
+            iter_Counted->second.UIDs.push_back(copy->GetUID());
+         }
+         else
+         {
+            cardData.Copy = copy.get();
+            iter_Counted->second.UIDs.push_back(copy->GetUID());
+            mapCardHashes.insert(make_pair(cardData.Hash, cardData));
+         }
+      }
+
+      mapSeenHashes.insert(mapCardHashes.begin(), mapCardHashes.end());
+   }
+
+   vector<string> lstFront;
+   vector<string> lstBack;
+   // 3. Create the list of strings, shorten them if necessary.
+   for( auto card : mapSeenHashes )
+   {
+      string szLine;
+      ItemData& cardData = card.second;
+
+      // Build the strings
+      if( aiQueryParms.GetIncludeCount() )
+      {
+         // ToCardLine does not include the count if its 0.
+         cardData.Count = 0;
+      }
+
+      // UIDs replaces the meta tags with UIDs.
+      vector<Tag> vecMeta;
+      if( aiQueryParms.GetUIDs() )
+      {
+         cardData.Count = 0;
+         for( auto& szUID : cardData.UIDs )
+         {
+            vecMeta.push_back(make_pair(CopyItem::GetUIDKey(),szUID));
+         }
+      }
+      else
+      {
+         vecMeta = cardData.Copy->GetMetaTags(aiQueryParms.GetMetaType());
+      }
+
+      szLine = CollectionObject::ToCardLine(
+         cardData.Copy->GetAddress(),
+         cardData.Name,
+         cardData.Copy->GetIdentifyingAttributes(),
+         vecMeta,
+         *this->m_ptrCollectionDetails->GetAddress(),
+         cardData.Count
+         );
+
+      if( aiQueryParms.GetShort() )
+      {
+         collapseCardLine(szLine);
+      }
+
+      if( cardData.Front )
+      {
+         lstFront.push_back(szLine);
+      }
+      else
+      {
+         lstBack.push_back(szLine);
+      }
+   }
+
+   vector<string> lstRetVal;
+   for( auto& szLine : lstFront )
+   {
+      lstRetVal.push_back(szLine);
+   }
+
+   for( auto& szLine : lstBack )
+   {
+      lstRetVal.push_back(szLine);
+   }
+
+   return lstRetVal;
+}
+
 vector<string>
 Collection::GetCollectionList( MetaTagType atagType,
                                bool abCollapsed,
@@ -366,7 +518,6 @@ Collection::GetCollectionList( MetaTagType atagType,
 
    return lstRetVal;
 }
-
 
 // Returns each item in this collection with a list of its UIDs.
 vector<string>
@@ -910,7 +1061,8 @@ Collection::expandAdditionLine(string& rszLine)
 
 // This will ignore any meta tags.
 void
-Collection::collapseCardLine(string& rszLine) {
+Collection::collapseCardLine(string& rszLine)
+{
    Config* config = Config::Instance();
    string szFirstKey = "";
    vector<Tag> vecPairedKeys;
@@ -980,8 +1132,8 @@ Collection::collapseCardLine(string& rszLine) {
       // Now collapse the values.
       string szShort = "x" + to_string(oParser.Count) + " " + oParser.Name;
       szShort += " ";
+      szShort += "[";
       for( auto szVal : vecImportantValues ) {
-         szShort += "[";
          szShort += szVal;
          szShort += ",";
       }

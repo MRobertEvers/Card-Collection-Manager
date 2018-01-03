@@ -108,3 +108,9 @@ MainFrame::setView(wxPanel* awxNewPanel)
    // Causes the children to calculate sizes.
    PostSizeEvent();
 }
+
+void
+MainFrame::appendMenuOptions(unsigned int aiMenuID, const wxString& aszName)
+{
+
+}

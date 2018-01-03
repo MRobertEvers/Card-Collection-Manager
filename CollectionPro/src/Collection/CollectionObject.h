@@ -119,8 +119,9 @@ public:
    static bool ParseTagString(const string& aszDetails, vector<Tag>& rlstTags);
 
    static string ToCardLine( const Identifier& aAddrParentID,
-                                  const string& aszName,
-                                  const vector<Tag>& alstAttrs = vector<Tag>(),
-                                  const vector<Tag>& alstMetaTags = vector<Tag>(),
-                                  const Identifier& aAddrCompareID = Location() );
+                             const string& aszName,
+                             const vector<Tag>& alstAttrs = vector<Tag>(),
+                             const vector<Tag>& alstMetaTags = vector<Tag>(),
+                             const Identifier& aAddrCompareID = Location(),
+                             const unsigned int aiCount = 0 );
 };                                                                                                                                                                                                                                                                                                                                

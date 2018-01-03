@@ -28,6 +28,18 @@
     <Filter Include="Views\Deckbox\Components">
       <UniqueIdentifier>{a3566811-f2d1-45a5-b14f-3f28a82b0af9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Interfaces">
+      <UniqueIdentifier>{de6c1d01-12f1-405e-bafd-e6d6fd204c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\CollectionEditor">
+      <UniqueIdentifier>{a875f7e0-2ffb-4be7-9be8-c3927affb148}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\CollectionEditor\Components">
+      <UniqueIdentifier>{0b709aad-aee9-4d6f-9839-47270f0228ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Template">
+      <UniqueIdentifier>{921bdce0-b8b2-4984-abc0-1dc54c078048}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -50,6 +62,21 @@
     </ClCompile>
     <ClCompile Include="vcCollectionDeckBoxItemList.cpp">
       <Filter>Views\Deckbox\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="viCollectionEditor.cpp">
+      <Filter>Views\Interfaces\CollectionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="vicListSelector.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewOptions.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="vicCollectionEditorList.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="vicCollectionEditorListItem.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +103,21 @@
     </ClInclude>
     <ClInclude Include="vcCollectionDeckBoxItemList.h">
       <Filter>Views\Deckbox\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="viCollectionEditor.h">
+      <Filter>Views\Interfaces\CollectionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="vicListSelector.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewOptions.h">
+      <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="vicCollectionEditorList.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vicCollectionEditorListItem.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -44,4 +44,6 @@ private:
    void viewCollection(const wxString& aszColName);
 
    void setView(wxPanel* awxNewPanel);
+
+   void appendMenuOptions(unsigned int aiMenuID, const wxString& aszName);
 };

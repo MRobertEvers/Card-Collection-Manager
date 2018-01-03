@@ -140,6 +140,11 @@
     <ClCompile Include="vCollectionsOverview.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="vcCollectionsMenuList.cpp" />
+    <ClCompile Include="vicCollectionEditorList.cpp" />
+    <ClCompile Include="vicCollectionEditorListItem.cpp" />
+    <ClCompile Include="vicListSelector.cpp" />
+    <ClCompile Include="viCollectionEditor.cpp" />
+    <ClCompile Include="ViewOptions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -150,6 +155,11 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="StorefrontConfig.h" />
     <ClInclude Include="vcCollectionsMenuList.h" />
+    <ClInclude Include="vicCollectionEditorList.h" />
+    <ClInclude Include="vicCollectionEditorListItem.h" />
+    <ClInclude Include="vicListSelector.h" />
+    <ClInclude Include="viCollectionEditor.h" />
+    <ClInclude Include="ViewOptions.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CollectionPro\CollectionPro.vcxproj">

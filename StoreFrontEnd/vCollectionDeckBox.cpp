@@ -1,6 +1,6 @@
 #include "vCollectionDeckBox.h"
 #include "vcCollectionDeckBoxItemList.h"
-
+#include "viCollectionEditor.h"
 
 vCollectionDeckBox::vCollectionDeckBox( wxWindow* aptParent, 
                                         wxWindowID aiWID,
@@ -13,11 +13,21 @@ vCollectionDeckBox::vCollectionDeckBox( wxWindow* aptParent,
    this->SetSizer(boxSizer);
 
    buildItemList();
+
+   ShowCollectionEditor();
 }
 
 
 vCollectionDeckBox::~vCollectionDeckBox()
 {
+}
+
+void 
+vCollectionDeckBox::ShowCollectionEditor()
+{
+   auto viColEd = new viCollectionEditor(this, 4, m_wxszColID);
+   this->GetSizer()->Add(viColEd, wxSizerFlags(1).Center().Shaped());
+
 }
 
 void 

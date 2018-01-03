@@ -117,8 +117,8 @@ CollectionObject::DeleteCopy(CopyItem* ociRemove)
 
 string 
 CollectionObject::CopyToString( CopyItem const* aptItem,
-                              const MetaTagType& aAccessType,
-                              const Identifier& aAddrCompareID ) const
+                                const MetaTagType& aAccessType,
+                                const Identifier& aAddrCompareID ) const
 {
    return ToCardLine( aptItem->GetAddress(), GetName(),
                       aptItem->GetIdentifyingAttributes(),
@@ -128,7 +128,7 @@ CollectionObject::CopyToString( CopyItem const* aptItem,
 
 TryGetCopy<shared_ptr<CopyItem>>
 CollectionObject::FindCopy( const string& aszUID, 
-                          FindType aiType  ) const
+                            FindType aiType  ) const
 {
    TryGetCopy<shared_ptr<CopyItem>> oRetval;
    bool match = false;
@@ -357,7 +357,7 @@ CollectionObject::setCopyPairAttrs( CopyItem* aptItem, const string& aszKey, int
 
 bool
 CollectionObject::ParseCardLine( const string& aszLine,
-                               PseudoIdentifier& rPIdentifier )
+                                 PseudoIdentifier& rPIdentifier )
 {
    StringInterface parser;
    string szName, szDetails, szMeta;
@@ -392,7 +392,9 @@ CollectionObject::ToCardLine( const Identifier& aAddrParentID,
                               const string& aszName,
                               const vector<Tag>& alstAttrs,
                               const vector<Tag>& alstMetaTags,
-                              const Identifier& aAddrCompareID ) {
+                              const Identifier& aAddrCompareID,
+                              const unsigned int aiCount)
+{
    StringInterface parser;
    Config* config = Config::Instance();
    string szAddressKey = CopyItem::GetAddressKey();
@@ -411,18 +413,29 @@ CollectionObject::ToCardLine( const Identifier& aAddrParentID,
 
    // Remove the parent from meta tags if there is one.
    // Otherwise, add the parent.
-   if( bExcludeParent ) {
-      if( iter_found != mapMetaTags.end() ) {
+   if( bExcludeParent )
+   {
+      if( iter_found != mapMetaTags.end() ) 
+      {
          mapMetaTags.erase(iter_found);
       }
    }
-   else if( iter_found == mapMetaTags.end() ) {
+   else if( iter_found == mapMetaTags.end() )
+   {
       // Add the parent if it wasn't already found in the metatags.
       auto pairParent = make_pair(szAddressKey, aAddrParentID.GetFullAddress());
       mapMetaTags.insert(pairParent);
    }
 
-   return parser.ToCardLine( aszName, alstAttrs,
-                             vector<Tag>(mapMetaTags.begin(), mapMetaTags.end()));
+   string szRetVal;
+   if( aiCount > 0 )
+   {
+      szRetVal += "x" + to_string(aiCount) + " ";
+   }
+
+   szRetVal += parser.ToCardLine( aszName, alstAttrs,
+                                  vector<Tag>(mapMetaTags.begin(), mapMetaTags.end()) );
+
+   return szRetVal;
 }
 

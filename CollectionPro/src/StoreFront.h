@@ -33,6 +33,7 @@ public:
    string GetCollectionID(const string& aszCollectionName);
    vector<string> GetCollectionMetaData(const string& aszCollection);
    vector<string> GetCollectionList(const string& aszCollection, int aiVisibility);
+   vector<string> GetAllCardsStartingWith(const string& aszColID, const Collection::Query& aszSearch);
 
    // Card Accessors
    //

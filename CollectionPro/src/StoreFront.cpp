@@ -169,6 +169,17 @@ StoreFront::GetCollectionList(const string& aszCollection, int aiVisibility)
    }
 }
 
+vector<string> 
+StoreFront::GetAllCardsStartingWith( const string& aszColID, 
+                                     const Collection::Query& aszSearch )
+{
+   if( m_ColFactory->CollectionExists(aszColID) )
+   {
+      return m_ColFactory->GetCollection(aszColID)->
+         QueryCollection(aszSearch);
+   }
+}
+
 void
 StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
                           const string& aszKey, const string& aszVal )
