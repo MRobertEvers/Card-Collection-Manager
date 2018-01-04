@@ -19,7 +19,7 @@ vicCollectionEditorList::AddItem(const wxString& aszItem)
 {
    vicCollectionEditorListItem* vicItem = 
       new vicCollectionEditorListItem(this, aszItem, "");
-   this->GetSizer()->Add(vicItem, wxSizerFlags(1).Expand());
+   this->GetSizer()->Add(vicItem, wxSizerFlags(0).Border(wxALL, 3));
    // Causes the children to calculate sizes.
    PostSizeEvent();
 }

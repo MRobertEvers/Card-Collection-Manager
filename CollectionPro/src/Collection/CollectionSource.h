@@ -65,6 +65,8 @@ public:
    //  Returns whether the source is loaded successfully.
    bool IsLoaded();
 
+   void CollapseCardLine(std::string& rszCard, bool abIncludeCount = true);
+
 private:
    bool m_bIsLoaded;
    vector<SourceObject> m_vecCardDataBuffer;

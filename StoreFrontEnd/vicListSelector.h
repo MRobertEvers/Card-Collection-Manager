@@ -3,10 +3,20 @@
 #include <wx/combobox.h>
 #include <string>
 #include <vector>
+#include "StoreFront.h"
 
 class vicListSelector : public wxPanel
 {
 public:
+   class Option
+   {
+   public:
+      std::string Display;
+
+      // It is expected that the metatags of the id are UIDs.
+      std::vector<std::pair<std::string, std::string>> UIDs;
+   };
+
    enum
    {
       AcceptButton = 0x0,
@@ -16,9 +26,13 @@ public:
    vicListSelector(wxWindow* aptParent, wxString aszButtonText, wxWindowID aiID = wxID_ANY);
    ~vicListSelector();
 
-   void SetOptions(const std::vector<std::string>& avecOptions);
+   void ResetOption();
+   void SetOptions(const std::vector<Option>& avecOptions);
    void SetText(wxString aszText);
-   void SetAutoComplete(wxString aszText);
+   void SetAutoComplete(const std::vector<Option>& avecOptions);
+   void ShowDropdown();
+   void DismissDropDown();
+   bool IsFocussed();
 
    wxString GetText();
 private:
@@ -28,6 +42,7 @@ private:
    wxString m_szButtonText;
 
    wxComboBox* m_wxComboBox;
+   vector<Option> m_vecOptions;
 
    void onComboBoxTextChanged(wxCommandEvent& awxEvt);
    void onAcceptButton(wxCommandEvent& awxEvt);

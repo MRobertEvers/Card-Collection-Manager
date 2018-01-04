@@ -1,5 +1,6 @@
 #include "vicListSelector.h"
 #include <wx/arrstr.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,7 +13,7 @@ vicListSelector::vicListSelector(wxWindow* aptParent, wxString aszButtonText, wx
    : wxPanel(aptParent, aiID), m_szButtonText(aszButtonText)
 {
    m_wxComboBox = new wxComboBox( this, ComboBox_Text, wxEmptyString, wxDefaultPosition,
-                                  wxDefaultSize, 0, NULL, wxCB_DROPDOWN );
+                                  wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
 
    wxButton* addButt = new wxButton( this, vicListSelector::AcceptButton,
                                      aszButtonText );
@@ -30,14 +31,22 @@ vicListSelector::~vicListSelector()
 
 }
 
-void
-vicListSelector::SetOptions(const std::vector<std::string>& avecOptions)
+void 
+vicListSelector::ResetOption()
 {
    m_wxComboBox->Clear();
-   for( auto szOption : avecOptions )
+}
+
+void
+vicListSelector::SetOptions(const vector<Option>& avecOptions)
+{
+   wxArrayString wxArStr;
+   m_vecOptions = avecOptions;
+   for( auto option : avecOptions )
    {
-      m_wxComboBox->Append(szOption);
+      wxArStr.Add(option.Display);
    }
+   m_wxComboBox->Append(wxArStr);
 }
 
 void 
@@ -47,12 +56,40 @@ vicListSelector::SetText(wxString aszText)
    m_wxComboBox->SetInsertionPointEnd();
 }
 
+// TODO: This Does not work.
 void 
-vicListSelector::SetAutoComplete(wxString aszText)
+vicListSelector::SetAutoComplete(const std::vector<Option>& avecOptions)
 {
    wxArrayString wxArStr;
-   wxArStr.Add(aszText);
+   m_vecOptions = avecOptions;
+   for( auto option : avecOptions )
+   {
+      wxArStr.Add(option.Display);
+   }
    m_wxComboBox->AutoComplete(wxArStr);
+}
+
+void 
+vicListSelector::ShowDropdown()
+{
+   auto szText = m_wxComboBox->GetValue();
+   m_wxComboBox->Freeze();
+   m_wxComboBox->Popup();
+   m_wxComboBox->Thaw();
+   m_wxComboBox->SetValue(szText);
+   m_wxComboBox->SetInsertionPointEnd();
+}
+
+void 
+vicListSelector::DismissDropDown()
+{
+   m_wxComboBox->Dismiss();
+}
+
+bool 
+vicListSelector::IsFocussed()
+{
+   return m_wxComboBox->HasFocus();
 }
 
 wxString

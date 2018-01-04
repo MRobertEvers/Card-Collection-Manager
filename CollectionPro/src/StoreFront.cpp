@@ -290,6 +290,14 @@ StoreFront::GetImportSourceFilePath()
    return Config::Instance()->GetImportSourceFile();
 }
 
+string 
+StoreFront::CollapseCardLine(const string& aszCard, bool abIncludeCount)
+{
+   string szCard = aszCard;
+   m_ColSource->CollapseCardLine(szCard, abIncludeCount);
+   return szCard;
+}
+
 void 
 StoreFront::SubmitBulkChanges( const string& aszCollection,
                                vector<string> alstChanges )

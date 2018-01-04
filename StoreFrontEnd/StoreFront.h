@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../CollectionPro/src/StoreFront.h"
+#include "../CollectionPro/src/StringInterface.h"
 
 class StoreFrontEnd
 {

@@ -4,7 +4,7 @@
 
 #include "Support\TypeDefs.h"
 
-class StringInterface
+class __declspec(dllexport) StringInterface
 {
 public:
    StringInterface();

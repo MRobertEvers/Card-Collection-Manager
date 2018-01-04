@@ -193,8 +193,12 @@ private:
    void loadDeltaLine(const string& aszLine);
 
    void expandAdditionLine(string& aszLine);
+
+   // TODO: Remove this function.. look in colsource...
+public:
    void collapseCardLine(string& aszLine);
 
+private:
    void saveHistory();
    void saveMeta();
    void saveOverhead();

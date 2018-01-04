@@ -21,7 +21,7 @@ void
 vicCollectionEditorListItem::buildItem()
 {
    wxStaticText* wxText = new wxStaticText(this, wxID_ANY, m_szLabel);
-   this->GetSizer()->Add(wxText, wxSizerFlags(1).Expand());
+   this->GetSizer()->Add(wxText, wxSizerFlags(1).Border(wxALL, 3));
 }
 
 

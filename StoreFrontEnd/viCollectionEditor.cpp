@@ -1,16 +1,23 @@
 #include "viCollectionEditor.h"
-#include "vicListSelector.h"
 #include "vicCollectionEditorList.h"
 #include "StoreFront.h"
+
+#include <chrono>
+
+#define TIMER_ID 5
+#define DROP_DELAY 300
 
 wxBEGIN_EVENT_TABLE(viCollectionEditor, wxPanel)
 EVT_TEXT(vicListSelector::ComboBox_Text, viCollectionEditor::onComboBoxTextChanged)
 EVT_BUTTON(vicListSelector::AcceptButton, viCollectionEditor::onComboBoxAccept)
+EVT_TIMER(TIMER_ID, viCollectionEditor::onDropDownDelay)
 wxEND_EVENT_TABLE()
 
 
 viCollectionEditor::viCollectionEditor(wxWindow* aptParent, wxWindowID aiWID, wxString aszColID)
-   : wxPanel(aptParent, aiWID), m_szCollectionID(aszColID), m_bHandleTextEvent(true)
+   : wxPanel(aptParent, aiWID), m_szCollectionID(aszColID),
+     m_bHandleTextEvent(true), m_ulTimeLastKeyStroke(0), m_timer(this, TIMER_ID),
+     m_bIsWaitingForDrop(false)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);
@@ -72,7 +79,9 @@ void
 viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
 {
    if( !m_bHandleTextEvent ) { return; }
+   m_ulTimeLastKeyStroke = getTime();
 
+   awxEvt.StopPropagation();
    wxString szEventDets = awxEvt.GetString();
    if( szEventDets.size() < 4 )
    {
@@ -84,12 +93,16 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
    {
       StoreFront* ptSF = StoreFrontEnd::Instance();
 
-      auto vecOptions = ptSF->GetAllCardsStartingWith( szEventDets.ToStdString() );
+      auto vecszOptions = ptSF->GetAllCardsStartingWith( szEventDets.ToStdString() );
+
+      auto vecOptions = parseCollectionItemsList(vecszOptions);
+
+      m_vAddSelector->ResetOption();
       m_vAddSelector->SetOptions(vecOptions);
       m_vAddSelector->SetText(szEventDets);
-      if( vecOptions.size() > 0 )
+      if( !m_bIsWaitingForDrop )
       {
-         m_vAddSelector->SetAutoComplete(vecOptions[0]);
+         m_timer.StartOnce(DROP_DELAY);
       }
    }
    else if( awxEvt.GetInt() == Selectors::Remove )
@@ -100,15 +113,18 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
       // Cache the collection first time, then restrict that list by string.
       Collection::Query query(true);
       query.SearchFor(szEventDets.ToStdString());
-      query.Short();
+      query.UIDs();
 
-      auto vecOptions = ptSF->GetAllCardsStartingWith( m_szCollectionID.ToStdString(),
-                                                       query );
+      auto vecszOptions = ptSF->GetAllCardsStartingWith( m_szCollectionID.ToStdString(),
+                                                         query );
+
+      auto vecOptions = parseCollectionItemsList(vecszOptions);
+      m_vRemSelector->ResetOption();
       m_vRemSelector->SetOptions(vecOptions);
-      m_vRemSelector->SetText(szEventDets);
-      if( vecOptions.size() > 0 )
+      m_vRemSelector->SetText(szEventDets);  
+      if( !m_bIsWaitingForDrop )
       {
-         m_vRemSelector->SetAutoComplete(vecOptions[0]);
+         m_timer.StartOnce(DROP_DELAY);
       }
    }
    m_bHandleTextEvent = true;
@@ -126,4 +142,68 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
    {
 
    }
+}
+
+// TODO: Change selection so we could theoretically just keep typing.
+void 
+viCollectionEditor::onDropDownDelay(wxTimerEvent& event)
+{
+   unsigned long ulTime = getTime();
+   unsigned long ulTimeSinceLastKeystroke = ulTime - m_ulTimeLastKeyStroke;
+   if( ulTimeSinceLastKeystroke > DROP_DELAY )
+   {
+      m_bHandleTextEvent = false;
+      if( m_vAddSelector->IsFocussed() )
+      {
+         m_vAddSelector->ShowDropdown();
+      }
+      else if( m_vRemSelector->IsFocussed() )
+      {
+         m_vRemSelector->ShowDropdown();
+      }
+      m_bIsWaitingForDrop = false;
+      m_bHandleTextEvent = true;
+   }
+   else
+   {
+      m_timer.StartOnce(DROP_DELAY - ulTimeSinceLastKeystroke);
+   }
+}
+
+unsigned long 
+viCollectionEditor::getTime()
+{
+   std::chrono::milliseconds ms =
+      std::chrono::duration_cast< std::chrono::milliseconds >(
+         std::chrono::system_clock::now().time_since_epoch()
+         );
+   return ms.count();
+}
+
+// TODO: This is ugly.
+vector<vicListSelector::Option>
+viCollectionEditor::parseCollectionItemsList(const vector<string>& avecItems)
+{
+   StoreFront* ptSF = StoreFrontEnd::Instance();
+   vector<vicListSelector::Option> vecRetVal;
+   for( auto& id : avecItems )
+   {
+      unsigned int Count;
+      string Name;
+      string DetailString;
+      string MetaString;
+      vector<pair<string,string>> Identifiers;
+      vector<pair<string,string>> MetaTags;
+
+      StringInterface parser;
+      parser.ParseCardLine(id, Count, Name, Identifiers, MetaTags);
+
+      vicListSelector::Option option;
+      option.Display = ptSF->CollapseCardLine(id, false);
+
+      option.UIDs = MetaTags;
+      vecRetVal.push_back(option);
+   }
+
+   return vecRetVal;
 }

@@ -385,7 +385,7 @@ Collection::QueryCollection(Query aiQueryParms)
          else
          {
             cardData.Copy = copy.get();
-            iter_Counted->second.UIDs.push_back(copy->GetUID());
+            cardData.UIDs.push_back(copy->GetUID());
             mapCardHashes.insert(make_pair(cardData.Hash, cardData));
          }
       }
@@ -1063,85 +1063,7 @@ Collection::expandAdditionLine(string& rszLine)
 void
 Collection::collapseCardLine(string& rszLine)
 {
-   Config* config = Config::Instance();
-   string szFirstKey = "";
-   vector<Tag> vecPairedKeys;
-   vector<string> vecIdentifyingKeys;
-   vector<TraitItem> vecPrototypeTraits;
-   CollectionObject::PseudoIdentifier oParser;
-
-   bool bGoodParse = CollectionObject::ParseCardLine(rszLine, oParser);
-   if( bGoodParse ) {
-      // Get which traits are paired from the config.
-      vecIdentifyingKeys = config->GetIdentifyingAttributes();
-      vecPairedKeys = config->GetPairedKeysList();
-
-      vector<string> vecKeepKeys;
-      vector<string> vecRemoveKeys;
-      for( auto keyPair : vecPairedKeys ) {
-         int iHaveFirst = ListHelper::List_Find(keyPair.first, vecKeepKeys);
-         int iIgnoreFirst = ListHelper::List_Find(keyPair.first, vecRemoveKeys);
-         int iHaveSecond = ListHelper::List_Find(keyPair.second, vecKeepKeys);
-         int iIgnoreSecond = ListHelper::List_Find(keyPair.second, vecRemoveKeys);
-
-         // We already have this key.
-         // Remove its pair.
-         if( iHaveFirst != -1 || iIgnoreFirst != -1 ) {
-            if( iIgnoreSecond == -1 && iHaveSecond == -1 ) {
-               vecRemoveKeys.push_back(keyPair.second);
-               continue;
-            }
-         }
-
-         if( iHaveSecond != -1 || iIgnoreSecond != -1 ) {
-            if( iIgnoreFirst == -1 && iHaveFirst == -1 ) {
-               vecKeepKeys.push_back(keyPair.first);
-               continue;
-            }
-         }
-
-         vecKeepKeys.push_back(keyPair.first);
-         vecRemoveKeys.push_back(keyPair.second);
-      }
-
-      for( auto szRemoveKey : vecRemoveKeys ) {
-         int iKeyInd = ListHelper::List_Find(szRemoveKey, vecIdentifyingKeys);
-         vecIdentifyingKeys.erase(vecIdentifyingKeys.begin() + iKeyInd);
-      }
-
-      // Now get the trait value for each of the remaining keys.
-      // A list of each key needed to identify a card.
-      // Use the first of a pair for paired keys.
-      vector<string> vecImportantValues;
-      auto oCard = m_ptrCollectionSource->GetCardPrototype(oParser.Name);
-      if( oCard.Good() ) {
-         for( auto keepKey : vecIdentifyingKeys ) {
-            string szFoundValue = "";
-            int iTagInd = ListHelper::List_Find(keepKey, oParser.Identifiers,
-               config->GetTagHelper(Key));
-            if( iTagInd != -1 ) {
-               szFoundValue = oParser.Identifiers[iTagInd].second;
-            }
-
-            if( szFoundValue != "" ) {
-               vecImportantValues.push_back(szFoundValue);
-            }
-         }
-      }
-
-      // Now collapse the values.
-      string szShort = "x" + to_string(oParser.Count) + " " + oParser.Name;
-      szShort += " ";
-      szShort += "[";
-      for( auto szVal : vecImportantValues ) {
-         szShort += szVal;
-         szShort += ",";
-      }
-      szShort = szShort.substr(0, szShort.size() - 1);
-      szShort += "]";
-
-      rszLine = szShort;
-   }
+  
 }
 
 void
