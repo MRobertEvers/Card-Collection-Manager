@@ -183,10 +183,13 @@ CollectionSource::GetCollection( Location aAddrColID,
    return lstRetVal;
 }
 
+// This is not case sensitive
 vector<string>
 CollectionSource::GetAllCardsStartingWith(string aszText) 
 {
    vector<string> lstCards;
+   string szSearch = aszText;
+   transform(szSearch.begin(), szSearch.end(), szSearch.begin(), ::tolower);
 
    bool bActiveCache = aszText.size() > 2;
 
@@ -202,17 +205,11 @@ CollectionSource::GetAllCardsStartingWith(string aszText)
       for( int i = iEnd - 1; i >= 0; i-- ) 
       {
          auto pairICache = m_lstSearchCache[i];
-         if( pairICache.first == aszText ) 
+         if( pairICache.first == szSearch )
          {
-            auto iter_Result = pairICache.second.begin();
-            for( ; iter_Result != pairICache.second.end(); ++iter_Result ) 
-            {
-               lstCards.push_back((iter_Result)->GetName(m_AllCharBuff));
-            }
-
-            return lstCards;
+            break;
          }
-         else if( aszText.substr(0, pairICache.first.size()) == pairICache.first )
+         else if( szSearch.substr(0, pairICache.first.size()) == pairICache.first )
          {
             break;
          }
@@ -245,7 +242,7 @@ CollectionSource::GetAllCardsStartingWith(string aszText)
       string szCard = iter_Cards->GetName(m_AllCharBuff);
       transform(szCard.begin(), szCard.end(), szCard.begin(), ::tolower);
       size_t iFindIndex = 0;
-      iFindIndex = szCard.find(aszText);
+      iFindIndex = szCard.find(szSearch);
       if( iFindIndex != string::npos ) 
       {
          if( iFindIndex == 0 ) 
@@ -275,7 +272,7 @@ CollectionSource::GetAllCardsStartingWith(string aszText)
 
    if( bActiveCache ) 
    {
-      m_lstSearchCache.push_back(make_pair(aszText, lstCache));
+      m_lstSearchCache.push_back(make_pair(szSearch, lstCache));
    }
 
    return lstCards;

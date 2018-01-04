@@ -5,14 +5,15 @@
 using namespace std;
 
 wxBEGIN_EVENT_TABLE(vicListSelector, wxPanel)
-EVT_TEXT(ComboBox_Text, vicListSelector::onComboBoxTextChanged)
+EVT_TEXT(ComboBox, vicListSelector::onComboBoxTextChanged)
 EVT_BUTTON(AcceptButton, vicListSelector::onAcceptButton)
+EVT_COMBOBOX(ComboBox, vicListSelector::onSelectionMade)
 wxEND_EVENT_TABLE()
 
 vicListSelector::vicListSelector(wxWindow* aptParent, wxString aszButtonText, wxWindowID aiID)
    : wxPanel(aptParent, aiID), m_szButtonText(aszButtonText)
 {
-   m_wxComboBox = new wxComboBox( this, ComboBox_Text, wxEmptyString, wxDefaultPosition,
+   m_wxComboBox = new wxComboBox( this, ComboBox, wxEmptyString, wxDefaultPosition,
                                   wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
 
    wxButton* addButt = new wxButton( this, vicListSelector::AcceptButton,
@@ -75,9 +76,9 @@ vicListSelector::ShowDropdown()
    auto szText = m_wxComboBox->GetValue();
    m_wxComboBox->Freeze();
    m_wxComboBox->Popup();
-   m_wxComboBox->Thaw();
    m_wxComboBox->SetValue(szText);
    m_wxComboBox->SetInsertionPointEnd();
+   m_wxComboBox->Thaw();
 }
 
 void 
@@ -101,7 +102,16 @@ vicListSelector::GetText()
 void
 vicListSelector::onComboBoxTextChanged(wxCommandEvent& awxEvt)
 {
-   awxEvt.SetString(m_wxComboBox->GetValue());
+   // For some reason, when an option in the combobox is selected via mouse,
+   // the event fires twice. Once with the option, and then once with blank text...
+   auto szSend = m_wxComboBox->GetValue();
+   if( szSend.size() == 0 )
+   {
+      awxEvt.StopPropagation();
+      return;
+   }
+
+   awxEvt.SetString(szSend);
    awxEvt.SetInt(GetId());
    awxEvt.Skip();
 }
@@ -110,5 +120,11 @@ void
 vicListSelector::onAcceptButton(wxCommandEvent& awxEvt)
 {
    awxEvt.SetInt(GetId());
+   awxEvt.Skip();
+}
+
+void 
+vicListSelector::onSelectionMade(wxCommandEvent& awxEvt)
+{
    awxEvt.Skip();
 }

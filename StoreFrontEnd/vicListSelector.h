@@ -20,7 +20,7 @@ public:
    enum
    {
       AcceptButton = 0x0,
-      ComboBox_Text = 0xAF
+      ComboBox = 0xAF
    };
 
    vicListSelector(wxWindow* aptParent, wxString aszButtonText, wxWindowID aiID = wxID_ANY);
@@ -46,5 +46,6 @@ private:
 
    void onComboBoxTextChanged(wxCommandEvent& awxEvt);
    void onAcceptButton(wxCommandEvent& awxEvt);
+   void onSelectionMade(wxCommandEvent& awxEvt);
 };
 

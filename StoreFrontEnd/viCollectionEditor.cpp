@@ -5,19 +5,20 @@
 #include <chrono>
 
 #define TIMER_ID 5
-#define DROP_DELAY 300
+#define DROP_DELAY 370
 
 wxBEGIN_EVENT_TABLE(viCollectionEditor, wxPanel)
-EVT_TEXT(vicListSelector::ComboBox_Text, viCollectionEditor::onComboBoxTextChanged)
+EVT_TEXT(vicListSelector::ComboBox, viCollectionEditor::onComboBoxTextChanged)
 EVT_BUTTON(vicListSelector::AcceptButton, viCollectionEditor::onComboBoxAccept)
 EVT_TIMER(TIMER_ID, viCollectionEditor::onDropDownDelay)
+EVT_COMBOBOX(vicListSelector::ComboBox, viCollectionEditor::onComboBoxSelection)
 wxEND_EVENT_TABLE()
 
 
 viCollectionEditor::viCollectionEditor(wxWindow* aptParent, wxWindowID aiWID, wxString aszColID)
    : wxPanel(aptParent, aiWID), m_szCollectionID(aszColID),
      m_bHandleTextEvent(true), m_ulTimeLastKeyStroke(0), m_timer(this, TIMER_ID),
-     m_bIsWaitingForDrop(false)
+     m_bIsWaitingForDrop(false), m_bIsSelectionFlag(false)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);
@@ -78,11 +79,16 @@ viCollectionEditor::buildButtons()
 void
 viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
 {
-   if( !m_bHandleTextEvent ) { return; }
-   m_ulTimeLastKeyStroke = getTime();
+   if( !m_bHandleTextEvent || m_bIsSelectionFlag ) 
+   {
+      m_bIsSelectionFlag = false;
+      return;
+   }
 
+   m_ulTimeLastKeyStroke = getTime();
    awxEvt.StopPropagation();
    wxString szEventDets = awxEvt.GetString();
+
    if( szEventDets.size() < 4 )
    {
       return;
@@ -136,7 +142,7 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
    if( awxEvt.GetInt() == Selectors::Add )
    {
       // TODO: Construct the label and the command here. or gather it.
-      m_vListView->AddItem(m_vAddSelector->GetText());
+      //m_vListView->AddItem(m_vAddSelector->GetText());
    }
    else if( awxEvt.GetInt() == Selectors::Remove )
    {
@@ -144,7 +150,12 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
    }
 }
 
-// TODO: Change selection so we could theoretically just keep typing.
+void 
+viCollectionEditor::onComboBoxSelection(wxCommandEvent& awxEvt)
+{
+   m_bHandleTextEvent = false;
+}
+
 void 
 viCollectionEditor::onDropDownDelay(wxTimerEvent& event)
 {

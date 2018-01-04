@@ -35,6 +35,7 @@ private:
    vicListSelector* m_vRemSelector;
    vicCollectionEditorList* m_vListView;
    bool m_bHandleTextEvent;
+   bool m_bIsSelectionFlag;
    bool m_bIsWaitingForDrop;
    unsigned long m_ulTimeLastKeyStroke;
 
@@ -44,6 +45,7 @@ private:
 
    void onComboBoxTextChanged(wxCommandEvent& awxEvt);
    void onComboBoxAccept(wxCommandEvent& awxEvt);
+   void onComboBoxSelection(wxCommandEvent& awxEvt);
    void onDropDownDelay(wxTimerEvent& event);
 
    unsigned long getTime();
