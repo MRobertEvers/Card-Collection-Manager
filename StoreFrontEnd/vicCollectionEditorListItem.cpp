@@ -1,6 +1,6 @@
 #include "vicCollectionEditorListItem.h"
 #include <wx/stattext.h>
-
+#include <wx/colour.h>
 
 vicCollectionEditorListItem::vicCollectionEditorListItem( wxWindow* aptParent,
                                                           const wxString& aszLabel, 
@@ -9,6 +9,8 @@ vicCollectionEditorListItem::vicCollectionEditorListItem( wxWindow* aptParent,
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    this->SetSizer(boxSizer);
+
+   SetBackgroundColour(*wxGREEN);
    buildItem();
 }
 

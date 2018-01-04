@@ -3,10 +3,12 @@
 
 
 vicCollectionEditorList::vicCollectionEditorList(wxWindow* aptParent)
-   : wxPanel(aptParent)
+   : wxScrolledWindow(aptParent)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);
+   this->FitInside(); // ask the sizer about the needed size
+   this->SetScrollRate(5, 5);
 }
 
 
@@ -19,7 +21,7 @@ vicCollectionEditorList::AddItem(const wxString& aszItem)
 {
    vicCollectionEditorListItem* vicItem = 
       new vicCollectionEditorListItem(this, aszItem, "");
-   this->GetSizer()->Add(vicItem, wxSizerFlags(0).Border(wxALL, 3));
+   this->GetSizer()->Add(vicItem, wxSizerFlags(0).Border(wxALL, 0));
    // Causes the children to calculate sizes.
    PostSizeEvent();
 }

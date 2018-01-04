@@ -142,7 +142,7 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
    if( awxEvt.GetInt() == Selectors::Add )
    {
       // TODO: Construct the label and the command here. or gather it.
-      //m_vListView->AddItem(m_vAddSelector->GetText());
+      m_vListView->AddItem(m_vAddSelector->GetText());
    }
    else if( awxEvt.GetInt() == Selectors::Remove )
    {
