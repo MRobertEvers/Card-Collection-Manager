@@ -18,5 +18,14 @@ public:
 private:
    wxDECLARE_EVENT_TABLE();
    void buildPMCounter();
+
+   wxTextCtrl* m_vTextCtrl;
+   int m_iMin;
+   int m_iMax;
+   int m_iVal;
+
+   void onUpButton(wxCommandEvent& awxEvt);
+   void onDownButton(wxCommandEvent& awxEvt);
+   void updateText();
 };
 

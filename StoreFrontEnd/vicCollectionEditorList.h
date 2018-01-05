@@ -12,5 +12,9 @@ public:
    void AddItem(const wxString& aszItem);
    std::vector<wxString> GetCommandList();
    
+private:
+   wxDECLARE_EVENT_TABLE();
+   int m_iItemCounts;
+   void onCancelItem(wxCommandEvent& awxEvt);
 };
 
