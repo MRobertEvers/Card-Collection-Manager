@@ -38,9 +38,6 @@ public:
 private:
    wxDECLARE_EVENT_TABLE();
 
-   wxString m_szBoxText;
-   wxString m_szButtonText;
-
    wxComboBox* m_wxComboBox;
    vector<Option> m_vecOptions;
 

@@ -11,7 +11,7 @@ EVT_COMBOBOX(ComboBox, vicListSelector::onSelectionMade)
 wxEND_EVENT_TABLE()
 
 vicListSelector::vicListSelector(wxWindow* aptParent, wxString aszButtonText, wxWindowID aiID)
-   : wxPanel(aptParent, aiID), m_szButtonText(aszButtonText)
+   : wxPanel(aptParent, aiID)
 {
    m_wxComboBox = new wxComboBox( this, ComboBox, wxEmptyString, wxDefaultPosition,
                                   wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
