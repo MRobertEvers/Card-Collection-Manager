@@ -140,6 +140,7 @@
     <ClCompile Include="vCollectionsOverview.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="vcCollectionsMenuList.cpp" />
+    <ClCompile Include="vicCollectionEditListItemOption.cpp" />
     <ClCompile Include="vicCollectionEditorList.cpp" />
     <ClCompile Include="vicCollectionEditorListItem.cpp" />
     <ClCompile Include="vicCollectionEditorListItemPlusMinusCounter.cpp" />
@@ -156,6 +157,8 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="StorefrontConfig.h" />
     <ClInclude Include="vcCollectionsMenuList.h" />
+    <ClInclude Include="CELIOption.h" />
+    <ClInclude Include="vicCollectionEditListItemOption.h" />
     <ClInclude Include="vicCollectionEditorList.h" />
     <ClInclude Include="vicCollectionEditorListItem.h" />
     <ClInclude Include="vicCollectionEditorListItemPlusMinusCounter.h" />

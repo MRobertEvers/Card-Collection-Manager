@@ -24,10 +24,10 @@ vicCollectionEditorList::~vicCollectionEditorList()
 }
 
 void 
-vicCollectionEditorList::AddItem(const wxString& aszItem)
+vicCollectionEditorList::AddItem(CELIOption aItem, CELIOption aRemove)
 {
    vicCollectionEditorListItem* vicItem = 
-      new vicCollectionEditorListItem(this, m_iItemCounts++, aszItem, "");
+      new vicCollectionEditorListItem(this, m_iItemCounts++, aItem, aRemove);
    
    this->GetSizer()->Add(vicItem, wxSizerFlags(0).Expand().Border(wxALL, 0));
    // Causes the children to calculate sizes.

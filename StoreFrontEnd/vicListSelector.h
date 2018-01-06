@@ -1,22 +1,12 @@
 #pragma once
 #include "wx/wxprec.h"
 #include <wx/combobox.h>
-#include <string>
-#include <vector>
 #include "StoreFront.h"
+#include "CELIOption.h"
 
 class vicListSelector : public wxPanel
 {
 public:
-   class Option
-   {
-   public:
-      std::string Display;
-
-      // It is expected that the metatags of the id are UIDs.
-      std::vector<std::pair<std::string, std::string>> UIDs;
-   };
-
    enum
    {
       AcceptButton = 0x0,
@@ -27,19 +17,21 @@ public:
    ~vicListSelector();
 
    void ResetOption();
-   void SetOptions(const std::vector<Option>& avecOptions);
+   void SetOptions(const std::vector<CELIOption>& avecOptions);
    void SetText(wxString aszText);
-   void SetAutoComplete(const std::vector<Option>& avecOptions);
+   void SetAutoComplete(const std::vector<CELIOption>& avecOptions);
    void ShowDropdown();
    void DismissDropDown();
    bool IsFocussed();
+   CELIOption GetSelection();
 
    wxString GetText();
 private:
    wxDECLARE_EVENT_TABLE();
 
    wxComboBox* m_wxComboBox;
-   vector<Option> m_vecOptions;
+   vector<CELIOption> m_vecOptions;
+   CELIOption m_oSelection;
 
    void onComboBoxTextChanged(wxCommandEvent& awxEvt);
    void onAcceptButton(wxCommandEvent& awxEvt);

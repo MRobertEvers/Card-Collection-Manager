@@ -185,13 +185,13 @@ CollectionSource::GetCollection( Location aAddrColID,
 
 // This is not case sensitive
 vector<string>
-CollectionSource::GetAllCardsStartingWith(string aszText) 
+CollectionSource::GetAllCardsStartingWith(const Query& aQuery)
 {
    vector<string> lstCards;
-   string szSearch = aszText;
+   string szSearch = aQuery.GetSearch();
    transform(szSearch.begin(), szSearch.end(), szSearch.begin(), ::tolower);
 
-   bool bActiveCache = aszText.size() > 2;
+   bool bActiveCache = szSearch.size() > 2;
 
    if( !bActiveCache ) 
    {
@@ -245,13 +245,32 @@ CollectionSource::GetAllCardsStartingWith(string aszText)
       iFindIndex = szCard.find(szSearch);
       if( iFindIndex != string::npos ) 
       {
+         auto szStore = iter_Cards->GetName(m_AllCharBuff);
+         vector<Tag> vecMeta;
+         if( aQuery.GetUIDs() )
+         {
+            auto mapSets = iter_Cards->GetIDAttrRestrictions(m_AllCharBuff);
+
+            // TODO: This should not be a literal string.
+            auto iter_Set = mapSets.find("set");
+            if( iter_Set != mapSets.end() )
+            {
+               for( auto szOpt : iter_Set->second )
+               {
+                  vecMeta.push_back(make_pair("set", szOpt));
+               }
+            }
+         }
+
+         szStore = CollectionObject::ToCardLine( Address(), szStore, 
+                                                 vector<Tag>(), vecMeta );
          if( iFindIndex == 0 ) 
          {
-            lstStartCards.push_back(iter_Cards->GetName(m_AllCharBuff));
+            lstStartCards.push_back(szStore);
          }
          else 
          {
-            lstOthers.push_back(iter_Cards->GetName(m_AllCharBuff));
+            lstOthers.push_back(szStore);
          }
 
          if( bActiveCache ) 

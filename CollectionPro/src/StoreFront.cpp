@@ -171,7 +171,7 @@ StoreFront::GetCollectionList(const string& aszCollection, int aiVisibility)
 
 vector<string> 
 StoreFront::GetAllCardsStartingWith( const string& aszColID, 
-                                     const Collection::Query& aszSearch )
+                                     const Query& aszSearch )
 {
    if( m_ColFactory->CollectionExists(aszColID) )
    {
@@ -261,7 +261,7 @@ StoreFront::GetCardPrototype(const string& aszCardName)
 }
 
 vector<string>
-StoreFront::GetAllCardsStartingWith(const string& aszSearch)
+StoreFront::GetAllCardsStartingWith(const Query& aszSearch)
 {
    return m_ColSource->GetAllCardsStartingWith(aszSearch);
 }

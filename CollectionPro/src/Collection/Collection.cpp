@@ -902,11 +902,12 @@ void Collection::loadAdditionLine(const string& aszLine) {
    int iFoundAddress = ListHelper::List_Find(string("Parent"),
                                              sudoItem.MetaTags,
                                              Config::Instance()->GetTagHelper());
-   if( iFoundAddress != -1 ) {
+   if( iFoundAddress != -1 ) 
+   {
       aParentAddress = Address(sudoItem.MetaTags.at(iFoundAddress).second);
-      int iFoundHash = ListHelper::List_Find(string(Config::HashKey),
-         sudoItem.MetaTags,
-         Config::Instance()->GetTagHelper());
+      int iFoundHash = ListHelper::List_Find( string(Config::HashKey),
+                                              sudoItem.MetaTags,
+                                              Config::Instance()->GetTagHelper() );
       szID = sudoItem.MetaTags.at(iFoundHash).second;
       bThisIsParent = !(aParentAddress == GetIdentifier());
    }
@@ -915,17 +916,19 @@ void Collection::loadAdditionLine(const string& aszLine) {
    if( !bThisIsParent && // This is not the parent
       szID != "" )       // and the id was specified.
    {
-      for( size_t i = 0; i < sudoItem.Count; i++ ) {
+      for( size_t i = 0; i < sudoItem.Count; i++ )
+      {
          //  AddItemFrom(sudoItem.Name, szID, aParentAddress);
       }
    }
    // If the parent was not specified, or this was designated the parent
    // without an ID, then add it as a new card.
-   else {
-      for( size_t i = 0; i < sudoItem.Count; i++ ) {
+   else
+   {
+      for( size_t i = 0; i < sudoItem.Count; i++ )
+      {
          AddItem(sudoItem.Name, sudoItem.Identifiers, sudoItem.MetaTags);
       }
-
    }
 }
 

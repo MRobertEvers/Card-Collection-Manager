@@ -50,7 +50,7 @@ private:
 
    unsigned long getTime();
 
-   std::vector<vicListSelector::Option>
+   std::vector<CELIOption>
       parseCollectionItemsList(const std::vector<std::string>& avecItems);
 
    const char* ADD_BUTTON_TEXT = "Add";

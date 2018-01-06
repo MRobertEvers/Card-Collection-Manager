@@ -98,8 +98,11 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
    if( awxEvt.GetInt() == Selectors::Add )
    {
       StoreFront* ptSF = StoreFrontEnd::Instance();
+      Query query;
+      query.SearchFor(szEventDets.ToStdString());
+      query.UIDs();
 
-      auto vecszOptions = ptSF->GetAllCardsStartingWith( szEventDets.ToStdString() );
+      auto vecszOptions = ptSF->GetAllCardsStartingWith(query);
 
       auto vecOptions = parseCollectionItemsList(vecszOptions);
 
@@ -117,7 +120,7 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
 
       // TODO: Optimize this search.
       // Cache the collection first time, then restrict that list by string.
-      Collection::Query query(true);
+      Query query(true);
       query.SearchFor(szEventDets.ToStdString());
       query.UIDs();
 
@@ -142,18 +145,39 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
    if( awxEvt.GetInt() == Selectors::Add )
    {
       // TODO: Construct the label and the command here. or gather it.
-      m_vListView->AddItem(m_vAddSelector->GetText());
+      //m_vListView->AddItem(m_vAddSelector->GetText());
+      auto oSelectionAdd = m_vAddSelector->GetSelection();
+      if( oSelectionAdd.Display != "" )
+      {
+         m_vListView->AddItem(oSelectionAdd);
+      }
    }
    else if( awxEvt.GetInt() == Selectors::Remove )
    {
-
+      auto oSelectionRemove = m_vRemSelector->GetSelection();
+      auto oSelectionAdd = m_vAddSelector->GetSelection();
+      if( oSelectionRemove.Display != "" )
+      {
+         // Check which UID is selected.
+         if( oSelectionAdd.Display != "" )
+         {
+            // Create replacement cmd string.
+            m_vListView->AddItem(oSelectionAdd, oSelectionRemove);
+            m_vAddSelector->SetText("");
+         }
+         else
+         {
+            // Create removal cmd string.
+            m_vListView->AddItem(CELIOption(), oSelectionRemove);
+         }
+      }
    }
 }
 
 void 
 viCollectionEditor::onComboBoxSelection(wxCommandEvent& awxEvt)
 {
-   m_bHandleTextEvent = false;
+   m_bIsSelectionFlag = true;
 }
 
 void 
@@ -192,11 +216,12 @@ viCollectionEditor::getTime()
 }
 
 // TODO: This is ugly.
-vector<vicListSelector::Option>
+// Expects LongName { options }
+vector<CELIOption>
 viCollectionEditor::parseCollectionItemsList(const vector<string>& avecItems)
 {
    StoreFront* ptSF = StoreFrontEnd::Instance();
-   vector<vicListSelector::Option> vecRetVal;
+   vector<CELIOption> vecRetVal;
    for( auto& id : avecItems )
    {
       unsigned int Count;
@@ -209,10 +234,10 @@ viCollectionEditor::parseCollectionItemsList(const vector<string>& avecItems)
       StringInterface parser;
       parser.ParseCardLine(id, Count, Name, Identifiers, MetaTags);
 
-      vicListSelector::Option option;
+      CELIOption option;
       option.Display = ptSF->CollapseCardLine(id, false);
 
-      option.UIDs = MetaTags;
+      option.IDs = MetaTags;
       vecRetVal.push_back(option);
    }
 

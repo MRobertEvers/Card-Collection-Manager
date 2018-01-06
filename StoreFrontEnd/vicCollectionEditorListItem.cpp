@@ -8,16 +8,27 @@ wxEND_EVENT_TABLE()
 
 vicCollectionEditorListItem::vicCollectionEditorListItem( wxWindow* aptParent,
                                                           wxWindowID aiID,
-                                                          const wxString& aszLabel, 
-                                                          const wxString& aszCmd )
+                                                          CELIOption aOption,
+                                                          CELIOption aOptionTwo )
    : wxPanel(aptParent, aiID, wxDefaultPosition, wxDefaultSize, wxBORDER | wxTAB_TRAVERSAL),
-     m_szLabel(aszLabel), m_szCmd(aszCmd)
+     m_oOption(aOption), m_oOptionTwo(aOptionTwo)
 {
    wxFlexGridSizer* fgridSizer = new wxFlexGridSizer(0, 3, 0, 0);
    fgridSizer->AddGrowableCol(0);
    fgridSizer->SetFlexibleDirection(wxHORIZONTAL);
    fgridSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
    this->SetSizer(fgridSizer);
+
+   // Option two is always displayed first.
+   // If there is no option two, then option one is displayed.
+   // If there is an option two, it is always a removal indicator.
+   m_bOptionSwitched = m_oOptionTwo.Display != "";
+   if( m_bOptionSwitched )
+   {
+      auto tempOption = m_oOption;
+      m_oOption = m_oOptionTwo;
+      m_oOptionTwo = tempOption;
+   }
 
    buildItem();
 }
@@ -30,9 +41,9 @@ vicCollectionEditorListItem::~vicCollectionEditorListItem()
 void 
 vicCollectionEditorListItem::buildItem()
 {
-   wxStaticText* wxText = new wxStaticText( this, wxID_ANY, m_szLabel,
-                                            wxDefaultPosition, wxDefaultSize );
-   this->GetSizer()->Add(wxText, wxSizerFlags(0).CenterVertical().Border(wxALL, 2));
+   m_vOption = new
+      vicCollectionEditorListItemOption( this, m_oOption );
+   this->GetSizer()->Add(m_vOption, wxSizerFlags(0).Expand());
 
    m_vPMCounter = new
       vicCollectionEditorListItemPlusMinusCounter(this, 1, 0, 14);
@@ -41,19 +52,27 @@ vicCollectionEditorListItem::buildItem()
    wxButton* deleteButt = new wxButton( this, DeleteButton, "X",
                                         wxDefaultPosition, wxSize(30, 30));
    this->GetSizer()->Add(deleteButt, wxSizerFlags(0));
+
+   // This is added last so it will go onto the second row.
+   if( m_oOptionTwo.Display != "" )
+   {
+      m_vOptionTwo = new
+         vicCollectionEditorListItemOption(this, m_oOptionTwo);
+      this->GetSizer()->Add(m_vOptionTwo, wxSizerFlags(0).Expand());
+   }
 }
 
 
 wxString 
 vicCollectionEditorListItem::GetLabel()
 {
-   return m_szLabel;
+   return m_oOption.Display;
 }
 
 wxString 
 vicCollectionEditorListItem::GetCmd()
 {
-   return m_szCmd;
+   return "";
 }
 
 void 

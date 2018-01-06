@@ -142,6 +142,7 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClInclude Include="src\Collection\CollectionTracker.h" />
     <ClInclude Include="src\Collection\CopyItem.h" />
     <ClInclude Include="src\Collection\MetaTag.h" />
+    <ClInclude Include="src\Collection\Query.h" />
     <ClInclude Include="src\Collection\RemoveAction.h" />
     <ClInclude Include="src\Collection\ReplaceAction.h" />
     <ClInclude Include="src\Collection\SourceObject.h" />

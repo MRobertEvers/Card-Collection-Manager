@@ -81,6 +81,9 @@
     <ClCompile Include="vicCollectionEditorListItemPlusMinusCounter.cpp">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
     </ClCompile>
+    <ClCompile Include="vicCollectionEditListItemOption.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -123,6 +126,12 @@
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
     </ClInclude>
     <ClInclude Include="vicCollectionEditorListItemPlusMinusCounter.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CELIOption.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vicCollectionEditListItemOption.h">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
     </ClInclude>
   </ItemGroup>

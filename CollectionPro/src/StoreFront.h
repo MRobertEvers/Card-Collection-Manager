@@ -2,6 +2,7 @@
 
 #include "../src/Collection/CollectionSource.h"
 #include "../src/Collection/CollectionFactory.h"
+#include "../src/Collection/Query.h"
 
 using namespace std;
 
@@ -33,7 +34,7 @@ public:
    string GetCollectionID(const string& aszCollectionName);
    vector<string> GetCollectionMetaData(const string& aszCollection);
    vector<string> GetCollectionList(const string& aszCollection, int aiVisibility);
-   vector<string> GetAllCardsStartingWith(const string& aszColID, const Collection::Query& aszSearch);
+   vector<string> GetAllCardsStartingWith(const string& aszColID, const Query& aszSearch);
 
    // Card Accessors
    //
@@ -44,7 +45,7 @@ public:
 
    // Source Accessors
    //
-   vector<string> GetAllCardsStartingWith(const string& aszSearch);
+   vector<string> GetAllCardsStartingWith(const Query& aszSearch);
    string GetCardPrototype(const string& aszCardName);
    void ImportCollectionSource();
 

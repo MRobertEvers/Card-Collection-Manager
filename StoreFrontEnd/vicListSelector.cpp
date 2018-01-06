@@ -39,7 +39,7 @@ vicListSelector::ResetOption()
 }
 
 void
-vicListSelector::SetOptions(const vector<Option>& avecOptions)
+vicListSelector::SetOptions(const vector<CELIOption>& avecOptions)
 {
    wxArrayString wxArStr;
    m_vecOptions = avecOptions;
@@ -59,7 +59,7 @@ vicListSelector::SetText(wxString aszText)
 
 // TODO: This Does not work.
 void 
-vicListSelector::SetAutoComplete(const std::vector<Option>& avecOptions)
+vicListSelector::SetAutoComplete(const std::vector<CELIOption>& avecOptions)
 {
    wxArrayString wxArStr;
    m_vecOptions = avecOptions;
@@ -93,6 +93,12 @@ vicListSelector::IsFocussed()
    return m_wxComboBox->HasFocus();
 }
 
+CELIOption
+vicListSelector::GetSelection()
+{
+   return m_oSelection;
+}
+
 wxString
 vicListSelector::GetText()
 {
@@ -112,6 +118,19 @@ vicListSelector::onComboBoxTextChanged(wxCommandEvent& awxEvt)
    }
 
    awxEvt.SetString(szSend);
+   transform( szSend.begin(), szSend.end(),
+              szSend.begin(), ::tolower );
+   for( auto& option : m_vecOptions )
+   {
+      string szText = option.Display;
+      transform(szText.begin(), szText.end(), szText.begin(), ::tolower);
+      if( szText == szSend )
+      {
+         // Perfect match. Send the event up.
+         m_oSelection = option;
+      }
+   }
+
    awxEvt.SetInt(GetId());
    awxEvt.Skip();
 }
@@ -119,8 +138,24 @@ vicListSelector::onComboBoxTextChanged(wxCommandEvent& awxEvt)
 void 
 vicListSelector::onAcceptButton(wxCommandEvent& awxEvt)
 {
-   awxEvt.SetInt(GetId());
-   awxEvt.Skip();
+   // Looks at the text that is currently in the box and gets
+   // the option if it matches one.
+   auto szCurrentText = GetText();
+   transform( szCurrentText.begin(), szCurrentText.end(),
+              szCurrentText.begin(), ::tolower );
+   for( auto& option : m_vecOptions )
+   {
+      string szText = option.Display;
+      transform(szText.begin(), szText.end(), szText.begin(), ::tolower);
+      if( szText == szCurrentText )
+      {
+         // Perfect match. Send the event up.
+         m_oSelection = option;
+         awxEvt.SetInt(GetId());
+         awxEvt.Skip();
+         SetText("");
+      }
+   }
 }
 
 void 

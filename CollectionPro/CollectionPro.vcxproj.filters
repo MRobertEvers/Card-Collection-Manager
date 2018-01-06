@@ -164,6 +164,9 @@
     <ClInclude Include="src\json\json.hpp">
       <Filter>Support\JSON</Filter>
     </ClInclude>
+    <ClInclude Include="src\Collection\Query.h">
+      <Filter>Collection\DataHelpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp">

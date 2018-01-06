@@ -8,6 +8,7 @@
 
 #include "SourceObject.h"
 #include "CollectionObject.h"
+#include "Query.h"
 
 using namespace std;
 
@@ -55,7 +56,7 @@ public:
       GetCollection(Location aAddrColID,
          CollectionObjectType aColItemType = CollectionObjectType::All);
 
-   std::vector<std::string> GetAllCardsStartingWith(std::string aszText);
+   std::vector<std::string> GetAllCardsStartingWith(const Query& aszText);
 
    // ClearCache
    //  Deletes all collection objects in the cache.
@@ -65,6 +66,9 @@ public:
    //  Returns whether the source is loaded successfully.
    bool IsLoaded();
 
+   // CollapseCardLine
+   //  Utilizes its knowledge of all cards to shrink the identifier
+   //  to a more compact unique representation.
    void CollapseCardLine(std::string& rszCard, bool abIncludeCount = true);
 
 private:
