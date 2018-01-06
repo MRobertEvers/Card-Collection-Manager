@@ -138,6 +138,7 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClInclude Include="src\Collection\CollectionFactory.h" />
     <ClInclude Include="src\Collection\CollectionIO.h" />
     <ClInclude Include="src\Collection\CollectionObject.h" />
+    <ClInclude Include="src\Collection\CollectionQueryHelper.h" />
     <ClInclude Include="src\Collection\CollectionSource.h" />
     <ClInclude Include="src\Collection\CollectionTracker.h" />
     <ClInclude Include="src\Collection\CopyItem.h" />
@@ -182,6 +183,7 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClCompile Include="src\Collection\CollectionFactory.cpp" />
     <ClCompile Include="src\Collection\CollectionIO.cpp" />
     <ClCompile Include="src\Collection\CollectionObject.cpp" />
+    <ClCompile Include="src\Collection\CollectionQueryHelper.cpp" />
     <ClCompile Include="src\Collection\CollectionSource.cpp" />
     <ClCompile Include="src\Collection\CollectionTracker.cpp" />
     <ClCompile Include="src\Collection\CopyItem.cpp" />

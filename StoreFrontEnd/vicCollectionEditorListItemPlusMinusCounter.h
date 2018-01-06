@@ -7,7 +7,8 @@ public:
    enum
    {
       UpButton = 0x0,
-      DownButton = 0x1
+      DownButton = 0x1,
+      NO_MAX = -0x1
    };
 
    vicCollectionEditorListItemPlusMinusCounter( wxWindow* aptParent,

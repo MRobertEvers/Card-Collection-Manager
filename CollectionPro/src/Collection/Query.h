@@ -17,9 +17,11 @@ public:
       m_bIsShort = false;
       m_bIncludeCount = true;
       m_bUIDs = false;
+      m_bClassed = false;
    }
 
    void UIDs() { Default(true); m_bUIDs = true; }
+   void Classed() { Default(true); m_bClassed = true; }
    Query& Short() { m_bIsShort = true; return *this; }
    Query& IncludeCount() { m_bIncludeCount = true; }
    Query& HashType(CopyItem::HashType hashType) { m_htHash = hashType; return *this; }
@@ -42,8 +44,10 @@ public:
    CopyItem::HashType GetHashType() const { return m_htHash; }
    MetaTagType GetMetaType() const { return m_mttMetaType; }
    bool GetUIDs() const { return m_bUIDs; }
+   bool GetClassed() const { return m_bClassed; }
 
 private:
+   bool m_bClassed;
    bool m_bUIDs;
    std::string m_szSearch;
    bool m_bCollapsed;

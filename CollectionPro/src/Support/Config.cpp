@@ -201,13 +201,20 @@ string Config::GetHexID( unsigned long aulValue )
 bool Config::IsIdentifyingAttributes(const string& aszAttrs)
 {
    return find( m_lstIdentifyingAttributes.begin(), 
-                     m_lstIdentifyingAttributes.end(),
-                     aszAttrs ) != m_lstIdentifyingAttributes.end();
+                m_lstIdentifyingAttributes.end(),
+                aszAttrs ) != m_lstIdentifyingAttributes.end();
 }
 
 bool Config::IsPairedKey(const string& aszKey)
 {
-   return m_maplstPairedKeys.find(aszKey) != m_maplstPairedKeys.end();
+   for( auto& pair : m_maplstPairedKeys )
+   {
+      if( pair.first == aszKey || pair.second == aszKey )
+      {
+         return true;
+      }
+   }
+   return false;
 }
 
 bool Config::IsValidKey(const string& aszKey)

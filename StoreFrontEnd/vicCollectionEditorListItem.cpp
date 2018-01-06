@@ -9,9 +9,10 @@ wxEND_EVENT_TABLE()
 vicCollectionEditorListItem::vicCollectionEditorListItem( wxWindow* aptParent,
                                                           wxWindowID aiID,
                                                           CELIOption aOption,
-                                                          CELIOption aOptionTwo )
+                                                          CELIOption aOptionTwo,
+                                                          int aiMaxActions)
    : wxPanel(aptParent, aiID, wxDefaultPosition, wxDefaultSize, wxBORDER | wxTAB_TRAVERSAL),
-     m_oOption(aOption), m_oOptionTwo(aOptionTwo)
+     m_oOption(aOption), m_oOptionTwo(aOptionTwo), m_iMaxActions(aiMaxActions)
 {
    wxFlexGridSizer* fgridSizer = new wxFlexGridSizer(0, 3, 0, 0);
    fgridSizer->AddGrowableCol(0);
@@ -46,7 +47,7 @@ vicCollectionEditorListItem::buildItem()
    this->GetSizer()->Add(m_vOption, wxSizerFlags(0).Expand());
 
    m_vPMCounter = new
-      vicCollectionEditorListItemPlusMinusCounter(this, 1, 0, 14);
+      vicCollectionEditorListItemPlusMinusCounter(this, 1, 1, m_iMaxActions);
    this->GetSizer()->Add(m_vPMCounter, wxSizerFlags(0));
 
    wxButton* deleteButt = new wxButton( this, DeleteButton, "X",

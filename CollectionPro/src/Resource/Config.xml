@@ -15,6 +15,7 @@
         <Key>toughness</Key>
         <Key>loyalty</Key>
         <Key>text</Key>
+        <Key>type</Key>
         <Key>types</Key>
         <Key>colorIdentity</Key>
       </ValidKeys>

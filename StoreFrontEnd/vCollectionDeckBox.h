@@ -11,9 +11,12 @@ public:
    void ShowCollectionEditor();
 
 private:
+   wxDECLARE_EVENT_TABLE();
+
    vcCollectionDeckBoxItemList* m_vcItemList;
    wxString m_wxszColID;
 
+   void onEditorAccept(wxCommandEvent& awxEvt);
    void buildItemList();
 };
 

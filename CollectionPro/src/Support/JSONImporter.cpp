@@ -246,7 +246,7 @@ JSONImporter::updateCard( nlohmann::json& ajsonCard,
 {
    bool bRetval = true;
    Config* config = Config::Instance();
-   unordered_set<string> setPairedKeys;
+   unordered_set<string> setHandledPairedKeys;
 
    // Get the list of attrs that need to be updated if present.
    auto vecIdAttrs = config->GetIdentifyingAttributes();
@@ -258,12 +258,18 @@ JSONImporter::updateCard( nlohmann::json& ajsonCard,
    updateAttr(vecCardKeys, "set", aszSet, rptDetails);
    if( config->IsPairedKey( "set" ) )
    {
-      setPairedKeys.insert("set");
+      setHandledPairedKeys.insert("set");
    }
 
    // Now do the remaining attrs.
    for( auto& szAttr : vecIdAttrs )
    {
+      // We've already handled "set"
+      if( szAttr == "set" )
+      {
+         continue;
+      }
+
       // Find the additional value if there is one.
       auto jsonValIter = ajsonCard.find( szAttr ); 
       if( jsonValIter == ajsonCard.end() )
@@ -289,17 +295,16 @@ JSONImporter::updateCard( nlohmann::json& ajsonCard,
          updateAttr(vecCardKeys, szAttr, szNewValue, rptDetails);
          if( config->IsPairedKey( szAttr ) )
          {
-            setPairedKeys.insert(szAttr);
+            setHandledPairedKeys.insert(szAttr);
          }
       }
    }
 
    // Populate paired keys if they are also idattrs, and
    // a value had not been found.
-   unordered_set<string> setHandledKeys;
    for( auto& szAttr : vecIdAttrs )
    {
-      if( setPairedKeys.find( szAttr ) != setPairedKeys.end() )
+      if( setHandledPairedKeys.find( szAttr ) != setHandledPairedKeys.end() )
       {
          // Get a list of all of its pairs.
          auto vecPairedToThisAttr = config->GetPairedKeys(szAttr);
@@ -307,7 +312,7 @@ JSONImporter::updateCard( nlohmann::json& ajsonCard,
          {
             // We only need to get this value if this key hasn't already
             // been updated.
-            if( setPairedKeys.find( szPairAttr ) == setPairedKeys.end() )
+            if( setHandledPairedKeys.find( szPairAttr ) == setHandledPairedKeys.end() )
             {
                updateAttr(vecCardKeys, szPairAttr, " ", rptDetails);
             }
@@ -365,7 +370,8 @@ JSONImporter::ensureUniqueAttr( std::string& rszDelimd,
       }
    }
 
-   if( iHighestCopy > 0 )
+   if( ( iHighestCopy > 0 ) && 
+       ( aszNewVal != ""  ) ) // This is so we dont append numbers to blank lines.
    {
       int iIter = 1;
       for( auto& szCopy : vecExistingVals )

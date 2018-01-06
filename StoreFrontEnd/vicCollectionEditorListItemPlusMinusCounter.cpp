@@ -33,21 +33,23 @@ void
 vicCollectionEditorListItemPlusMinusCounter::
 buildPMCounter()
 {
-   wxButton* upButt = new wxButton( this, UpButton, "+",
-                                    wxDefaultPosition, wxSize(30, 30) );
-   this->GetSizer()->Add(upButt, wxSizerFlags(0));
+
+   wxButton* downButt = new wxButton( this, DownButton, "-",
+                                      wxDefaultPosition, wxSize(30, 30) );
+   downButt->Enable(m_iMax >= m_iMin);
+   this->GetSizer()->Add(downButt, wxSizerFlags(0));
 
    m_vTextCtrl = new wxTextCtrl( this, wxID_ANY, std::to_string(m_iVal), 
                                  wxDefaultPosition, wxSize(30, 30), wxTE_CENTRE );
    m_vTextCtrl->SetEditable(false);
    this->GetSizer()->Add(m_vTextCtrl, wxSizerFlags(0));
 
-   wxButton* downButt = new wxButton( this, DownButton, "-",
-                                      wxDefaultPosition, wxSize(30, 30) );
-   this->GetSizer()->Add(downButt, wxSizerFlags(0));
+   wxButton* upButt = new wxButton( this, UpButton, "+",
+                                    wxDefaultPosition, wxSize(30, 30) );
+   upButt->Enable(m_iMax >= m_iMin);
+   this->GetSizer()->Add(upButt, wxSizerFlags(0));
 
    this->Fit();
-
 }
 
 void 
@@ -55,7 +57,7 @@ vicCollectionEditorListItemPlusMinusCounter::
 onUpButton(wxCommandEvent& awxEvt)
 {
    m_iVal++;
-   if( m_iVal > m_iMax )
+   if( m_iVal > m_iMax && m_iMax >= m_iMin )
    {
       m_iVal = m_iMax;
    }
@@ -78,5 +80,10 @@ void
 vicCollectionEditorListItemPlusMinusCounter::
 updateText()
 {
-   m_vTextCtrl->SetValue(std::to_string(m_iVal));
+   wxString szText = std::to_string(m_iVal);
+   if( m_iMax > m_iMin )
+   {
+      szText += "/" + std::to_string(m_iMax);
+   }
+   m_vTextCtrl->SetValue(szText);
 }

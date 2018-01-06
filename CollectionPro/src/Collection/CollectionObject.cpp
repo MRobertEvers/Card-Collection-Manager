@@ -234,6 +234,20 @@ CollectionObject::GetProtoType() const
    return CollectionObject::ToCardLine(Address(), "", lstAllCommonTraits);
 }
 
+string 
+CollectionObject::GetCommonTrait(const string& aszTrait) const
+{
+   auto iter_trait = m_lstCommonTraits.find(aszTrait);
+   if( iter_trait != m_lstCommonTraits.end() )
+   {
+      return iter_trait->second;
+   }
+   else
+   {
+      return Config::NotFoundString;
+   }
+}
+
 std::map<string, TraitItem>
 CollectionObject::GetIdentifyingTraits()
 {

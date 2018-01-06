@@ -2,6 +2,7 @@
 #include "CollectionSource.h"
 #include "CollectionDetails.h"
 #include "CollectionTracker.h"
+#include "CollectionQueryHelper.h"
 #include "TransactionManager.h"
 
 using namespace std;
@@ -81,12 +82,14 @@ public:
    bool IsLoaded = false;
 
 private:
+   friend class CollectionQueryHelper;
    friend class CollectionTracker;
    friend class TransactionManager;
 
    CollectionDetails* m_ptrCollectionDetails;
    CollectionSource* m_ptrCollectionSource;
    CollectionTracker* m_ptrCollectionTracker;
+   CollectionQueryHelper* m_ptrCollectionQueryHelper;
    TransactionManager* m_ptrTransactionManager;
 
    vector<pair<string, Tag>> m_lstTaggedItems;
@@ -143,11 +146,8 @@ private:
    void loadRemoveLine(const string& aszLine);
    void loadDeltaLine(const string& aszLine);
 
+   // TODO: move this to the collection source.
    void expandAdditionLine(string& aszLine);
-
-   // TODO: Remove this function.. look in colsource...
-public:
-   void collapseCardLine(string& aszLine);
 
 private:
    void saveHistory();

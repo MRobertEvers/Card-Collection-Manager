@@ -77,6 +77,7 @@ public:
 
    string GetName() const;
    string GetProtoType() const;
+   string GetCommonTrait(const string& aszTrait) const;
 
 private:
    string m_szName;

@@ -19,7 +19,8 @@
 enum
 {
    Menu_Quit = wxID_EXIT,
-   Menu_About = wxID_ABOUT
+   Menu_About = wxID_ABOUT,
+   Menu_Import = 0x4
 };
 
 class MainFrame : public wxFrame
@@ -32,6 +33,7 @@ public:
    void OnAbout(wxCommandEvent& event);
 
    void OnViewCollection(wxCommandEvent& event);
+   void OnImportSource(wxCommandEvent& awxEvt);
 
 private:
    wxDECLARE_EVENT_TABLE();

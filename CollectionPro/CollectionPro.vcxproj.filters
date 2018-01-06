@@ -167,6 +167,9 @@
     <ClInclude Include="src\Collection\Query.h">
       <Filter>Collection\DataHelpers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Collection\CollectionQueryHelper.h">
+      <Filter>Collection\DataHelpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp">
@@ -276,6 +279,9 @@
     </ClCompile>
     <ClCompile Include="src\json\jsoncpp.cpp">
       <Filter>Support\JSON</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\CollectionQueryHelper.cpp">
+      <Filter>Collection\DataHelpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

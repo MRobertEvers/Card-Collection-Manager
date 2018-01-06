@@ -9,6 +9,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 EVT_BUTTON(vCollectionsOverview::View_Collection, MainFrame::OnViewCollection)
 EVT_MENU(Menu_Quit, MainFrame::OnQuit)
 EVT_MENU(Menu_About, MainFrame::OnAbout)
+EVT_MENU(Menu_Import, MainFrame::OnImportSource)
 wxEND_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title)
@@ -55,6 +56,12 @@ MainFrame::OnViewCollection(wxCommandEvent& awxEvt)
 }
 
 void 
+MainFrame::OnImportSource(wxCommandEvent& awxEvt)
+{
+   StoreFrontEnd::Instance()->ImportCollectionSource();
+}
+
+void 
 MainFrame::buildMenus()
 {
    // set the frame icon
@@ -63,6 +70,7 @@ MainFrame::buildMenus()
    // create a menu bar
    wxMenu *fileMenu = new wxMenu;
    fileMenu->Append(Menu_Quit, "E&xit\tAlt-X", "Quit this program");
+   fileMenu->Append(Menu_Import, "&Import Source", "Import Collection Source");
 
    // the "About" item should be in the help menu
    wxMenu *helpMenu = new wxMenu;

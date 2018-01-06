@@ -2,6 +2,8 @@
 #include "wx/wxprec.h"
 #include <wx/listctrl.h>
 
+class vcdCDBIListItemData;
+
 class vcCollectionDeckBoxItemList : public wxPanel
 {
 public:
@@ -26,5 +28,6 @@ private:
 
    void onItemSelection(wxListEvent& awxEvt);
    void onItemDeselection(wxListEvent& awxEvt);
+   void addListItem(vcdCDBIListItemData& aData);
 };
 

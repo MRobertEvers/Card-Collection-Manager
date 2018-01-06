@@ -1,4 +1,5 @@
 #include "StringInterface.h"
+#include <algorithm>
 #include "Support/StringHelper.h"
 
 using namespace std;
@@ -262,11 +263,11 @@ StringInterface::CmdCreateRemove(const string& aszLongName, const string& aszUID
 {
    // TODO: Factor this these cmds better.
    // TODO: This should not be a string literal.
-   vector<Tag> pairvec = { make_pair("UID", aszUID) };
+   vector<Tag> pairvec = { make_pair("__UID", aszUID) };
    string szRetVal;
    PairListToTagStr(pairvec.begin(), pairvec.end(), szRetVal);
 
-   szRetVal = "- " + aszLongName + " : " + szRetVal;
+   szRetVal = "- " + GetNameFromCardLine(aszLongName) + " : " + szRetVal;
    return szRetVal;
 }
 
@@ -284,7 +285,7 @@ StringInterface::CmdCreateReplace(const string& aszLongNameRemove, const string&
 string 
 StringInterface::CmdAppendCount(const string& aszCmd, int Count)
 {
-   return aszCmd.substr(0,1) + " " + std::to_string(Count) + "x " + aszCmd.substr(1);
+   return aszCmd.substr(0,1) + " x" + std::to_string(Count) + " " + aszCmd.substr(1);
 }
 
 string 
@@ -296,4 +297,16 @@ StringInterface::GetNameFromCardLine(const string& aszLongIdentifier)
       iLoseAfter = aszLongIdentifier.size();
    }
    return aszLongIdentifier.substr(0, iLoseAfter);
+}
+
+string 
+StringInterface::FindTagInList(const vector<Tag>& aszVector, const string& aszKey)
+{
+   for( auto& tag : aszVector )
+   {
+      if( tag.first == aszKey )
+      {
+         return tag.second;
+      }
+   }
 }

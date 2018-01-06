@@ -19,12 +19,14 @@
 using namespace std;
 
 // An ID will be given to the collection if there is a parent.
-Collection::Collection(string aszName,
-   CollectionSource* aoSource,
-   string aszID) {
+Collection::Collection( string aszName,
+                        CollectionSource* aoSource,
+                        string aszID ) 
+{
    m_ptrCollectionTracker = new CollectionTracker(this);
    m_ptrCollectionDetails = new CollectionDetails();
    m_ptrTransactionManager = new TransactionManager(this);
+   m_ptrCollectionQueryHelper = new CollectionQueryHelper(this);
 
    m_ptrCollectionDetails->SetName(aszName);
    m_ptrCollectionDetails->SetFileName(aszName, true);
@@ -41,6 +43,7 @@ Collection::~Collection() {
    delete m_ptrCollectionTracker;
    delete m_ptrCollectionDetails;
    delete m_ptrTransactionManager;
+   delete m_ptrCollectionQueryHelper;
 }
 
 string Collection::GetName() {
@@ -303,9 +306,11 @@ Collection::LoadCollection( const string& aszFileName,
 
 // Returns all the copies impacted by this function.
 void
-Collection::LoadChanges(vector<string> lstLines) {
+Collection::LoadChanges(vector<string> lstLines) 
+{
    vector<string>::iterator iter_Lines = lstLines.begin();
-   for( ; iter_Lines != lstLines.end(); ++iter_Lines ) {
+   for( ; iter_Lines != lstLines.end(); ++iter_Lines )
+   {
       loadInterfaceLine(*iter_Lines);
    }
 }
@@ -313,152 +318,7 @@ Collection::LoadChanges(vector<string> lstLines) {
 vector<string> 
 Collection::QueryCollection(Query aiQueryParms)
 {
-   struct ItemData
-   {
-   public:
-      ItemData() {};
-      ItemData(const ItemData& other)
-      {
-         Name = other.Name;
-         Hash = other.Hash;
-         Count = other.Count;
-         Front = other.Front;
-         Item = other.Item;
-         Copy = other.Copy;
-         UIDs = vector<string>(other.UIDs);
-      }
-      string Name;
-      string Hash;
-      unsigned int Count = 1;
-      bool Front = true;
-      CollectionObject* Item;
-      CopyItem* Copy;
-      vector<string> UIDs;
-   };
-
-   // 1. Count Each item with the same hash if collapsed, otherwise, just add the item and continue.
-   // <hash, (card name, count)>
-   // Its multi because some hashes clash between cards.
-   // These are unused if this is not a collapsed search.
-   multimap<string, ItemData> mapSeenHashes;
-   map<string, ItemData> mapCardHashes;
-   for( auto iItem : getCollection() )
-   {
-      auto item = m_ptrCollectionSource->GetCardPrototype(iItem);
-      ItemData cardData;
-      cardData.Name = item->GetName();
-      cardData.Item = item.Value();
-
-      // 1. If we are only looking for certain card names, restrict here
-      // so we can save time by skipping this iteration.
-      if( aiQueryParms.GetSearch() != "" )
-      {
-         string szSearch = aiQueryParms.GetSearch();
-         transform(szSearch.begin(), szSearch.end(), szSearch.begin(), ::tolower);
-         string szName = cardData.Name;
-         transform(szName.begin(), szName.end(), szName.begin(), ::tolower);
-
-         auto iFindName = szName.find(szSearch);
-         cardData.Front = iFindName == 0;
-         if( iFindName == string::npos )
-         {
-            continue;
-         }
-      }
-
-      // 1. Count each occurence of an identical hash within a card if collapsing,
-      // otherwise add it.
-      mapCardHashes.clear();
-      auto lstCopies = item->FindCopies(GetIdentifier(), All);
-      for( auto copy : lstCopies )
-      {
-         // Look for copies that match.
-         cardData.Hash = copy->GetHash(aiQueryParms.GetHashType());
-         auto iter_Counted = mapCardHashes.find(cardData.Hash);
-         if( ( aiQueryParms.GetCollapsed() ) &&
-             ( iter_Counted != mapCardHashes.end() ) )
-         {
-            // If we are collapsing, and there is a match, count it. Otherwise, add card data.
-            iter_Counted->second.Count++; 
-            iter_Counted->second.UIDs.push_back(copy->GetUID());
-         }
-         else
-         {
-            cardData.Copy = copy.get();
-            cardData.UIDs.push_back(copy->GetUID());
-            mapCardHashes.insert(make_pair(cardData.Hash, cardData));
-         }
-      }
-
-      mapSeenHashes.insert(mapCardHashes.begin(), mapCardHashes.end());
-   }
-
-   vector<string> lstFront;
-   vector<string> lstBack;
-   // 3. Create the list of strings, shorten them if necessary.
-   for( auto card : mapSeenHashes )
-   {
-      string szLine;
-      ItemData& cardData = card.second;
-
-      // Build the strings
-      if( aiQueryParms.GetIncludeCount() )
-      {
-         // ToCardLine does not include the count if its 0.
-         cardData.Count = 0;
-      }
-
-      // UIDs replaces the meta tags with UIDs.
-      vector<Tag> vecMeta;
-      if( aiQueryParms.GetUIDs() )
-      {
-         cardData.Count = 0;
-         for( auto& szUID : cardData.UIDs )
-         {
-            vecMeta.push_back(make_pair(CopyItem::GetUIDKey(),szUID));
-         }
-      }
-      else
-      {
-         vecMeta = cardData.Copy->GetMetaTags(aiQueryParms.GetMetaType());
-      }
-
-      szLine = CollectionObject::ToCardLine(
-         cardData.Copy->GetAddress(),
-         cardData.Name,
-         cardData.Copy->GetIdentifyingAttributes(),
-         vecMeta,
-         *this->m_ptrCollectionDetails->GetAddress(),
-         cardData.Count
-         );
-
-      if( aiQueryParms.GetShort() )
-      {
-         collapseCardLine(szLine);
-      }
-
-      if( cardData.Front )
-      {
-         lstFront.push_back(szLine);
-      }
-      else
-      {
-         lstBack.push_back(szLine);
-      }
-   }
-
-   vector<string> lstRetVal;
-   for( auto& szLine : lstFront )
-   {
-      lstRetVal.push_back(szLine);
-   }
-
-   for( auto& szLine : lstBack )
-   {
-      lstRetVal.push_back(szLine);
-   }
-
-   return lstRetVal;
+   return m_ptrCollectionQueryHelper->QueryCollection(aiQueryParms);
 }
 
 vector<string>
@@ -949,7 +809,8 @@ void Collection::loadRemoveLine(const string& aszLine) {
       else { break; }
    }
 }
-void Collection::loadDeltaLine(const string& aszLine) {
+void Collection::loadDeltaLine(const string& aszLine) 
+{
    vector<string> lstOldNew = StringHelper::Str_Split(aszLine, "->");
 
    CollectionObject::PseudoIdentifier sudoOldItem;
@@ -997,6 +858,7 @@ void Collection::loadDeltaLine(const string& aszLine) {
 // Takes the form Name [id]
 // Can also take the form Name [id1=val1,id2=val2]
 // Can also take the form Name [val1,val2]
+// TODO: move this to the collection source.
 void
 Collection::expandAdditionLine(string& rszLine) 
 {
@@ -1060,13 +922,6 @@ Collection::expandAdditionLine(string& rszLine)
 
       rszLine = szCount + " " + szName + " " + szDetails;
    }
-}
-
-// This will ignore any meta tags.
-void
-Collection::collapseCardLine(string& rszLine)
-{
-  
 }
 
 void
@@ -1156,7 +1011,8 @@ Collection::saveOverhead() {
    oColFile.close();
 }
 
-void Collection::saveCollection() {
+void Collection::saveCollection() 
+{
    // Group lists only by id. When loading, these lists are only
    // used to create a template card. We only need the base details.
    vector<string> lstLines = GetCollectionList(None, true,
@@ -1164,7 +1020,7 @@ void Collection::saveCollection() {
 
    // Convert the lines to shorthand
    for( auto& szLine : lstLines ) {
-      collapseCardLine(szLine);
+      m_ptrCollectionSource->CollapseCardLine(szLine);
    }
 
    ofstream oColFile;

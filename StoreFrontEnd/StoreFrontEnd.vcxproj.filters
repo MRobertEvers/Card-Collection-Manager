@@ -40,6 +40,9 @@
     <Filter Include="Views\Template">
       <UniqueIdentifier>{921bdce0-b8b2-4984-abc0-1dc54c078048}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Deckbox\ComponentHelpers">
+      <UniqueIdentifier>{4963d8e0-6851-4db2-a3f9-1ed7888d8ffd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="vicCollectionEditListItemOption.cpp">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="vcdCDBIListItemData.cpp">
+      <Filter>Views\Deckbox\ComponentHelpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="vicCollectionEditListItemOption.h">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vcdCDBIListItemData.h">
+      <Filter>Views\Deckbox\ComponentHelpers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

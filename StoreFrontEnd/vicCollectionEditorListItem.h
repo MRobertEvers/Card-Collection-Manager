@@ -28,7 +28,8 @@ public:
    vicCollectionEditorListItem( wxWindow* aptParent,
                                 wxWindowID aiID,
                                 CELIOption aOption,
-                                CELIOption aOptionTwo );
+                                CELIOption aOptionTwo,
+                                int aiMaxActions = vicCollectionEditorListItemPlusMinusCounter::NO_MAX );
    ~vicCollectionEditorListItem();
 
    std::pair<wxString,wxString> GetLabel();
@@ -42,6 +43,7 @@ private:
 
    CELIOption m_oOption;
    CELIOption m_oOptionTwo;
+   int m_iMaxActions;
 
    // Used to remember if the first option was empty while the second wasnt.
    bool m_bOptionSwitched;

@@ -15,7 +15,6 @@
 StoreFront::StoreFront()
 {
    //SelfTest();
-
    // No Server for now
    m_ColSource = new CollectionSource();
    m_ColSource->LoadLib(Config::Instance()->GetSourceFile());
@@ -212,6 +211,18 @@ StoreFront::GetMetaTags(const string& aszCardName, const string& aszUID)
    return vecRetval;
 }
 
+string 
+StoreFront::GetCommonAttribute(const string& aszCardName, const string& aszAttribute)
+{
+   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   if( item.Good() )
+   {
+      return item->GetCommonTrait(aszAttribute);
+   }
+
+   return "";
+}
+
 vector<pair<string, string>>
 StoreFront::GetIdentifyingAttributes( const string& aszCardName,
                                       const string& aszUID )
@@ -228,6 +239,24 @@ StoreFront::GetIdentifyingAttributes( const string& aszCardName,
    }
 
    return vecRetval;
+}
+
+map<string, vector<string>> 
+StoreFront::GetIdentifyingAttributeOptions(const string& aszCardName)
+{
+   map<string, vector<string>> mapRetVal;
+   auto card = m_ColSource->GetCardPrototype(aszCardName);
+   if( card.Good() )
+   {
+      auto vecAttrID = card->GetIdentifyingTraits();
+      for( auto& trait : vecAttrID )
+      {
+         vector<string> vecOptions = trait.second.GetAllowedValues();
+         auto pairItem = make_pair(trait.first, vecOptions);
+         mapRetVal.insert(pairItem);
+      }
+   }
+   return mapRetVal;
 }
 
 string

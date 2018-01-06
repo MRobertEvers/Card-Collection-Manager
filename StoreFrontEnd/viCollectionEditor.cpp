@@ -241,6 +241,7 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
 
    StoreFrontEnd::Instance()->
       SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
+   m_vListView->DestroyChildren();
    awxEvt.Skip();
 }
 
@@ -267,6 +268,8 @@ vector<CELIOption>
 viCollectionEditor::parseCollectionItemsList(const vector<string>& avecItems)
 {
    StoreFront* ptSF = StoreFrontEnd::Instance();
+   StringInterface parser;
+   
    vector<CELIOption> vecRetVal;
    for( auto& id : avecItems )
    {
@@ -277,7 +280,6 @@ viCollectionEditor::parseCollectionItemsList(const vector<string>& avecItems)
       vector<pair<string,string>> Identifiers;
       vector<pair<string,string>> MetaTags;
 
-      StringInterface parser;
       parser.ParseCardLine(id, Count, Name, Identifiers, MetaTags);
 
       CELIOption option;

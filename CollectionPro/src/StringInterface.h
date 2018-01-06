@@ -42,6 +42,7 @@ public:
                             const string& aszNameAddition, const string& aszSet );
    string CmdAppendCount(const string& aszCmd, int Count);
    string GetNameFromCardLine(const string& aszLongIdentifier);
+   string FindTagInList(const vector<Tag>& avecList, const string& aszKey);
 
 public:
    template<class Iter>

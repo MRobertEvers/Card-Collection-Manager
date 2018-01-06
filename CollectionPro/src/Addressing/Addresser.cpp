@@ -426,7 +426,8 @@ Address::SetSubAddress(unsigned int aiAlreadySub, unsigned int aiSub)
    if( iter_found != m_veciSubAddresses.end() )
    {
       vector<unsigned int> vecAddTest(m_veciSubAddresses);
-      vecAddTest.erase(iter_found);
+      vecAddTest.erase(vecAddTest.begin() + 
+                       distance(m_veciSubAddresses.begin(), iter_found));
 
       // Now we want the subaddress to be added new
       int iAdded = addSubAddress(vecAddTest, aiSub);
