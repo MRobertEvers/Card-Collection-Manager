@@ -23,6 +23,12 @@ vicCollectionEditorListItemPlusMinusCounter::
 {
 }
 
+int 
+vicCollectionEditorListItemPlusMinusCounter::GetCount()
+{
+   return m_iVal;
+}
+
 void 
 vicCollectionEditorListItemPlusMinusCounter::
 buildPMCounter()

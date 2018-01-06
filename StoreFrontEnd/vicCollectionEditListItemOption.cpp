@@ -22,6 +22,13 @@ vicCollectionEditorListItemOption::
 {
 }
 
+wxString 
+vicCollectionEditorListItemOption::
+GetSelection()
+{
+   return m_wxComboBox->GetStringSelection();
+}
+
 void 
 vicCollectionEditorListItemOption::
 buildOptionSelector()
@@ -30,21 +37,21 @@ buildOptionSelector()
                                             wxDefaultPosition, wxDefaultSize );
    this->GetSizer()->Add(wxText, wxSizerFlags(0).CenterVertical().Border(wxALL, 2));
 
-   buildOption(m_wxComboBox, m_oOption);
+   buildOption(&m_wxComboBox, m_oOption);
 }
 
 void 
 vicCollectionEditorListItemOption::
-buildOption(wxChoice* aChoice, const CELIOption& aOption)
+buildOption(wxChoice** aChoice, const CELIOption& aOption)
 {
-   aChoice = new wxChoice(this, wxID_ANY);
+   *aChoice = new wxChoice(this, wxID_ANY);
    for( auto& option : aOption.IDs )
    {
-      aChoice->Append(option.second);
+      (*aChoice)->Append(option.second);
    }
    if( aOption.IDs.size() > 0 )
    {
-      aChoice->SetSelection(0);
+      (*aChoice)->SetSelection(0);
    }
-   this->GetSizer()->Add(aChoice, wxSizerFlags(0).CenterVertical());
+   this->GetSizer()->Add(*aChoice, wxSizerFlags(0).Expand());
 }

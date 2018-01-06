@@ -1,5 +1,5 @@
 #include "vicCollectionEditorList.h"
-#include "vicCollectionEditorListItem.h"
+#include <algorithm>
 
 wxBEGIN_EVENT_TABLE(vicCollectionEditorList, wxPanel)
 EVT_BUTTON(vicCollectionEditorListItem::DeleteButton, vicCollectionEditorList::onCancelItem)
@@ -29,15 +29,23 @@ vicCollectionEditorList::AddItem(CELIOption aItem, CELIOption aRemove)
    vicCollectionEditorListItem* vicItem = 
       new vicCollectionEditorListItem(this, m_iItemCounts++, aItem, aRemove);
    
+   m_vecItems.push_back(vicItem);
    this->GetSizer()->Add(vicItem, wxSizerFlags(0).Expand().Border(wxALL, 0));
    // Causes the children to calculate sizes.
    PostSizeEvent();
 }
 
-std::vector<wxString> 
+// Returns the list of all items where the selection is the
+// the only item in the IDs vector of the option.
+std::vector<vicCollectionEditorListItem::ItemSelectionData>
 vicCollectionEditorList::GetCommandList()
 {
-   return std::vector<wxString>();
+   std::vector<vicCollectionEditorListItem::ItemSelectionData> vecRetVal;
+   for( auto& item : m_vecItems )
+   {
+      vecRetVal.push_back(item->GetSelection());
+   }
+   return vecRetVal;
 }
 
 void
@@ -55,6 +63,9 @@ vicCollectionEditorList::onCancelItem(wxCommandEvent& awxEvt)
 
    if( remChild != NULL )
    {
+      auto iter_item = find(m_vecItems.begin(), m_vecItems.end(), remChild);
+      m_vecItems.erase(iter_item);
+
       this->GetSizer()->Detach(remChild);
       remChild->Destroy();
       PostSizeEvent();

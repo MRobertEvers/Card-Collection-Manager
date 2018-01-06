@@ -7,6 +7,19 @@
 class vicCollectionEditorListItem : public wxPanel
 {
 public:
+   class ItemSelectionData
+   {
+   public:
+      wxString DisplayOne;
+      wxString SelectionOne;
+
+      wxString DisplayTwo;
+      wxString SelectionTwo;
+
+      bool IsSwitched;
+      int Count;
+   };
+
    enum
    {
       DeleteButton = 0x0
@@ -18,8 +31,8 @@ public:
                                 CELIOption aOptionTwo );
    ~vicCollectionEditorListItem();
 
-   wxString GetLabel();
-   wxString GetCmd();
+   std::pair<wxString,wxString> GetLabel();
+   ItemSelectionData GetSelection();
 
 private:
    wxDECLARE_EVENT_TABLE();

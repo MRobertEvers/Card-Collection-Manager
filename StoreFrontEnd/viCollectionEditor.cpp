@@ -12,6 +12,8 @@ EVT_TEXT(vicListSelector::ComboBox, viCollectionEditor::onComboBoxTextChanged)
 EVT_BUTTON(vicListSelector::AcceptButton, viCollectionEditor::onComboBoxAccept)
 EVT_TIMER(TIMER_ID, viCollectionEditor::onDropDownDelay)
 EVT_COMBOBOX(vicListSelector::ComboBox, viCollectionEditor::onComboBoxSelection)
+EVT_BUTTON(Changes_Accept, viCollectionEditor::onAccept)
+EVT_BUTTON(Changes_Decline, viCollectionEditor::onDecline)
 wxEND_EVENT_TABLE()
 
 
@@ -144,8 +146,6 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
 {
    if( awxEvt.GetInt() == Selectors::Add )
    {
-      // TODO: Construct the label and the command here. or gather it.
-      //m_vListView->AddItem(m_vAddSelector->GetText());
       auto oSelectionAdd = m_vAddSelector->GetSelection();
       if( oSelectionAdd.Display != "" )
       {
@@ -158,16 +158,13 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
       auto oSelectionAdd = m_vAddSelector->GetSelection();
       if( oSelectionRemove.Display != "" )
       {
-         // Check which UID is selected.
          if( oSelectionAdd.Display != "" )
          {
-            // Create replacement cmd string.
             m_vListView->AddItem(oSelectionAdd, oSelectionRemove);
             m_vAddSelector->SetText("");
          }
          else
          {
-            // Create removal cmd string.
             m_vListView->AddItem(CELIOption(), oSelectionRemove);
          }
       }
@@ -203,6 +200,55 @@ viCollectionEditor::onDropDownDelay(wxTimerEvent& event)
    {
       m_timer.StartOnce(DROP_DELAY - ulTimeSinceLastKeystroke);
    }
+}
+
+void 
+viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
+{
+   StringInterface parser;
+   std::vector<std::string> vecCmds;
+   // Go through each of the list items. Construct the command, then
+   // Send it to the server.
+   for( auto& deltaItem : m_vListView->GetCommandList() )
+   {
+      string szCmd;
+      if( !deltaItem.IsSwitched )
+      {
+         // Its an addition.
+         szCmd =
+            parser.CmdCreateAddition( deltaItem.DisplayOne.ToStdString(),
+                                      deltaItem.SelectionOne.ToStdString());
+      }
+      else if(deltaItem.DisplayTwo == "")
+      {
+         // Its a remove
+         szCmd =
+            parser.CmdCreateRemove( deltaItem.DisplayOne.ToStdString(),
+                                    deltaItem.SelectionOne.ToStdString());
+      }
+      else
+      {
+         // Its a replace.
+         szCmd =
+            parser.CmdCreateReplace(deltaItem.DisplayOne.ToStdString(),
+                                    deltaItem.SelectionOne.ToStdString(),
+                                    deltaItem.DisplayTwo.ToStdString(),
+                                    deltaItem.SelectionTwo.ToStdString());
+      }
+      szCmd = parser.CmdAppendCount(szCmd, deltaItem.Count);
+      vecCmds.push_back(szCmd);
+   }
+
+   StoreFrontEnd::Instance()->
+      SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
+   awxEvt.Skip();
+}
+
+void 
+viCollectionEditor::onDecline(wxCommandEvent&)
+{
+   // TODO: CLOSE THIS WINDOW>
+   return;
 }
 
 unsigned long 

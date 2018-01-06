@@ -63,16 +63,28 @@ vicCollectionEditorListItem::buildItem()
 }
 
 
-wxString 
+std::pair<wxString, wxString>
 vicCollectionEditorListItem::GetLabel()
 {
-   return m_oOption.Display;
+   return std::make_pair(m_oOption.Display, m_oOptionTwo.Display);
 }
 
-wxString 
-vicCollectionEditorListItem::GetCmd()
+vicCollectionEditorListItem::ItemSelectionData
+vicCollectionEditorListItem::GetSelection()
 {
-   return "";
+   ItemSelectionData selectionData;
+   selectionData.IsSwitched = m_bOptionSwitched;
+   selectionData.Count = m_vPMCounter->GetCount();
+
+   selectionData.DisplayOne = m_oOption.Display;
+   selectionData.SelectionOne = m_vOption->GetSelection();
+
+   if( m_vOptionTwo != NULL )
+   {
+      selectionData.DisplayTwo = m_oOptionTwo.Display;
+      selectionData.SelectionTwo = m_vOptionTwo->GetSelection();
+   }
+   return selectionData;
 }
 
 void 

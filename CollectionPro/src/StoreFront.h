@@ -58,6 +58,7 @@ public:
 
    // String Interface
    string CollapseCardLine(const string& aszCard, bool abIncludeCount);
+
 private:
    CollectionFactory * m_ColFactory; // This will be the main interaction.
    CollectionSource* m_ColSource; // This can be a vector in the future

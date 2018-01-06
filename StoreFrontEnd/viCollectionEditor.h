@@ -46,7 +46,9 @@ private:
    void onComboBoxTextChanged(wxCommandEvent& awxEvt);
    void onComboBoxAccept(wxCommandEvent& awxEvt);
    void onComboBoxSelection(wxCommandEvent& awxEvt);
-   void onDropDownDelay(wxTimerEvent& event);
+   void onDropDownDelay(wxTimerEvent& awxEvt);
+   void onAccept(wxCommandEvent& awxEvt);
+   void onDecline(wxCommandEvent&);
 
    unsigned long getTime();
 

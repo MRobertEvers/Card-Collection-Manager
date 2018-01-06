@@ -4,45 +4,54 @@
 
 #include "Support\TypeDefs.h"
 
+using namespace std;
+
 class __declspec(dllexport) StringInterface
 {
 public:
    StringInterface();
    ~StringInterface();
 
-   bool ParseCardLine( const std::string& aszLine,
+   bool ParseCardLine( const string& aszLine,
                        unsigned int& riCount,
-                       std::string& rszName,
-                       std::string& rszDetails,
-                       std::string& rszMeta ) const;
+                       string& rszName,
+                       string& rszDetails,
+                       string& rszMeta ) const;
 
-   bool ParseCardLine( const std::string& aszLine,
+   bool ParseCardLine( const string& aszLine,
                        unsigned int& riCount,
-                       std::string& rszName,
-                       std::vector<Tag>& rszDetails,
-                       std::vector<Tag>& rszMeta ) const;
+                       string& rszName,
+                       vector<Tag>& rszDetails,
+                       vector<Tag>& rszMeta ) const;
 
-   bool ParseTagString( const std::string& aszDetails,
-                        std::vector<Tag>& rlstTags ) const;
+   bool ParseTagString( const string& aszDetails,
+                        vector<Tag>& rlstTags ) const;
 
-   bool ParseListDelimString( const std::string& aszDelimStr,
-                              std::vector<std::string>& rlstStrings,
-                              const std::string& aszIndicatorString = "*",
-                              const std::string& aszDelim = "::") const;
+   bool ParseListDelimString( const string& aszDelimStr,
+                              vector<string>& rlstStrings,
+                              const string& aszIndicatorString = "*",
+                              const string& aszDelim = "::") const;
 
-   std::string ToCardLine( const std::string& aszName,
-                           const std::vector<Tag>& alstAttrs    = std::vector<Tag>(),
-                           const std::vector<Tag>& alstMetaTags = std::vector<Tag>() );
+   string ToCardLine( const string& aszName,
+                      const vector<Tag>& alstAttrs    = vector<Tag>(),
+                      const vector<Tag>& alstMetaTags = vector<Tag>() );
+
+   string CmdCreateAddition(const string& aszName, const string& aszSet);
+   string CmdCreateRemove(const string& aszLongName, const string& aszUID);
+   string CmdCreateReplace( const string& aszLongNameRemove, const string& aszUID,
+                            const string& aszNameAddition, const string& aszSet );
+   string CmdAppendCount(const string& aszCmd, int Count);
+   string GetNameFromCardLine(const string& aszLongIdentifier);
 
 public:
    template<class Iter>
    bool ListToDelimStr( const Iter aptBegin,
                         const Iter aptEnd,
-                        std::string& rszResult,
-                        const std::string& aszIndicatorString = "*",
-                        const std::string& aszDelim = "::" ) const
+                        string& rszResult,
+                        const string& aszIndicatorString = "*",
+                        const string& aszDelim = "::" ) const
    {
-      std::string szResult = aszIndicatorString;
+      string szResult = aszIndicatorString;
       Iter iter = aptBegin;
       for( ; iter != aptEnd; iter++ )
       {
@@ -56,9 +65,9 @@ public:
    template<class Iter>
    bool PairListToTagStr( const Iter aptBegin,
                           const Iter aptEnd,
-                          std::string& rszResult ) const
+                          string& rszResult ) const
    {
-      std::string szResult = "{ ";
+      string szResult = "{ ";
       Iter iter = aptBegin;
       for( ; iter != aptEnd; iter++ )
       {

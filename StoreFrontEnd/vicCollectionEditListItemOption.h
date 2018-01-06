@@ -10,11 +10,13 @@ public:
                                      CELIOption aOption);
    ~vicCollectionEditorListItemOption();
 
+   wxString GetSelection();
+
 private:
    CELIOption m_oOption;
    wxChoice* m_wxComboBox;
 
    void buildOptionSelector();
-   void buildOption(wxChoice* aChoice, const CELIOption& aOption);
+   void buildOption(wxChoice** aChoice, const CELIOption& aOption);
 };
 

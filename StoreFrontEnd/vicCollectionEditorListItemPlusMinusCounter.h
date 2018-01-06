@@ -14,7 +14,8 @@ public:
                                                 int aiStartVal,
                                                 int aiMin, int aiMax );
    ~vicCollectionEditorListItemPlusMinusCounter();
-
+   
+   int GetCount();
 private:
    wxDECLARE_EVENT_TABLE();
    void buildPMCounter();

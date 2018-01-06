@@ -244,3 +244,56 @@ StringInterface::ToCardLine( const string& aszName,
 
    return szLine;
 }
+
+string
+StringInterface::CmdCreateAddition(const string& aszName, const string& aszSet)
+{
+   // TODO: This should not be a string literal.
+   vector<Tag> pairvec = { make_pair("set", aszSet) };
+   string szRetVal;
+   PairListToTagStr(pairvec.begin(), pairvec.end(), szRetVal);
+ 
+   szRetVal = "+ " + GetNameFromCardLine(aszName) + " " + szRetVal;
+   return szRetVal;
+}
+
+string
+StringInterface::CmdCreateRemove(const string& aszLongName, const string& aszUID)
+{
+   // TODO: Factor this these cmds better.
+   // TODO: This should not be a string literal.
+   vector<Tag> pairvec = { make_pair("UID", aszUID) };
+   string szRetVal;
+   PairListToTagStr(pairvec.begin(), pairvec.end(), szRetVal);
+
+   szRetVal = "- " + aszLongName + " : " + szRetVal;
+   return szRetVal;
+}
+
+string
+StringInterface::CmdCreateReplace(const string& aszLongNameRemove, const string& aszUID,
+                                  const string& aszNameAddition, const string& aszSet)
+{
+   string szRetVal = CmdCreateRemove(aszLongNameRemove, aszUID);
+   szRetVal[0] = '%';
+   szRetVal += " -> ";
+   szRetVal += CmdCreateAddition(aszNameAddition, aszSet).substr(1);
+   return szRetVal;
+}
+
+string 
+StringInterface::CmdAppendCount(const string& aszCmd, int Count)
+{
+   return aszCmd.substr(0,1) + " " + std::to_string(Count) + "x " + aszCmd.substr(1);
+}
+
+string 
+StringInterface::GetNameFromCardLine(const string& aszLongIdentifier)
+{
+   int iLoseAfter = aszLongIdentifier.find_first_of("[{");
+   if( iLoseAfter == string::npos )
+   {
+      iLoseAfter = aszLongIdentifier.size();
+   }
+   return aszLongIdentifier.substr(0, iLoseAfter);
+}
