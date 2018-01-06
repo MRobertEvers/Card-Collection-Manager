@@ -15,16 +15,11 @@ vcCollectionDeckBoxItemList::vcCollectionDeckBoxItemList( wxWindow* aptParent,
 
    m_iSelection = -1;
    m_wxListControl = new wxListCtrl( this, List,
-                                     wxDefaultPosition, wxDefaultSize, wxLC_LIST );
-   m_wxListControl->AppendColumn("#");
-   m_wxListControl->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
-
-   m_wxListControl->AppendColumn("Name");
-   m_wxListControl->SetColumnWidth(1, wxLIST_AUTOSIZE);
-   m_wxListControl->AppendColumn("Mana Cost");
-   m_wxListControl->SetColumnWidth(2, wxLIST_AUTOSIZE);
-   m_wxListControl->AppendColumn("Card Type");
-   m_wxListControl->SetColumnWidth(3, wxLIST_AUTOSIZE);
+                                     wxDefaultPosition, wxDefaultSize, wxLC_REPORT );
+   m_wxListControl->InsertColumn(0, "#");
+   m_wxListControl->InsertColumn(1, "Name");
+   m_wxListControl->InsertColumn(2, "Mana Cost");
+   m_wxListControl->InsertColumn(3, "Card Type");
 
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);
@@ -52,12 +47,17 @@ vcCollectionDeckBoxItemList::RefreshList()
       vcdCDBIListItemData data(szItem, vcdCDBIListItemData::LONG_NAME);
       vecData.push_back(data);
    }
-
-   m_wxListControl->ClearAll();
+   m_wxListControl->Freeze();
+   m_wxListControl->DeleteAllItems();
    for( auto& item : vecData )
    {
       addListItem(item);
    }
+   m_wxListControl->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
+   m_wxListControl->SetColumnWidth(1, wxLIST_AUTOSIZE);
+   m_wxListControl->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER);
+   m_wxListControl->SetColumnWidth(3, wxLIST_AUTOSIZE);
+   m_wxListControl->Thaw();
 }
 
 void

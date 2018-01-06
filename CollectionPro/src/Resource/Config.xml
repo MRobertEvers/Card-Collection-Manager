@@ -79,8 +79,12 @@
           <Key>12</Key>
         </Pair>
         <Pair>
-          <Key>types</Key>
+          <Key>type</Key>
           <Key>13</Key>
+        </Pair>
+        <Pair>
+          <Key>types</Key>
+          <Key>14</Key>
         </Pair>
       </CodeKeys>
     </ImportDefinitions>

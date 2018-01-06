@@ -38,19 +38,33 @@ std::string StringHelper::Str_Replace(const std::string& srz, char removeChar, c
 std::string StringHelper::Str_Clean(const std::string& src)
 {
    std::string szRetVal = "";
-   for (char c : src)
+   size_t iSize = src.size();
+   for( int i = 0; i < iSize; i++ )
    {
-      if (c == 145)
+      char c = src[i];
+      if( c == 145 )
       {
          szRetVal += "ae";
       }
-      else if (c == 146)
+      else if( c == 146 )
       {
          szRetVal += "AE";
       }
-      else if (c == '\'' || c == '\"')
+      else if( c == '\'' || c == '\"' )
       {
          // leave out
+      }
+      else if( c < 0 )
+      {
+         // Check for em dash
+         if( (i + 2 < iSize) &&
+             ( c == -30         ) && 
+             ( src[i+1] == -128 ) &&
+             ( src[i+2] == -108 ) )
+         {
+            szRetVal += '-';
+            i += 2;
+         }
       }
       else
       {

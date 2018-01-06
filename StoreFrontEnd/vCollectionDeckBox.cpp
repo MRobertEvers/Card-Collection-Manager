@@ -14,7 +14,8 @@ vCollectionDeckBox::vCollectionDeckBox( wxWindow* aptParent,
 {
    m_wxszColID = aszColID;
 
-   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(wxHORIZONTAL);
+   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(0, 2, 0, 0);
+   boxSizer->AddGrowableCol(0);
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer(boxSizer);
 
