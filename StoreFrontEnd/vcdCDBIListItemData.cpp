@@ -46,6 +46,12 @@ vcdCDBIListItemData::GetCardType()
    return m_szCardType;
 }
 
+wxString 
+vcdCDBIListItemData::GetSet()
+{
+   return m_szSet;
+}
+
 void 
 vcdCDBIListItemData::parseLongName(const wxString& aszName)
 {
@@ -83,7 +89,18 @@ vcdCDBIListItemData::getItemData()
       {
          m_vecSetOptions.push_back(szOption);
       }
+
+      StringInterface parser;
+      if( m_szSet == "" )
+      {
+         string szVal;
+         parser.ListToDelimStr( iter_set->second.begin(), iter_set->second.end(),
+                                szVal, "", "," );
+         m_szSet = szVal;
+      }
    }
+
+
 
    m_szCardType = ptSF->GetCommonAttribute(m_szName.ToStdString(), "type");
    m_szManaCost = ptSF->GetCommonAttribute(m_szName.ToStdString(), "manaCost");

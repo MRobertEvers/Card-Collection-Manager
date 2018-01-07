@@ -36,6 +36,7 @@ void
 vicListSelector::ResetOption()
 {
    m_wxComboBox->Clear();
+   m_oSelection = CELIOption();
 }
 
 void

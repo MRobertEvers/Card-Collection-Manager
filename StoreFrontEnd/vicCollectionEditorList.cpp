@@ -26,8 +26,18 @@ vicCollectionEditorList::~vicCollectionEditorList()
 void 
 vicCollectionEditorList::AddItem(CELIOption aItem, CELIOption aRemove)
 {
+   int iMax;
+   if( aRemove.Display == "" )
+   {
+      iMax = vicCollectionEditorListItemPlusMinusCounter::NO_MAX;
+   }
+   else
+   {
+      iMax = 1;
+   }
+
    vicCollectionEditorListItem* vicItem = 
-      new vicCollectionEditorListItem(this, m_iItemCounts++, aItem, aRemove);
+      new vicCollectionEditorListItem(this, m_iItemCounts++, aItem, aRemove, iMax);
    
    m_vecItems.push_back(vicItem);
    this->GetSizer()->Add(vicItem, wxSizerFlags(0).Expand().Border(wxALL, 0));
@@ -48,6 +58,16 @@ vicCollectionEditorList::GetCommandList()
    return vecRetVal;
 }
 
+void 
+vicCollectionEditorList::ClearList()
+{
+   for( auto& child : m_vecItems )
+   {
+      removeChild(child);
+   }
+   m_vecItems.clear();
+}
+
 void
 vicCollectionEditorList::onCancelItem(wxCommandEvent& awxEvt)
 {
@@ -63,11 +83,17 @@ vicCollectionEditorList::onCancelItem(wxCommandEvent& awxEvt)
 
    if( remChild != NULL )
    {
-      auto iter_item = find(m_vecItems.begin(), m_vecItems.end(), remChild);
-      m_vecItems.erase(iter_item);
-
-      this->GetSizer()->Detach(remChild);
-      remChild->Destroy();
-      PostSizeEvent();
+      removeChild((vicCollectionEditorListItem*)remChild);
    }
+}
+
+void 
+vicCollectionEditorList::removeChild(vicCollectionEditorListItem* aptChild)
+{
+   auto iter_item = find(m_vecItems.begin(), m_vecItems.end(), aptChild);
+   m_vecItems.erase(iter_item);
+
+   this->GetSizer()->Detach(aptChild);
+   aptChild->Destroy();
+   PostSizeEvent();
 }

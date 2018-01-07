@@ -36,7 +36,7 @@ buildPMCounter()
 
    wxButton* downButt = new wxButton( this, DownButton, "-",
                                       wxDefaultPosition, wxSize(30, 30) );
-   downButt->Enable(m_iMax >= m_iMin);
+   downButt->Enable(m_iMax >= m_iMin || m_iMax < 0);
    this->GetSizer()->Add(downButt, wxSizerFlags(0));
 
    m_vTextCtrl = new wxTextCtrl( this, wxID_ANY, std::to_string(m_iVal), 
@@ -46,7 +46,7 @@ buildPMCounter()
 
    wxButton* upButt = new wxButton( this, UpButton, "+",
                                     wxDefaultPosition, wxSize(30, 30) );
-   upButt->Enable(m_iMax >= m_iMin);
+   upButt->Enable(m_iMax >= m_iMin || m_iMax < 0);
    this->GetSizer()->Add(upButt, wxSizerFlags(0));
 
    this->Fit();

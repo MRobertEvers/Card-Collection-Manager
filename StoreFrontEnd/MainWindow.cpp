@@ -9,6 +9,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 EVT_BUTTON(vCollectionsOverview::View_Collection, MainFrame::OnViewCollection)
 EVT_MENU(Menu_Quit, MainFrame::OnQuit)
 EVT_MENU(Menu_About, MainFrame::OnAbout)
+EVT_MENU(Menu_Main, MainFrame::OnViewCollectionOverview)
 EVT_MENU(Menu_Import, MainFrame::OnImportSource)
 wxEND_EVENT_TABLE()
 
@@ -16,6 +17,9 @@ MainFrame::MainFrame(const wxString& title)
    : wxFrame(NULL, sfMAIN_WINDOW, title)
 {
    StoreFrontEnd::Instance();
+
+   wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
+   this->SetSizer(boxSizer);
 
    buildMenus();
 
@@ -56,6 +60,12 @@ MainFrame::OnViewCollection(wxCommandEvent& awxEvt)
 }
 
 void 
+MainFrame::OnViewCollectionOverview(wxCommandEvent& awxEvt)
+{
+   viewCollectionsOverview();
+}
+
+void 
 MainFrame::OnImportSource(wxCommandEvent& awxEvt)
 {
    StoreFrontEnd::Instance()->ImportCollectionSource();
@@ -69,8 +79,9 @@ MainFrame::buildMenus()
 
    // create a menu bar
    wxMenu *fileMenu = new wxMenu;
+   fileMenu->Append(Menu_Main, "&Overview", "Return to collection overview.");
+   fileMenu->Append(Menu_Import, "&Import Source", "Import collection source");
    fileMenu->Append(Menu_Quit, "E&xit\tAlt-X", "Quit this program");
-   fileMenu->Append(Menu_Import, "&Import Source", "Import Collection Source");
 
    // the "About" item should be in the help menu
    wxMenu *helpMenu = new wxMenu;
@@ -108,11 +119,12 @@ MainFrame::setView(wxPanel* awxNewPanel)
 {
    if( m_CurrentPanel != NULL )
    {
+      this->GetSizer()->Detach(m_CurrentPanel);
       m_CurrentPanel->Destroy();
    }
 
    m_CurrentPanel = awxNewPanel;
-
+   this->GetSizer()->Add(m_CurrentPanel, wxSizerFlags(1).Expand());
    // Causes the children to calculate sizes.
    PostSizeEvent();
 }

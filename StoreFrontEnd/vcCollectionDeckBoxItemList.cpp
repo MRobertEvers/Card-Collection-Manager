@@ -20,6 +20,7 @@ vcCollectionDeckBoxItemList::vcCollectionDeckBoxItemList( wxWindow* aptParent,
    m_wxListControl->InsertColumn(1, "Name");
    m_wxListControl->InsertColumn(2, "Mana Cost");
    m_wxListControl->InsertColumn(3, "Card Type");
+   m_wxListControl->InsertColumn(4, "Set");
 
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);
@@ -47,6 +48,7 @@ vcCollectionDeckBoxItemList::RefreshList()
       vcdCDBIListItemData data(szItem, vcdCDBIListItemData::LONG_NAME);
       vecData.push_back(data);
    }
+
    m_wxListControl->Freeze();
    m_wxListControl->DeleteAllItems();
    for( auto& item : vecData )
@@ -57,6 +59,7 @@ vcCollectionDeckBoxItemList::RefreshList()
    m_wxListControl->SetColumnWidth(1, wxLIST_AUTOSIZE);
    m_wxListControl->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER);
    m_wxListControl->SetColumnWidth(3, wxLIST_AUTOSIZE);
+   m_wxListControl->SetColumnWidth(4, wxLIST_AUTOSIZE);
    m_wxListControl->Thaw();
 }
 
@@ -91,4 +94,7 @@ vcCollectionDeckBoxItemList::addListItem(vcdCDBIListItemData& aData)
 
    buf = aData.GetCardType();
    m_wxListControl->SetItem(tmp, 3, buf);
+
+   buf = aData.GetSet();
+   m_wxListControl->SetItem(tmp, 4, buf);
 }

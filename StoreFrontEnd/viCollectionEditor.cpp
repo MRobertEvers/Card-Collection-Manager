@@ -241,7 +241,9 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
 
    StoreFrontEnd::Instance()->
       SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
-   m_vListView->DestroyChildren();
+   m_vListView->ClearList();
+   m_vAddSelector->ResetOption();
+   m_vRemSelector->ResetOption();
    awxEvt.Skip();
 }
 

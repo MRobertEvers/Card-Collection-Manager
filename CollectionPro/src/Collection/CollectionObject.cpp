@@ -244,7 +244,7 @@ CollectionObject::GetCommonTrait(const string& aszTrait) const
    }
    else
    {
-      return Config::NotFoundString;
+      return "";
    }
 }
 

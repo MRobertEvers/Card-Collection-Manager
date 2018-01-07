@@ -20,6 +20,7 @@ public:
    wxString GetName();
    wxString GetManaCost();
    wxString GetCardType();
+   wxString GetSet();
 
 private:
    // Number, name, mana cost, card type

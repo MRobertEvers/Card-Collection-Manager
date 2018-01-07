@@ -20,6 +20,7 @@ enum
 {
    Menu_Quit = wxID_EXIT,
    Menu_About = wxID_ABOUT,
+   Menu_Main = 0x71,
    Menu_Import = 0x4
 };
 
@@ -33,6 +34,7 @@ public:
    void OnAbout(wxCommandEvent& event);
 
    void OnViewCollection(wxCommandEvent& event);
+   void OnViewCollectionOverview(wxCommandEvent& awxEvt);
    void OnImportSource(wxCommandEvent& awxEvt);
 
 private:

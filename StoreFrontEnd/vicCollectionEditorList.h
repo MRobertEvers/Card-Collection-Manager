@@ -15,11 +15,14 @@ public:
    // The first option is removed.
    void AddItem(CELIOption aszItem, CELIOption aszAdd = CELIOption());
    std::vector<vicCollectionEditorListItem::ItemSelectionData> GetCommandList();
-   
+   void ClearList();
+
 private:
    wxDECLARE_EVENT_TABLE();
    int m_iItemCounts;
    void onCancelItem(wxCommandEvent& awxEvt);
    std::vector<vicCollectionEditorListItem*> m_vecItems;
+
+   void removeChild(vicCollectionEditorListItem* aptChild);
 };
 
