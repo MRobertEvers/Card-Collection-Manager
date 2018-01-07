@@ -23,33 +23,59 @@ vcdCDBIListItemData::~vcdCDBIListItemData()
 }
 
 int 
-vcdCDBIListItemData::GetNumber()
+vcdCDBIListItemData::GetNumber() const
 {
    return m_iNumber;
 }
 
 wxString 
-vcdCDBIListItemData::GetName()
+vcdCDBIListItemData::GetHash() const
+{
+   return m_szHash;
+}
+
+wxString 
+vcdCDBIListItemData::GetName() const
 {
    return m_szName;
 }
 
 wxString 
-vcdCDBIListItemData::GetManaCost()
+vcdCDBIListItemData::GetManaCost() const
 {
    return m_szManaCost;
 }
 
 wxString 
-vcdCDBIListItemData::GetCardType()
+vcdCDBIListItemData::GetCardType() const
 {
    return m_szCardType;
 }
 
 wxString 
-vcdCDBIListItemData::GetSet()
+vcdCDBIListItemData::GetSet() const
 {
    return m_szSet;
+}
+
+wxString 
+vcdCDBIListItemData::GetMetaTag(const wxString& aszKey) const
+{
+   StringInterface parser;
+   return parser.FindTagInList(m_vecMetaTags, aszKey.ToStdString());
+}
+
+wxString 
+vcdCDBIListItemData::GetAttribute(const wxString& aszKey) const
+{
+   StringInterface parser;
+   string szValue = parser.FindTagInList(m_vecIdentifiers, aszKey.ToStdString());
+   if( szValue == "" )
+   {
+      auto ptSF = StoreFrontEnd::Instance();
+      szValue = ptSF->GetCommonAttribute(m_szName.ToStdString(), aszKey.ToStdString());
+   }
+   return szValue;
 }
 
 void 
@@ -59,17 +85,13 @@ vcdCDBIListItemData::parseLongName(const wxString& aszName)
 
    unsigned int Count;
    string Name;
-   string DetailString;
-   string MetaString;
-   vector<pair<string, string>> Identifiers;
-   vector<pair<string, string>> MetaTags;
 
    parser.ParseCardLine( aszName.ToStdString(), Count, Name,
-                         Identifiers, MetaTags );
+                         m_vecIdentifiers, m_vecMetaTags );
 
    m_iNumber = Count;
    m_szName = Name;
-   m_szSet = parser.FindTagInList(Identifiers, "set");
+   m_szSet = parser.FindTagInList(m_vecIdentifiers, "set");
 }
 
 void 

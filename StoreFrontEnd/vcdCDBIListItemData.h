@@ -3,7 +3,7 @@
 #include <vector>
 // vc d's help a higher panel gather data so that the higher panel can
 // organize the data on its sizer.
-
+using namespace std;
 // TODO: This only gathers data by hash.
 class vcdCDBIListItemData
 {
@@ -16,20 +16,26 @@ public:
    vcdCDBIListItemData(const wxString& aszCardName, DataStyle aDataStyle);
    ~vcdCDBIListItemData();
 
-   int GetNumber();
-   wxString GetName();
-   wxString GetManaCost();
-   wxString GetCardType();
-   wxString GetSet();
+   int GetNumber() const;
+   wxString GetHash() const;
+   wxString GetName() const;
+   wxString GetManaCost() const;
+   wxString GetCardType() const;
+   wxString GetSet() const;
+   wxString GetMetaTag(const wxString& aszKey) const;
+   wxString GetAttribute(const wxString& aszKey) const;
 
 private:
    // Number, name, mana cost, card type
    int m_iNumber;
+   wxString m_szHash;
    wxString m_szName;
    wxString m_szSet;
    wxString m_szManaCost;
    wxString m_szCardType;
-   std::vector<wxString> m_vecSetOptions;
+   vector<wxString> m_vecSetOptions;
+   vector<pair<string, string>> m_vecIdentifiers;
+   vector<pair<string, string>> m_vecMetaTags;
 
    void parseLongName(const wxString& aszName);
    void getItemData();

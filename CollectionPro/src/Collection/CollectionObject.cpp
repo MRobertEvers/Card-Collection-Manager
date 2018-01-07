@@ -1,4 +1,5 @@
 #include "../stdafx.h"
+#include <algorithm>
 #include "CollectionObject.h"
 #include "CopyItem.h"
 
@@ -237,6 +238,20 @@ CollectionObject::GetProtoType() const
 string 
 CollectionObject::GetCommonTrait(const string& aszTrait) const
 {
+   /*
+   // I want this to be case insensitive so just search through all
+   string szSearch = aszTrait;
+   transform(szSearch.begin(), szSearch.end(), szSearch.begin(), ::tolower);
+   for( auto Trait : m_lstCommonTraits )
+   {
+      string szTrait = Trait.first;
+      transform(szTrait.begin(), szTrait.end(), szTrait.begin(), ::tolower);
+      if( szTrait == aszTrait )
+      {
+         return Trait.second;
+      }
+   }*/
+   
    auto iter_trait = m_lstCommonTraits.find(aszTrait);
    if( iter_trait != m_lstCommonTraits.end() )
    {
@@ -246,6 +261,7 @@ CollectionObject::GetCommonTrait(const string& aszTrait) const
    {
       return "";
    }
+   
 }
 
 std::map<string, TraitItem>

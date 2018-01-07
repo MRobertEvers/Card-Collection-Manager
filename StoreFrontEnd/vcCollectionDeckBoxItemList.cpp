@@ -7,6 +7,70 @@ EVT_LIST_ITEM_SELECTED(List, vcCollectionDeckBoxItemList::onItemSelection)
 EVT_LIST_ITEM_DESELECTED(List, vcCollectionDeckBoxItemList::onItemDeselection)
 wxEND_EVENT_TABLE()
 
+
+vcCollectionDeckBoxItemList::Group&
+vcCollectionDeckBoxItemList::Group::
+GroupOn(const wxString& aszKey, bool abIsMetaKey)
+{
+   Key = aszKey;
+   MetaKey = abIsMetaKey;
+   return *this;
+}
+
+vcCollectionDeckBoxItemList::Group& 
+vcCollectionDeckBoxItemList::Group::
+BroadenSubGroup(const wxString& aszValue)
+{
+   BroadenedValues.push_back(aszValue);
+   return *this;
+}
+
+vcCollectionDeckBoxItemList::Group& 
+vcCollectionDeckBoxItemList::Group::
+OverrideGrouping(const Group& aGrouping)
+{
+   Overrides.push_back(aGrouping);
+   return *this;
+}
+
+wxString
+vcCollectionDeckBoxItemList::Group::
+GetGroup(const vcdCDBIListItemData& aData)
+{
+   wxString szGroup;
+   for( auto& over : Overrides )
+   {
+      szGroup = over.GetGroup(aData);
+      if( szGroup != "" )
+      {
+         break;
+      }
+   }
+
+   if( szGroup == "" )
+   {
+      if( MetaKey )
+      {
+         szGroup = aData.GetMetaTag(Key);
+      }
+      else
+      {
+         szGroup = aData.GetAttribute(Key);
+      }
+
+      for( auto& broadGroup : BroadenedValues )
+      {
+         if( szGroup.find(broadGroup) != wxString::npos )
+         {
+            szGroup = broadGroup;
+            break;
+         }
+      }
+   }
+
+   return szGroup;
+}
+
 vcCollectionDeckBoxItemList::vcCollectionDeckBoxItemList( wxWindow* aptParent,
                                                           const wxString& aszColID )
    : wxPanel(aptParent)
@@ -51,10 +115,7 @@ vcCollectionDeckBoxItemList::RefreshList()
 
    m_wxListControl->Freeze();
    m_wxListControl->DeleteAllItems();
-   for( auto& item : vecData )
-   {
-      addListItem(item);
-   }
+   displayGrouping(defaultGrouping(vecData));
    m_wxListControl->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
    m_wxListControl->SetColumnWidth(1, wxLIST_AUTOSIZE);
    m_wxListControl->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER);
@@ -77,11 +138,62 @@ vcCollectionDeckBoxItemList::onItemDeselection(wxListEvent& awxEvt)
    awxEvt.StopPropagation();
 }
 
+// Returns a list of pointers to the input vector. SO DONT DELETE THE VECTOR BEFORE
+// USING THE RETURN.
+std::map<wxString, std::vector<vcdCDBIListItemData*>>
+vcCollectionDeckBoxItemList::defaultGrouping(std::vector<vcdCDBIListItemData>& avecItems)
+{
+   Group overrideGrp;
+   // TODO: Use the stringIface to get the collection.group. write this func.
+   overrideGrp.GroupOn("group", true);
+
+   Group defaultGrp;
+   defaultGrp.GroupOn("type", false)
+             .BroadenSubGroup("Creature")
+             .BroadenSubGroup("Instant")
+             .BroadenSubGroup("Sorcery")
+             .BroadenSubGroup("Enchantment")
+             .BroadenSubGroup("Artifact")
+             .BroadenSubGroup("Planeswalker")
+             .BroadenSubGroup("Land")
+             .OverrideGrouping(overrideGrp);
+
+
+   map<wxString, vector<vcdCDBIListItemData*>> mapGroups;
+   for( auto& data : avecItems )
+   {
+      // TODO: Need way to get meta tags from server so we can sort on them.
+      mapGroups[defaultGrp.GetGroup(data)].push_back(&data);
+   }
+
+   return mapGroups;
+}
+
+void 
+vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
+                                             std::vector<vcdCDBIListItemData*>>& amapGrouping)
+{
+   for( auto& group : amapGrouping )
+   {
+      wxString buf = group.first;
+      int i = m_wxListControl->GetItemCount();
+      long tmp = m_wxListControl->InsertItem(i, "", 0);
+      m_wxListControl->SetItem(tmp, 1, buf);
+      wxListItem item;
+      item.m_itemId = i;
+      item.SetBackgroundColour(*wxLIGHT_GREY);
+      m_wxListControl->SetItem(item);
+      for( auto& item : group.second )
+      {
+         addListItem(*item);
+      }
+   }
+}
+
 void 
 vcCollectionDeckBoxItemList::addListItem(vcdCDBIListItemData& aData)
 {
    wxString buf = std::to_string(aData.GetNumber());
-   // buf.Printf(wxT("This is item %d"), i);
    int i = m_wxListControl->GetItemCount();
    long tmp = m_wxListControl->InsertItem(i, buf, 0);
    m_wxListControl->SetItemData(tmp, i);

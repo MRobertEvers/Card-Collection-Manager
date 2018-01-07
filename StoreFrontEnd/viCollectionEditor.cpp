@@ -277,8 +277,6 @@ viCollectionEditor::parseCollectionItemsList(const vector<string>& avecItems)
    {
       unsigned int Count;
       string Name;
-      string DetailString;
-      string MetaString;
       vector<pair<string,string>> Identifiers;
       vector<pair<string,string>> MetaTags;
 

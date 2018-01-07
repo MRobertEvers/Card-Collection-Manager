@@ -304,9 +304,11 @@ StringInterface::FindTagInList(const vector<Tag>& aszVector, const string& aszKe
 {
    for( auto& tag : aszVector )
    {
+
       if( tag.first == aszKey )
       {
          return tag.second;
       }
    }
+   return "";
 }
