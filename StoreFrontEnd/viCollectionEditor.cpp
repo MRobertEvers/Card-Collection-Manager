@@ -1,6 +1,6 @@
 #include "viCollectionEditor.h"
 #include "vicCollectionEditorList.h"
-#include "StoreFront.h"
+#include "StoreFrontEnd.h"
 
 #include <chrono>
 

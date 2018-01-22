@@ -8,7 +8,7 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-#include "StoreFront.h"
+#include "StoreFrontEnd.h"
 #include <wx/aui/framemanager.h>
 
 #ifndef WX_PRECOMP

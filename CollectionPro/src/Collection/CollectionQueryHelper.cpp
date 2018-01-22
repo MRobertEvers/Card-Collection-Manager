@@ -105,6 +105,16 @@ CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
    // 3. Create the list of strings, shorten them if necessary.
    for( auto card : mapSeenHashes )
    {
+      // Ignore hashes if they aren't included in a nonempty search
+      if( aiQueryParms.GetHashes().size() > 0 )
+      {
+         auto vecHashes = aiQueryParms.GetHashes();
+         if( find(vecHashes.begin(), vecHashes.end(), card.second.Hash) == vecHashes.end() )
+         {
+            continue;
+         }
+      }
+
       string szLine;
       ItemData& cardData = card.second;
 

@@ -13,6 +13,7 @@ public:
       LONG_NAME = 0x0,
       SOURCE_NAME = 0x1
    };
+   vcdCDBIListItemData();
    vcdCDBIListItemData(const wxString& aszCardName, DataStyle aDataStyle);
    ~vcdCDBIListItemData();
 
@@ -39,5 +40,6 @@ private:
 
    void parseLongName(const wxString& aszName);
    void getItemData();
+   void getItemHash(const wxString& aszUID);
 };
 

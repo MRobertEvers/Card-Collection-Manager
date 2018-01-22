@@ -1,7 +1,11 @@
 #include "vcdCDBIListItemData.h"
 #include <algorithm>
-#include "StoreFront.h"
+#include "StoreFrontEnd.h"
 
+vcdCDBIListItemData::vcdCDBIListItemData()
+{
+
+}
 
 vcdCDBIListItemData::vcdCDBIListItemData(const wxString& aszCardName, DataStyle aDataStyle)
 {
@@ -92,6 +96,11 @@ vcdCDBIListItemData::parseLongName(const wxString& aszName)
    m_iNumber = Count;
    m_szName = Name;
    m_szSet = parser.FindTagInList(m_vecIdentifiers, "set");
+
+   if( m_vecMetaTags.size() > 0 )
+   {
+      getItemHash(m_vecMetaTags[0].second);
+   }
 }
 
 void 
@@ -130,4 +139,21 @@ vcdCDBIListItemData::getItemData()
                       m_szManaCost.end());
    m_szManaCost.erase(std::remove(m_szManaCost.begin(), m_szManaCost.end(), '}'),
                       m_szManaCost.end());
+
+}
+
+void 
+vcdCDBIListItemData::getItemHash(const wxString& aszUID)
+{
+   auto ptSF = StoreFrontEnd::Instance();
+   auto vecMeta = ptSF->GetMetaTags(m_szName.ToStdString(), aszUID.ToStdString());
+   for( auto& trait : vecMeta )
+   {
+      // TODO: This shouldn't be literal
+      if( trait.first == "__hash" )
+      {
+         m_szHash = trait.second;
+         break;
+      }
+   }
 }

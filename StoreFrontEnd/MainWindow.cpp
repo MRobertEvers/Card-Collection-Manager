@@ -2,7 +2,8 @@
 #include "StorefrontConfig.h"
 #include "vCollectionsOverview.h"
 #include "vCollectionDeckBox.h"
-#include "StoreFront.h"
+#include "StoreFrontEnd.h"
+
 
 // Events can be tied at run-time. This is compile time.
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
@@ -17,6 +18,7 @@ MainFrame::MainFrame(const wxString& title)
    : wxFrame(NULL, sfMAIN_WINDOW, title)
 {
    StoreFrontEnd::Instance();
+   wxInitAllImageHandlers();
 
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);

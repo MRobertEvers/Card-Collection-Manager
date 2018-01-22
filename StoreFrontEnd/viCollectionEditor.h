@@ -3,7 +3,7 @@
 #include <wx/timer.h>
 #include <vector>
 #include <string>
-#include "StoreFront.h"
+#include "StoreFrontEnd.h"
 #include "vicListSelector.h"
 
 class vicListSelector;

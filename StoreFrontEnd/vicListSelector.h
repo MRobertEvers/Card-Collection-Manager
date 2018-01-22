@@ -1,7 +1,7 @@
 #pragma once
 #include "wx/wxprec.h"
 #include <wx/combobox.h>
-#include "StoreFront.h"
+#include "StoreFrontEnd.h"
 #include "CELIOption.h"
 
 class vicListSelector : public wxPanel

@@ -1,7 +1,7 @@
 #pragma once
 #include "CopyItem.h"
 #include <string>
-
+#include <vector>
 
 class Query
 {
@@ -22,6 +22,7 @@ public:
 
    void UIDs() { Default(true); m_bUIDs = true; }
    void Classed() { Default(true); m_bClassed = true; }
+   Query& FindHash(const std::string& aszHash) { m_vecHashes.push_back(aszHash); return *this; }
    Query& Short() { m_bIsShort = true; return *this; }
    Query& IncludeCount() { m_bIncludeCount = true; }
    Query& HashType(CopyItem::HashType hashType) { m_htHash = hashType; return *this; }
@@ -45,6 +46,7 @@ public:
    MetaTagType GetMetaType() const { return m_mttMetaType; }
    bool GetUIDs() const { return m_bUIDs; }
    bool GetClassed() const { return m_bClassed; }
+   std::vector<std::string> GetHashes() const { return m_vecHashes;  }
 
 private:
    bool m_bClassed;
@@ -54,6 +56,7 @@ private:
    bool m_bIncludeCount;
    CopyItem::HashType m_htHash;
    MetaTagType m_mttMetaType;
+   std::vector<std::string> m_vecHashes;
    
    
    bool m_bIsShort;

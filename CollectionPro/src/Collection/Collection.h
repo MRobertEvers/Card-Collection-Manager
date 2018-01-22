@@ -14,10 +14,9 @@ class CollectionFactory;
 class Collection
 {
 public:
-   Collection(
-      string aszName,
-      CollectionSource* aoSource,
-      string aszID = "");
+   Collection( string aszName,
+               CollectionSource* aoSource,
+               string aszID = "" );
    ~Collection();
 
    string GetName();
@@ -25,56 +24,49 @@ public:
    unsigned int GetChildCount();
    void ChildAdded();
 
-   void AddItem(
-      string aszName,
-      vector<Tag> alstAttrs = vector<Tag>(),
-      vector<Tag> alstMetaTags = vector<Tag>(),
-      bool abCloseTransaction = true);
+   void AddItem( string aszName,
+                 vector<Tag> alstAttrs = vector<Tag>(),
+                 vector<Tag> alstMetaTags = vector<Tag>(),
+                 bool abCloseTransaction = true );
 
-   void AddItemFrom(
-      string aszName,
-      string aszUID,
-      const Location& aAddress,
-      bool abCloseTransaction = true);
+   void AddItemFrom( string aszName,
+                     string aszUID,
+                     const Location& aAddress,
+                     bool abCloseTransaction = true );
 
-   void RemoveItem(
-      string aszName,
-      string aszUID,
-      bool abCloseTransaction = true);
+   void RemoveItem( string aszName,
+                    string aszUID,
+                    bool abCloseTransaction = true );
 
-   void ChangeItem(
-      string aszName,
-      string aszUID,
-      vector<Tag> alstIdChanges,
-      vector<Tag> alstMetaChanges,
-      bool abCloseTransaction = true);
+   void ChangeItem( string aszName,
+                    string aszUID,
+                    vector<Tag> alstIdChanges,
+                    vector<Tag> alstMetaChanges,
+                    bool abCloseTransaction = true );
 
-   void ReplaceItem(
-      string aszName,
-      string aszUID,
-      string aszNewName,
-      vector<Tag> alstIdChanges,
-      vector<Tag> alstMetaChanges,
-      bool abCloseTransaction = true);
+   void ReplaceItem( string aszName,
+                     string aszUID,
+                     string aszNewName,
+                     vector<Tag> alstIdChanges,
+                     vector<Tag> alstMetaChanges,
+                     bool abCloseTransaction = true );
 
    vector<string> GetMetaData();
 
    void SaveCollection();
 
    bool InitializeCollection();
-   bool InitializeCollection(string aszFileName,
-      vector<string>& rlstInitializeLines);
-   void LoadCollection(
-      const string& aszFileName,
-      CollectionFactory* aoFactory);
+   bool InitializeCollection( string aszFileName,
+                              vector<string>& rlstInitializeLines );
+   void LoadCollection( const string& aszFileName,
+                        CollectionFactory* aoFactory );
    void LoadChanges(vector<string> aszLines);
 
    vector<string> QueryCollection( Query aiQueryParms );
 
-   vector<string> GetCollectionList(
-      MetaTagType atagType = Visible,
-      bool abCollapsed = true,
-      CopyItem::HashType ahashType = CopyItem::HashType::Default);
+   vector<string> GetCollectionList( MetaTagType atagType = Visible,
+                                     bool abCollapsed = true,
+                                     CopyItem::HashType ahashType = CopyItem::HashType::Default);
 
 
    vector<string> GetShortList();

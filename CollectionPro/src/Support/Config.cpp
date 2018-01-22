@@ -395,11 +395,13 @@ void Config::initConfigSettings(ifstream& asConfig)
       xmlNode_Key = xmlNode_Key->next_sibling();
 
       string szValue = xmlNode_Key->value();
-      if( isdigit(szValue[0]) ) {
+      if( isdigit(szValue[0]) )
+      {
          int iNumVals = stoi(szValue);
          m_mapKeyCodes.insert(make_pair(szKey, iNumVals));
       }
-      else {
+      else
+      {
          Debug::Log("Config", "Failed to load key code " + szValue);
       }
 

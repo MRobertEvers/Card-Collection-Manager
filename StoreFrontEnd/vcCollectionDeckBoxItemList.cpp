@@ -1,5 +1,5 @@
 #include "vcCollectionDeckBoxItemList.h"
-#include "StoreFront.h"
+#include "StoreFrontEnd.h"
 #include "vcdCDBIListItemData.h"
 
 wxBEGIN_EVENT_TABLE(vcCollectionDeckBoxItemList, wxPanel)
@@ -104,24 +104,39 @@ void
 vcCollectionDeckBoxItemList::RefreshList()
 {
    auto ptSF = StoreFrontEnd::Instance();
-   auto lstCol = ptSF->GetCollectionList( m_wxszColID.ToStdString(),
-                                          0 /*Default HashType is 7*/ );
-   vector<vcdCDBIListItemData> vecData;
+   Query query;
+   query.UIDs();
+   auto lstCol = ptSF->GetAllCardsStartingWith(m_wxszColID.ToStdString(), query);
+
+   m_vecDataItems.clear();
    for( auto& szItem : lstCol )
    {
       vcdCDBIListItemData data(szItem, vcdCDBIListItemData::LONG_NAME);
-      vecData.push_back(data);
+      m_vecDataItems.push_back(data);
    }
 
    m_wxListControl->Freeze();
    m_wxListControl->DeleteAllItems();
-   displayGrouping(defaultGrouping(vecData));
+   displayGrouping(defaultGrouping(m_vecDataItems));
    m_wxListControl->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
    m_wxListControl->SetColumnWidth(1, wxLIST_AUTOSIZE);
    m_wxListControl->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER);
    m_wxListControl->SetColumnWidth(3, wxLIST_AUTOSIZE);
    m_wxListControl->SetColumnWidth(4, wxLIST_AUTOSIZE);
    m_wxListControl->Thaw();
+}
+
+vcdCDBIListItemData 
+vcCollectionDeckBoxItemList::GetItem(int Ind)
+{
+   if( m_vecDataItems.size() > Ind )
+   {
+      return m_vecDataItems[Ind];
+   }
+   else
+   {
+      return vcdCDBIListItemData();
+   }
 }
 
 void

@@ -77,7 +77,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\wxWidgets-3.1.0\lib\vc_lib;C:\wxWidgets-3.1.0\include\msvc;C:\wxWidgets-3.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;WINVER=0x0500;__WXMSW__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;WINVER=0x0500;__WXMSW__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -134,13 +134,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
-    <ClCompile Include="StoreFront.cpp" />
+    <ClCompile Include="StoreFrontEnd.cpp" />
     <ClCompile Include="vcCollectionDeckBoxItemList.cpp" />
     <ClCompile Include="vcdCDBIListItemData.cpp" />
     <ClCompile Include="vCollectionDeckBox.cpp" />
     <ClCompile Include="vCollectionsOverview.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="vcCollectionsMenuList.cpp" />
+    <ClCompile Include="viCardEditor.cpp" />
     <ClCompile Include="vicCollectionEditListItemOption.cpp" />
     <ClCompile Include="vicCollectionEditorList.cpp" />
     <ClCompile Include="vicCollectionEditorListItem.cpp" />
@@ -148,10 +149,12 @@
     <ClCompile Include="vicListSelector.cpp" />
     <ClCompile Include="viCollectionEditor.cpp" />
     <ClCompile Include="ViewOptions.cpp" />
+    <ClCompile Include="wxImagePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
-    <ClInclude Include="StoreFront.h" />
+    <ClInclude Include="CETraitOption.h" />
+    <ClInclude Include="StoreFrontEnd.h" />
     <ClInclude Include="vcCollectionDeckBoxItemList.h" />
     <ClInclude Include="vcdCDBIListItemData.h" />
     <ClInclude Include="vCollectionDeckBox.h" />
@@ -160,6 +163,7 @@
     <ClInclude Include="StorefrontConfig.h" />
     <ClInclude Include="vcCollectionsMenuList.h" />
     <ClInclude Include="CELIOption.h" />
+    <ClInclude Include="viCardEditor.h" />
     <ClInclude Include="vicCollectionEditListItemOption.h" />
     <ClInclude Include="vicCollectionEditorList.h" />
     <ClInclude Include="vicCollectionEditorListItem.h" />
@@ -167,6 +171,7 @@
     <ClInclude Include="vicListSelector.h" />
     <ClInclude Include="viCollectionEditor.h" />
     <ClInclude Include="ViewOptions.h" />
+    <ClInclude Include="wxImagePanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CollectionPro\CollectionPro.vcxproj">

@@ -54,27 +54,26 @@ public:
                      const vector<TraitItem>& alstRestrictions );
    ~CollectionObject();
    // Adds an item to the list of copies.
-   shared_ptr<CopyItem> AddCopy(const Location& aAddrColID,
-      const vector<Tag>& alstAttrTags,
-      const vector<Tag>& alstMetaTags);
+   shared_ptr<CopyItem> AddCopy( const Location& aAddrColID,
+                                 const vector<Tag>& alstAttrTags,
+                                 const vector<Tag>& alstMetaTags );
 
-   bool RemoveCopy(const Location& aAddrColID,
-      const string aszUniqueID);
+   bool RemoveCopy( const Location& aAddrColID,
+                    const string aszUniqueID );
 
-   string GenerateHash(const Identifier& aAddrIdentifier,
-      const vector<Tag>& alstAttrs,
-      const vector<Tag>& alstMetaTags) const;
+   string GenerateHash( const Identifier& aAddrIdentifier,
+                        const vector<Tag>& alstAttrs,
+                        const vector<Tag>& alstMetaTags ) const;
 
    // Deletes an item from the list of copies.
    void DeleteCopy(const string& aszUniqueHash);
 
-   TryGetCopy<shared_ptr<CopyItem>> FindCopy( const string& aszUniqueHash,
-                                                   FindType aiType = UID ) const;
+   TryGetCopy<shared_ptr<CopyItem>> FindCopy( const string& aszUniqueID,
+                                              FindType aiType = UID ) const;
    vector<shared_ptr<CopyItem>> FindCopies( const Identifier& aCollection,
-                                                      CollectionObjectType aSearchType ) const;
-   vector<shared_ptr<CopyItem>> FindCopies( const Location& aCollection,
-                                                      CollectionObjectType aSearchType ) const;
-
+                                            CollectionObjectType aSearchType ) const;
+   vector<shared_ptr<CopyItem>> FindCopies(const Location& aCollection,
+      CollectionObjectType aSearchType) const;
    string GetName() const;
    string GetProtoType() const;
    string GetCommonTrait(const string& aszTrait) const;

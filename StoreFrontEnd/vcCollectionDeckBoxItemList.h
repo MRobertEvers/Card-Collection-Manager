@@ -32,11 +32,12 @@ public:
    ~vcCollectionDeckBoxItemList();
 
    void RefreshList();
-
+   vcdCDBIListItemData GetItem(int Ind);
 private:
    // This is so we can populate event data before sending it up.
    wxDECLARE_EVENT_TABLE();
 
+   std::vector<vcdCDBIListItemData> m_vecDataItems;
    wxListCtrl* m_wxListControl;
    wxString m_wxszColID;
 

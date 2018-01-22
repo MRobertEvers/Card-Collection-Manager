@@ -2,7 +2,7 @@
 #include <wx/listctrl.h>
 #include <wx/filedlg.h>
 #include <wx/wfstream.h>
-#include "StoreFront.h"
+#include "StoreFrontEnd.h"
 
 wxBEGIN_EVENT_TABLE(vCollectionsOverview, wxPanel)
 EVT_BUTTON(vCollectionsOverview::Load_Collection, vCollectionsOverview::OnLoadCollection)

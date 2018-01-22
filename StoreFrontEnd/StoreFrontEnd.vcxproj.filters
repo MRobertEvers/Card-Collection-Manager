@@ -43,6 +43,12 @@
     <Filter Include="Views\Deckbox\ComponentHelpers">
       <UniqueIdentifier>{4963d8e0-6851-4db2-a3f9-1ed7888d8ffd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Interfaces\CardEditor">
+      <UniqueIdentifier>{f5826536-5ce6-427d-ac26-1a59c6f44800}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\CardEditor\Components">
+      <UniqueIdentifier>{0cf2b4cb-8083-4995-9df1-c93bcfea3e94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -56,9 +62,6 @@
     </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Views</Filter>
-    </ClCompile>
-    <ClCompile Include="StoreFront.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vCollectionDeckBox.cpp">
       <Filter>Views\Deckbox</Filter>
@@ -90,6 +93,15 @@
     <ClCompile Include="vcdCDBIListItemData.cpp">
       <Filter>Views\Deckbox\ComponentHelpers</Filter>
     </ClCompile>
+    <ClCompile Include="viCardEditor.cpp">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="wxImagePanel.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -106,9 +118,6 @@
     </ClInclude>
     <ClInclude Include="MainWindow.h">
       <Filter>Views</Filter>
-    </ClInclude>
-    <ClInclude Include="StoreFront.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vCollectionDeckBox.h">
       <Filter>Views\Deckbox</Filter>
@@ -142,6 +151,18 @@
     </ClInclude>
     <ClInclude Include="vcdCDBIListItemData.h">
       <Filter>Views\Deckbox\ComponentHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="viCardEditor.h">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="StoreFrontEnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CETraitOption.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="wxImagePanel.h">
+      <Filter>Views\Template</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
