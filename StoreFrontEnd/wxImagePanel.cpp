@@ -35,6 +35,9 @@ void wxImagePanel::keyReleased(wxKeyEvent& event) {}
 wxImagePanel::wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format) :
    wxPanel(parent)
 {
+   wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
+   this->SetSizer(boxSizer);
+
    // load the file... ideally add a check to see if loading was successful
    image.LoadFile(file, format);
    w = -1;
@@ -76,21 +79,25 @@ void wxImagePanel::paintNow()
 */
 void wxImagePanel::render(wxDC&  dc)
 {
-   dc.DrawBitmap(image, 0, 0, false);
-   //int neww, newh;
-   //dc.GetSize(&neww, &newh);
+   //dc.DrawBitmap(image, 0, 0, false);
+   if( this->GetSize().GetWidth() + this->GetSize().GetHeight() <= 0 )
+   {
+      return;
+   }
+   int neww, newh;
+   dc.GetSize(&neww, &newh);
 
-   //if( neww != w || newh != h )
-   //{
-   //   resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
-   //   w = neww;
-   //   h = newh;
-   //   dc.DrawBitmap(resized, 0, 0, false);
-   //}
-   //else
-   //{
-   //   dc.DrawBitmap(resized, 0, 0, false);
-   //}
+   if( (neww != w || newh != h) && ( neww != 0 && newh != 0 ))
+   {
+      resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
+      w = neww;
+      h = newh;
+      dc.DrawBitmap(resized, 0, 0, false);
+   }
+   else
+   {
+      dc.DrawBitmap(resized, 0, 0, false);
+   }
 }
 
 /*

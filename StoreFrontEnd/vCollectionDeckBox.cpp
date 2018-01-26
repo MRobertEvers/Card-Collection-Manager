@@ -15,7 +15,6 @@ vCollectionDeckBox::vCollectionDeckBox( wxWindow* aptParent,
    : wxPanel(aptParent, aiWID)
 {
    m_wxszColID = aszColID;
-
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer(1, 3, 0, 0);
    boxSizer->AddGrowableCol(0);
    boxSizer->AddGrowableRow(0);
@@ -38,9 +37,10 @@ vCollectionDeckBox::ShowCollectionEditor()
 {
    //auto viColEd = new viCollectionEditor(this, 4, m_wxszColID);
    //this->GetSizer()->Add(viColEd, wxSizerFlags(1).Center().Shaped());
-
+   this->Freeze();
    auto viCardEd = new viCardEditor(this, 5, m_wxszColID, m_vcItemList->GetItem(0).GetHash());
-   this->GetSizer()->Add(viCardEd, wxSizerFlags(1).Center().Shaped());
+   this->GetSizer()->Add(viCardEd, wxSizerFlags(1).Shaped().FixedMinSize());
+   this->Thaw();
 }
 
 void 

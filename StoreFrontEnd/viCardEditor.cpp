@@ -9,6 +9,10 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
                             wxString aszColID, wxString aszCardHash )
    : wxPanel(aptParent, aiWID),  m_szColID(aszColID)
 {
+   wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
+   this->SetSizer(boxSizer);
+   this->SetSize(250, 350);
+
    StoreFront* ptSF = StoreFrontEnd::Instance();
    StringInterface parser;
    Query query;
@@ -49,8 +53,7 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
    }
 
 
-   wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
-   this->SetSizer(boxSizer);
+
    fetchImage();
 }
 
@@ -102,7 +105,7 @@ viCardEditor::fetchImage()
          m_jpgPanel->Destroy();
       }
       m_jpgPanel = new wxImagePanel(this, szFullPath, wxBitmapType::wxBITMAP_TYPE_ANY);
-      this->GetSizer()->Add(m_jpgPanel);
+      this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
    }
    else
    {
