@@ -139,11 +139,20 @@ vcCollectionDeckBoxItemList::GetItem(int Ind)
    }
 }
 
+bool 
+vcCollectionDeckBoxItemList::IsEmpty()
+{
+   return m_vecDataItems.size() > 0;
+}
+
 void
 vcCollectionDeckBoxItemList::onItemSelection(wxListEvent& awxEvt)
 {
    m_iSelection = awxEvt.GetIndex();
-   awxEvt.StopPropagation();
+   if( m_iSelection != -1 )
+   {
+      awxEvt.Skip();
+   }
 }
 
 void
@@ -188,6 +197,8 @@ void
 vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
                                              std::vector<vcdCDBIListItemData*>>& amapGrouping)
 {
+   // TODO: this is inefficient because I am not copying pointers here.
+   std::vector<vcdCDBIListItemData> TempData;
    for( auto& group : amapGrouping )
    {
       wxString buf = group.first;
@@ -201,8 +212,12 @@ vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
       for( auto& item : group.second )
       {
          addListItem(*item);
+         TempData.push_back(*item);
       }
    }
+
+   m_vecDataItems.clear();
+   m_vecDataItems = TempData;
 }
 
 void 

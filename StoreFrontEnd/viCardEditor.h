@@ -14,6 +14,8 @@ public:
                  wxString aszColID, wxString aszCardHash );
    ~viCardEditor();
 
+   void DisplayNew(wxString aszColID, wxString aszCardHash);
+
 private:
    //wxDECLARE_EVENT_TABLE();
    wxImagePanel* m_jpgPanel;
@@ -23,5 +25,6 @@ private:
    std::vector<wxString> m_vecUIDs;
 
    void fetchImage();
-   void downloadImage(const wxString& aszMUD, const wxString& aszFileName);
+   void freeImage();
+   void setImage(const wxString& aszImagePath);
 };

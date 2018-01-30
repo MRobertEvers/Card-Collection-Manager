@@ -13,6 +13,21 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
    this->SetSizer(boxSizer);
    this->SetSize(250, 350);
 
+   DisplayNew(aszColID, aszCardHash);
+}
+
+viCardEditor::~viCardEditor()
+{
+
+}
+
+void 
+viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash)
+{
+   m_vecAttrs.clear();
+   m_vecUIDs.clear();
+   m_szColID = aszColID;
+
    StoreFront* ptSF = StoreFrontEnd::Instance();
    StringInterface parser;
    Query query;
@@ -50,16 +65,12 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
       {
          m_vecUIDs.push_back(pairUID.second);
       }
+
+      // Break if there is more than one for some reason.
+      break;
    }
 
-
-
    fetchImage();
-}
-
-viCardEditor::~viCardEditor()
-{
-
 }
 
 void 
@@ -99,13 +110,8 @@ viCardEditor::fetchImage()
    if( imageFile.good() )
    {
       imageFile.close();
-      if( m_jpgPanel )
-      {
-         this->GetSizer()->Detach(m_jpgPanel);
-         m_jpgPanel->Destroy();
-      }
-      m_jpgPanel = new wxImagePanel(this, szFullPath, wxBitmapType::wxBITMAP_TYPE_ANY);
-      this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
+      freeImage();
+      setImage(szFullPath);
    }
    else
    {
@@ -114,29 +120,18 @@ viCardEditor::fetchImage()
 }
 
 void 
-viCardEditor::downloadImage(const wxString& aszMUD, const wxString& aszFileName)
+viCardEditor::freeImage()
 {
-   wxURL url;
-   if( aszMUD != "" )
+   if( m_jpgPanel )
    {
-      url = (wxT("http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + aszMUD + "&type=card"));
+      this->GetSizer()->Detach(m_jpgPanel);
+      m_jpgPanel->Destroy();
    }
-   else
-   {
-      url = (wxT("http://gatherer.wizards.com/Handlers/Image.ashx?name=" + m_szCardName + "&type=card"));
-   }
+}
 
-   if( url.GetError() == wxURL_NOERR )
-   {
-      wxString htmldata;
-      wxInputStream *in = url.GetInputStream();
-
-      if( in && in->IsOk() )
-      {
-         wxFileOutputStream ofStreamFile("Test.jpg");
-         in->Read(ofStreamFile);
-         ofStreamFile.Close();
-      }
-      delete in;
-   }
+void 
+viCardEditor::setImage(const wxString& aszImagePath)
+{
+   m_jpgPanel = new wxImagePanel(this, aszImagePath, wxBitmapType::wxBITMAP_TYPE_ANY);
+   this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
 }

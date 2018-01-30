@@ -33,6 +33,7 @@ public:
 
    void RefreshList();
    vcdCDBIListItemData GetItem(int Ind);
+   bool IsEmpty();
 private:
    // This is so we can populate event data before sending it up.
    wxDECLARE_EVENT_TABLE();
