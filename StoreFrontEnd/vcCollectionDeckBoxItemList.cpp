@@ -129,9 +129,9 @@ vcCollectionDeckBoxItemList::RefreshList()
 vcdCDBIListItemData 
 vcCollectionDeckBoxItemList::GetItem(int Ind)
 {
-   if( m_vecDataItems.size() > Ind )
+   if( Ind < m_vecDataItemsDisplayOrder.size() )
    {
-      return m_vecDataItems[Ind];
+      return *m_vecDataItemsDisplayOrder[Ind];
    }
    else
    {
@@ -197,8 +197,7 @@ void
 vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
                                              std::vector<vcdCDBIListItemData*>>& amapGrouping)
 {
-   // TODO: this is inefficient because I am not copying pointers here.
-   std::vector<vcdCDBIListItemData> TempData;
+   unsigned int iCount = 0;
    for( auto& group : amapGrouping )
    {
       wxString buf = group.first;
@@ -209,15 +208,13 @@ vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
       item.m_itemId = i;
       item.SetBackgroundColour(*wxLIGHT_GREY);
       m_wxListControl->SetItem(item);
+      m_vecDataItemsDisplayOrder.push_back(0);
       for( auto& item : group.second )
       {
          addListItem(*item);
-         TempData.push_back(*item);
+         m_vecDataItemsDisplayOrder.push_back(item);
       }
    }
-
-   m_vecDataItems.clear();
-   m_vecDataItems = TempData;
 }
 
 void 

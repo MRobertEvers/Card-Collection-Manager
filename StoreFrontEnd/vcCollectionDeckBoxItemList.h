@@ -39,6 +39,7 @@ private:
    wxDECLARE_EVENT_TABLE();
 
    std::vector<vcdCDBIListItemData> m_vecDataItems;
+   std::vector<vcdCDBIListItemData*> m_vecDataItemsDisplayOrder;
    wxListCtrl* m_wxListControl;
    wxString m_wxszColID;
 

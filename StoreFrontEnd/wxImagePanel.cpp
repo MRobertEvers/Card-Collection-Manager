@@ -1,4 +1,6 @@
 #include "wxImagePanel.h"
+#include<fstream>
+#include<stdio.h>     //for remove( ) and rename( )
 
 BEGIN_EVENT_TABLE(wxImagePanel, wxPanel)
 // some useful events
@@ -33,13 +35,22 @@ void wxImagePanel::keyReleased(wxKeyEvent& event) {}
 */
 
 wxImagePanel::wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format) :
-   wxPanel(parent)
+   wxPanel(parent), IsOk(false)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    this->SetSizer(boxSizer);
 
    // load the file... ideally add a check to see if loading was successful
-   image.LoadFile(file, format);
+   IsOk = image.LoadFile(file, format);
+   if( !IsOk )
+   {
+      // Delete the file if there exists one but it is bad.
+      auto imageFile = std::ifstream(file.ToStdString().c_str());
+      if( imageFile.good() )
+      {
+         std::remove(file.ToStdString().c_str());
+      }
+   }
    w = -1;
    h = -1;
 }
@@ -79,6 +90,10 @@ void wxImagePanel::paintNow()
 */
 void wxImagePanel::render(wxDC&  dc)
 {
+   if( !IsOk )
+   {
+      return;
+   }
    //dc.DrawBitmap(image, 0, 0, false);
    if( this->GetSize().GetWidth() + this->GetSize().GetHeight() <= 0 )
    {

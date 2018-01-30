@@ -53,6 +53,7 @@ vCollectionDeckBox::onEditorAccept(wxCommandEvent& awxEvt)
 void 
 vCollectionDeckBox::onNewItemSelected(wxListEvent& awxEvt)
 {
+   // TODO: THe index input doesn't correspond exactly to the card we want.
    auto itemData = m_vcItemList->GetItem(awxEvt.GetIndex());
    notifyCardEditor(itemData.GetHash());
 }

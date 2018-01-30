@@ -17,6 +17,8 @@ public:
    void OnSize(wxSizeEvent& event);
    void render(wxDC& dc);
 
+   bool IsOk;
+
    DECLARE_EVENT_TABLE()
 };
 
