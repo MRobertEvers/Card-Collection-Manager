@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="ImageFetcher.cpp" />
     <ClCompile Include="StoreFrontEnd.cpp" />
     <ClCompile Include="vcCollectionDeckBoxItemList.cpp" />
     <ClCompile Include="vcdCDBIListItemData.cpp" />
@@ -154,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="CETraitOption.h" />
+    <ClInclude Include="ImageFetcher.h" />
     <ClInclude Include="StoreFrontEnd.h" />
     <ClInclude Include="vcCollectionDeckBoxItemList.h" />
     <ClInclude Include="vcdCDBIListItemData.h" />

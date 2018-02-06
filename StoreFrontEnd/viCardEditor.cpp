@@ -102,20 +102,14 @@ viCardEditor::fetchImage()
    ifstream imageFile(szFullPath.ToStdString().c_str());
    if( !imageFile.good() )
    {
-      SFE.DownloadCardImage(szFullPath, m_szCardName, szSet, szMUD);
-   }
-   imageFile.close();
-
-   imageFile = ifstream(szFullPath.ToStdString().c_str());
-   if( imageFile.good() )
-   {
       imageFile.close();
-      freeImage();
-      setImage(szFullPath);
+      SFE.DownloadCardImage(szFullPath, m_szCardName, szSet, szMUD);
    }
    else
    {
       imageFile.close();
+      freeImage();
+      setImage(szFullPath);
    }
 }
 

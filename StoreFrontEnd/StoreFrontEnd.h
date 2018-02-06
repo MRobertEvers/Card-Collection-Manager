@@ -12,12 +12,11 @@ public:
    ~StoreFrontEnd();
 
    bool DownloadCardImage( const wxString& aszFilePath,
-                        const wxString& aszCardName,
-                        const wxString& aszSet,
-                        const wxString& aszMUD );
+                           const wxString& aszCardName,
+                           const wxString& aszSet,
+                           const wxString& aszMUD );
 
-   bool PrepareImagesFolder();
-   bool PrepareImageSetFolder(const wxString& aszSet);
+
 public:
    static StoreFront* Instance();
   

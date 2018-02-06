@@ -129,7 +129,8 @@ vcCollectionDeckBoxItemList::RefreshList()
 vcdCDBIListItemData 
 vcCollectionDeckBoxItemList::GetItem(int Ind)
 {
-   if( Ind < m_vecDataItemsDisplayOrder.size() )
+   if( ( Ind < m_vecDataItemsDisplayOrder.size() ) && 
+       ( m_vecDataItemsDisplayOrder[Ind] != NULL ) )
    {
       return *m_vecDataItemsDisplayOrder[Ind];
    }

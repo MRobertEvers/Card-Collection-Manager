@@ -102,6 +102,9 @@
     <ClCompile Include="StoreFrontEnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ImageFetcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -163,6 +166,9 @@
     </ClInclude>
     <ClInclude Include="wxImagePanel.h">
       <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageFetcher.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
