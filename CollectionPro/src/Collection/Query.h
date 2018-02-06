@@ -24,7 +24,7 @@ public:
    void Classed() { Default(true); m_bClassed = true; }
    Query& FindHash(const std::string& aszHash) { m_vecHashes.push_back(aszHash); return *this; }
    Query& Short() { m_bIsShort = true; return *this; }
-   Query& IncludeCount() { m_bIncludeCount = true; }
+   Query& IncludeCount() { m_bIncludeCount = true; return *this; }
    Query& HashType(CopyItem::HashType hashType) { m_htHash = hashType; return *this; }
    Query& HashAny() { m_htHash = CopyItem::HashType::Default; return *this; }
    Query& HashIDs() { m_htHash = CopyItem::HashType::Ids; return *this; }

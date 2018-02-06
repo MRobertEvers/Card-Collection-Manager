@@ -119,7 +119,7 @@ CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
       ItemData& cardData = card.second;
 
       // Build the strings
-      if( aiQueryParms.GetIncludeCount() )
+      if( !aiQueryParms.GetIncludeCount() )
       {
          // ToCardLine does not include the count if its 0.
          cardData.Count = 0;
@@ -129,7 +129,6 @@ CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
       vector<Tag> vecMeta;
       if( aiQueryParms.GetUIDs() )
       {
-         cardData.Count = 0;
          for( auto& szUID : cardData.Groups )
          {
             vecMeta.push_back(make_pair(CopyItem::GetUIDKey(), szUID));

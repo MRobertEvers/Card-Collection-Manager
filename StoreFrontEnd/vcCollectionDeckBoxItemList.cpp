@@ -106,6 +106,7 @@ vcCollectionDeckBoxItemList::RefreshList()
    auto ptSF = StoreFrontEnd::Instance();
    Query query;
    query.UIDs();
+   query.IncludeCount();
    auto lstCol = ptSF->GetAllCardsStartingWith(m_wxszColID.ToStdString(), query);
 
    m_vecDataItems.clear();
