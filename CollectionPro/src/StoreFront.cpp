@@ -146,28 +146,6 @@ StoreFront::GetCollectionMetaData(const string& aszCollection)
    }
 }
 
-vector<string>
-StoreFront::GetCollectionList(const string& aszCollection, int aiVisibility)
-{
-   if( m_ColFactory->CollectionExists(aszCollection) )
-   {
-      if( aiVisibility < 0 )
-      {
-         return m_ColFactory->GetCollection(aszCollection)->GetShortList();
-      }
-      else
-      {
-         return m_ColFactory->GetCollection(aszCollection)->
-            GetCollectionList((MetaTagType)aiVisibility);
-      }
-   }
-   else
-   {
-      vector<string> lstEmpty;
-      return lstEmpty;
-   }
-}
-
 vector<string> 
 StoreFront::GetAllCardsStartingWith( const string& aszColID, 
                                      const Query& aszSearch )

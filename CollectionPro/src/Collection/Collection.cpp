@@ -321,131 +321,11 @@ Collection::QueryCollection(Query aiQueryParms)
    return m_ptrCollectionQueryHelper->QueryCollection(aiQueryParms);
 }
 
-vector<string>
-Collection::GetCollectionList( MetaTagType atagType,
-                               bool abCollapsed,
-                               CopyItem::HashType ahashType ) 
-{
-   vector<string> lstRetVal;
-   
-   // <hash, (card name, count)>
-   // Its multi because some hashes clash between cards.
-   multimap<string, pair<string, unsigned int>> mapSeenHashes;
-   map<string, pair<string, unsigned int>> mapCardHashes;
-
-   vector<int> lstCol = getCollection();
-   for( auto iItem : lstCol ) 
-   {
-      auto item = m_ptrCollectionSource->GetCardPrototype(iItem);
-      auto lstCopies = item->FindCopies(GetIdentifier(), All);
-      mapCardHashes.clear();
-
-      for( auto copy : lstCopies )
-      {
-         string szHash = copy->GetHash(ahashType);
-         auto iter_Counted = mapCardHashes.find(szHash);
-         if( (!abCollapsed) || (iter_Counted == mapCardHashes.end()) )
-         {
-            string szRep = item->CopyToString( copy.get(), atagType,
-                                               GetIdentifier() );
-            auto pairCard = make_pair(szRep, 1);
-            mapCardHashes.insert(make_pair(szHash, pairCard));
-         }
-         else if( iter_Counted != mapCardHashes.end() )
-         {
-            iter_Counted->second.second++;
-         }
-      }
-
-      mapSeenHashes.insert(mapCardHashes.begin(), mapCardHashes.end());
-   }
-
-   if( abCollapsed )
-   {
-      vector<string> lstNewRetVal;
-      for( auto& pCard : mapSeenHashes )
-      {
-         string szCard = pCard.second.first;
-         int iCount = pCard.second.second;
-
-         string szLine = "x" + to_string(iCount) + " " + szCard;
-         lstNewRetVal.push_back(szLine);
-      }
-
-      lstRetVal.clear();
-      lstRetVal = lstNewRetVal;
-   }
-
-   return lstRetVal;
-}
-
-// Returns each item in this collection with a list of its UIDs.
-vector<string>
-Collection::GetShortList() 
-{
-   StringInterface stringIface;
-
-   // <hash, (card name, UID List)>
-   multimap<string, pair<string, vector<string>>> mapSeenHashes;
-   map<string, pair<string, vector<string>>> mapCardHashes;
-
-   vector<int> lstCol = getCollection();
-   for( auto& iItem : lstCol )
-   {
-      auto item = m_ptrCollectionSource->GetCardPrototype(iItem);
-      auto lstCopies = item->FindCopies(GetIdentifier(), All);
-      mapCardHashes.clear();
-
-      for( auto& copy : lstCopies ) 
-      {
-         string szHash = copy->GetHash();
-         string szCopyUID = copy->GetUID();
-
-         auto iter_Counted = mapCardHashes.find(szHash);
-         if( iter_Counted == mapCardHashes.end() )
-         {
-            auto vecOnlyUID = vector<string> { szCopyUID };
-            string szRep = item->CopyToString(copy.get(), None);
-            auto pairCardAndUID = make_pair(szRep, vecOnlyUID);
-
-            auto pairHashUID = make_pair(szHash, pairCardAndUID);
-            mapCardHashes.insert(pairHashUID);
-         }
-         else
-         {
-            iter_Counted->second.second.push_back(szCopyUID);
-         }
-      }
-
-      mapSeenHashes.insert(mapCardHashes.begin(), mapCardHashes.end());
-   }
-
-   string szUIDKey = CopyItem::GetUIDKey();
-   vector<string> vecNewRetval;
-   vector<Tag> vecUIDPairs;
-   for( auto& pCard : mapSeenHashes )
-   {
-      int iCount = pCard.second.second.size();
-      string szCard = pCard.second.first;
-
-      string szLine = "x" + to_string(iCount) + " " + szCard;
-
-      vecUIDPairs.clear();
-      for( auto& szUID : pCard.second.second )
-      {
-         vecUIDPairs.push_back(make_pair(szUIDKey, szUID));
-      }
-
-      szLine = stringIface.ToCardLine(szLine, vector<Tag>(), vecUIDPairs);
-      vecNewRetval.push_back(szLine);
-   }
-
-   return vecNewRetval;
-}
-
 vector<int>
-Collection::getCollection() {
-   if( m_ptrCollectionSource->IsSyncNeeded(GetIdentifier()) ) {
+Collection::getCollection()
+{
+   if( m_ptrCollectionSource->IsSyncNeeded(GetIdentifier()) ) 
+   {
       m_lstItemCacheIndexes = m_ptrCollectionSource->
          GetCollectionCache(GetIdentifier());
 
@@ -459,10 +339,12 @@ CopyItem*
 Collection::addItem(
    const string& aszName,
    const vector<Tag>& alstAttrs,
-   const vector<Tag>& alstMetaTags) {
+   const vector<Tag>& alstMetaTags) 
+{
    CopyItem* cItem;
    int iCache = m_ptrCollectionSource->LoadCard(aszName);
-   if( iCache == -1 ) {
+   if( iCache == -1 ) 
+   {
       // TODO Could Not Load.
       return nullptr;
    }
@@ -967,11 +849,15 @@ Collection::saveHistory() {
    }
 }
 
-void Collection::saveMeta() {
+void Collection::saveMeta() 
+{
    ofstream oMetaFile;
    CollectionIO ioHelper;
+   Query listQuery;
 
-   vector<string> lstMetaLines = GetCollectionList(Persistent, false);
+   listQuery.IncludeMetaType(Persistent);
+   listQuery.GetCollapsed();
+   vector<string> lstMetaLines = QueryCollection(listQuery);
 
    oMetaFile.open(ioHelper.GetMetaFile(m_ptrCollectionDetails->GetFileName()));
 
@@ -1015,8 +901,11 @@ void Collection::saveCollection()
 {
    // Group lists only by id. When loading, these lists are only
    // used to create a template card. We only need the base details.
-   vector<string> lstLines = GetCollectionList(None, true,
-      CopyItem::HashType::Ids);
+   Query listQuery;
+   listQuery.IncludeMetaType(None);
+   listQuery.HashType(CopyItem::HashType::Ids);
+   listQuery.GetCollapsed();
+   vector<string> lstLines = QueryCollection(listQuery);
 
    // Convert the lines to shorthand
    for( auto& szLine : lstLines ) {

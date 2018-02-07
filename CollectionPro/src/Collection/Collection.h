@@ -64,13 +64,6 @@ public:
 
    vector<string> QueryCollection( Query aiQueryParms );
 
-   vector<string> GetCollectionList( MetaTagType atagType = Visible,
-                                     bool abCollapsed = true,
-                                     CopyItem::HashType ahashType = CopyItem::HashType::Default);
-
-
-   vector<string> GetShortList();
-
    bool IsLoaded = false;
 
 private:

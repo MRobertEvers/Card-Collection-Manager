@@ -196,7 +196,7 @@ CollectionQueryHelper::getNameGroupsEnumHash(const Query& aiQueryParms)
          continue;
       }
 
-      // 1. Count each occurence of an identical hash within a card if collapsing,
+      // 2. Count each occurence of an identical hash within a card if collapsing,
       // otherwise add it.
       auto lstCopies = item->FindCopies(m_ptCollection->GetIdentifier(), All);
       for( auto copy : lstCopies )
