@@ -134,8 +134,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="cCollectionDeckBox.cpp" />
+    <ClCompile Include="cCollectionDeckBox.h" />
+    <ClCompile Include="cCollectionsOverview.cpp" />
     <ClCompile Include="ImageFetcher.cpp" />
+    <ClCompile Include="IMenuEventHandler.cpp" />
     <ClCompile Include="StoreFrontEnd.cpp" />
+    <ClCompile Include="TestPopup.cpp" />
     <ClCompile Include="vcCollectionDeckBoxItemList.cpp" />
     <ClCompile Include="vcdCDBIListItemData.cpp" />
     <ClCompile Include="vCollectionDeckBox.cpp" />
@@ -149,14 +154,16 @@
     <ClCompile Include="vicCollectionEditorListItemPlusMinusCounter.cpp" />
     <ClCompile Include="vicListSelector.cpp" />
     <ClCompile Include="viCollectionEditor.cpp" />
-    <ClCompile Include="ViewOptions.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="cCollectionsOverview.h" />
     <ClInclude Include="CETraitOption.h" />
     <ClInclude Include="ImageFetcher.h" />
+    <ClInclude Include="IMenuEventHandler.h" />
     <ClInclude Include="StoreFrontEnd.h" />
+    <ClInclude Include="TestPopup.h" />
     <ClInclude Include="vcCollectionDeckBoxItemList.h" />
     <ClInclude Include="vcdCDBIListItemData.h" />
     <ClInclude Include="vCollectionDeckBox.h" />
@@ -172,7 +179,6 @@
     <ClInclude Include="vicCollectionEditorListItemPlusMinusCounter.h" />
     <ClInclude Include="vicListSelector.h" />
     <ClInclude Include="viCollectionEditor.h" />
-    <ClInclude Include="ViewOptions.h" />
     <ClInclude Include="wxImagePanel.h" />
   </ItemGroup>
   <ItemGroup>

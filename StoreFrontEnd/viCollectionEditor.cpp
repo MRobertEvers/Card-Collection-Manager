@@ -1,7 +1,6 @@
 #include "viCollectionEditor.h"
 #include "vicCollectionEditorList.h"
 #include "StoreFrontEnd.h"
-
 #include <chrono>
 
 #define TIMER_ID 5
@@ -77,6 +76,7 @@ viCollectionEditor::buildButtons()
 
    this->GetSizer()->Add(wxTopPanel, wxSizerFlags(2).Expand());
 }
+
 
 void
 viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
@@ -253,6 +253,7 @@ viCollectionEditor::onDecline(wxCommandEvent&)
    // TODO: CLOSE THIS WINDOW>
    return;
 }
+
 
 unsigned long 
 viCollectionEditor::getTime()

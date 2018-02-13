@@ -3,8 +3,8 @@
 #include <wx/timer.h>
 #include <vector>
 #include <string>
-#include "StoreFrontEnd.h"
 #include "vicListSelector.h"
+#include "wx/popupwin.h"
 
 class vicListSelector;
 class vicCollectionEditorList;
@@ -29,6 +29,8 @@ public:
 
 private:
    wxDECLARE_EVENT_TABLE();
+
+
    wxTimer m_timer;
    wxString m_szCollectionID;
    vicListSelector* m_vAddSelector;

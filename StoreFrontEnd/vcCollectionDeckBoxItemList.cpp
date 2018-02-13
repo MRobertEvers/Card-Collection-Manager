@@ -73,10 +73,8 @@ GetGroup(const vcdCDBIListItemData& aData)
 
 vcCollectionDeckBoxItemList::vcCollectionDeckBoxItemList( wxWindow* aptParent,
                                                           const wxString& aszColID )
-   : wxPanel(aptParent)
+   : wxPanel(aptParent), m_wxszColID(aszColID)
 {
-   m_wxszColID = aszColID;
-
    m_iSelection = -1;
    m_wxListControl = new wxListCtrl( this, List,
                                      wxDefaultPosition, wxDefaultSize, wxLC_REPORT );

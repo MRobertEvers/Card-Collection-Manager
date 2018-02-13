@@ -10,10 +10,14 @@
 #include "wx/wxprec.h"
 #include "StoreFrontEnd.h"
 #include <wx/aui/framemanager.h>
+#include <vector>
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+
+class wxMenu;
+class IMenuEventHandler;
 
 // IDs for the controls and the menu commands. Taken from minimal sample.
 enum
@@ -30,24 +34,35 @@ public:
    MainFrame(const wxString& title);
    ~MainFrame();
 
+   void RegisterMenu(wxMenu* fileMenu, wxString aszTitle);
+
    void OnQuit(wxCommandEvent& event);
    void OnAbout(wxCommandEvent& event);
 
    void OnViewCollection(wxCommandEvent& event);
    void OnViewCollectionOverview(wxCommandEvent& awxEvt);
    void OnImportSource(wxCommandEvent& awxEvt);
+   void OnGenericMenuEvent(wxCommandEvent& awxEvt);
+
+   void RegisterSendMenuEvents();
+   void ReleaseMenuEventHandler();
+   void BindMenuEventHandler();
 
 private:
    wxDECLARE_EVENT_TABLE();
 
-   wxPanel* m_CurrentPanel;
+   IMenuEventHandler* m_CurrentPanel;
+   wxMenuBar* m_wxMenuBar;
+   std::vector<wxMenu*> m_vecViewMenus;
+   bool m_bEvtHandlerView;
+   bool m_bEvtHandlerViewFlag;
 
    void buildMenus();
 
    void viewCollectionsOverview();
    void viewCollection(const wxString& aszColName);
 
-   void setView(wxPanel* awxNewPanel);
+   void setView(IMenuEventHandler* awxNewPanel);
 
    void appendMenuOptions(unsigned int aiMenuID, const wxString& aszName);
 };

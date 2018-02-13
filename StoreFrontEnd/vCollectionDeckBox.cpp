@@ -3,6 +3,7 @@
 #include "viCollectionEditor.h"
 #include "viCardEditor.h"
 #include "vcdCDBIListItemData.h"
+#include "MainWindow.h"
 
 wxBEGIN_EVENT_TABLE(vCollectionDeckBox, wxPanel)
 EVT_BUTTON(viCollectionEditor::Changes_Accept, vCollectionDeckBox::onEditorAccept)
@@ -10,7 +11,7 @@ EVT_LIST_ITEM_SELECTED(vcCollectionDeckBoxItemList::List, vCollectionDeckBox::on
 // EVT_BUTTON(viCollectionEditor::Changes_Decline, viCollectionEditor::onDecline)
 wxEND_EVENT_TABLE()
 
-vCollectionDeckBox::vCollectionDeckBox( wxWindow* aptParent, 
+vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent, 
                                         wxWindowID aiWID,
                                         const wxString& aszColID )
    : wxPanel(aptParent, aiWID)
@@ -38,6 +39,7 @@ vCollectionDeckBox::ShowCollectionEditor()
 {
    //auto viColEd = new viCollectionEditor(this, 4, m_wxszColID);
    //this->GetSizer()->Add(viColEd, wxSizerFlags(1).Center().Shaped());
+
    if( !m_vcItemList->IsEmpty() )
    {
       notifyCardEditor(m_vcItemList->GetItem(0).GetHash());
@@ -54,8 +56,14 @@ void
 vCollectionDeckBox::onNewItemSelected(wxListEvent& awxEvt)
 {
    // TODO: THe index input doesn't correspond exactly to the card we want.
-   auto itemData = m_vcItemList->GetItem(awxEvt.GetIndex());
-   notifyCardEditor(itemData.GetHash());
+
+   awxEvt.StopPropagation();
+}
+
+void
+vCollectionDeckBox::onDeckEditor(wxCommandEvent& awxEvt)
+{
+
 }
 
 void 

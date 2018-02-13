@@ -75,9 +75,6 @@
     <ClCompile Include="vicListSelector.cpp">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
     </ClCompile>
-    <ClCompile Include="ViewOptions.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
     <ClCompile Include="vicCollectionEditorList.cpp">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
     </ClCompile>
@@ -104,6 +101,21 @@
     </ClCompile>
     <ClCompile Include="ImageFetcher.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestPopup.cpp">
+      <Filter>Views</Filter>
+    </ClCompile>
+    <ClCompile Include="IMenuEventHandler.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="cCollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
+    </ClCompile>
+    <ClCompile Include="cCollectionDeckBox.cpp">
+      <Filter>Views\Deckbox</Filter>
+    </ClCompile>
+    <ClCompile Include="cCollectionsOverview.cpp">
+      <Filter>Views\Overview</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,9 +145,6 @@
     </ClInclude>
     <ClInclude Include="vicListSelector.h">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewOptions.h">
-      <Filter>Views\Template</Filter>
     </ClInclude>
     <ClInclude Include="vicCollectionEditorList.h">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
@@ -169,6 +178,15 @@
     </ClInclude>
     <ClInclude Include="ImageFetcher.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IMenuEventHandler.h">
+      <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPopup.h">
+      <Filter>Views</Filter>
+    </ClInclude>
+    <ClInclude Include="cCollectionsOverview.h">
+      <Filter>Views\Overview</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
