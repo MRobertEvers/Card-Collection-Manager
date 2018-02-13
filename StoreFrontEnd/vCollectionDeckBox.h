@@ -2,10 +2,9 @@
 #include <wx/listctrl.h>
 #include <wx/object.h> 
 #include "wx/wxprec.h"
-#include "viCardEditor.h"
-#include "IMenuEventHandler.h"
 
 class vcCollectionDeckBoxItemList;
+class viCardEditor;
 class MainFrame;
 
 class vCollectionDeckBox : public wxPanel

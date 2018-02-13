@@ -19,11 +19,11 @@ enum
 class SimpleTransientPopup : public wxPopupTransientWindow
 {
 public:
-   SimpleTransientPopup(wxWindow *parent, bool scrolled);
+   SimpleTransientPopup(wxWindow *parent);
    virtual ~SimpleTransientPopup();
 
 private:
-   wxScrolledWindow * m_panel;
+   wxPanel * m_panel;
    wxButton *m_button;
    wxStaticText *m_mouseText;
    viCollectionEditor* m_Editor;

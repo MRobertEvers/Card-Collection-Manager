@@ -35,7 +35,7 @@ cCollectionDeckBox::handleEvent(unsigned int aiEvent)
 {
    if( aiEvent == Menu_DeckEditor )
    {
-      auto viColEd = new SimpleTransientPopup(GetView(), true);
+      auto viColEd = new SimpleTransientPopup(GetView());
       wxPoint pos = GetView()->ClientToScreen(wxPoint(-300, 300));
       wxSize sz = GetView()->GetSize();
       viColEd->Position(pos, sz);
