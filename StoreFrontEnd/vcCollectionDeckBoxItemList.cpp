@@ -108,6 +108,7 @@ vcCollectionDeckBoxItemList::RefreshList()
    auto lstCol = ptSF->GetAllCardsStartingWith(m_wxszColID.ToStdString(), query);
 
    m_vecDataItems.clear();
+   m_vecDataItemsDisplayOrder.clear();
    for( auto& szItem : lstCol )
    {
       vcdCDBIListItemData data(szItem, vcdCDBIListItemData::LONG_NAME);
@@ -126,7 +127,7 @@ vcCollectionDeckBoxItemList::RefreshList()
 }
 
 vcdCDBIListItemData 
-vcCollectionDeckBoxItemList::GetItem(int Ind)
+vcCollectionDeckBoxItemList::GetItemByListIndex(int Ind)
 {
    if( ( Ind < m_vecDataItemsDisplayOrder.size() ) && 
        ( m_vecDataItemsDisplayOrder[Ind] != NULL ) )
@@ -139,10 +140,29 @@ vcCollectionDeckBoxItemList::GetItem(int Ind)
    }
 }
 
+vcdCDBIListItemData 
+vcCollectionDeckBoxItemList::GetFirst()
+{
+   if( m_vecDataItemsDisplayOrder.size() > 0 )
+   {
+      int i = 0;
+      while( i < m_vecDataItemsDisplayOrder.size()  &&
+             m_vecDataItemsDisplayOrder[i] == NULL )
+      {
+         i++;
+      }
+      if( m_vecDataItemsDisplayOrder[i] != NULL )
+      {
+         return *m_vecDataItemsDisplayOrder[i];
+      }
+   }
+   return vcdCDBIListItemData();
+}
+
 bool 
 vcCollectionDeckBoxItemList::IsEmpty()
 {
-   return m_vecDataItems.size() > 0;
+   return m_vecDataItems.size() == 0;
 }
 
 void

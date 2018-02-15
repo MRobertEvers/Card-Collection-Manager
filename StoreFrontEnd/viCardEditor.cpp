@@ -24,6 +24,11 @@ viCardEditor::~viCardEditor()
 void 
 viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash)
 {
+   if( aszCardHash.IsEmpty() )
+   {
+      return;
+   }
+
    m_vecAttrs.clear();
    m_vecUIDs.clear();
    m_szColID = aszColID;

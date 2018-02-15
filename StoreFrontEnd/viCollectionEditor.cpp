@@ -27,6 +27,9 @@ viCollectionEditor::viCollectionEditor(wxWindow* aptParent, wxWindowID aiWID, wx
    buildSelectors();
    buildListView();
    buildButtons();
+
+   this->Fit();
+   this->Layout();
 }
 
 
@@ -71,8 +74,8 @@ viCollectionEditor::buildButtons()
                                            Changes_Decline,
                                            "Cancel" );
 
-   wxTopPanel->GetSizer()->Add(acceptButton, wxSizerFlags(1).Shaped());
-   wxTopPanel->GetSizer()->Add(declineButton, wxSizerFlags(1).Shaped());
+   wxTopPanel->GetSizer()->Add(acceptButton, wxSizerFlags(1).Center().Shaped());
+   wxTopPanel->GetSizer()->Add(declineButton, wxSizerFlags(1).Center().Shaped());
 
    this->GetSizer()->Add(wxTopPanel, wxSizerFlags(2).Expand());
 }

@@ -32,7 +32,8 @@ public:
    ~vcCollectionDeckBoxItemList();
 
    void RefreshList();
-   vcdCDBIListItemData GetItem(int Ind);
+   vcdCDBIListItemData GetItemByListIndex(int Ind);
+   vcdCDBIListItemData GetFirst();
    bool IsEmpty();
 private:
    // This is so we can populate event data before sending it up.
