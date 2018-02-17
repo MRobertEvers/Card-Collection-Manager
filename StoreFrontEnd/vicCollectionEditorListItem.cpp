@@ -14,7 +14,7 @@ vicCollectionEditorListItem::vicCollectionEditorListItem( wxWindow* aptParent,
    : wxPanel(aptParent, aiID, wxDefaultPosition, wxDefaultSize, wxBORDER | wxTAB_TRAVERSAL),
      m_oOption(aOption), m_oOptionTwo(aOptionTwo), m_iMaxActions(aiMaxActions)
 {
-   wxFlexGridSizer* fgridSizer = new wxFlexGridSizer(1, 3, 0, 0);
+   wxFlexGridSizer* fgridSizer = new wxFlexGridSizer(2, 3, 0, 0);
    fgridSizer->AddGrowableCol(0);
    fgridSizer->SetFlexibleDirection(wxHORIZONTAL);
    fgridSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);

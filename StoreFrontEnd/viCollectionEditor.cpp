@@ -30,8 +30,8 @@ viCollectionEditor::viCollectionEditor(wxWindow* aptParent, wxWindowID aiWID, wx
    buildListView();
    buildButtons();
 
-   this->SetSize(wxSize(300, 400));
-   this->SetSizeHints(wxSize(300, 400));
+   this->SetSize(wxSize(350, 400));
+   this->SetSizeHints(wxSize(350, 400));
    this->Layout();
 }
 
