@@ -1,6 +1,7 @@
 #pragma once
 #include "wx/wxprec.h"
-#include "vcCollectionsMenuList.h"
+
+class vcCollectionsMenuList;
 
 class vCollectionsOverview : public wxPanel
 {
@@ -25,7 +26,6 @@ private:
 
    void buildCollectionsPreview();
    void buildCollectionSelector();
-
-
+   void getLoadedCollections();
 };
 

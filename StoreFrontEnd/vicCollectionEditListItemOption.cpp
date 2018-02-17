@@ -7,7 +7,7 @@ vicCollectionEditorListItemOption( wxWindow* aptParent,
                                    CELIOption aOption )
    : wxPanel(aptParent), m_oOption(aOption)
 {
-   wxFlexGridSizer* fgridSizer = new wxFlexGridSizer(0, 2, 0, 0);
+   wxFlexGridSizer* fgridSizer = new wxFlexGridSizer(1, 2, 0, 0);
    fgridSizer->AddGrowableCol(0);
    fgridSizer->SetFlexibleDirection(wxHORIZONTAL);
    fgridSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
@@ -53,5 +53,5 @@ buildOption(wxChoice** aChoice, const CELIOption& aOption)
    {
       (*aChoice)->SetSelection(0);
    }
-   this->GetSizer()->Add(*aChoice, wxSizerFlags(0).Expand());
+   this->GetSizer()->Add(*aChoice, wxSizerFlags(1).Expand());
 }

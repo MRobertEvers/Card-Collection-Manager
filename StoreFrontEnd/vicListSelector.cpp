@@ -19,7 +19,8 @@ vicListSelector::vicListSelector(wxWindow* aptParent, wxString aszButtonText, wx
    wxButton* addButt = new wxButton( this, vicListSelector::AcceptButton,
                                      aszButtonText );
 
-   wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
+   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(2, 1, 0, 0);
+   boxSizer->AddGrowableCol(0);
    this->SetSizer(boxSizer);
 
    boxSizer->Add(m_wxComboBox, 1, wxEXPAND);
@@ -155,6 +156,7 @@ vicListSelector::onAcceptButton(wxCommandEvent& awxEvt)
          awxEvt.SetInt(GetId());
          awxEvt.Skip();
          SetText("");
+         m_wxComboBox->SetFocus();
       }
    }
 }

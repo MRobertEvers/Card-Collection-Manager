@@ -21,14 +21,17 @@ viCollectionEditor::viCollectionEditor(wxWindow* aptParent, wxWindowID aiWID, wx
      m_bHandleTextEvent(true), m_ulTimeLastKeyStroke(0), m_timer(this, TIMER_ID),
      m_bIsWaitingForDrop(false), m_bIsSelectionFlag(false)
 {
-   wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
+   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(3,1,0,0);
+   boxSizer->AddGrowableCol(0);
+   boxSizer->AddGrowableRow(1);
    this->SetSizer(boxSizer);
 
    buildSelectors();
    buildListView();
    buildButtons();
 
-   this->Fit();
+   this->SetSize(wxSize(300, 400));
+   this->SetSizeHints(wxSize(300, 400));
    this->Layout();
 }
 
@@ -251,10 +254,10 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
 }
 
 void 
-viCollectionEditor::onDecline(wxCommandEvent&)
+viCollectionEditor::onDecline(wxCommandEvent& awxEvt)
 {
    // TODO: CLOSE THIS WINDOW>
-   return;
+   awxEvt.Skip();
 }
 
 

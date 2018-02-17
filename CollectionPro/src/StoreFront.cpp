@@ -155,6 +155,7 @@ StoreFront::GetAllCardsStartingWith( const string& aszColID,
       return m_ColFactory->GetCollection(aszColID)->
          QueryCollection(aszSearch);
    }
+   return vector<string>();
 }
 
 void

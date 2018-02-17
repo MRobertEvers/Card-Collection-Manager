@@ -1,9 +1,9 @@
 #include "MainWindow.h"
 #include "StorefrontConfig.h"
+#include "StoreFrontEnd.h"
+#include "vCollectionsOverview.h"
 #include "cCollectionsOverview.h"
 #include "cCollectionDeckBox.h"
-#include "vCollectionsOverview.h"
-#include "StoreFrontEnd.h"
 #include <wx/defs.h> 
 
 // Events can be tied at run-time. This is compile time.
@@ -100,6 +100,12 @@ MainFrame::RegisterSendMenuEvents()
 void 
 MainFrame::ReleaseMenuEventHandler()
 {
+   auto iMenus = m_wxMenuBar->GetMenuCount();
+   for( int i = 2; i < iMenus; i++ )
+   {
+      m_wxMenuBar->Remove(i);
+   }
+
    if( m_bEvtHandlerView )
    {
       ((IMenuEventHandler*)m_CurrentPanel)->ReleaseEventHandler();

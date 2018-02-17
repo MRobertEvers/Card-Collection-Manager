@@ -3,19 +3,22 @@
 #include <wx/filedlg.h>
 #include <wx/wfstream.h>
 #include "StoreFrontEnd.h"
+#include "vcCollectionsMenuList.h"
+
 
 wxBEGIN_EVENT_TABLE(vCollectionsOverview, wxPanel)
 EVT_BUTTON(vCollectionsOverview::Load_Collection, vCollectionsOverview::OnLoadCollection)
 wxEND_EVENT_TABLE()
 
 vCollectionsOverview::vCollectionsOverview( wxWindow* aptParent,
-                                          wxWindowID aiWID = wxID_ANY ) 
+                                            wxWindowID aiWID = wxID_ANY ) 
    : wxPanel(aptParent, aiWID)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    this->SetSizer(boxSizer);
-
+   this->GetParent()->SetSize(350, 500);
    buildCollectionSelector();
+   getLoadedCollections();
 }
 
 
@@ -35,6 +38,18 @@ vCollectionsOverview::buildCollectionSelector()
 {
    m_vcCollectionsPanel = new vcCollectionsMenuList(this);
    this->GetSizer()->Add(m_vcCollectionsPanel, 1, wxEXPAND);
+}
+
+void 
+vCollectionsOverview::getLoadedCollections()
+{
+   auto ptSF = StoreFrontEnd::Instance();
+   auto vecCols = ptSF->GetLoadedCollections();
+   for( auto& szColID : vecCols )
+   {
+      auto szColName = ptSF->GetCollectionName(szColID);
+      m_vcCollectionsPanel->AddCollectionOption(szColName);
+   }
 }
 
 

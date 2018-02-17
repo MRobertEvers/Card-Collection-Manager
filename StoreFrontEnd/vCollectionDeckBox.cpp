@@ -14,7 +14,7 @@ wxEND_EVENT_TABLE()
 vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent, 
                                         wxWindowID aiWID,
                                         const wxString& aszColID )
-   : wxPanel(aptParent, aiWID)
+   : wxPanel(aptParent, aiWID), m_viColEditor(0)
 {
    m_wxszColID = aszColID;
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer(1, 3, 0, 0);
@@ -24,12 +24,13 @@ vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent,
    this->SetSizer(boxSizer);
 
    buildItemList();
+   this->GetParent()->Layout();
 
    if( !m_vcItemList->IsEmpty() )
    {
       notifyCardEditor(m_vcItemList->GetFirst().GetHash());
    }
-
+   
 }
 
 
@@ -41,6 +42,8 @@ vCollectionDeckBox::~vCollectionDeckBox()
 void 
 vCollectionDeckBox::ShowCollectionEditor()
 {
+   if( m_viColEditor != 0 ) { return; }
+
    m_viColEditor = new viCollectionEditor(this, 4, m_wxszColID);
    this->GetSizer()->Add(m_viColEditor, wxSizerFlags(1).Top().Shaped());
    auto iAdditionSize = m_viColEditor->GetSize().GetWidth();
@@ -53,6 +56,7 @@ vCollectionDeckBox::CloseCollectionEditor()
 {
    auto iAdditionSize = m_viColEditor->GetSize().GetWidth();
    m_viColEditor->Destroy();
+   m_viColEditor = 0;
    this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() - iAdditionSize,
                                this->GetParent()->GetSize().GetY() );
 }

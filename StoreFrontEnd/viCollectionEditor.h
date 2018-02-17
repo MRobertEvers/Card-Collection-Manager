@@ -50,7 +50,7 @@ private:
    void onComboBoxSelection(wxCommandEvent& awxEvt);
    void onDropDownDelay(wxTimerEvent& awxEvt);
    void onAccept(wxCommandEvent& awxEvt);
-   void onDecline(wxCommandEvent&);
+   void onDecline(wxCommandEvent& awxEvt);
 
    unsigned long getTime();
 
