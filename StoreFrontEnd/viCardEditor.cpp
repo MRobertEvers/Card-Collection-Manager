@@ -20,7 +20,6 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
    this->SetSize(250, 500);
 
    DisplayNew(aszColID, aszCardHash);
-   buildTraitListEditor();
 }
 
 viCardEditor::~viCardEditor()
@@ -159,6 +158,11 @@ viCardEditor::refreshDisplay()
 void 
 viCardEditor::refreshEditor()
 {
+   if( m_wxTraitList == NULL )
+   {
+      buildTraitListEditor();
+   }
+
    if( m_vecUIDs.size() > 0 )
    {
       m_wxTraitList->RefreshNew(m_szCardName, m_vecUIDs[0]);
