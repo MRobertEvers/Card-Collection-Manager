@@ -90,6 +90,15 @@ viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash)
    }
 
    fetchImage();
+
+   if( m_wxTraitList != NULL )
+   {
+      // Refactor this
+      if( m_vecUIDs.size() > 0 )
+      {
+         m_wxTraitList->RefreshNew(m_szCardName, m_vecUIDs[0]);
+      }
+   }
 }
 
 void 
@@ -142,6 +151,11 @@ viCardEditor::setImage(const wxString& aszImagePath)
 void 
 viCardEditor::buildTraitListEditor()
 {
-   m_wxTraitList = new vcEditableTraitList(this, 5);
+   if( m_vecUIDs.size() == 0 )
+   {
+      return;
+   }
+
+   m_wxTraitList = new vcEditableTraitList(this, 5, m_szCardName, m_vecUIDs[0]);
    this->GetSizer()->Add(m_wxTraitList, wxSizerFlags(1).Expand());
 }
