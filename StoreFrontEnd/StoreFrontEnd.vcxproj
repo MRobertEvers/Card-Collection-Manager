@@ -143,6 +143,9 @@
     <ClCompile Include="TestPopup.cpp" />
     <ClCompile Include="vcCollectionDeckBoxItemList.cpp" />
     <ClCompile Include="vcdCDBIListItemData.cpp" />
+    <ClCompile Include="vcEditableTraitList.cpp" />
+    <ClCompile Include="vcEditableTraitListItem.cpp" />
+    <ClCompile Include="vcImageWrapper.cpp" />
     <ClCompile Include="vCollectionDeckBox.cpp" />
     <ClCompile Include="vCollectionsOverview.cpp" />
     <ClCompile Include="MainWindow.cpp" />
@@ -166,6 +169,9 @@
     <ClInclude Include="TestPopup.h" />
     <ClInclude Include="vcCollectionDeckBoxItemList.h" />
     <ClInclude Include="vcdCDBIListItemData.h" />
+    <ClInclude Include="vcEditableTraitList.h" />
+    <ClInclude Include="vcEditableTraitListItem.h" />
+    <ClInclude Include="vcImageWrapper.h" />
     <ClInclude Include="vCollectionDeckBox.h" />
     <ClInclude Include="vCollectionsOverview.h" />
     <ClInclude Include="MainWindow.h" />

@@ -39,7 +39,7 @@ wxImagePanel::wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    this->SetSizer(boxSizer);
-
+   this->SetSize(wxSize(223, 311));
    // load the file... ideally add a check to see if loading was successful
    IsOk = image.LoadFile(file, format);
    if( !IsOk )

@@ -9,8 +9,6 @@ vicCollectionEditorList::vicCollectionEditorList(wxWindow* aptParent)
    : wxScrolledWindow(aptParent), m_iItemCounts(0)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
-
-
    this->SetSizer(boxSizer);
    this->FitInside(); // ask the sizer about the needed size
 

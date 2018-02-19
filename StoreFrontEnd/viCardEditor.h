@@ -4,8 +4,11 @@
 #include <wx/image.h>
 #include <wx/bitmap.h>
 #include "CETraitOption.h"
-#include "wxImagePanel.h"
+
 #include <wx/imagjpeg.h>
+
+class vcEditableTraitList;
+class vcImageWrapper;
 
 class viCardEditor : public wxPanel
 {
@@ -18,13 +21,15 @@ public:
 
 private:
    //wxDECLARE_EVENT_TABLE();
-   wxImagePanel* m_jpgPanel;
+   vcImageWrapper* m_jpgPanel;
+   vcEditableTraitList* m_wxTraitList;
    wxString m_szCardName;
    wxString m_szColID;
    std::vector<CETraitOption> m_vecAttrs;
    std::vector<wxString> m_vecUIDs;
 
    void fetchImage();
-   void freeImage();
    void setImage(const wxString& aszImagePath);
+
+   void buildTraitListEditor();
 };

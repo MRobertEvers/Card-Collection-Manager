@@ -117,6 +117,15 @@
     <ClCompile Include="cCollectionsOverview.cpp">
       <Filter>Views\Overview</Filter>
     </ClCompile>
+    <ClCompile Include="vcEditableTraitList.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="vcEditableTraitListItem.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="vcImageWrapper.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -187,6 +196,15 @@
     </ClInclude>
     <ClInclude Include="cCollectionsOverview.h">
       <Filter>Views\Overview</Filter>
+    </ClInclude>
+    <ClInclude Include="vcEditableTraitList.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vcEditableTraitListItem.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vcImageWrapper.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

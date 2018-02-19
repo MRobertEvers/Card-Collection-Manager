@@ -23,6 +23,7 @@ vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent,
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer(boxSizer);
 
+   this->GetParent()->SetSize(550, 500);
    buildItemList();
    this->GetParent()->Layout();
 
@@ -103,8 +104,8 @@ vCollectionDeckBox::notifyCardEditor(const wxString& aszHash)
    if( m_viCardEditor == nullptr )
    {
       m_viCardEditor = new viCardEditor(this, 5, m_wxszColID, aszHash);
-      m_viCardEditor->SetMinSize(wxSize(300, 400));
-      this->GetSizer()->Add(m_viCardEditor, wxSizerFlags(1).Shaped().FixedMinSize());
+      //m_viCardEditor->SetMinSize(wxSize(350, 500));
+      this->GetSizer()->Add(m_viCardEditor, wxSizerFlags(1));
       auto iAdditionSize = m_viCardEditor->GetSize().GetWidth();
       this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
                                   this->GetParent()->GetSize().GetY() );
@@ -113,6 +114,6 @@ vCollectionDeckBox::notifyCardEditor(const wxString& aszHash)
    {
       m_viCardEditor->DisplayNew(m_wxszColID, aszHash);
    }
-   this->Thaw();
    PostSizeEvent();
+   this->Thaw();
 }

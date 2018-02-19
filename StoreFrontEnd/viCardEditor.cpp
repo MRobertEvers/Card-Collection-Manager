@@ -1,5 +1,7 @@
 #include "viCardEditor.h"
 #include "StoreFrontEnd.h"
+#include "vcEditableTraitList.h"
+#include "vcImageWrapper.h"
 #include <wx/url.h>
 #include <wx/sstream.h>
 #include <wx/imagjpeg.h>
@@ -9,11 +11,16 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
                             wxString aszColID, wxString aszCardHash )
    : wxPanel(aptParent, aiWID),  m_szColID(aszColID)
 {
-   wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
+   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(2, 1, 0, 0);//(wxVERTICAL);//(2,1,0,0);
+   boxSizer->AddGrowableRow(1);
+   boxSizer->SetFlexibleDirection(wxVERTICAL);
+   boxSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
+  
    this->SetSizer(boxSizer);
-   this->SetSize(250, 350);
+   this->SetSize(250, 500);
 
    DisplayNew(aszColID, aszCardHash);
+   buildTraitListEditor();
 }
 
 viCardEditor::~viCardEditor()
@@ -24,6 +31,13 @@ viCardEditor::~viCardEditor()
 void 
 viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash)
 {
+   if( m_jpgPanel == NULL )
+   {
+      m_jpgPanel = new vcImageWrapper(this, 1);
+      this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
+      //this->Layout();
+   }
+
    if( aszCardHash.IsEmpty() )
    {
       return;
@@ -113,24 +127,21 @@ viCardEditor::fetchImage()
    else
    {
       imageFile.close();
-      freeImage();
       setImage(szFullPath);
-   }
-}
-
-void 
-viCardEditor::freeImage()
-{
-   if( m_jpgPanel )
-   {
-      this->GetSizer()->Detach(m_jpgPanel);
-      m_jpgPanel->Destroy();
    }
 }
 
 void 
 viCardEditor::setImage(const wxString& aszImagePath)
 {
-   m_jpgPanel = new wxImagePanel(this, aszImagePath, wxBitmapType::wxBITMAP_TYPE_ANY);
-   this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
+   this->Freeze();
+   m_jpgPanel->SetImage(aszImagePath);
+   this->Thaw();
+}
+
+void 
+viCardEditor::buildTraitListEditor()
+{
+   m_wxTraitList = new vcEditableTraitList(this, 5);
+   this->GetSizer()->Add(m_wxTraitList, wxSizerFlags(1).Expand());
 }
