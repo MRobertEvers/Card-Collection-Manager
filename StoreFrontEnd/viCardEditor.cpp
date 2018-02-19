@@ -31,73 +31,10 @@ viCardEditor::~viCardEditor()
 void 
 viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash)
 {
-   if( m_jpgPanel == NULL )
+   if( parseNew(aszColID, aszCardHash) )
    {
-      m_jpgPanel = new vcImageWrapper(this, 1);
-      this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
-      //this->Layout();
-   }
-
-   if( aszCardHash.IsEmpty() )
-   {
-      return;
-   }
-
-   m_vecAttrs.clear();
-   m_vecUIDs.clear();
-   m_szColID = aszColID;
-
-   StoreFront* ptSF = StoreFrontEnd::Instance();
-   StringInterface parser;
-   Query query;
-   query.FindHash(aszCardHash.ToStdString());
-   query.UIDs();
-
-   auto vecItems = ptSF->GetAllCardsStartingWith(m_szColID.ToStdString(), query);
-
-   // There should only be ONE item in the list.
-   for( auto& item : vecItems )
-   {
-      unsigned int Count;
-      string Name;
-      vector<pair<string, string>> Identifiers;
-      vector<pair<string, string>> MetaTags;
-
-      parser.ParseCardLine(item, Count, Name, Identifiers, MetaTags);
-      m_szCardName = Name;
-
-      auto mapOptions = ptSF->GetIdentifyingAttributeOptions(Name);
-      for( auto& pairAttr : Identifiers )
-      {
-         CETraitOption option;
-         option.Selection = pairAttr.second;
-
-         option.Key = pairAttr.first;
-
-         auto iter_traits = mapOptions.find(pairAttr.first);
-         option.Options = iter_traits->second;
-
-         m_vecAttrs.push_back(option);
-      }
-
-      for( auto& pairUID : MetaTags )
-      {
-         m_vecUIDs.push_back(pairUID.second);
-      }
-
-      // Break if there is more than one for some reason.
-      break;
-   }
-
-   fetchImage();
-
-   if( m_wxTraitList != NULL )
-   {
-      // Refactor this
-      if( m_vecUIDs.size() > 0 )
-      {
-         m_wxTraitList->RefreshNew(m_szCardName, m_vecUIDs[0]);
-      }
+      refreshDisplay();
+      refreshEditor();
    }
 }
 
@@ -148,6 +85,87 @@ viCardEditor::setImage(const wxString& aszImagePath)
    this->Thaw();
 }
 
+
+bool 
+viCardEditor::parseNew(wxString aszColID, wxString aszCardHash)
+{
+   if( aszCardHash.IsEmpty() )
+   {
+      return false;
+   }
+
+   m_vecAttrs.clear();
+   m_vecUIDs.clear();
+   m_szColID = aszColID;
+
+   StoreFront* ptSF = StoreFrontEnd::Instance();
+   StringInterface parser;
+   Query query;
+   query.FindHash(aszCardHash.ToStdString());
+   query.UIDs();
+
+   auto vecItems = ptSF->GetAllCardsStartingWith(m_szColID.ToStdString(), query);
+
+   // There should only be ONE item in the list.
+   for( auto& item : vecItems )
+   {
+      unsigned int Count;
+      string Name;
+      vector<pair<string, string>> Identifiers;
+      vector<pair<string, string>> MetaTags;
+
+      parser.ParseCardLine(item, Count, Name, Identifiers, MetaTags);
+      m_szCardName = Name;
+
+      auto mapOptions = ptSF->GetIdentifyingAttributeOptions(Name);
+      for( auto& pairAttr : Identifiers )
+      {
+         CETraitOption option;
+         option.Selection = pairAttr.second;
+
+         option.Key = pairAttr.first;
+
+         auto iter_traits = mapOptions.find(pairAttr.first);
+         option.Options = iter_traits->second;
+
+         m_vecAttrs.push_back(option);
+      }
+
+      for( auto& pairUID : MetaTags )
+      {
+         m_vecUIDs.push_back(pairUID.second);
+      }
+
+      // Break if there is more than one for some reason.
+      break;
+   }
+
+   return true;
+}
+
+void 
+viCardEditor::refreshDisplay()
+{
+   if( m_jpgPanel == NULL )
+   {
+      m_jpgPanel = new vcImageWrapper(this, 1);
+      this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
+      //this->Layout();
+   }
+
+   fetchImage();
+}
+
+void 
+viCardEditor::refreshEditor()
+{
+   if( m_vecUIDs.size() > 0 )
+   {
+      m_wxTraitList->RefreshNew(m_szCardName, m_vecUIDs[0]);
+   }
+   // TODO: ELSE FAIL or CLEAR OPTIONS
+}
+
 void 
 viCardEditor::buildTraitListEditor()
 {
@@ -155,6 +173,7 @@ viCardEditor::buildTraitListEditor()
    {
       return;
    }
+   // TODO: ELSE DO SOMETHING
 
    m_wxTraitList = new vcEditableTraitList(this, 5, m_szCardName, m_vecUIDs[0]);
    this->GetSizer()->Add(m_wxTraitList, wxSizerFlags(1).Expand());

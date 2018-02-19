@@ -31,5 +31,9 @@ private:
    void fetchImage();
    void setImage(const wxString& aszImagePath);
 
+   bool parseNew(wxString aszColID, wxString aszCardHash);
+   void refreshDisplay();
+   void refreshEditor();
+
    void buildTraitListEditor();
 };

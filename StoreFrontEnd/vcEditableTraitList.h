@@ -22,6 +22,8 @@ public:
    void RefreshNew( const wxString& aszName,
                     const wxString& aszUID );
 
+   void storePairedAttrs(std::vector<Tag> &vecPairAttrs);
+
 private:
    wxDECLARE_EVENT_TABLE();
    std::map<int, wxString> m_mapAttrToID;

@@ -4,6 +4,8 @@
 #include "StoreFrontEnd.h"
 #include "vcEditableTraitListItem.h"
 
+using namespace std;
+
 wxBEGIN_EVENT_TABLE(vcEditableTraitList, wxScrolledWindow)
 EVT_CHOICE(vcEditableTraitList::Selection_Changed, vcEditableTraitList::onItemSelectionChanged)
 wxEND_EVENT_TABLE()
@@ -35,44 +37,30 @@ vcEditableTraitList::RefreshNew( const wxString& aszName,
 
    // Lift the rest a function.
    auto vecPairAttrs = ptSF->GetPairedAttributes();
-   for( auto& szAttr : vecPairAttrs )
-   {
-      auto iter_hasAttr = m_mapPairedAttrs.find(szAttr.first);
-      if( iter_hasAttr != m_mapPairedAttrs.end() )
-      {
-         iter_hasAttr->second.push_back(szAttr.second);
-      }
-      else
-      {
-         m_mapPairedAttrs.insert(std::make_pair(szAttr.first, std::vector<wxString>({ szAttr.second })));
-      }
-
-      iter_hasAttr = m_mapPairedAttrs.find(szAttr.second);
-      if( iter_hasAttr != m_mapPairedAttrs.end() )
-      {
-         iter_hasAttr->second.push_back(szAttr.first);
-      }
-      else
-      {
-         m_mapPairedAttrs.insert(std::make_pair(szAttr.second, std::vector<wxString>({ szAttr.first })));
-      }
-   }
+   storePairedAttrs(vecPairAttrs);
 
    auto mapOptions = ptSF->GetIdentifyingAttributeOptions(aszName.ToStdString());
    auto vecSelections = ptSF->GetIdentifyingAttributes(aszName.ToStdString(),
-      aszUID.ToStdString());
-   std::map<std::string, std::string> mapSelections;
+                                                       aszUID.ToStdString());
+   storeTraitListItems(vecSelections, mapOptions);
+}
+
+void 
+vcEditableTraitList::storeTraitListItems( vector<Tag> &vecSelections, 
+                                          map<string, vector<string>> &mapOptions )
+{
+   map<string, string> mapSelections;
    for( auto& selection : vecSelections )
    {
-      mapSelections.insert(std::make_pair(selection.first, selection.second));
+      mapSelections.insert(make_pair(selection.first, selection.second));
    }
 
    int i = 0; // Used to assign a number to the trait name
    for( auto& opt : mapOptions )
    {
-      m_mapAttrToID.insert(std::make_pair(i, wxString(opt.first)));
+      m_mapAttrToID.insert(make_pair(i, wxString(opt.first)));
       auto item = new vcEditableTraitListItem(this, i, opt.first, opt.second);
-      m_mapTraitItems.insert(std::make_pair(opt.first, item));
+      m_mapTraitItems.insert(make_pair(opt.first, item));
 
       this->GetSizer()->Add(item, wxSizerFlags(1).Expand());
 
@@ -88,6 +76,32 @@ vcEditableTraitList::RefreshNew( const wxString& aszName,
       }
 
       i++;
+   }
+}
+
+void vcEditableTraitList::storePairedAttrs(vector<Tag> &vecPairAttrs)
+{
+   for( auto& szAttr : vecPairAttrs )
+   {
+      auto iter_hasAttr = m_mapPairedAttrs.find(szAttr.first);
+      if( iter_hasAttr != m_mapPairedAttrs.end() )
+      {
+         iter_hasAttr->second.push_back(szAttr.second);
+      }
+      else
+      {
+         m_mapPairedAttrs.insert(make_pair(szAttr.first, vector<wxString>({ szAttr.second })));
+      }
+
+      iter_hasAttr = m_mapPairedAttrs.find(szAttr.second);
+      if( iter_hasAttr != m_mapPairedAttrs.end() )
+      {
+         iter_hasAttr->second.push_back(szAttr.first);
+      }
+      else
+      {
+         m_mapPairedAttrs.insert(make_pair(szAttr.second, vector<wxString>({ szAttr.first })));
+      }
    }
 }
 
