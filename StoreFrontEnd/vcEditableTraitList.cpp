@@ -49,6 +49,7 @@ void
 vcEditableTraitList::storeTraitListItems( vector<Tag> &vecSelections, 
                                           map<string, vector<string>> &mapOptions )
 {
+   // Keep track of traitlist item nnames and a pointer to their object
    map<string, string> mapSelections;
    for( auto& selection : vecSelections )
    {

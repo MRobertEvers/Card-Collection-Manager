@@ -126,6 +126,12 @@
     <ClCompile Include="vcImageWrapper.cpp">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClCompile>
+    <ClCompile Include="vcItemNameCheckBox.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="vcEditableItemList.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -204,6 +210,12 @@
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
     <ClInclude Include="vcImageWrapper.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vcItemNameCheckBox.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vcEditableItemList.h">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
   </ItemGroup>

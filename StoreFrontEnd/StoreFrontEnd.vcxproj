@@ -137,6 +137,7 @@
     <ClCompile Include="cCollectionDeckBox.cpp" />
     <ClCompile Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
+    <ClCompile Include="vcEditableItemList.cpp" />
     <ClCompile Include="ImageFetcher.cpp" />
     <ClCompile Include="IMenuEventHandler.cpp" />
     <ClCompile Include="StoreFrontEnd.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="vcEditableTraitList.cpp" />
     <ClCompile Include="vcEditableTraitListItem.cpp" />
     <ClCompile Include="vcImageWrapper.cpp" />
+    <ClCompile Include="vcItemNameCheckBox.cpp" />
     <ClCompile Include="vCollectionDeckBox.cpp" />
     <ClCompile Include="vCollectionsOverview.cpp" />
     <ClCompile Include="MainWindow.cpp" />
@@ -169,9 +171,11 @@
     <ClInclude Include="TestPopup.h" />
     <ClInclude Include="vcCollectionDeckBoxItemList.h" />
     <ClInclude Include="vcdCDBIListItemData.h" />
+    <ClInclude Include="vcEditableItemList.h" />
     <ClInclude Include="vcEditableTraitList.h" />
     <ClInclude Include="vcEditableTraitListItem.h" />
     <ClInclude Include="vcImageWrapper.h" />
+    <ClInclude Include="vcItemNameCheckBox.h" />
     <ClInclude Include="vCollectionDeckBox.h" />
     <ClInclude Include="vCollectionsOverview.h" />
     <ClInclude Include="MainWindow.h" />

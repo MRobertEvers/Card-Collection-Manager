@@ -8,6 +8,7 @@
 #include <wx/imagjpeg.h>
 
 class vcEditableTraitList;
+class vcEditableItemList;
 class vcImageWrapper;
 
 class viCardEditor : public wxPanel
@@ -23,6 +24,7 @@ private:
    //wxDECLARE_EVENT_TABLE();
    vcImageWrapper* m_jpgPanel;
    vcEditableTraitList* m_wxTraitList;
+   vcEditableItemList* m_wxEditableItemList;
    wxString m_szCardName;
    wxString m_szColID;
    std::vector<CETraitOption> m_vecAttrs;
@@ -34,6 +36,7 @@ private:
    bool parseNew(wxString aszColID, wxString aszCardHash);
    void refreshDisplay();
    void refreshEditor();
+   void refreshSelector();
 
    void buildTraitListEditor();
 };

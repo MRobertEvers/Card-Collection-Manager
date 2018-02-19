@@ -105,7 +105,7 @@ vCollectionDeckBox::notifyCardEditor(const wxString& aszHash)
    {
       m_viCardEditor = new viCardEditor(this, 5, m_wxszColID, aszHash);
       //m_viCardEditor->SetMinSize(wxSize(350, 500));
-      this->GetSizer()->Add(m_viCardEditor, wxSizerFlags(1));
+      this->GetSizer()->Add(m_viCardEditor, wxSizerFlags(1).Expand());
       auto iAdditionSize = m_viCardEditor->GetSize().GetWidth();
       this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
                                   this->GetParent()->GetSize().GetY() );

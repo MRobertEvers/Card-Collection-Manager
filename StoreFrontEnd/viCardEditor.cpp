@@ -1,6 +1,7 @@
 #include "viCardEditor.h"
 #include "StoreFrontEnd.h"
 #include "vcEditableTraitList.h"
+#include "vcEditableItemList.h"
 #include "vcImageWrapper.h"
 #include <wx/url.h>
 #include <wx/sstream.h>
@@ -11,10 +12,11 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
                             wxString aszColID, wxString aszCardHash )
    : wxPanel(aptParent, aiWID),  m_szColID(aszColID)
 {
-   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(2, 1, 0, 0);//(wxVERTICAL);//(2,1,0,0);
-   boxSizer->AddGrowableRow(1);
+   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(3, 1, 0, 0);//(wxVERTICAL);//(2,1,0,0);
    boxSizer->SetFlexibleDirection(wxVERTICAL);
    boxSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
+   // boxSizer->AddGrowableRow(1);
+   boxSizer->AddGrowableRow(2);
   
    this->SetSizer(boxSizer);
    this->SetSize(250, 500);
@@ -34,6 +36,7 @@ viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash)
    {
       refreshDisplay();
       refreshEditor();
+      refreshSelector();
    }
 }
 
@@ -168,6 +171,21 @@ viCardEditor::refreshEditor()
       m_wxTraitList->RefreshNew(m_szCardName, m_vecUIDs[0]);
    }
    // TODO: ELSE FAIL or CLEAR OPTIONS
+}
+
+void 
+viCardEditor::refreshSelector()
+{
+   if( m_wxEditableItemList == NULL )
+   {
+      m_wxEditableItemList = new vcEditableItemList(this, 0, m_vecUIDs);
+      this->GetSizer()->Add(m_wxEditableItemList, wxSizerFlags(1).Expand());
+   }
+   else
+   {
+      m_wxEditableItemList->RefreshNew(m_vecUIDs);
+   }
+   
 }
 
 void 
