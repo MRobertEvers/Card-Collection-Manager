@@ -283,6 +283,22 @@ StringInterface::CmdCreateReplace(const string& aszLongNameRemove, const string&
 }
 
 string 
+StringInterface::CmdCreateModify( const string& aszLongName, const string& aszUID,
+                                  const vector<Tag>& alstAttrs,
+                                  const vector<Tag>& alstMetaTags )
+{
+   string szRetVal = CmdCreateRemove(aszLongName, aszUID);
+   szRetVal[0] = '%';
+   szRetVal += " -> ";
+   string szTags;
+   PairListToTagStr( alstAttrs.begin(), alstAttrs.end(), szTags );
+   szRetVal += GetNameFromCardLine( aszLongName ) + szTags;
+   PairListToTagStr( alstMetaTags.begin(), alstMetaTags.end(), szTags );
+   szRetVal += " : " + szTags;
+   return szRetVal;
+}
+
+string 
 StringInterface::CmdAppendCount(const string& aszCmd, int Count)
 {
    return aszCmd.substr(0,1) + " x" + std::to_string(Count) + " " + aszCmd.substr(1);

@@ -3,16 +3,22 @@
 #include "vcEditableTraitList.h"
 #include "vcEditableItemList.h"
 #include "vcImageWrapper.h"
+#include <string>
 #include <wx/url.h>
 #include <wx/sstream.h>
 #include <wx/imagjpeg.h>
 #include <wx/wfstream.h>
 
+wxBEGIN_EVENT_TABLE(viCardEditor, wxPanel)
+EVT_BUTTON(Changes_Submit, viCardEditor::onChangesAccept)
+EVT_BUTTON(Changes_Reset, viCardEditor::onChangesReset)
+wxEND_EVENT_TABLE()
+
 viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
                             wxString aszColID, wxString aszCardHash )
    : wxPanel(aptParent, aiWID),  m_szColID(aszColID)
 {
-   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(3, 1, 0, 0);//(wxVERTICAL);//(2,1,0,0);
+   wxFlexGridSizer* boxSizer = new wxFlexGridSizer(4, 1, 0, 0);//(wxVERTICAL);//(2,1,0,0);
    boxSizer->SetFlexibleDirection(wxVERTICAL);
    boxSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
    // boxSizer->AddGrowableRow(1);
@@ -22,6 +28,7 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
    this->SetSize(250, 500);
 
    DisplayNew(aszColID, aszCardHash);
+   buildSubmitResetButtons();
 }
 
 viCardEditor::~viCardEditor()
@@ -34,9 +41,11 @@ viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash)
 {
    if( parseNew(aszColID, aszCardHash) )
    {
+      this->Freeze();
       refreshDisplay();
       refreshEditor();
       refreshSelector();
+      this->Thaw();
    }
 }
 
@@ -95,6 +104,7 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash)
    {
       return false;
    }
+   m_szDisplayingHash = aszCardHash;
 
    m_vecAttrs.clear();
    m_vecUIDs.clear();
@@ -199,4 +209,63 @@ viCardEditor::buildTraitListEditor()
 
    m_wxTraitList = new vcEditableTraitList(this, 5, m_szCardName, m_vecUIDs[0]);
    this->GetSizer()->Add(m_wxTraitList, wxSizerFlags(1).Expand());
+}
+
+void 
+viCardEditor::buildSubmitResetButtons()
+{
+   wxPanel* wxTopPanel = new wxPanel(this, wxID_ANY);
+   wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
+   wxTopPanel->SetSizer(boxSizer);
+
+   wxButton* acceptButton = new wxButton(wxTopPanel,
+      Changes_Submit,
+      "Submit");
+   wxButton* declineButton = new wxButton(wxTopPanel,
+      Changes_Reset,
+      "Cancel");
+
+   wxTopPanel->GetSizer()->Add(acceptButton, wxSizerFlags(1).Center().Shaped());
+   wxTopPanel->GetSizer()->Add(declineButton, wxSizerFlags(1).Center().Shaped());
+
+   this->GetSizer()->Add(wxTopPanel, wxSizerFlags(1).Expand());
+}
+
+
+void 
+viCardEditor::onChangesAccept(wxCommandEvent& awxEvt)
+{
+   StringInterface stringEditor;
+   auto ptSF = StoreFrontEnd::Instance();
+
+   // Send to server
+   auto mapEditedTraits = m_wxTraitList->GetCurrentSelections();
+   auto mapEditedItems = m_wxEditableItemList->GetUIDModifiedMap();
+   std::vector<std::pair<std::string, std::string>> vecStringCmds;
+   for( auto& item : mapEditedTraits )
+   {
+      vecStringCmds.push_back( std::make_pair(item.first.ToStdString(), 
+                                              item.second.ToStdString()) );
+   }
+
+   std::vector<std::string> vecBulkChanges;
+   for( auto& item : mapEditedItems )
+   {
+      if( item.second )
+      {
+         std::string szChangeCmd = stringEditor.CmdCreateModify( m_szCardName.ToStdString(), 
+                                                                 item.first.ToStdString(),
+                                                                 vecStringCmds );
+         vecBulkChanges.push_back( szChangeCmd );
+      }
+   }
+
+   ptSF->SubmitBulkChanges( m_szColID.ToStdString(), vecBulkChanges );
+   // Send refresh event up to collection viewer.
+}
+
+void 
+viCardEditor::onChangesReset(wxCommandEvent& awxEvt)
+{
+   DisplayNew(m_szColID, m_szDisplayingHash);
 }

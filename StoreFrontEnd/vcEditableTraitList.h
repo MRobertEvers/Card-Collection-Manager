@@ -24,11 +24,12 @@ public:
    void RefreshNew( const wxString& aszName,
                     const wxString& aszUID );
 
+   std::map<wxString, wxString> GetCurrentSelections();
+private:
    void storeTraitListItems(std::vector<Tag> &vecSelections, std::map<std::string, std::vector<std::string>> &mapOptions);
 
    void storePairedAttrs(std::vector<Tag> &vecPairAttrs);
 
-private:
    wxDECLARE_EVENT_TABLE();
    std::map<int, wxString> m_mapAttrToID;
    std::map<wxString, std::vector<wxString>> m_mapPairedAttrs;

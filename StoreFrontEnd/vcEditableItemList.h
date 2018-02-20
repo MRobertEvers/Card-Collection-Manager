@@ -15,6 +15,8 @@ public:
 
    void RefreshNew(std::vector<wxString> avecOptions);
 
+   std::map<wxString, bool> GetUIDModifiedMap();
+
 private:
    std::map<wxString, vcItemNameCheckBox*> m_mapItemToVC;
 

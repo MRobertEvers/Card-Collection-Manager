@@ -45,6 +45,18 @@ vcEditableTraitList::RefreshNew( const wxString& aszName,
    storeTraitListItems(vecSelections, mapOptions);
 }
 
+std::map<wxString, wxString> 
+vcEditableTraitList::GetCurrentSelections()
+{
+   std::map<wxString, wxString> mapRetVal;
+   for( auto& trait : m_mapTraitItems )
+   {
+      if( trait.second->GetSelection().IsEmpty() ) { continue; }
+      mapRetVal.insert( std::make_pair(trait.first, trait.second->GetSelection()) );
+   }
+   return mapRetVal;
+}
+
 void 
 vcEditableTraitList::storeTraitListItems( vector<Tag> &vecSelections, 
                                           map<string, vector<string>> &mapOptions )

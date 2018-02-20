@@ -40,6 +40,10 @@ public:
    string CmdCreateRemove(const string& aszLongName, const string& aszUID);
    string CmdCreateReplace( const string& aszLongNameRemove, const string& aszUID,
                             const string& aszNameAddition, const string& aszSet );
+   string CmdCreateModify( const string& aszLongName, const string& aszUID,
+                           const vector<Tag>& alstAttrs = vector<Tag>(),
+                           const vector<Tag>& alstMetaTags = vector<Tag>() );
+
    string CmdAppendCount(const string& aszCmd, int Count);
    string GetNameFromCardLine(const string& aszLongIdentifier);
    string FindTagInList(const vector<Tag>& avecList, const string& aszKey);

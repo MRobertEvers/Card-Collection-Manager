@@ -39,3 +39,14 @@ vcEditableItemList::RefreshNew(std::vector<wxString> avecOptions)
       doCheck = false;
    }
 }
+
+std::map<wxString, bool> 
+vcEditableItemList::GetUIDModifiedMap()
+{
+   std::map<wxString, bool> mapRetval;
+   for( auto& item : m_mapItemToVC )
+   {
+      mapRetval.insert(std::make_pair(item.first, item.second->IsChecked()));
+   }
+   return mapRetval;
+}
