@@ -919,10 +919,8 @@ void Collection::saveMeta()
 {
    ofstream oMetaFile;
    CollectionIO ioHelper;
-   Query listQuery;
-
+   Query listQuery(true);
    listQuery.IncludeMetaType( Persistent );
-   listQuery.GetCollapsed();
    vector<string> lstMetaLines = QueryCollection( listQuery );
 
    oMetaFile.open( ioHelper.GetMetaFile( m_ptrCollectionDetails->GetFileName() ) );
@@ -971,10 +969,9 @@ void Collection::saveCollection()
 {
    // Group lists only by id. When loading, these lists are only
    // used to create a template card. We only need the base details.
-   Query listQuery;
+   Query listQuery(true);
    listQuery.IncludeMetaType( None );
    listQuery.HashType( CopyItem::HashType::Ids );
-   listQuery.GetCollapsed();
    vector<string> lstLines = QueryCollection( listQuery );
 
    // Convert the lines to shorthand
