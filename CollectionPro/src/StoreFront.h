@@ -43,6 +43,7 @@ public:
    vector<pair<string, string>> GetIdentifyingAttributes(const string& aszCardName, const string& aszUID);
    map<string, vector<string>> GetIdentifyingAttributeOptions(const string& aszCardName);
    string GetCardString(const string& aszCardname, const string& aszUID);
+   string GetMetaTagHash( const string& aszCardName, const string& aszUID );
 
    // Source Accessors
    //

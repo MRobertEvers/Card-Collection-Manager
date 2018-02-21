@@ -235,6 +235,9 @@ viCardEditor::buildSubmitResetButtons()
 void 
 viCardEditor::onChangesAccept(wxCommandEvent& awxEvt)
 {
+   // This MUST be thawed by the parent.
+   this->Freeze();
+
    StringInterface stringEditor;
    auto ptSF = StoreFrontEnd::Instance();
 
@@ -249,19 +252,28 @@ viCardEditor::onChangesAccept(wxCommandEvent& awxEvt)
    }
 
    std::vector<std::string> vecBulkChanges;
+   int iChanged = 0;
+   wxString szUnchangedUID;
    for( auto& item : mapEditedItems )
    {
       if( item.second )
       {
+         iChanged++;
          std::string szChangeCmd = stringEditor.CmdCreateModify( m_szCardName.ToStdString(), 
                                                                  item.first.ToStdString(),
                                                                  vecStringCmds );
          vecBulkChanges.push_back( szChangeCmd );
       }
+      else
+      {
+         szUnchangedUID = item.first;
+      }
    }
 
    ptSF->SubmitBulkChanges( m_szColID.ToStdString(), vecBulkChanges );
+
    // Send refresh event up to collection viewer.
+   awxEvt.Skip();
 }
 
 void 

@@ -67,9 +67,11 @@ CollectionQueryHelper::getHashGroupsEnumUIDs(const Query& aiQueryParms)
       {
          // Look for copies that match.
          cardData.Hash = copy->GetHash(aiQueryParms.GetHashType());
+
+
          auto iter_Counted = mapCardHashes.find(cardData.Hash);
-         if( (aiQueryParms.GetCollapsed()) &&
-            (iter_Counted != mapCardHashes.end()) )
+         if( ( aiQueryParms.GetCollapsed() )       &&
+             ( iter_Counted != mapCardHashes.end() ) )
          {
             // If we are collapsing, and there is a match, count it. Otherwise, add card data.
             iter_Counted->second.Count++;
@@ -78,6 +80,8 @@ CollectionQueryHelper::getHashGroupsEnumUIDs(const Query& aiQueryParms)
          else
          {
             cardData.Copy = copy.get();
+            cardData.Groups.clear();
+            cardData.Count = 1;
             cardData.Groups.insert(copy->GetUID());
             mapCardHashes.insert(make_pair(cardData.Hash, cardData));
          }

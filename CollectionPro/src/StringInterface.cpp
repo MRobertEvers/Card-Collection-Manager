@@ -186,18 +186,41 @@ StringInterface::ParseTagString( const string& aszDetails,
    vector<Tag> lstKeyVals;
    vector<string> lstPairs, lstVal;
 
-   vector<string> lstDetails = StringHelper::Str_Split(aszDetails, " ");
+   string szDetails = StringHelper::Str_Trim( aszDetails, '{' );
+   szDetails = StringHelper::Str_Trim( szDetails, '}' );
+   szDetails = StringHelper::Str_Trim( szDetails, ' ' );
+   vector<string> lstDetails = StringHelper::Str_Split( szDetails, "\"");
+   //vector<string> lstDetails = StringHelper::Str_Split( aszDetails, " " );
+   // { one="two" three=" four" }
+   // one="two" three=" four"
+   // one=,two, three=, four
 
+   string szKey;
+   string szVal;
    vector<string>::iterator iter_attrs;
    for (iter_attrs = lstDetails.begin(); 
         iter_attrs != lstDetails.end(); 
         ++iter_attrs)
    {
-      lstPairs = StringHelper::Str_Split(*iter_attrs, "=");
-      if (lstPairs.size() > 1)
+      //lstPairs = StringHelper::Str_Split( *iter_attrs, "=" );
+      //if( lstPairs.size() > 1 )
+      //{
+      //   string szVal = StringHelper::Str_Trim( lstPairs[1], '\"' );
+      //   lstKeyVals.push_back( make_pair( lstPairs[0], szVal ) );
+      //}
+      if( iter_attrs->find_last_of( '=' ) == iter_attrs->size()-1 )
       {
-         string szVal = StringHelper::Str_Trim(lstPairs[1], '\"');
-         lstKeyVals.push_back(make_pair(lstPairs[0], szVal));
+         szKey = iter_attrs->substr(0, iter_attrs->size()-1);
+         szKey = StringHelper::Str_Trim( szKey, ' ' );
+      }
+      else
+      {
+         szVal = StringHelper::Str_Trim( *iter_attrs, ' ' );
+      }
+      if( szVal != "" && szKey != "" )
+      {
+         lstKeyVals.push_back( make_pair( szKey, szVal ) );
+         szVal = szKey = "";
       }
    }
    rlstTags = lstKeyVals;

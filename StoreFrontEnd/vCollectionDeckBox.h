@@ -27,6 +27,7 @@ private:
 
    void onEditorAccept(wxCommandEvent& awxEvt);
    void onEditorDecline(wxCommandEvent& awxEvt);
+   void onCardChanged( wxCommandEvent& awxEvt );
    void onNewItemSelected(wxListEvent& awxEvt);
    void onDeckEditor(wxCommandEvent& awxEvt);
    void buildItemList();

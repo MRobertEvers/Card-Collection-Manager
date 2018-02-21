@@ -297,7 +297,17 @@ CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
                                      const string& aszTraitValue,
                                      bool bSession ) const
 {
-   auto iter_found = m_lstIdentifyingTraits.find(aszTraitKey);
+   return SetIdentifyingTrait( aptItem, aszTraitKey, aszTraitValue, vector<string>(), bSession );
+}
+
+bool 
+CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
+                                       const string& aszTraitKey,
+                                       const string& aszTraitValue,
+                                       const vector<string> avecUpComingTraits,
+                                       bool bSession ) const
+{
+      auto iter_found = m_lstIdentifyingTraits.find(aszTraitKey);
    if( iter_found == m_lstIdentifyingTraits.end() ) {
       Debug::Log("CollectionObject", "Treid to set non-existant trait");
       return false; 
@@ -316,7 +326,8 @@ CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
    // Set the trait
    aptItem->SetIdentifyingAttribute( aszTraitKey, aszTraitValue, bSession );
    setCopyPairAttrs( aptItem, aszTraitKey,
-                     distance(vecAllowVals.begin(), iter_found_val) );
+                     distance(vecAllowVals.begin(), iter_found_val),
+                     avecUpComingTraits );
 
    return true;
 }
@@ -345,14 +356,19 @@ CollectionObject::createCopy( const Identifier& aAddrColID,
 void 
 CollectionObject::setCopyPairAttrs( CopyItem* aptItem, const string& aszKey, int iVal ) const
 {
-   const static function<string(const TraitItem&)> fnExtractor = 
-      [](const TraitItem& aTI)->string { return aTI.GetKeyName(); };
+   setCopyPairAttrs( aptItem, aszKey, iVal, vector<string>() );
+}
 
+void 
+CollectionObject::setCopyPairAttrs( CopyItem* aptItem, 
+                                    const string& aszKey, int iVal,
+                                    vector<string> avecSkipAttrs ) const
+{
    vector<string> lstPartners;
 
    // Find any traits paied with the key.
    vector<Tag> lstPairs = Config::Instance()->GetPairedKeysList();
-   for(Tag var : lstPairs)
+   for( Tag var : lstPairs )
    {
       string szSearch = "";
       if( var.first == aszKey )
@@ -364,20 +380,27 @@ CollectionObject::setCopyPairAttrs( CopyItem* aptItem, const string& aszKey, int
          szSearch = var.first;
       }
 
-      if( szSearch != "" ) {
-         auto iter_found = find(lstPartners.begin(), lstPartners.end(), szSearch);
-         if( iter_found == lstPartners.end() ) {
-            lstPartners.push_back(szSearch);
+      if( szSearch != "" )
+      {
+         auto iter_found = find( lstPartners.begin(), lstPartners.end(), szSearch );
+         if( iter_found == lstPartners.end() )
+         {
+            lstPartners.push_back( szSearch );
          }
       }
    }
 
    // Search for the trait and asign it.
-   for(string szKey : lstPartners)
+   for( string szKey : lstPartners )
    {
+      if( find( avecSkipAttrs.begin(), avecSkipAttrs.end(), szKey ) != avecSkipAttrs.end() )
+      {
+         continue;
+      }
+      
       // Verify the trait is an identifying trait.
-      auto iter_attr = m_lstIdentifyingTraits.find(szKey);
-      if (iter_attr != m_lstIdentifyingTraits.end())
+      auto iter_attr = m_lstIdentifyingTraits.find( szKey );
+      if( iter_attr != m_lstIdentifyingTraits.end() )
       {
          TraitItem foundTrait = iter_attr->second;
          aptItem->SetIdentifyingAttribute( szKey, foundTrait.GetAllowedValues().at( iVal ), false );

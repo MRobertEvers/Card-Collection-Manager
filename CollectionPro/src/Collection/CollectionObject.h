@@ -89,14 +89,20 @@ private:
    //
 public:
    map<string, TraitItem> GetIdentifyingTraits();
-   bool MatchIdentifyingTrait(const string& aszValue,
-      string& rszKey);
+   bool MatchIdentifyingTrait( const string& aszValue,
+                               string& rszKey );
 
    // Attempts to set an identifying trait on a copy item.
    // Returns true if the value is valid.
    bool SetIdentifyingTrait( CopyItem* aptItem,
                              const string& aszTraitKey,
                              const string& aszTraitValue,
+                             bool bSession = true ) const;
+
+   bool SetIdentifyingTrait( CopyItem* aptItem,
+                             const string& aszTraitKey,
+                             const string& aszTraitValue,
+                             const vector<string> avecUpComingTraits,
                              bool bSession = true ) const;
    void SetIdentifyingTraitDefaults(CopyItem* aptItem) const;
 
@@ -112,6 +118,8 @@ private:
       const vector<Tag>& alstMetaTags = vector<Tag>()) const;
 
    void setCopyPairAttrs(CopyItem* aptItem, const string& aszKey, int iVal) const;
+   void setCopyPairAttrs( CopyItem* aptItem, const string& aszKey, int iVal,
+                          vector<string> avecSkipAttrs ) const;
 
 public:
    static bool ParseCardLine(const string& aszLine, PseudoIdentifier& rPIdentifier);

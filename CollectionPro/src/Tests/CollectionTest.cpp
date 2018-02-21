@@ -65,7 +65,7 @@ CollectionTest::RemoveItem_Test()
    auto addedItem = m_ptColSource->GetCardPrototype(szCardName);
    auto lstCopies = addedItem->FindCopies(col->GetIdentifier(), All);
 
-   int iCopies = lstCopies.size();
+   unsigned int iCopies = lstCopies.size();
    auto copy = lstCopies[0];
 
    col->RemoveItem(szCardName, copy->GetUID());

@@ -82,7 +82,7 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
    PrepareImageSetFolder(aszSet);
 
    wxURL url;
-   if( aszMUD != "" )
+   if( !wxString(aszMUD).Trim().IsEmpty() )
    {
       url = (wxT("http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + aszMUD + "&type=card"));
    }

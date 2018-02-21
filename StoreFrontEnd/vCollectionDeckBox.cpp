@@ -4,8 +4,10 @@
 #include "viCardEditor.h"
 #include "vcdCDBIListItemData.h"
 #include "MainWindow.h"
+#include "viCardEditor.h"
 
 wxBEGIN_EVENT_TABLE(vCollectionDeckBox, wxPanel)
+EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionDeckBox::onCardChanged )
 EVT_BUTTON(viCollectionEditor::Changes_Accept, vCollectionDeckBox::onEditorAccept)
 EVT_LIST_ITEM_SELECTED(vcCollectionDeckBoxItemList::List, vCollectionDeckBox::onNewItemSelected)
 EVT_BUTTON(viCollectionEditor::Changes_Decline, vCollectionDeckBox::onEditorDecline)
@@ -24,14 +26,13 @@ vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent,
    this->SetSizer(boxSizer);
 
    this->GetParent()->SetSize(550, 500);
-   buildItemList();
    this->GetParent()->Layout();
+   buildItemList();
 
    if( !m_vcItemList->IsEmpty() )
    {
       notifyCardEditor(m_vcItemList->GetFirst().GetHash());
    }
-   
 }
 
 
@@ -73,6 +74,15 @@ void
 vCollectionDeckBox::onEditorDecline(wxCommandEvent& awxEvt)
 {
    CloseCollectionEditor();
+}
+
+void 
+vCollectionDeckBox::onCardChanged( wxCommandEvent& awxEvt )
+{
+   m_vcItemList->RefreshList();
+   m_viCardEditor->DisplayNew( m_wxszColID, m_vcItemList->GetFirst().GetHash() );
+   m_viCardEditor->Layout();
+   m_viCardEditor->Thaw();
 }
 
 void 

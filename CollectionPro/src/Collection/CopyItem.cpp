@@ -248,9 +248,18 @@ CopyItem* CopyItem::CreateCopyItem( CollectionObject const* aoConstructor,
 
    aoConstructor->SetIdentifyingTraitDefaults(newCopy);
 
-   for( auto IDTag : alstIDAttrs )
+   // Create a list of all the traits that are being set.
+   // This is used so that if "Paired" traits are being set
+   // we don't start overwriting ourselves.
+   vector<string> vecUpComingTraits;
+   for( auto& pairTraits : alstIDAttrs )
    {
-      aoConstructor->SetIdentifyingTrait( newCopy, IDTag.first, IDTag.second );
+      vecUpComingTraits.push_back( pairTraits.first );
+   }
+
+   for( auto& IDTag : alstIDAttrs )
+   {
+      aoConstructor->SetIdentifyingTrait( newCopy, IDTag.first, IDTag.second, vecUpComingTraits );
    }
 
    return newCopy;

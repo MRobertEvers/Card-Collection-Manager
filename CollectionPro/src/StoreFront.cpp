@@ -254,6 +254,23 @@ StoreFront::GetCardString(const string& aszCardname, const string& aszUID)
    return "";
 }
 
+string 
+StoreFront::GetMetaTagHash( const string& aszCardName, const string& aszUID )
+{
+   string szRetVal;
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         szRetVal = copy->get()->GetMetaTag( CopyItem::GetHashKey(), MetaTagType::Any );
+      }
+   }
+
+   return szRetVal;
+}
+
 string
 StoreFront::GetCardPrototype(const string& aszCardName)
 {
