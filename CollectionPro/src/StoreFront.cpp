@@ -87,9 +87,9 @@ StoreFront::ConfigIsLoaded()
 }
 
 void 
-StoreFront::SaveCollection(const string& aszCollectionName)
+StoreFront::SaveCollection(const string& aszCollectionID)
 {
-   m_ColFactory->SaveCollection(aszCollectionName);
+   m_ColFactory->SaveCollection(aszCollectionID);
 }
 
 string 

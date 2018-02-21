@@ -11,7 +11,8 @@ class cCollectionDeckBox : public IMenuEventHandler
 public:
    enum
    {
-      Menu_DeckEditor = 0x4001
+      Menu_DeckEditor = 0x4001,
+      Menu_Save = 0x4501
    };
 
    cCollectionDeckBox(MainFrame* aParent, const wxString& aszColName);

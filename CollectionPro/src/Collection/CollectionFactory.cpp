@@ -16,9 +16,9 @@ CollectionFactory::~CollectionFactory()
 }
 
 void 
-CollectionFactory::SaveCollection( string aszCollectionName ) const
+CollectionFactory::SaveCollection( string aszCollectionID ) const
 {
-   auto collection = GetCollection(aszCollectionName);
+   auto collection = GetCollection(aszCollectionID);
    if( collection.Good() )
    {
       // Save each member of this family.

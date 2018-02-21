@@ -7,7 +7,7 @@ cCollectionDeckBox::cCollectionDeckBox(MainFrame* aParent, const wxString& aszCo
    : IMenuEventHandler(aParent), m_ColID(aszColName)
 {
    auto ptSF = StoreFrontEnd::Instance();
-   m_wxDeckbox = new vCollectionDeckBox(aParent, 9, wxString(m_ColID));
+   m_wxDeckbox = new vCollectionDeckBox(aParent, 9, m_ColID );
 
    registerSendMenuEvents();
 }
@@ -27,6 +27,7 @@ void
 cCollectionDeckBox::BindEventHandler()
 {
    prepareMenuItem("Edit", Menu_DeckEditor);
+   prepareMenuItem( "Save", Menu_Save );
    registerMenu("Collection");
 }
 
@@ -36,5 +37,10 @@ cCollectionDeckBox::handleEvent(unsigned int aiEvent)
    if( aiEvent == Menu_DeckEditor )
    {
       m_wxDeckbox->ShowCollectionEditor();
+   }
+   else if( aiEvent == Menu_Save )
+   {
+      auto ptSF = StoreFrontEnd::Instance();
+      ptSF->SaveCollection( m_ColID.ToStdString() );
    }
 }
