@@ -1,13 +1,13 @@
-#include "vcdCDBIListItemData.h"
+#include "GroupItemData.h"
 #include <algorithm>
 #include "StoreFrontEnd.h"
 
-vcdCDBIListItemData::vcdCDBIListItemData()
+GroupItemData::GroupItemData()
 {
 
 }
 
-vcdCDBIListItemData::vcdCDBIListItemData(const wxString& aszCardName, DataStyle aDataStyle)
+GroupItemData::GroupItemData(const wxString& aszCardName, DataStyle aDataStyle)
 {
    if( aDataStyle == LONG_NAME )
    {
@@ -22,55 +22,55 @@ vcdCDBIListItemData::vcdCDBIListItemData(const wxString& aszCardName, DataStyle 
 }
 
 
-vcdCDBIListItemData::~vcdCDBIListItemData()
+GroupItemData::~GroupItemData()
 {
 }
 
 int 
-vcdCDBIListItemData::GetNumber() const
+GroupItemData::GetNumber() const
 {
    return m_iNumber;
 }
 
 wxString 
-vcdCDBIListItemData::GetHash() const
+GroupItemData::GetHash() const
 {
    return m_szHash;
 }
 
 wxString 
-vcdCDBIListItemData::GetName() const
+GroupItemData::GetName() const
 {
    return m_szName;
 }
 
 wxString 
-vcdCDBIListItemData::GetManaCost() const
+GroupItemData::GetManaCost() const
 {
    return m_szManaCost;
 }
 
 wxString 
-vcdCDBIListItemData::GetCardType() const
+GroupItemData::GetCardType() const
 {
    return m_szCardType;
 }
 
 wxString 
-vcdCDBIListItemData::GetSet() const
+GroupItemData::GetSet() const
 {
    return m_szSet;
 }
 
 wxString 
-vcdCDBIListItemData::GetMetaTag(const wxString& aszKey) const
+GroupItemData::GetMetaTag(const wxString& aszKey) const
 {
    StringInterface parser;
    return parser.FindTagInList(m_vecMetaTags, aszKey.ToStdString());
 }
 
 wxString 
-vcdCDBIListItemData::GetAttribute(const wxString& aszKey) const
+GroupItemData::GetAttribute(const wxString& aszKey) const
 {
    StringInterface parser;
    string szValue = parser.FindTagInList(m_vecIdentifiers, aszKey.ToStdString());
@@ -83,7 +83,7 @@ vcdCDBIListItemData::GetAttribute(const wxString& aszKey) const
 }
 
 void 
-vcdCDBIListItemData::parseLongName(const wxString& aszName)
+GroupItemData::parseLongName(const wxString& aszName)
 {
    StringInterface parser;
 
@@ -104,7 +104,7 @@ vcdCDBIListItemData::parseLongName(const wxString& aszName)
 }
 
 void 
-vcdCDBIListItemData::getItemData()
+GroupItemData::getItemData()
 {
    // m_szName should be populated by now.
    auto ptSF = StoreFrontEnd::Instance();
@@ -143,7 +143,7 @@ vcdCDBIListItemData::getItemData()
 }
 
 void 
-vcdCDBIListItemData::getItemHash(const wxString& aszUID)
+GroupItemData::getItemHash(const wxString& aszUID)
 {
    auto ptSF = StoreFrontEnd::Instance();
    auto vecMeta = ptSF->GetMetaTags(m_szName.ToStdString(), aszUID.ToStdString());

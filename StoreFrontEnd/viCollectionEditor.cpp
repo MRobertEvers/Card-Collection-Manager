@@ -4,7 +4,7 @@
 #include <chrono>
 
 #define TIMER_ID 5
-#define DROP_DELAY 370
+#define DROP_DELAY 210
 
 wxBEGIN_EVENT_TABLE(viCollectionEditor, wxPanel)
 EVT_TEXT(vicListSelector::ComboBox, viCollectionEditor::onComboBoxTextChanged)

@@ -5,7 +5,7 @@
 // organize the data on its sizer.
 using namespace std;
 // TODO: This only gathers data by hash.
-class vcdCDBIListItemData
+class GroupItemData
 {
 public:
    enum DataStyle
@@ -13,9 +13,9 @@ public:
       LONG_NAME = 0x0,
       SOURCE_NAME = 0x1
    };
-   vcdCDBIListItemData();
-   vcdCDBIListItemData(const wxString& aszCardName, DataStyle aDataStyle);
-   ~vcdCDBIListItemData();
+   GroupItemData();
+   GroupItemData(const wxString& aszCardName, DataStyle aDataStyle);
+   ~GroupItemData();
 
    int GetNumber() const;
    wxString GetHash() const;

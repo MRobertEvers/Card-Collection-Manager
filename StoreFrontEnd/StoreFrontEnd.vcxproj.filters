@@ -49,6 +49,12 @@
     <Filter Include="Views\Interfaces\CardEditor\Components">
       <UniqueIdentifier>{0cf2b4cb-8083-4995-9df1-c93bcfea3e94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Cube">
+      <UniqueIdentifier>{84c8dacd-fdf8-43de-9057-a5148544ff2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Cube\Components">
+      <UniqueIdentifier>{4a01723e-c28a-433a-a4d3-970b99701fda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -86,9 +92,6 @@
     </ClCompile>
     <ClCompile Include="vicCollectionEditListItemOption.cpp">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vcdCDBIListItemData.cpp">
-      <Filter>Views\Deckbox\ComponentHelpers</Filter>
     </ClCompile>
     <ClCompile Include="viCardEditor.cpp">
       <Filter>Views\Interfaces\CardEditor</Filter>
@@ -131,6 +134,21 @@
     </ClCompile>
     <ClCompile Include="vcEditableItemList.cpp">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="cCollectionCube.cpp">
+      <Filter>Views\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="vCollectionCube.cpp">
+      <Filter>Views\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="vcCollectionCubeGroup.cpp">
+      <Filter>Views\Cube\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Group.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GroupItemData.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,9 +194,6 @@
     <ClInclude Include="vicCollectionEditListItemOption.h">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
     </ClInclude>
-    <ClInclude Include="vcdCDBIListItemData.h">
-      <Filter>Views\Deckbox\ComponentHelpers</Filter>
-    </ClInclude>
     <ClInclude Include="viCardEditor.h">
       <Filter>Views\Interfaces\CardEditor</Filter>
     </ClInclude>
@@ -217,6 +232,21 @@
     </ClInclude>
     <ClInclude Include="vcEditableItemList.h">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="cCollectionCube.h">
+      <Filter>Views\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="vCollectionCube.h">
+      <Filter>Views\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="vcCollectionCubeGroup.h">
+      <Filter>Views\Cube\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Group.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupItemData.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

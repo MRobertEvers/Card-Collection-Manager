@@ -134,20 +134,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="cCollectionCube.cpp" />
     <ClCompile Include="cCollectionDeckBox.cpp" />
     <ClCompile Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
+    <ClCompile Include="Group.cpp" />
+    <ClCompile Include="vcCollectionCubeGroup.cpp" />
     <ClCompile Include="vcEditableItemList.cpp" />
     <ClCompile Include="ImageFetcher.cpp" />
     <ClCompile Include="IMenuEventHandler.cpp" />
     <ClCompile Include="StoreFrontEnd.cpp" />
     <ClCompile Include="TestPopup.cpp" />
     <ClCompile Include="vcCollectionDeckBoxItemList.cpp" />
-    <ClCompile Include="vcdCDBIListItemData.cpp" />
+    <ClCompile Include="GroupItemData.cpp" />
     <ClCompile Include="vcEditableTraitList.cpp" />
     <ClCompile Include="vcEditableTraitListItem.cpp" />
     <ClCompile Include="vcImageWrapper.cpp" />
     <ClCompile Include="vcItemNameCheckBox.cpp" />
+    <ClCompile Include="vCollectionCube.cpp" />
     <ClCompile Include="vCollectionDeckBox.cpp" />
     <ClCompile Include="vCollectionsOverview.cpp" />
     <ClCompile Include="MainWindow.cpp" />
@@ -163,19 +167,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="cCollectionCube.h" />
     <ClInclude Include="cCollectionsOverview.h" />
     <ClInclude Include="CETraitOption.h" />
+    <ClInclude Include="Group.h" />
     <ClInclude Include="ImageFetcher.h" />
     <ClInclude Include="IMenuEventHandler.h" />
     <ClInclude Include="StoreFrontEnd.h" />
     <ClInclude Include="TestPopup.h" />
+    <ClInclude Include="vcCollectionCubeGroup.h" />
     <ClInclude Include="vcCollectionDeckBoxItemList.h" />
-    <ClInclude Include="vcdCDBIListItemData.h" />
+    <ClInclude Include="GroupItemData.h" />
     <ClInclude Include="vcEditableItemList.h" />
     <ClInclude Include="vcEditableTraitList.h" />
     <ClInclude Include="vcEditableTraitListItem.h" />
     <ClInclude Include="vcImageWrapper.h" />
     <ClInclude Include="vcItemNameCheckBox.h" />
+    <ClInclude Include="vCollectionCube.h" />
     <ClInclude Include="vCollectionDeckBox.h" />
     <ClInclude Include="vCollectionsOverview.h" />
     <ClInclude Include="MainWindow.h" />

@@ -1,75 +1,13 @@
 #include "vcCollectionDeckBoxItemList.h"
 #include "StoreFrontEnd.h"
-#include "vcdCDBIListItemData.h"
+#include "GroupItemData.h"
+#include "Group.h"
 
 wxBEGIN_EVENT_TABLE(vcCollectionDeckBoxItemList, wxPanel)
 EVT_LIST_ITEM_SELECTED(List, vcCollectionDeckBoxItemList::onItemSelection)
 EVT_LIST_ITEM_DESELECTED(List, vcCollectionDeckBoxItemList::onItemDeselection)
 wxEND_EVENT_TABLE()
 
-
-vcCollectionDeckBoxItemList::Group&
-vcCollectionDeckBoxItemList::Group::
-GroupOn(const wxString& aszKey, bool abIsMetaKey)
-{
-   Key = aszKey;
-   MetaKey = abIsMetaKey;
-   return *this;
-}
-
-vcCollectionDeckBoxItemList::Group& 
-vcCollectionDeckBoxItemList::Group::
-BroadenSubGroup(const wxString& aszValue)
-{
-   BroadenedValues.push_back(aszValue);
-   return *this;
-}
-
-vcCollectionDeckBoxItemList::Group& 
-vcCollectionDeckBoxItemList::Group::
-OverrideGrouping(const Group& aGrouping)
-{
-   Overrides.push_back(aGrouping);
-   return *this;
-}
-
-wxString
-vcCollectionDeckBoxItemList::Group::
-GetGroup(const vcdCDBIListItemData& aData)
-{
-   wxString szGroup;
-   for( auto& over : Overrides )
-   {
-      szGroup = over.GetGroup(aData);
-      if( szGroup != "" )
-      {
-         break;
-      }
-   }
-
-   if( szGroup == "" )
-   {
-      if( MetaKey )
-      {
-         szGroup = aData.GetMetaTag(Key);
-      }
-      else
-      {
-         szGroup = aData.GetAttribute(Key);
-      }
-
-      for( auto& broadGroup : BroadenedValues )
-      {
-         if( szGroup.find(broadGroup) != wxString::npos )
-         {
-            szGroup = broadGroup;
-            break;
-         }
-      }
-   }
-
-   return szGroup;
-}
 
 vcCollectionDeckBoxItemList::vcCollectionDeckBoxItemList( wxWindow* aptParent,
                                                           const wxString& aszColID )
@@ -111,7 +49,7 @@ vcCollectionDeckBoxItemList::RefreshList()
    m_vecDataItemsDisplayOrder.clear();
    for( auto& szItem : lstCol )
    {
-      vcdCDBIListItemData data(szItem, vcdCDBIListItemData::LONG_NAME);
+      GroupItemData data(szItem, GroupItemData::LONG_NAME);
       m_vecDataItems.push_back(data);
    }
 
@@ -126,7 +64,7 @@ vcCollectionDeckBoxItemList::RefreshList()
    m_wxListControl->Thaw();
 }
 
-vcdCDBIListItemData 
+GroupItemData 
 vcCollectionDeckBoxItemList::GetItemByListIndex(int Ind)
 {
    if( ( Ind < m_vecDataItemsDisplayOrder.size() ) && 
@@ -136,11 +74,11 @@ vcCollectionDeckBoxItemList::GetItemByListIndex(int Ind)
    }
    else
    {
-      return vcdCDBIListItemData();
+      return GroupItemData();
    }
 }
 
-vcdCDBIListItemData 
+GroupItemData 
 vcCollectionDeckBoxItemList::GetFirst()
 {
    if( m_vecDataItemsDisplayOrder.size() > 0 )
@@ -156,7 +94,7 @@ vcCollectionDeckBoxItemList::GetFirst()
          return *m_vecDataItemsDisplayOrder[i];
       }
    }
-   return vcdCDBIListItemData();
+   return GroupItemData();
 }
 
 int 
@@ -203,8 +141,8 @@ vcCollectionDeckBoxItemList::onItemDeselection(wxListEvent& awxEvt)
 
 // Returns a list of pointers to the input vector. SO DONT DELETE THE VECTOR BEFORE
 // USING THE RETURN.
-std::map<wxString, std::vector<vcdCDBIListItemData*>>
-vcCollectionDeckBoxItemList::defaultGrouping(std::vector<vcdCDBIListItemData>& avecItems)
+std::map<wxString, std::vector<GroupItemData*>>
+vcCollectionDeckBoxItemList::defaultGrouping(std::vector<GroupItemData>& avecItems)
 {
    Group overrideGrp;
    // TODO: Use the stringIface to get the collection.group. write this func.
@@ -222,7 +160,9 @@ vcCollectionDeckBoxItemList::defaultGrouping(std::vector<vcdCDBIListItemData>& a
              .OverrideGrouping(overrideGrp);
 
 
-   map<wxString, vector<vcdCDBIListItemData*>> mapGroups;
+   map<wxString, vector<GroupItemData*>> mapGroups;
+   // So you assign each item in your collection to a GroupItemData,
+   // then the do something like below to extract the group that they should belong.
    for( auto& data : avecItems )
    {
       // TODO: Need way to get meta tags from server so we can sort on them.
@@ -234,7 +174,7 @@ vcCollectionDeckBoxItemList::defaultGrouping(std::vector<vcdCDBIListItemData>& a
 
 void 
 vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
-                                             std::vector<vcdCDBIListItemData*>>& amapGrouping)
+                                             std::vector<GroupItemData*>>& amapGrouping)
 {
    unsigned int iCount = 0;
    for( auto& group : amapGrouping )
@@ -257,7 +197,7 @@ vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
 }
 
 void 
-vcCollectionDeckBoxItemList::addListItem(vcdCDBIListItemData& aData)
+vcCollectionDeckBoxItemList::addListItem(GroupItemData& aData)
 {
    wxString buf = std::to_string(aData.GetNumber());
    int i = m_wxListControl->GetItemCount();

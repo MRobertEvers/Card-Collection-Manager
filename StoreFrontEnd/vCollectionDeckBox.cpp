@@ -2,7 +2,7 @@
 #include "vcCollectionDeckBoxItemList.h"
 #include "viCollectionEditor.h"
 #include "viCardEditor.h"
-#include "vcdCDBIListItemData.h"
+#include "GroupItemData.h"
 #include "MainWindow.h"
 #include "viCardEditor.h"
 
