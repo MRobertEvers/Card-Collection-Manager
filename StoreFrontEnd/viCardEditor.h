@@ -4,8 +4,10 @@
 #include <wx/image.h>
 #include <wx/bitmap.h>
 #include "CETraitOption.h"
-
+#include "ImageFetcher.h"
 #include <wx/imagjpeg.h>
+#include <memory>
+#include <mutex>
 
 class vcEditableTraitList;
 class vcEditableItemList;
@@ -19,11 +21,24 @@ public:
       Changes_Submit = 0x50,
       Changes_Reset = 0x51
    };
+   class viCardEditorImageCallBack : public ImageFetcherCallback
+   {
+   public:
+      viCardEditorImageCallBack( viCardEditor* aptCE, std::shared_ptr<std::mutex> amutex );
+
+      virtual void CallBack() override;
+
+   private:
+      viCardEditor * m_ptCardEditor;
+      std::shared_ptr<std::mutex> m_mutex;
+   };
+
    viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
-                 wxString aszColID, wxString aszCardHash );
+                 wxString aszColID, wxString aszCardHash,
+                 int aiIndex );
    ~viCardEditor();
 
-   void DisplayNew(wxString aszColID, wxString aszCardHash);
+   void DisplayNew(wxString aszColID, wxString aszCardHash, int aiIndex);
 
 private:
    wxDECLARE_EVENT_TABLE();
@@ -35,9 +50,13 @@ private:
    wxString m_szDisplayingHash;
    std::vector<CETraitOption> m_vecAttrs;
    std::vector<wxString> m_vecUIDs;
+   std::vector<std::shared_ptr<ImageFetcherCallback>> m_vecImageCallbacks;
+   std::shared_ptr<std::mutex> m_mutex;
+   int m_iIndex;
 
    void fetchImage();
    void setImage(const wxString& aszImagePath);
+   void stopCallbacks( bool abBlock = true );
 
    bool parseNew(wxString aszColID, wxString aszCardHash);
    void refreshDisplay();

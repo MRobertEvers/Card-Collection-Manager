@@ -31,6 +31,6 @@ private:
    void onNewItemSelected(wxListEvent& awxEvt);
    void onDeckEditor(wxCommandEvent& awxEvt);
    void buildItemList();
-   void notifyCardEditor(const wxString& aszHash);
+   void notifyCardEditor(const wxString& aszHash, int aiIndex);
 };
 

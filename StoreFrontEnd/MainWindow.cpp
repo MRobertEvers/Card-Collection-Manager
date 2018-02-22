@@ -67,7 +67,10 @@ MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
 void 
 MainFrame::OnViewCollection(wxCommandEvent& awxEvt)
 {
-   viewCollection(awxEvt.GetString());
+   if( !awxEvt.GetString().IsEmpty() )
+   {
+      viewCollection(awxEvt.GetString());
+   }
 }
 
 void 

@@ -1,9 +1,10 @@
 #pragma once
-
+#include <memory>
 #include "../CollectionPro/src/StoreFront.h"
 #include "../CollectionPro/src/StringInterface.h"
 
 class wxString;
+class ImageFetcherCallback;
 
 class StoreFrontEnd
 {
@@ -14,7 +15,8 @@ public:
    bool DownloadCardImage( const wxString& aszFilePath,
                            const wxString& aszCardName,
                            const wxString& aszSet,
-                           const wxString& aszMUD );
+                           const wxString& aszMUD,
+                           std::shared_ptr<ImageFetcherCallback> aptCallback );
 
 
 public:

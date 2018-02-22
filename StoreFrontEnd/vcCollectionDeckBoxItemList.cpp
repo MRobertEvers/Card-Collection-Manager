@@ -159,6 +159,25 @@ vcCollectionDeckBoxItemList::GetFirst()
    return vcdCDBIListItemData();
 }
 
+int 
+vcCollectionDeckBoxItemList::GetFirstInt()
+{
+   if( m_vecDataItemsDisplayOrder.size() > 0 )
+   {
+      int i = 0;
+      while( i < m_vecDataItemsDisplayOrder.size() &&
+         m_vecDataItemsDisplayOrder[i] == NULL )
+      {
+         i++;
+      }
+      if( m_vecDataItemsDisplayOrder[i] != NULL )
+      {
+         return i;
+      }
+   }
+   return -1;
+}
+
 bool 
 vcCollectionDeckBoxItemList::IsEmpty()
 {

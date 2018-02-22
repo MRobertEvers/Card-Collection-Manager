@@ -8,6 +8,29 @@
 #include <wx/wfstream.h>
 #include "StoreFrontEnd.h"
 
+ImageFetcherCallback::ImageFetcherCallback()
+   : m_bDoCall(true)
+{
+
+}
+
+ImageFetcherCallback::~ImageFetcherCallback()
+{
+
+}
+
+void 
+ImageFetcherCallback::SetDoCall( bool abDoCall )
+{
+   m_bDoCall = abDoCall;
+}
+
+bool 
+ImageFetcherCallback::GetDoCall()
+{
+   return m_bDoCall;
+}
+
 
 class FetcherThread : public wxThread
 {
@@ -15,9 +38,11 @@ public:
    FetcherThread( const wxString& aszFilePath,
                   const wxString& aszCardName,
                   const wxString& aszSet,
-                  const wxString& aszMUD ) 
+                  const wxString& aszMUD,
+                  std::shared_ptr<ImageFetcherCallback> aptCallBack = nullptr ) 
       : wxThread(wxTHREAD_DETACHED), m_szFilePath(aszFilePath),
-        m_szCardName(aszCardName), m_szSet(aszSet), m_szMUD(aszMUD)
+        m_szCardName(aszCardName), m_szSet(aszSet), m_szMUD(aszMUD),
+        m_ptCallback(aptCallBack)
    {};
    ~FetcherThread() {};
 protected:
@@ -28,13 +53,14 @@ private:
    wxString m_szCardName;
    wxString m_szSet;
    wxString m_szMUD;
+   std::shared_ptr<ImageFetcherCallback> m_ptCallback;
 };
 
 
 wxThread::ExitCode FetcherThread::Entry()
 {
    ImageFetcher::Instance()->DownloadCardImage( m_szFilePath, m_szCardName, 
-                                                m_szSet, m_szMUD );
+                                                m_szSet, m_szMUD, m_ptCallback );
    return (wxThread::ExitCode)0;
 }
 
@@ -55,7 +81,8 @@ void
 ImageFetcher::PDownloadImage( const wxString& aszFilePath,
                               const wxString& aszCardName,
                               const wxString& aszSet,
-                              const wxString& aszMUD )
+                              const wxString& aszMUD,
+                              std::shared_ptr<ImageFetcherCallback> aptCallback )
 {
    bool bStartThread = false;
    m_mutexThreadList.lock();
@@ -68,7 +95,8 @@ ImageFetcher::PDownloadImage( const wxString& aszFilePath,
    if( bStartThread )
    {
       // The FetcherThread will delete itself upon completion. See wxThread docs.
-      FetcherThread* pDownloadThread = new FetcherThread(aszFilePath, aszCardName, aszSet, aszMUD);
+      FetcherThread* pDownloadThread = new FetcherThread( aszFilePath, aszCardName, aszSet, aszMUD,
+                                                          aptCallback );
       pDownloadThread->Run();
    }
 }
@@ -78,6 +106,16 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
                                  const wxString& aszCardName, 
                                  const wxString& aszSet,
                                  const wxString& aszMUD )
+{
+   return DownloadCardImage( aszFilePath, aszCardName, aszSet, aszMUD, nullptr );
+}
+
+bool 
+ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
+                                 const wxString& aszCardName,
+                                 const wxString& aszSet,
+                                 const wxString& aszMUD,
+                                 std::shared_ptr<ImageFetcherCallback> aptCallback )
 {
    PrepareImageSetFolder(aszSet);
 
@@ -105,6 +143,11 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
       delete in;
    }
 
+   if( aptCallback != nullptr )
+   {
+      aptCallback->CallBack();
+   }
+
    m_mutexThreadList.lock();
    auto szThread = m_setThreadList.find(aszFilePath);
    if( szThread != m_setThreadList.end() )
@@ -115,7 +158,6 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
 
    return true;
 }
-
 
 bool
 ImageFetcher::PrepareImagesFolder()

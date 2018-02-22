@@ -8,6 +8,39 @@
 #include <wx/sstream.h>
 #include <wx/imagjpeg.h>
 #include <wx/wfstream.h>
+#include <wx/listctrl.h>
+#include <algorithm>
+
+
+viCardEditor::
+viCardEditorImageCallBack::viCardEditorImageCallBack( viCardEditor* aptCE,
+                                                      std::shared_ptr<std::mutex> amutex )
+   : ImageFetcherCallback(), m_ptCardEditor(aptCE), m_mutex(amutex)
+{
+
+}
+
+void
+viCardEditor::
+viCardEditorImageCallBack::CallBack()
+{
+   m_mutex->lock();
+   if( GetDoCall() )
+   {
+      for( auto& ptCallback : m_ptCardEditor->m_vecImageCallbacks )
+      {
+         ptCallback->SetDoCall(false);
+      }
+      // Perhaps need to perform this on the main thread.
+      wxListEvent updateEvt( wxEVT_LIST_ITEM_SELECTED );
+      updateEvt.m_itemIndex = m_ptCardEditor->m_iIndex;
+      ::wxPostEvent(m_ptCardEditor->GetParent(), updateEvt );
+      //m_ptCardEditor->DisplayNew( m_ptCardEditor->m_szColID,
+      //                            m_ptCardEditor->m_szDisplayingHash );
+
+   }
+   m_mutex->unlock();
+}
 
 wxBEGIN_EVENT_TABLE(viCardEditor, wxPanel)
 EVT_BUTTON(Changes_Submit, viCardEditor::onChangesAccept)
@@ -15,9 +48,11 @@ EVT_BUTTON(Changes_Reset, viCardEditor::onChangesReset)
 wxEND_EVENT_TABLE()
 
 viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
-                            wxString aszColID, wxString aszCardHash )
-   : wxPanel(aptParent, aiWID),  m_szColID(aszColID)
+                            wxString aszColID, wxString aszCardHash, int aiIndex )
+   : wxPanel(aptParent, aiWID),  m_szColID(aszColID), m_iIndex(aiIndex)
 {
+   m_mutex = std::shared_ptr<std::mutex>( new std::mutex() );
+
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer(4, 1, 0, 0);//(wxVERTICAL);//(2,1,0,0);
    boxSizer->SetFlexibleDirection(wxVERTICAL);
    boxSizer->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_NONE);
@@ -27,20 +62,21 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
    this->SetSizer(boxSizer);
    this->SetSize(250, 500);
 
-   DisplayNew(aszColID, aszCardHash);
+   DisplayNew(aszColID, aszCardHash, m_iIndex);
    buildSubmitResetButtons();
 }
 
 viCardEditor::~viCardEditor()
 {
-
+   stopCallbacks();
 }
 
 void 
-viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash)
+viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash, int aiIndex)
 {
    if( parseNew(aszColID, aszCardHash) )
    {
+      m_iIndex = aiIndex;
       this->Freeze();
       refreshDisplay();
       refreshEditor();
@@ -79,7 +115,15 @@ viCardEditor::fetchImage()
    if( !imageFile.good() )
    {
       imageFile.close();
-      SFE.DownloadCardImage(szFullPath, m_szCardName, szSet, szMUD);
+
+      // Delete the other callbacks.
+      stopCallbacks();
+      m_vecImageCallbacks.clear();
+
+      auto callBack = std::shared_ptr<ImageFetcherCallback>( new viCardEditorImageCallBack( this, m_mutex ) );
+      m_vecImageCallbacks.push_back( callBack );
+      SFE.DownloadCardImage( szFullPath, m_szCardName, szSet, szMUD,
+                             std::shared_ptr<ImageFetcherCallback>( callBack ) );
    }
    else
    {
@@ -96,6 +140,18 @@ viCardEditor::setImage(const wxString& aszImagePath)
    this->Thaw();
 }
 
+void 
+viCardEditor::stopCallbacks(bool abBlock)
+{
+   if( abBlock ){ m_mutex->lock(); }
+   
+   for( auto& ptCallback : m_vecImageCallbacks )
+   {
+      if( !ptCallback ) { continue; }
+      ptCallback->SetDoCall( false );
+   }
+   if( abBlock ) { m_mutex->unlock(); }
+}
 
 bool 
 viCardEditor::parseNew(wxString aszColID, wxString aszCardHash)
@@ -279,5 +335,7 @@ viCardEditor::onChangesAccept(wxCommandEvent& awxEvt)
 void 
 viCardEditor::onChangesReset(wxCommandEvent& awxEvt)
 {
-   DisplayNew(m_szColID, m_szDisplayingHash);
+   DisplayNew(m_szColID, m_szDisplayingHash, m_iIndex);
+   this->Thaw();
+   this->Layout();
 }

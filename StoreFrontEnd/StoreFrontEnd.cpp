@@ -28,9 +28,10 @@ bool
 StoreFrontEnd::DownloadCardImage( const wxString& aszFilePath,
                                   const wxString& aszCardName,
                                   const wxString& aszSet,
-                                  const wxString& aszMUD )
+                                  const wxString& aszMUD,
+                                  std::shared_ptr<ImageFetcherCallback> aptCallback)
 {
-   ImageFetcher::Instance()->PDownloadImage(aszFilePath, aszCardName, aszSet, aszMUD);
+   ImageFetcher::Instance()->PDownloadImage(aszFilePath, aszCardName, aszSet, aszMUD, aptCallback);
 
    return true;
 }

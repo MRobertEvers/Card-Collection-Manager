@@ -31,7 +31,7 @@ vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent,
 
    if( !m_vcItemList->IsEmpty() )
    {
-      notifyCardEditor(m_vcItemList->GetFirst().GetHash());
+      notifyCardEditor(m_vcItemList->GetFirst().GetHash(), m_vcItemList->GetFirstInt() );
    }
 }
 
@@ -80,7 +80,7 @@ void
 vCollectionDeckBox::onCardChanged( wxCommandEvent& awxEvt )
 {
    m_vcItemList->RefreshList();
-   m_viCardEditor->DisplayNew( m_wxszColID, m_vcItemList->GetFirst().GetHash() );
+   m_viCardEditor->DisplayNew( m_wxszColID, m_vcItemList->GetFirst().GetHash(), m_vcItemList->GetFirstInt() );
    m_viCardEditor->Layout();
    m_viCardEditor->Thaw();
 }
@@ -90,7 +90,7 @@ vCollectionDeckBox::onNewItemSelected(wxListEvent& awxEvt)
 {
    auto iIndex = awxEvt.GetIndex();
    auto listItem = m_vcItemList->GetItemByListIndex(iIndex);
-   notifyCardEditor(listItem.GetHash());
+   notifyCardEditor( listItem.GetHash(), iIndex );
    awxEvt.StopPropagation();
 }
 
@@ -108,12 +108,12 @@ vCollectionDeckBox::buildItemList()
 }
 
 void 
-vCollectionDeckBox::notifyCardEditor(const wxString& aszHash)
+vCollectionDeckBox::notifyCardEditor(const wxString& aszHash, int aiIndex)
 {
    this->Freeze();
    if( m_viCardEditor == nullptr )
    {
-      m_viCardEditor = new viCardEditor(this, 5, m_wxszColID, aszHash);
+      m_viCardEditor = new viCardEditor(this, 5, m_wxszColID, aszHash, aiIndex);
       //m_viCardEditor->SetMinSize(wxSize(350, 500));
       this->GetSizer()->Add(m_viCardEditor, wxSizerFlags(1).Expand());
       auto iAdditionSize = m_viCardEditor->GetSize().GetWidth();
@@ -122,7 +122,7 @@ vCollectionDeckBox::notifyCardEditor(const wxString& aszHash)
    }
    else
    {
-      m_viCardEditor->DisplayNew(m_wxszColID, aszHash);
+      m_viCardEditor->DisplayNew(m_wxszColID, aszHash, aiIndex);
    }
    PostSizeEvent();
    this->Thaw();

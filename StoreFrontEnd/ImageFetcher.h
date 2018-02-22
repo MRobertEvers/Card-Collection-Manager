@@ -4,6 +4,20 @@
 
 class wxString;
 
+class ImageFetcherCallback
+{
+public:
+   ImageFetcherCallback();
+   virtual ~ImageFetcherCallback();
+
+   virtual void CallBack() = 0;
+
+   void SetDoCall( bool abDoCall );
+   bool GetDoCall();
+private:
+   bool m_bDoCall;
+};
+
 class ImageFetcher
 {
 public:
@@ -12,12 +26,19 @@ public:
    void PDownloadImage( const wxString& aszFilePath,
                         const wxString& aszCardName,
                         const wxString& aszSet,
-                        const wxString& aszMUD );
+                        const wxString& aszMUD,
+                        std::shared_ptr<ImageFetcherCallback> aptCallback );
 
    bool DownloadCardImage( const wxString& aszFilePath,
                            const wxString& aszCardName,
                            const wxString& aszSet,
                            const wxString& aszMUD );
+
+   bool DownloadCardImage( const wxString& aszFilePath,
+                           const wxString& aszCardName,
+                           const wxString& aszSet,
+                           const wxString& aszMUD,
+                           std::shared_ptr<ImageFetcherCallback> aptCallback );
 
    bool PrepareImagesFolder();
    bool PrepareImageSetFolder(const wxString& aszSet);
