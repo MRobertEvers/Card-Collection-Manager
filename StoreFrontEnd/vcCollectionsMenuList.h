@@ -15,7 +15,7 @@ public:
    ~vcCollectionsMenuList();
 
    void AddCollectionOption(std::string aszCollectionName);
-
+   wxString GetSelectionText();
 private:
    // This is so we can populate event data before sending it up.
    wxDECLARE_EVENT_TABLE();
@@ -25,7 +25,6 @@ private:
 
    void buildButtons();
 
-   void onViewCollection(wxCommandEvent& awxEvt);
    void onItemSelection(wxListEvent& awxEvt);
    void onItemDeselection(wxListEvent& awxEvt);
 };

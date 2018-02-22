@@ -120,6 +120,7 @@ viCardEditor::fetchImage()
       stopCallbacks();
       m_vecImageCallbacks.clear();
 
+      // Prepare a callback if the image isnt downloaded.
       auto callBack = std::shared_ptr<ImageFetcherCallback>( new viCardEditorImageCallBack( this, m_mutex ) );
       m_vecImageCallbacks.push_back( callBack );
       SFE.DownloadCardImage( szFullPath, m_szCardName, szSet, szMUD,

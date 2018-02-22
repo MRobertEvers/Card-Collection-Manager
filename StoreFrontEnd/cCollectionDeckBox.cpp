@@ -1,7 +1,6 @@
 #include "cCollectionDeckBox.h"
 #include "vCollectionDeckBox.h"
 #include "StoreFrontEnd.h"
-#include "TestPopup.h"
 
 cCollectionDeckBox::cCollectionDeckBox(MainFrame* aParent, const wxString& aszColName)
    : IMenuEventHandler(aParent), m_ColID(aszColName)

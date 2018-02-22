@@ -3,7 +3,6 @@
 #include <wx/button.h>
 
 wxBEGIN_EVENT_TABLE(vcCollectionsMenuList, wxPanel)
-EVT_BUTTON(vCollectionsOverview::View_Collection, vcCollectionsMenuList::onViewCollection)
 EVT_LIST_ITEM_SELECTED(List, vcCollectionsMenuList::onItemSelection)
 EVT_LIST_ITEM_DESELECTED(List, vcCollectionsMenuList::onItemDeselection)
 wxEND_EVENT_TABLE()
@@ -36,6 +35,19 @@ vcCollectionsMenuList::AddCollectionOption(std::string aszCollectionName)
                                 aszCollectionName );
 }
 
+wxString 
+vcCollectionsMenuList::GetSelectionText()
+{
+   if( m_iSelection >= 0 )
+   {
+      return m_wxListControl->GetItemText( m_iSelection );
+   }
+   else
+   {
+      return "";
+   }
+}
+
 void 
 vcCollectionsMenuList::buildButtons()
 {
@@ -52,18 +64,6 @@ vcCollectionsMenuList::buildButtons()
    this->GetSizer()->Add(loadButt, wxSizerFlags().Expand());
    this->GetSizer()->Add(viewButt, wxSizerFlags().Expand());
    this->GetSizer()->Add(addButt, wxSizerFlags().Expand());
-}
-
-void 
-vcCollectionsMenuList::onViewCollection(wxCommandEvent& awxEvt)
-{
-   awxEvt.SetInt(m_iSelection);
-
-   auto szItem = m_wxListControl->GetItemText(m_iSelection);
-   awxEvt.SetString(szItem);
-
-   // This allows for the continued propagation of the event.
-   awxEvt.Skip(true);
 }
 
 void 

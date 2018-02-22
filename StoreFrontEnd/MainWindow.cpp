@@ -1,9 +1,9 @@
 #include "MainWindow.h"
 #include "StorefrontConfig.h"
 #include "StoreFrontEnd.h"
+#include "cCollectionDeckBox.h"
 #include "vCollectionsOverview.h"
 #include "cCollectionsOverview.h"
-#include "cCollectionDeckBox.h"
 #include <wx/defs.h> 
 
 // Events can be tied at run-time. This is compile time.
@@ -67,7 +67,7 @@ MainFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
 void 
 MainFrame::OnViewCollection(wxCommandEvent& awxEvt)
 {
-   if( !awxEvt.GetString().IsEmpty() )
+   if( awxEvt.GetInt() == 1 )
    {
       viewCollection(awxEvt.GetString());
    }
