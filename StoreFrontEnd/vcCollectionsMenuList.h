@@ -19,6 +19,7 @@ public:
 
    void AddCollectionOption(std::string aszCollectionName);
    void OnViewCollection( wxCommandEvent& awxEvt );
+   void OnAddCollection( wxCommandEvent& awxEvt );
    wxString GetSelectionText();
    void FocusLatest();
 

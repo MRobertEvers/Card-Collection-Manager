@@ -1,5 +1,6 @@
 #include "vcCollectionsMenuList.h"
 #include "vCollectionsOverview.h"
+#include "StoreFrontEnd.h"
 #include <wx/button.h>
 #include <wx/listctrl.h>
 
@@ -7,6 +8,7 @@ wxBEGIN_EVENT_TABLE(vcCollectionsMenuList, wxPanel)
 EVT_LIST_ITEM_SELECTED(List, vcCollectionsMenuList::onItemSelection)
 EVT_LIST_ITEM_DESELECTED(List, vcCollectionsMenuList::onItemDeselection)
 EVT_BUTTON( vCollectionsOverview::View_Collection, vcCollectionsMenuList::OnViewCollection )
+EVT_BUTTON( vCollectionsOverview::Add_Collection, vcCollectionsMenuList::OnAddCollection )
 wxEND_EVENT_TABLE()
 
 vcCollectionsMenuList::vcCollectionsMenuList(wxWindow* aptParent)
@@ -45,6 +47,22 @@ vcCollectionsMenuList::OnViewCollection( wxCommandEvent& awxEvt )
    if( !awxEvt.GetString().IsEmpty() )
    {
       awxEvt.Skip();
+   }
+}
+
+void 
+vcCollectionsMenuList::OnAddCollection( wxCommandEvent& awxEvt )
+{
+   wxString szNewCollection =
+      wxGetTextFromUser( "Enter the name of your new collection.",
+                         "New Collection", 
+                         "MyDeck" );
+
+   auto ptSF = StoreFrontEnd::Instance();
+   auto szID = ptSF->CreateNewCollection( szNewCollection.ToStdString(), "" );
+   if( szID != "" )// TODO: Does this return NF?
+   {
+      AddCollectionOption( szNewCollection.ToStdString() );
    }
 }
 
