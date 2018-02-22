@@ -8,7 +8,6 @@
 
 wxBEGIN_EVENT_TABLE(vCollectionsOverview, wxPanel)
 EVT_BUTTON(vCollectionsOverview::Load_Collection, vCollectionsOverview::OnLoadCollection)
-EVT_BUTTON( vCollectionsOverview::View_Collection, vCollectionsOverview::OnViewCollection )
 wxEND_EVENT_TABLE()
 
 vCollectionsOverview::vCollectionsOverview( wxWindow* aptParent,
@@ -83,14 +82,4 @@ vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
 
    // This event is handled.
    awxEvt.StopPropagation();
-}
-
-void 
-vCollectionsOverview::OnViewCollection(wxCommandEvent& awxEvt)
-{
-   awxEvt.SetString( m_vcCollectionsPanel->GetSelectionText() );
-   if( !awxEvt.GetString().IsEmpty() )
-   {
-      awxEvt.Skip();
-   }
 }

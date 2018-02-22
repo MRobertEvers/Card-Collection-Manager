@@ -337,6 +337,5 @@ void
 viCardEditor::onChangesReset(wxCommandEvent& awxEvt)
 {
    DisplayNew(m_szColID, m_szDisplayingHash, m_iIndex);
-   this->Thaw();
    this->Layout();
 }
