@@ -44,7 +44,7 @@ CollectionQueryHelper::getHashGroupsEnumUIDs(const Query& aiQueryParms)
    multimap<string, ItemData> mapSeenHashes;
    auto ptColSource = m_ptCollection->m_ptrCollectionSource;
 
-   map<string, ItemData> mapCardHashes;
+   multimap<string, ItemData> mapCardHashes;
    for( auto iItem : m_ptCollection->getCollection() )
    {
       auto item = ptColSource->GetCardPrototype(iItem);

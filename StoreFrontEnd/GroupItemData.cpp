@@ -99,7 +99,8 @@ GroupItemData::parseLongName(const wxString& aszName)
 
    if( m_vecMetaTags.size() > 0 )
    {
-      getItemHash(m_vecMetaTags[0].second);
+      // TODO: BAD BAD BAD LITERAL.
+      getItemHash( parser.FindTagInList( m_vecMetaTags, "__UID" ));
    }
 }
 

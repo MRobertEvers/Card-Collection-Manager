@@ -23,8 +23,7 @@ vcCollectionCubeDisplay::RefreshList()
 {
    auto ptSF = StoreFrontEnd::Instance();
    Query query;
-   query.UIDs();
-   query.IncludeCount();
+   query.AnyMeta();
    auto lstCol = ptSF->GetAllCardsStartingWith( m_szColID.ToStdString(), query );
 
    m_vecDataItems.clear();

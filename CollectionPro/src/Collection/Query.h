@@ -31,12 +31,12 @@ public:
    Query& HashMeta() { m_htHash = CopyItem::HashType::Meta; return *this; }
    Query& SearchFor(const std::string& Search) { m_szSearch = Search; return *this; }
    Query& IncludeMetaType(MetaTagType mtType) { m_mttMetaType = mtType; return *this; }
-   Query& AnyMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Any; return *this; }
-   Query& NoMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::None; return *this; }
-   Query& PublicMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Public; return *this; }
-   Query& IgnoredMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Ignored; return *this; }
-   Query& TrackingMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Tracking; return *this; }
-   Query& HiddenMeta(MetaTagType mtType) { m_mttMetaType = MetaTagType::Hidden; return *this; }
+   Query& AnyMeta() { m_mttMetaType = MetaTagType::Any; return *this; }
+   Query& NoMeta() { m_mttMetaType = MetaTagType::None; return *this; }
+   Query& PublicMeta() { m_mttMetaType = MetaTagType::Public; return *this; }
+   Query& IgnoredMeta() { m_mttMetaType = MetaTagType::Ignored; return *this; }
+   Query& TrackingMeta() { m_mttMetaType = MetaTagType::Tracking; return *this; }
+   Query& HiddenMeta() { m_mttMetaType = MetaTagType::Hidden; return *this; }
 
    bool GetIncludeCount() const { return m_bIncludeCount; }
    bool GetShort() const { return m_bIsShort; }
