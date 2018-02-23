@@ -139,6 +139,7 @@
     <ClCompile Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
     <ClCompile Include="Group.cpp" />
+    <ClCompile Include="vcCollectionCubeDisplay.cpp" />
     <ClCompile Include="vcCollectionCubeGroup.cpp" />
     <ClCompile Include="vcEditableItemList.cpp" />
     <ClCompile Include="ImageFetcher.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="IMenuEventHandler.h" />
     <ClInclude Include="StoreFrontEnd.h" />
     <ClInclude Include="TestPopup.h" />
+    <ClInclude Include="vcCollectionCubeDisplay.h" />
     <ClInclude Include="vcCollectionCubeGroup.h" />
     <ClInclude Include="vcCollectionDeckBoxItemList.h" />
     <ClInclude Include="GroupItemData.h" />

@@ -1,25 +1,28 @@
 #include "vCollectionCube.h"
-#include "vcCollectionDeckBoxItemList.h"
+#include "vcCollectionCubeDisplay.h"
+#include "vcCollectionCubeGroup.h"
 #include "viCollectionEditor.h"
 #include "viCardEditor.h"
 #include "GroupItemData.h"
 #include "MainWindow.h"
 #include "viCardEditor.h"
+#include "vcCollectionCubeDisplay.h"
 
 wxBEGIN_EVENT_TABLE( vCollectionCube, wxPanel )
 EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
 EVT_BUTTON( viCollectionEditor::Changes_Accept, vCollectionCube::onEditorAccept )
-EVT_LIST_ITEM_SELECTED( vcCollectionDeckBoxItemList::List, vCollectionCube::onNewItemSelected )
+EVT_LIST_ITEM_SELECTED( vcCollectionCubeDisplay::Group_List, vCollectionCube::onNewItemSelected )
 EVT_BUTTON( viCollectionEditor::Changes_Decline, vCollectionCube::onEditorDecline )
 wxEND_EVENT_TABLE()
 
 vCollectionCube::vCollectionCube( MainFrame* aptParent,
-   wxWindowID aiWID,
-   const wxString& aszColID )
+                                  wxWindowID aiWID,
+                                  const wxString& aszColID )
    : wxPanel( aptParent, aiWID ), m_viColEditor( 0 )
 {
    m_wxszColID = aszColID;
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer( 1, 3, 0, 0 );
+
    boxSizer->AddGrowableCol( 0 );
    boxSizer->AddGrowableRow( 0 );
    // Order is Count, Name*, Mana Cost, Card Type
@@ -27,7 +30,7 @@ vCollectionCube::vCollectionCube( MainFrame* aptParent,
 
    this->GetParent()->SetSize( 550, 500 );
    this->GetParent()->Layout();
-   buildItemList();
+   buildGroupPanel();
 
    if( !m_vcItemList->IsEmpty() )
    {
@@ -88,9 +91,7 @@ vCollectionCube::onCardChanged( wxCommandEvent& awxEvt )
 void
 vCollectionCube::onNewItemSelected( wxListEvent& awxEvt )
 {
-   auto iIndex = awxEvt.GetIndex();
-   auto listItem = m_vcItemList->GetItemByListIndex( iIndex );
-   notifyCardEditor( listItem.GetHash(), iIndex );
+   notifyCardEditor( awxEvt.GetString(), awxEvt.GetIndex() );
    awxEvt.StopPropagation();
 }
 
@@ -101,9 +102,9 @@ vCollectionCube::onDeckEditor( wxCommandEvent& awxEvt )
 }
 
 void
-vCollectionCube::buildItemList()
+vCollectionCube::buildGroupPanel()
 {
-   m_vcItemList = new vcCollectionDeckBoxItemList( this, m_wxszColID );
+   m_vcItemList = new vcCollectionCubeDisplay( this, 0, m_wxszColID );
    this->GetSizer()->Add( m_vcItemList, wxSizerFlags( 1 ).Expand() );
 }
 

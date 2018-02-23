@@ -2,6 +2,7 @@
 #include "StorefrontConfig.h"
 #include "StoreFrontEnd.h"
 #include "cCollectionDeckBox.h"
+#include "cCollectionCube.h"
 #include "vCollectionsOverview.h"
 #include "cCollectionsOverview.h"
 #include <wx/defs.h> 
@@ -163,7 +164,8 @@ MainFrame::viewCollection(const wxString& aszColName)
 {
    auto ptSF = StoreFrontEnd::Instance();
    auto szName = ptSF->GetCollectionID(aszColName.ToStdString());
-   setView( new cCollectionDeckBox(this, wxString(szName)) );
+   // setView( new cCollectionDeckBox(this, wxString(szName)) );
+   setView( new cCollectionCube( this, wxString( szName ) ) );
 }
 
 void 

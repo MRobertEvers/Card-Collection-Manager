@@ -6,6 +6,7 @@
 class vcCollectionDeckBoxItemList;
 class viCardEditor;
 class viCollectionEditor;
+class vcCollectionCubeDisplay;
 class MainFrame;
 
 class vCollectionCube : public wxPanel
@@ -20,7 +21,7 @@ public:
 private:
    wxDECLARE_EVENT_TABLE();
 
-   vcCollectionDeckBoxItemList* m_vcItemList;
+   vcCollectionCubeDisplay* m_vcItemList;
    viCardEditor* m_viCardEditor;
    viCollectionEditor* m_viColEditor;
    wxString m_wxszColID;
@@ -30,7 +31,7 @@ private:
    void onCardChanged( wxCommandEvent& awxEvt );
    void onNewItemSelected( wxListEvent& awxEvt );
    void onDeckEditor( wxCommandEvent& awxEvt );
-   void buildItemList();
+   void buildGroupPanel();
    void notifyCardEditor( const wxString& aszHash, int aiIndex );
 };
 

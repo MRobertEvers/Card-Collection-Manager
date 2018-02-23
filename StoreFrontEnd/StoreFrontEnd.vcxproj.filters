@@ -150,6 +150,9 @@
     <ClCompile Include="GroupItemData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vcCollectionCubeDisplay.cpp">
+      <Filter>Views\Cube\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="GroupItemData.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vcCollectionCubeDisplay.h">
+      <Filter>Views\Cube\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

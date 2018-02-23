@@ -34,6 +34,7 @@ viCardEditorImageCallBack::CallBack()
       // Perhaps need to perform this on the main thread.
       wxListEvent updateEvt( wxEVT_LIST_ITEM_SELECTED );
       updateEvt.m_itemIndex = m_ptCardEditor->m_iIndex;
+      updateEvt.SetString( m_ptCardEditor->m_szDisplayingHash );
       ::wxPostEvent(m_ptCardEditor->GetParent(), updateEvt );
       //m_ptCardEditor->DisplayNew( m_ptCardEditor->m_szColID,
       //                            m_ptCardEditor->m_szDisplayingHash );
