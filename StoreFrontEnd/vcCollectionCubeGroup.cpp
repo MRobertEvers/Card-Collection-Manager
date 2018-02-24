@@ -36,15 +36,37 @@ vcCollectionCubeGroup::~vcCollectionCubeGroup()
 }
 
 void 
-vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData )
+vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, Group aGrp )
 {
-   for( auto itemData : avecItemData )
+   map<wxString, vector<GroupItemData*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
+
+   for( auto& data : avecItemData )
    {
-      wxString buf = itemData->GetName();
-      int i = this->GetItemCount();
-      long tmp = this->InsertItem( i, buf, 0 );
-      this->SetItemData( tmp, i );
-      m_vecHashes.push_back( itemData->GetHash() );
+      // TODO: Need way to get meta tags from server so we can sort on them.
+      auto szGroup = aGrp.GetGroup( *data );
+      mapGroups[szGroup].push_back( data );
+   }
+
+
+   for( auto groupData : mapGroups )
+   {
+      if( !aGrp.IsEmpty() )
+      {
+         wxString buf = groupData.first;
+         int i = this->GetItemCount();
+         long tmp = this->InsertItem( i, buf, 0 );
+         this->SetItemData( tmp, i );
+         m_vecHashes.push_back( "" );
+      }
+
+      for( auto& itemData : groupData.second )
+      {
+         wxString buf = itemData->GetName();
+         int i = this->GetItemCount();
+         long tmp = this->InsertItem( i, buf, 0 );
+         this->SetItemData( tmp, i );
+         m_vecHashes.push_back( itemData->GetHash() );
+      }
    }
 }
 
@@ -70,9 +92,11 @@ void
 vcCollectionCubeGroup::onItemSelection( wxListEvent& awxEvt )
 {
    m_iSelection = awxEvt.GetIndex();
-   awxEvt.SetInt( m_iColumnIndex );
-   awxEvt.SetString( m_vecHashes[m_iSelection] );
-   awxEvt.Skip();
+   if( !m_vecHashes[m_iSelection].IsEmpty() )
+   {
+      awxEvt.SetString( m_vecHashes[m_iSelection] );
+      awxEvt.Skip();
+   }
 }
 
 void

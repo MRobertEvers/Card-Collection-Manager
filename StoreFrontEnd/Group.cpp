@@ -27,6 +27,12 @@ Group::Sorting::operator()( const wxString& agrpLeft, const wxString& agrpRight 
    return (*m_ptSorter)(agrpLeft, agrpRight);
 }
 
+Group::Group(bool abIsEmpty)
+   : BIsEmpty(abIsEmpty)
+{
+   SortingFunctor = std::shared_ptr<Sorting>( new Sorting() );
+}
+
 Group&
 Group::
 GroupOn( const wxString& aszKey, bool abIsMetaKey )
@@ -63,7 +69,7 @@ OverrideGrouping( const Group& aGrouping )
 Group& 
 Group::AddSubGroup( const wxString& aszMajorGroup, const Group& aGrouping )
 {
-   // SubGroups.insert( std::make_pair(aszMajorGroup, aGrouping ) );
+   SubGroups.insert( std::make_pair(aszMajorGroup, aGrouping ) );
    return *this;
 }
 
@@ -122,24 +128,27 @@ GetGroup( const GroupItemData& aData ) const
    return szGroup;
 }
 
-wxString 
-Group::GetSubGroup( const GroupItemData& aData ) const
+Group 
+Group::GetSubGroup( const wxString& aszGroup ) const
 {
-   // This will be affected by aliases at the group level.
-   wxString szGroup = GetGroup( aData );
-
-   auto iter_SubGroup = SubGroups.find( szGroup );
+   auto iter_SubGroup = SubGroups.find( aszGroup );
    if( iter_SubGroup != SubGroups.end() )
    {
       // TODO: Should this be GetSubGroup?
-      return iter_SubGroup->second.GetGroup( aData );
+      return iter_SubGroup->second;
    }
 
-   return szGroup;
+   return Group(true);
 }
 
 std::shared_ptr<Group::Sorting> 
 Group::GetSortingFunctor() const
 {
    return SortingFunctor;
+}
+
+bool 
+Group::IsEmpty() const
+{
+   return BIsEmpty;
 }

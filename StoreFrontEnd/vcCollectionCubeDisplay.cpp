@@ -15,8 +15,8 @@ CubeDisplayPrimarySorter::operator()( const wxString& agrpLeft, const wxString& 
    
    int iLeft = std::distance( iter_begin, std::find( iter_begin, iter_end, agrpLeft ) );
    int iRight = std::distance( iter_begin, std::find( iter_begin, iter_end, agrpRight ) );
-
-   return iLeft < iRight;
+   
+   return iLeft == iRight ? agrpLeft < agrpRight : iLeft < iRight;
 }
 
 vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID aiWID, const wxString& aszColID )
@@ -57,7 +57,7 @@ vcCollectionCubeDisplay::RefreshList()
       auto grpList = new vcCollectionCubeGroup( this, Group_List, grp.first, index );
       m_mapColGroups.insert( std::make_pair( index++, grpList ) );
 
-      grpList->PopulateList( grp.second );
+      grpList->PopulateList( grp.second, defGroup.GetSubGroup( grp.first ) );
 
       this->GetSizer()->Add(grpList, wxSizerFlags(0).Left().Expand());
    }
@@ -106,13 +106,28 @@ vcCollectionCubeDisplay::defaultGroup()
    Group defaultGrp;
    defaultGrp.GroupOn( "colors", false )
              .SetSortingFunctor( new CubeDisplayPrimarySorter() )
-             .AliasGroup( "Red", "R" )
              .AliasGroup( "White", "W" )
              .AliasGroup( "Blue", "U" )
              .AliasGroup( "Black", "B" )
-             .AliasGroup( "Green", "G" );
+             .AliasGroup( "Red", "R" )
+             .AliasGroup( "Green", "G" )
+             .BroadenGroup( "::" )
+             .AliasGroup( "::", "Multicolor" );
 
    Group subGroup;
+   subGroup.GroupOn( "colors", false );
+   subGroup.AliasGroup( "White::Blue", "Azorius" )
+           .AliasGroup( "White::Black", "Orzhov" )
+           .AliasGroup( "White::Red", "Boros" )
+           .AliasGroup( "White::Green", "Selesnya" )
+           .AliasGroup( "Blue::Black", "Dimir" )
+           .AliasGroup( "Blue::Red", "Izzet" )
+           .AliasGroup( "Blue::Green", "Simic" )
+           .AliasGroup( "Black::Red", "Rakdos" )
+           .AliasGroup( "Black::Green", "Golgari" )
+           .AliasGroup( "Red::Green", "Gruul" );
+
+   defaultGrp.AddSubGroup( "Multicolor", subGroup );
 
    return defaultGrp;
 }
@@ -127,7 +142,8 @@ vcCollectionCubeDisplay::performGrouping( std::vector<GroupItemData>& avecItems,
    for( auto& data : avecItems )
    {
       // TODO: Need way to get meta tags from server so we can sort on them.
-      mapGroups[aGrp.GetGroup( data )].push_back( &data );
+      auto szGroup = aGrp.GetGroup( data );
+      mapGroups[szGroup].push_back( &data );
    }
 
    return mapGroups;

@@ -23,7 +23,7 @@ public:
    private:
       std::shared_ptr<SortingOperator> m_ptSorter;
    };
-
+   Group(bool abIsEmpty = false);
    Group& GroupOn( const wxString& aszKey, bool abIsMetaKey = true );
 
    // Applied last. Any group matching aszGroup exactly will appear as aszAlias.
@@ -36,12 +36,14 @@ public:
    Group& SetSortingFunctor( SortingOperator* aptFunctor );
 
    wxString GetGroup( const GroupItemData& aData ) const;
-   wxString GetSubGroup( const GroupItemData& aData ) const ;
+   Group GetSubGroup( const wxString& aszGroup ) const;
    std::shared_ptr<Sorting> GetSortingFunctor() const;
+   bool IsEmpty() const;
 
 private:
    wxString Key;
    bool MetaKey;
+   bool BIsEmpty;
    std::vector<wxString> BroadenedValues;
    std::map<wxString, wxString> Aliases;
    std::map<wxString, Group> SubGroups;

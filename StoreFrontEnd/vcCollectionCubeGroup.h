@@ -16,7 +16,7 @@ public:
                           int aiColumnIndex );
    ~vcCollectionCubeGroup();
 
-   void PopulateList( std::vector<GroupItemData*> avecItemData );
+   void PopulateList( std::vector<GroupItemData*> avecItemData, Group aGrp );
    void DeselectAll();
    int GetSelection();
 
