@@ -30,6 +30,10 @@ Group::Sorting::operator()( const wxString& agrpLeft, const wxString& agrpRight 
 Group::Group(bool abIsEmpty)
    : BIsEmpty(abIsEmpty)
 {
+   if( !BIsEmpty )
+   {
+      DefaultSubGroup = std::shared_ptr<Group>( new Group( true ) );
+   }
    SortingFunctor = std::shared_ptr<Sorting>( new Sorting() );
 }
 
@@ -63,6 +67,13 @@ Group::
 OverrideGrouping( const Group& aGrouping )
 {
    Overrides.push_back( aGrouping );
+   return *this;
+}
+
+Group& 
+Group::SetDefaultSubGroup( const Group& aGrouping )
+{
+   DefaultSubGroup = std::shared_ptr<Group>( new Group( aGrouping ) );
    return *this;
 }
 
@@ -138,7 +149,7 @@ Group::GetSubGroup( const wxString& aszGroup ) const
       return iter_SubGroup->second;
    }
 
-   return Group(true);
+   return *DefaultSubGroup;
 }
 
 std::shared_ptr<Group::Sorting> 

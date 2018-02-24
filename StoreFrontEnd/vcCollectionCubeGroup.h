@@ -23,6 +23,7 @@ public:
 private:
    wxDECLARE_EVENT_TABLE();
 
+   wxString m_szColumnName;
    std::vector<wxString> m_vecHashes;
 
    int m_iSelection;

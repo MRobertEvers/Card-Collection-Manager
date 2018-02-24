@@ -112,7 +112,8 @@ vcCollectionCubeDisplay::defaultGroup()
              .AliasGroup( "Red", "R" )
              .AliasGroup( "Green", "G" )
              .BroadenGroup( "::" )
-             .AliasGroup( "::", "Multicolor" );
+             .AliasGroup( "::", "Multicolor" )
+             .AliasGroup( "", "Colorless" );
 
    Group subGroup;
    subGroup.GroupOn( "colors", false );
@@ -128,6 +129,18 @@ vcCollectionCubeDisplay::defaultGroup()
            .AliasGroup( "Red::Green", "Gruul" );
 
    defaultGrp.AddSubGroup( "Multicolor", subGroup );
+
+   Group defaultSubGroup;
+   defaultSubGroup.GroupOn("type", false)
+                  .BroadenGroup("Creature")
+                  .BroadenGroup("Instant")
+                  .BroadenGroup("Sorcery")
+                  .BroadenGroup("Enchantment")
+                  .BroadenGroup("Artifact")
+                  .BroadenGroup("Planeswalker")
+                  .BroadenGroup("Land");
+
+   defaultGrp.SetDefaultSubGroup( defaultSubGroup );
 
    return defaultGrp;
 }

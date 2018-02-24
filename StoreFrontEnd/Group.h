@@ -32,6 +32,7 @@ public:
    // Any group containing this value will appear AS this value.
    Group& BroadenGroup( const wxString& aszValue );
    Group& OverrideGrouping( const Group& aGrouping );
+   Group& SetDefaultSubGroup( const Group& aGrouping );
    Group& AddSubGroup( const wxString& aszMajorGroup, const Group& aGrouping );
    Group& SetSortingFunctor( SortingOperator* aptFunctor );
 
@@ -47,6 +48,7 @@ private:
    std::vector<wxString> BroadenedValues;
    std::map<wxString, wxString> Aliases;
    std::map<wxString, Group> SubGroups;
+   std::shared_ptr<Group> DefaultSubGroup;
    std::vector<Group> Overrides;
    std::shared_ptr<Sorting> SortingFunctor;
 };

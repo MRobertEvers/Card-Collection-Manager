@@ -17,17 +17,15 @@ vcCollectionCubeGroup::vcCollectionCubeGroup( wxPanel* aptParent,
                                               wxWindowID aiWID,
                                               wxString aszColumn,
                                               int aiColumnIndex )
-   : wxListView(aptParent, aiWID), m_iSelection(-1), m_iColumnIndex(aiColumnIndex)
+   : wxListView(aptParent, aiWID), m_iSelection(-1), m_iColumnIndex(aiColumnIndex),
+     m_szColumnName(aszColumn)
 {
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer( 1, 1, 0, 0 );
 
    boxSizer->AddGrowableCol( 0 );
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer( boxSizer );
-
-   this->SetFont( wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ) );
    this->SetSizeHints( wxSize( COLUMN_WIDTH, wxDefaultSize.GetHeight() ) );
-   this->InsertColumn( 0, aszColumn, wxLIST_FORMAT_LEFT, COLUMN_WIDTH );
 }
 
 vcCollectionCubeGroup::~vcCollectionCubeGroup()
@@ -38,6 +36,21 @@ vcCollectionCubeGroup::~vcCollectionCubeGroup()
 void 
 vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, Group aGrp )
 {
+   //this->SetFont( wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ) );
+   // This is the column head.
+   // this->SetFont( wxFont( wxFontInfo( 12 ).FaceName( "Helvetica" ).Bold() ) );
+   wxString szColumn = m_szColumnName + " (" + std::to_string(avecItemData.size()) + ")";
+   //this->InsertColumn( 0, m_szColumnName, wxLIST_FORMAT_LEFT, COLUMN_WIDTH );
+
+   auto col = wxListItem();
+   col.SetFont( wxFont( wxFontInfo( 12 ).FaceName( "Helvetica" ).Bold() ).MakeBold() );
+   col.SetColumn( 0 );
+   col.SetText( szColumn );
+   col.SetWidth( COLUMN_WIDTH );
+   col.SetAlign( wxLIST_FORMAT_LEFT );
+   auto ints = this->InsertColumn( 0, col );
+   
+
    map<wxString, vector<GroupItemData*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
 
    for( auto& data : avecItemData )
@@ -52,11 +65,14 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, G
    {
       if( !aGrp.IsEmpty() )
       {
-         wxString buf = groupData.first;
+         //this->SetFont( wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ).Bold() );
+         wxString buf = groupData.first + " (" + std::to_string( groupData.second.size() ) + ")";
          int i = this->GetItemCount();
          long tmp = this->InsertItem( i, buf, 0 );
          this->SetItemData( tmp, i );
+         this->SetItemFont( i, wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ).Bold() );
          m_vecHashes.push_back( "" );
+         //this->SetFont( wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ) );
       }
 
       for( auto& itemData : groupData.second )
@@ -65,6 +81,7 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, G
          int i = this->GetItemCount();
          long tmp = this->InsertItem( i, buf, 0 );
          this->SetItemData( tmp, i );
+         this->SetItemFont( i, wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ) );
          m_vecHashes.push_back( itemData->GetHash() );
       }
    }
