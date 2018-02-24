@@ -3,6 +3,7 @@
 #include<vector>
 
 #include "Support\TypeDefs.h"
+#include "Collection\CopyItem.h"
 
 using namespace std;
 
@@ -47,6 +48,11 @@ public:
    string CmdAppendCount(const string& aszCmd, int Count);
    string GetNameFromCardLine(const string& aszLongIdentifier);
    string FindTagInList(const vector<Tag>& avecList, const string& aszKey);
+
+   string GetUIDKey();
+   string GetSessionKey();
+   string GetHashKey();
+   string GetAddressKey();
 
 public:
    template<class Iter>

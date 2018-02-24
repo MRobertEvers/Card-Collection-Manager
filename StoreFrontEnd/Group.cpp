@@ -1,6 +1,32 @@
 #include "Group.h"
 #include "GroupItemData.h"
 
+bool
+Group::SortingOperator::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
+{
+   return agrpLeft < agrpRight;
+}
+
+Group::Sorting::Sorting()
+{
+   m_ptSorter = std::shared_ptr<SortingOperator>( new SortingOperator() );
+}
+
+Group::Sorting::Sorting( SortingOperator* aptSorting )
+   : Sorting()
+{
+   if( aptSorting != nullptr )
+   {
+      m_ptSorter = std::shared_ptr<SortingOperator>( aptSorting );
+   }
+}
+
+bool
+Group::Sorting::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
+{
+   return (*m_ptSorter)(agrpLeft, agrpRight);
+}
+
 Group&
 Group::
 GroupOn( const wxString& aszKey, bool abIsMetaKey )
@@ -10,9 +36,17 @@ GroupOn( const wxString& aszKey, bool abIsMetaKey )
    return *this;
 }
 
+Group& 
+Group::
+AliasGroup( const wxString& aszGroup, const wxString& aszAlias )
+{
+   Aliases.insert( std::make_pair( aszGroup, aszAlias ) );
+   return *this;
+}
+
 Group&
 Group::
-BroadenSubGroup( const wxString& aszValue )
+BroadenGroup( const wxString& aszValue )
 {
    BroadenedValues.push_back( aszValue );
    return *this;
@@ -26,11 +60,27 @@ OverrideGrouping( const Group& aGrouping )
    return *this;
 }
 
+Group& 
+Group::AddSubGroup( const wxString& aszMajorGroup, const Group& aGrouping )
+{
+   // SubGroups.insert( std::make_pair(aszMajorGroup, aGrouping ) );
+   return *this;
+}
+
+// THIS TAKES OWNERSHIP OF THE POINTER
+Group& 
+Group::SetSortingFunctor( SortingOperator* aptFunctor )
+{
+   SortingFunctor = std::shared_ptr<Sorting>(new Sorting(aptFunctor));
+   return *this;
+}
+
 wxString
 Group::
-GetGroup( const GroupItemData& aData )
+GetGroup( const GroupItemData& aData ) const
 {
    wxString szGroup;
+   // If the item has the override field, then that field is what is used.
    for( auto& over : Overrides )
    {
       szGroup = over.GetGroup( aData );
@@ -40,7 +90,8 @@ GetGroup( const GroupItemData& aData )
       }
    }
 
-   if( szGroup == "" )
+   // If there is no override.
+   if( szGroup.IsEmpty() )
    {
       if( MetaKey )
       {
@@ -59,7 +110,36 @@ GetGroup( const GroupItemData& aData )
             break;
          }
       }
+
+      // Apply aliases if there are any.
+      auto iter_Alias = Aliases.find( szGroup );
+      if( iter_Alias != Aliases.end() )
+      {
+         szGroup = iter_Alias->second;
+      }
    }
 
    return szGroup;
+}
+
+wxString 
+Group::GetSubGroup( const GroupItemData& aData ) const
+{
+   // This will be affected by aliases at the group level.
+   wxString szGroup = GetGroup( aData );
+
+   auto iter_SubGroup = SubGroups.find( szGroup );
+   if( iter_SubGroup != SubGroups.end() )
+   {
+      // TODO: Should this be GetSubGroup?
+      return iter_SubGroup->second.GetGroup( aData );
+   }
+
+   return szGroup;
+}
+
+std::shared_ptr<Group::Sorting> 
+Group::GetSortingFunctor() const
+{
+   return SortingFunctor;
 }

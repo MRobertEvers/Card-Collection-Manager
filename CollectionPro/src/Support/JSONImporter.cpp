@@ -3,7 +3,7 @@
 #include<map>
 #include<unordered_set>
 
-#include "Config.h"
+#include "../Config.h"
 #include "StringHelper.h"
 #include "../StringInterface.h"
 

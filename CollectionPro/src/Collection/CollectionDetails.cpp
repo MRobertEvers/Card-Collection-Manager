@@ -1,7 +1,7 @@
 #include "CollectionDetails.h"
 
 #include <ctime>
-#include "../Support/Config.h"
+#include "../Config.h"
 #include "../Support/StringHelper.h"
 
 CollectionDetails::CollectionDetails()

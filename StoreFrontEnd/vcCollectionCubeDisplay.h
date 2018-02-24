@@ -2,10 +2,18 @@
 #include "wx/wxprec.h"
 #include "wx/listctrl.h"
 #include "GroupItemData.h"
+#include "Group.h"
 #include <map>
 #include <vector>
 
+
 class vcCollectionCubeGroup;
+
+class CubeDisplayPrimarySorter : public  Group::SortingOperator
+{
+public:
+   bool operator()( const wxString& agrpLeft, const wxString& agrpRight ) const;
+};
 
 class vcCollectionCubeDisplay : public wxPanel
 {
@@ -31,6 +39,10 @@ private:
    wxString m_szColID;
 
    void clearDisplay();
-   void onItemSelection( wxListEvent& awxEvt );
-   std::map<wxString, std::vector<GroupItemData*>> defaultGrouping( std::vector<GroupItemData>& avecItems );
+   Group defaultGroup();
+
+   std::map<wxString, 
+            std::vector<GroupItemData*>, 
+      Group::Sorting> performGrouping( std::vector<GroupItemData>& avecItems,
+                                                       const Group& aGrp );
 };

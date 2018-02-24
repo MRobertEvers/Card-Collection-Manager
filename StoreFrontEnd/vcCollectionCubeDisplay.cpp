@@ -3,7 +3,21 @@
 #include "MainWindow.h"
 #include "StoreFrontEnd.h"
 #include "Group.h"
+#include <algorithm>
 
+bool 
+CubeDisplayPrimarySorter::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
+{
+   std::vector<wxString> vecGrpOrder = { "W", "U", "B", "R", "G" };
+
+   auto iter_begin = vecGrpOrder.begin();
+   auto iter_end = vecGrpOrder.end();
+   
+   int iLeft = std::distance( iter_begin, std::find( iter_begin, iter_end, agrpLeft ) );
+   int iRight = std::distance( iter_begin, std::find( iter_begin, iter_end, agrpRight ) );
+
+   return iLeft < iRight;
+}
 
 vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID aiWID, const wxString& aszColID )
    : wxPanel( aptParent, aiWID ), m_szColID(aszColID)
@@ -33,7 +47,8 @@ vcCollectionCubeDisplay::RefreshList()
       m_vecDataItems.push_back( data );
    }
 
-   auto mapGroups = defaultGrouping( m_vecDataItems );
+   auto defGroup = defaultGroup();
+   auto mapGroups = performGrouping( m_vecDataItems, defGroup );
    this->Freeze();
    clearDisplay();
    int index = 0;
@@ -46,7 +61,7 @@ vcCollectionCubeDisplay::RefreshList()
 
       this->GetSizer()->Add(grpList, wxSizerFlags(0).Left().Expand());
    }
-
+   PostSizeEvent();
    this->Thaw();
 }
 
@@ -85,19 +100,34 @@ vcCollectionCubeDisplay::clearDisplay()
    m_mapColGroups.clear();
 }
 
-std::map<wxString, std::vector<GroupItemData*>>
-vcCollectionCubeDisplay::defaultGrouping( std::vector<GroupItemData>& avecItems )
+Group 
+vcCollectionCubeDisplay::defaultGroup()
 {
    Group defaultGrp;
-   defaultGrp.GroupOn( "colorIdentity", false );
+   defaultGrp.GroupOn( "colors", false )
+             .SetSortingFunctor( new CubeDisplayPrimarySorter() )
+             .AliasGroup( "Red", "R" )
+             .AliasGroup( "White", "W" )
+             .AliasGroup( "Blue", "U" )
+             .AliasGroup( "Black", "B" )
+             .AliasGroup( "Green", "G" );
 
-   map<wxString, vector<GroupItemData*>> mapGroups;
+   Group subGroup;
+
+   return defaultGrp;
+}
+
+std::map<wxString, std::vector<GroupItemData*>, Group::Sorting>
+vcCollectionCubeDisplay::performGrouping( std::vector<GroupItemData>& avecItems, const Group& aGrp )
+{
+   map<wxString, vector<GroupItemData*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
+
    // So you assign each item in your collection to a GroupItemData,
    // then the do something like below to extract the group that they should belong.
    for( auto& data : avecItems )
    {
       // TODO: Need way to get meta tags from server so we can sort on them.
-      mapGroups[defaultGrp.GetGroup( data )].push_back( &data );
+      mapGroups[aGrp.GetGroup( data )].push_back( &data );
    }
 
    return mapGroups;

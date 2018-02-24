@@ -33,7 +33,6 @@ viCardEditorImageCallBack::CallBack()
       }
       // Perhaps need to perform this on the main thread.
       wxListEvent updateEvt( wxEVT_LIST_ITEM_SELECTED );
-      updateEvt.m_itemIndex = m_ptCardEditor->m_iIndex;
       updateEvt.SetString( m_ptCardEditor->m_szDisplayingHash );
       ::wxPostEvent(m_ptCardEditor->GetParent(), updateEvt );
       //m_ptCardEditor->DisplayNew( m_ptCardEditor->m_szColID,
@@ -49,8 +48,8 @@ EVT_BUTTON(Changes_Reset, viCardEditor::onChangesReset)
 wxEND_EVENT_TABLE()
 
 viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
-                            wxString aszColID, wxString aszCardHash, int aiIndex )
-   : wxPanel(aptParent, aiWID),  m_szColID(aszColID), m_iIndex(aiIndex)
+                            wxString aszColID, wxString aszCardHash )
+   : wxPanel(aptParent, aiWID),  m_szColID(aszColID)
 {
    m_mutex = std::shared_ptr<std::mutex>( new std::mutex() );
 
@@ -63,7 +62,7 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
    this->SetSizer(boxSizer);
    this->SetSize(250, 500);
 
-   DisplayNew(aszColID, aszCardHash, m_iIndex);
+   DisplayNew(aszColID, aszCardHash );
    buildSubmitResetButtons();
 }
 
@@ -73,11 +72,10 @@ viCardEditor::~viCardEditor()
 }
 
 void 
-viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash, int aiIndex)
+viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash )
 {
    if( parseNew(aszColID, aszCardHash) )
    {
-      m_iIndex = aiIndex;
       this->Freeze();
       refreshDisplay();
       refreshEditor();
@@ -156,12 +154,13 @@ viCardEditor::stopCallbacks(bool abBlock)
 }
 
 bool 
-viCardEditor::parseNew(wxString aszColID, wxString aszCardHash)
+viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
 {
    if( aszCardHash.IsEmpty() )
    {
       return false;
    }
+
    m_szDisplayingHash = aszCardHash;
 
    m_vecAttrs.clear();
@@ -170,11 +169,12 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash)
 
    StoreFront* ptSF = StoreFrontEnd::Instance();
    StringInterface parser;
+   std::vector<std::string> vecItems;
    Query query;
-   query.FindHash(aszCardHash.ToStdString());
+   query.FindHash( aszCardHash.ToStdString() );
    query.UIDs();
 
-   auto vecItems = ptSF->GetAllCardsStartingWith(m_szColID.ToStdString(), query);
+   vecItems = ptSF->GetAllCardsStartingWith( m_szColID.ToStdString(), query );
 
    // There should only be ONE item in the list.
    for( auto& item : vecItems )
@@ -337,6 +337,6 @@ viCardEditor::onChangesAccept(wxCommandEvent& awxEvt)
 void 
 viCardEditor::onChangesReset(wxCommandEvent& awxEvt)
 {
-   DisplayNew(m_szColID, m_szDisplayingHash, m_iIndex);
+   DisplayNew(m_szColID, m_szDisplayingHash);
    this->Layout();
 }

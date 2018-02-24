@@ -1,6 +1,7 @@
 #include "StringInterface.h"
 #include <algorithm>
 #include "Support/StringHelper.h"
+#include "Collection\CopyItem.h"
 
 using namespace std;
 
@@ -284,9 +285,9 @@ StringInterface::CmdCreateAddition(const string& aszName, const string& aszSet)
 string
 StringInterface::CmdCreateRemove(const string& aszLongName, const string& aszUID)
 {
+   StringInterface szIface;
    // TODO: Factor this these cmds better.
-   // TODO: This should not be a string literal.
-   vector<Tag> pairvec = { make_pair("__UID", aszUID) };
+   vector<Tag> pairvec = { make_pair( szIface.GetUIDKey(), aszUID) };
    string szRetVal;
    PairListToTagStr(pairvec.begin(), pairvec.end(), szRetVal);
 
@@ -350,4 +351,28 @@ StringInterface::FindTagInList(const vector<Tag>& aszVector, const string& aszKe
       }
    }
    return "";
+}
+
+string 
+StringInterface::GetUIDKey()
+{
+   return CopyItem::GetUIDKey();
+}
+
+string 
+StringInterface::GetSessionKey()
+{
+   return CopyItem::GetSessionKey();
+}
+
+string 
+StringInterface::GetHashKey()
+{
+   return CopyItem::GetHashKey();
+}
+
+string 
+StringInterface::GetAddressKey()
+{
+   return CopyItem::GetAddressKey();
 }

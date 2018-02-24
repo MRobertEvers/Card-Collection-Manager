@@ -2,6 +2,7 @@
 #include <memory>
 #include "../CollectionPro/src/StoreFront.h"
 #include "../CollectionPro/src/StringInterface.h"
+#include "../CollectionPro/src/Config.h"
 
 class wxString;
 class ImageFetcherCallback;

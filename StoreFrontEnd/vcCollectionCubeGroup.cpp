@@ -1,8 +1,10 @@
 #include "vcCollectionCubeGroup.h"
 #include "MainWindow.h"
 #include "wx/wxprec.h"
+#include "Group.h"
 #include "GroupItemData.h"
 #include "vcCollectionCubeDisplay.h"
+#include <algorithm>
 
 #define COLUMN_WIDTH 120
 
@@ -45,6 +47,7 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData )
       m_vecHashes.push_back( itemData->GetHash() );
    }
 }
+
 
 void 
 vcCollectionCubeGroup::DeselectAll()

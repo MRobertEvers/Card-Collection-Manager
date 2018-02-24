@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "../Support/Config.h"
+#include "../Config.h"
 #include "../Support/StringHelper.h"
 #include "CopyItem.h"
 #include "CollectionObject.h"

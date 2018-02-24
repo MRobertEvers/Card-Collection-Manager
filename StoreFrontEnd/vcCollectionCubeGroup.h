@@ -4,6 +4,7 @@
 #include "Group.h"
 #include <vector>
 
+class Group;
 class GroupItemData;
 
 class vcCollectionCubeGroup : public wxListView

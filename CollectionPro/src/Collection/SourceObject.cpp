@@ -1,5 +1,5 @@
 #include "SourceObject.h"
-#include "../Support/Config.h"
+#include "../Config.h"
 #include "../Support/StringHelper.h"
 
 SourceObject::SourceObject(unsigned int aiOffset)

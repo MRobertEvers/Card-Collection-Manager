@@ -1,6 +1,6 @@
 #include "CollectionFactory.h"
 
-#include "../Support/Config.h"
+#include "../Config.h"
 
 using namespace std;
 

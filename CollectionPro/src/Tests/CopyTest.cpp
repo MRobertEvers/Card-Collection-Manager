@@ -1,6 +1,6 @@
 #include "CopyTest.h"
 #include "../Collection/CollectionObject.h"
-#include "../Support/Config.h"
+#include "../Config.h"
 
 using namespace std;
 

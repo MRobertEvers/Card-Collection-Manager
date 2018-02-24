@@ -150,6 +150,7 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClInclude Include="src\Collection\TraitItem.h" />
     <ClInclude Include="src\Collection\Transaction.h" />
     <ClInclude Include="src\Collection\TransactionManager.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\Debug.h" />
     <ClInclude Include="src\json\json.hpp" />
     <ClInclude Include="src\rapidxml-1.13\rapidxml.hpp" />
@@ -159,7 +160,6 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\StoreFront.h" />
     <ClInclude Include="src\StringInterface.h" />
-    <ClInclude Include="src\Support\Config.h" />
     <ClInclude Include="src\Support\JSONImporter.h" />
     <ClInclude Include="src\Support\ListHelper.h" />
     <ClInclude Include="src\Support\MD5.h" />
@@ -194,6 +194,7 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClCompile Include="src\Collection\TraitItem.cpp" />
     <ClCompile Include="src\Collection\Transaction.cpp" />
     <ClCompile Include="src\Collection\TransactionManager.cpp" />
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\json\jsoncpp.cpp" />
     <ClCompile Include="src\stdafx.cpp">
@@ -202,7 +203,6 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClCompile Include="src\StoreFront.cpp" />
     <ClCompile Include="src\StoreFrontEntry.cpp" />
     <ClCompile Include="src\StringInterface.cpp" />
-    <ClCompile Include="src\Support\Config.cpp" />
     <ClCompile Include="src\Support\JSONImporter.cpp" />
     <ClCompile Include="src\Support\ListHelper.cpp" />
     <ClCompile Include="src\Support\MD5.cpp" />

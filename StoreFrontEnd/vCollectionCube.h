@@ -32,6 +32,6 @@ private:
    void onNewItemSelected( wxListEvent& awxEvt );
    void onDeckEditor( wxCommandEvent& awxEvt );
    void buildGroupPanel();
-   void notifyCardEditor( const wxString& aszHash, int aiIndex );
+   void notifyCardEditor( const wxString& aszHash );
 };
 

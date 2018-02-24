@@ -34,14 +34,14 @@ public:
    };
 
    viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
-                 wxString aszColID, wxString aszCardHash,
-                 int aiIndex );
+                 wxString aszColID, wxString aszCardHash );
    ~viCardEditor();
 
-   void DisplayNew(wxString aszColID, wxString aszCardHash, int aiIndex);
+   void DisplayNew(wxString aszColID, wxString aszCardHash );
 
 private:
    wxDECLARE_EVENT_TABLE();
+
    vcImageWrapper* m_jpgPanel;
    vcEditableTraitList* m_wxTraitList;
    vcEditableItemList* m_wxEditableItemList;
@@ -52,13 +52,12 @@ private:
    std::vector<wxString> m_vecUIDs;
    std::vector<std::shared_ptr<ImageFetcherCallback>> m_vecImageCallbacks;
    std::shared_ptr<std::mutex> m_mutex;
-   int m_iIndex;
 
    void fetchImage();
    void setImage(const wxString& aszImagePath);
    void stopCallbacks( bool abBlock = true );
 
-   bool parseNew(wxString aszColID, wxString aszCardHash);
+   bool parseNew(wxString aszColID, wxString aszCardHash );
    void refreshDisplay();
    void refreshEditor();
    void refreshSelector();

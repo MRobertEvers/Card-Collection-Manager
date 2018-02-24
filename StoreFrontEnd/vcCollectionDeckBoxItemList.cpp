@@ -55,7 +55,7 @@ vcCollectionDeckBoxItemList::RefreshList()
 
    m_wxListControl->Freeze();
    m_wxListControl->DeleteAllItems();
-   displayGrouping(defaultGrouping(m_vecDataItems));
+   displayGrouping(performGrouping(m_vecDataItems));
    m_wxListControl->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
    m_wxListControl->SetColumnWidth(1, wxLIST_AUTOSIZE);
    m_wxListControl->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER);
@@ -142,7 +142,7 @@ vcCollectionDeckBoxItemList::onItemDeselection(wxListEvent& awxEvt)
 // Returns a list of pointers to the input vector. SO DONT DELETE THE VECTOR BEFORE
 // USING THE RETURN.
 std::map<wxString, std::vector<GroupItemData*>>
-vcCollectionDeckBoxItemList::defaultGrouping(std::vector<GroupItemData>& avecItems)
+vcCollectionDeckBoxItemList::performGrouping(std::vector<GroupItemData>& avecItems)
 {
    Group overrideGrp;
    // TODO: Use the stringIface to get the collection.group. write this func.
@@ -150,13 +150,13 @@ vcCollectionDeckBoxItemList::defaultGrouping(std::vector<GroupItemData>& avecIte
 
    Group defaultGrp;
    defaultGrp.GroupOn("type", false)
-             .BroadenSubGroup("Creature")
-             .BroadenSubGroup("Instant")
-             .BroadenSubGroup("Sorcery")
-             .BroadenSubGroup("Enchantment")
-             .BroadenSubGroup("Artifact")
-             .BroadenSubGroup("Planeswalker")
-             .BroadenSubGroup("Land")
+             .BroadenGroup("Creature")
+             .BroadenGroup("Instant")
+             .BroadenGroup("Sorcery")
+             .BroadenGroup("Enchantment")
+             .BroadenGroup("Artifact")
+             .BroadenGroup("Planeswalker")
+             .BroadenGroup("Land")
              .OverrideGrouping(overrideGrp);
 
 

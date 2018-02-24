@@ -7,7 +7,7 @@
 #include "../Support/ListHelper.h"
 #include "../Support/StringHelper.h"
 #include "../Addressing/Addresser.h"
-#include "../Support/Config.h"
+#include "../Config.h"
 #include "AddAction.h"
 #include "RemoveAction.h"
 #include "ChangeAction.h"

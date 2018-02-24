@@ -19,6 +19,7 @@ public:
 
    int GetNumber() const;
    wxString GetHash() const;
+   wxString GetFirstUID() const;
    wxString GetName() const;
    wxString GetManaCost() const;
    wxString GetCardType() const;
@@ -34,6 +35,7 @@ private:
    wxString m_szSet;
    wxString m_szManaCost;
    wxString m_szCardType;
+   vector<wxString> m_vecUIDs;
    vector<wxString> m_vecSetOptions;
    vector<pair<string, string>> m_vecIdentifiers;
    vector<pair<string, string>> m_vecMetaTags;

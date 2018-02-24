@@ -3,7 +3,7 @@
 #include <time.h>
 #include <sstream>
 #include <cstdlib>
-#include "../Support/Config.h"
+#include "../Config.h"
 #include "../Addressing/Addresser.h"
 #include "CollectionObject.h"
 

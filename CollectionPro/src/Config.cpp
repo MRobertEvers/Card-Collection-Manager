@@ -1,9 +1,9 @@
-#include "../stdafx.h"
+#include "stdafx.h"
 #include "Config.h"
-#include "MD5.h"
-#include "..\rapidxml-1.13\rapidxml_print.hpp"
-#include "..\rapidxml-1.13\rapidxml.hpp"
-#include "..\rapidxml-1.13\rapidxml_utils.hpp"
+#include "Support/MD5.h"
+#include "rapidxml-1.13\rapidxml_print.hpp"
+#include "rapidxml-1.13\rapidxml.hpp"
+#include "rapidxml-1.13\rapidxml_utils.hpp"
 
 #include <sstream>
 #include <fstream>

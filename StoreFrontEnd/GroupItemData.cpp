@@ -39,6 +39,19 @@ GroupItemData::GetHash() const
 }
 
 wxString 
+GroupItemData::GetFirstUID() const
+{
+   if( m_vecUIDs.size() > 0 )
+   {
+      return m_vecUIDs[0];
+   }
+   else
+   {
+      return "";
+   }
+}
+
+wxString 
 GroupItemData::GetName() const
 {
    return m_szName;
@@ -99,8 +112,16 @@ GroupItemData::parseLongName(const wxString& aszName)
 
    if( m_vecMetaTags.size() > 0 )
    {
-      // TODO: BAD BAD BAD LITERAL.
-      getItemHash( parser.FindTagInList( m_vecMetaTags, "__UID" ));
+      StringInterface szIface;
+      for( auto& szMeta : m_vecMetaTags )
+      {
+         if( szMeta.first == szIface.GetUIDKey() )
+         {
+            m_vecUIDs.push_back( szMeta.second );
+         }
+      }
+
+      getItemHash( parser.FindTagInList( m_vecMetaTags, szIface.GetUIDKey() ) );
    }
 }
 
@@ -147,14 +168,5 @@ void
 GroupItemData::getItemHash(const wxString& aszUID)
 {
    auto ptSF = StoreFrontEnd::Instance();
-   auto vecMeta = ptSF->GetMetaTags(m_szName.ToStdString(), aszUID.ToStdString());
-   for( auto& trait : vecMeta )
-   {
-      // TODO: This shouldn't be literal
-      if( trait.first == "__hash" )
-      {
-         m_szHash = trait.second;
-         break;
-      }
-   }
+   m_szHash = ptSF->GetMetaTagHash( m_szName.ToStdString(), aszUID.ToStdString() );
 }

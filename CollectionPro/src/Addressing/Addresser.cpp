@@ -3,7 +3,7 @@
 
 #include <time.h>
 #include <algorithm>
-#include "../Support/Config.h"
+#include "../Config.h"
 #include "../Support/StringHelper.h"
 
 using namespace std;

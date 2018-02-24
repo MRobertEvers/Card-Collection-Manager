@@ -34,7 +34,7 @@ vCollectionCube::vCollectionCube( MainFrame* aptParent,
 
    if( !m_vcItemList->IsEmpty() )
    {
-      notifyCardEditor( m_vcItemList->GetFirst().GetHash(), m_vcItemList->GetFirstInt() );
+      notifyCardEditor( m_vcItemList->GetFirst().GetHash() );
    }
 }
 
@@ -53,7 +53,7 @@ vCollectionCube::ShowCollectionEditor()
    this->GetSizer()->Add( m_viColEditor, wxSizerFlags( 1 ).Top().Shaped() );
    auto iAdditionSize = m_viColEditor->GetSize().GetWidth();
    this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
-      this->GetParent()->GetSize().GetY() );
+                               this->GetParent()->GetSize().GetY() );
 }
 
 void
@@ -63,7 +63,7 @@ vCollectionCube::CloseCollectionEditor()
    m_viColEditor->Destroy();
    m_viColEditor = 0;
    this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() - iAdditionSize,
-      this->GetParent()->GetSize().GetY() );
+                               this->GetParent()->GetSize().GetY() );
 }
 
 void
@@ -83,7 +83,7 @@ void
 vCollectionCube::onCardChanged( wxCommandEvent& awxEvt )
 {
    m_vcItemList->RefreshList();
-   m_viCardEditor->DisplayNew( m_wxszColID, m_vcItemList->GetFirst().GetHash(), m_vcItemList->GetFirstInt() );
+   m_viCardEditor->DisplayNew( m_wxszColID, m_vcItemList->GetFirst().GetHash() );
    m_viCardEditor->Layout();
    m_viCardEditor->Thaw();
 }
@@ -91,7 +91,7 @@ vCollectionCube::onCardChanged( wxCommandEvent& awxEvt )
 void
 vCollectionCube::onNewItemSelected( wxListEvent& awxEvt )
 {
-   notifyCardEditor( awxEvt.GetString(), awxEvt.GetIndex() );
+   notifyCardEditor( awxEvt.GetString() );
    awxEvt.StopPropagation();
 }
 
@@ -109,21 +109,21 @@ vCollectionCube::buildGroupPanel()
 }
 
 void
-vCollectionCube::notifyCardEditor( const wxString& aszHash, int aiIndex )
+vCollectionCube::notifyCardEditor( const wxString& aszHash )
 {
    this->Freeze();
    if( m_viCardEditor == nullptr )
    {
-      m_viCardEditor = new viCardEditor( this, 5, m_wxszColID, aszHash, aiIndex );
+      m_viCardEditor = new viCardEditor( this, 5, m_wxszColID, aszHash );
       //m_viCardEditor->SetMinSize(wxSize(350, 500));
       this->GetSizer()->Add( m_viCardEditor, wxSizerFlags( 1 ).Expand() );
       auto iAdditionSize = m_viCardEditor->GetSize().GetWidth();
       this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
-         this->GetParent()->GetSize().GetY() );
+                                  this->GetParent()->GetSize().GetY() );
    }
    else
    {
-      m_viCardEditor->DisplayNew( m_wxszColID, aszHash, aiIndex );
+      m_viCardEditor->DisplayNew( m_wxszColID, aszHash );
    }
    PostSizeEvent();
    this->Thaw();

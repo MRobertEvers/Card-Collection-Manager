@@ -1,6 +1,6 @@
 #include "TraitItem.h"
 #include <algorithm>
-#include "../Support/Config.h"
+#include "../Config.h"
 
 using namespace std;
 

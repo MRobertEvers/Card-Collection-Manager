@@ -3,7 +3,7 @@
 #include "CollectionObject.h"
 #include "CopyItem.h"
 
-#include "../Support/Config.h"
+#include "../Config.h"
 #include "../StringInterface.h"
 
 

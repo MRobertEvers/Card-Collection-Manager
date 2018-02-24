@@ -59,9 +59,6 @@
     <ClInclude Include="src\Collection\SourceObject.h">
       <Filter>Collection</Filter>
     </ClInclude>
-    <ClInclude Include="src\Support\Config.h">
-      <Filter>Support</Filter>
-    </ClInclude>
     <ClInclude Include="src\Support\StringHelper.h">
       <Filter>Support</Filter>
     </ClInclude>
@@ -170,6 +167,9 @@
     <ClInclude Include="src\Collection\CollectionQueryHelper.h">
       <Filter>Collection\DataHelpers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Config.h">
+      <Filter>StoreFront</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp">
@@ -189,9 +189,6 @@
     </ClCompile>
     <ClCompile Include="src\Collection\SourceObject.cpp">
       <Filter>Collection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Support\Config.cpp">
-      <Filter>Support</Filter>
     </ClCompile>
     <ClCompile Include="src\Support\StringHelper.cpp">
       <Filter>Support</Filter>
@@ -282,6 +279,9 @@
     </ClCompile>
     <ClCompile Include="src\Collection\CollectionQueryHelper.cpp">
       <Filter>Collection\DataHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Config.cpp">
+      <Filter>StoreFront</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

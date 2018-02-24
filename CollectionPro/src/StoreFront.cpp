@@ -10,7 +10,7 @@
 #include "../src/Tests/CollectionItemTest.h"
 #include "../src/Tests/CopyTest.h"
 #include "Support/JSONImporter.h"
-#include "Support\Config.h"
+#include "Config.h"
 
 StoreFront::StoreFront()
 {

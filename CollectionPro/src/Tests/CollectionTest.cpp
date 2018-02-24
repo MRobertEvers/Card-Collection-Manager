@@ -5,7 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include "../Collection/Collection.h"
-#include "../Support/Config.h"
+#include "../Config.h"
 #include "../Collection/CollectionSource.h"
 #include "../rapidxml-1.13\rapidxml_print.hpp"
 #include "../rapidxml-1.13\rapidxml.hpp"

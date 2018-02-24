@@ -36,7 +36,7 @@ private:
    void onItemSelection(wxListEvent& awxEvt);
    void onItemDeselection(wxListEvent& awxEvt);
    std::map<wxString, std::vector<GroupItemData*>> 
-      defaultGrouping(std::vector<GroupItemData>& avecItems);
+      performGrouping(std::vector<GroupItemData>& avecItems);
 
    void displayGrouping(const std::map<wxString,std::vector<GroupItemData*>> &amapGrouping);
    void addListItem(GroupItemData& aData);
