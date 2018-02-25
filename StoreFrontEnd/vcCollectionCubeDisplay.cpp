@@ -6,7 +6,7 @@
 #include <algorithm>
 
 bool 
-CubeDisplayPrimarySorter::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
+CubeDisplayColumnSorter::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
 {
    std::vector<wxString> vecGrpOrder = { "W", "U", "B", "R", "G" };
 
@@ -18,6 +18,34 @@ CubeDisplayPrimarySorter::operator()( const wxString& agrpLeft, const wxString& 
    
    return iLeft == iRight ? agrpLeft < agrpRight : iLeft < iRight;
 }
+bool
+CubeDisplayItemSorter::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
+{
+   // Expects CMC
+   unsigned int iNumsLeft;
+   int iLeft;
+   unsigned int iNumsRight;
+   int iRight;
+
+   iLeft = std::stoi( agrpLeft.ToStdString(), &iNumsLeft );
+   iRight = std::stoi( agrpRight.ToStdString(), &iNumsRight );
+
+   if( iNumsLeft <= 0 )
+   {
+      iLeft = 0;
+   }
+
+   if( iNumsRight <= 0 )
+   {
+      iRight = 0;
+   }
+
+   return iLeft < iRight;
+}
+
+wxBEGIN_EVENT_TABLE( vcCollectionCubeDisplay, wxPanel )
+EVT_LIST_ITEM_SELECTED( vcCollectionCubeDisplay::Group_List, vcCollectionCubeDisplay::onItemSelection )
+wxEND_EVENT_TABLE()
 
 vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID aiWID, const wxString& aszColID )
    : wxPanel( aptParent, aiWID ), m_szColID(aszColID)
@@ -105,7 +133,7 @@ vcCollectionCubeDisplay::defaultGroup()
 {
    Group defaultGrp;
    defaultGrp.GroupOn( "colors", false )
-             .SetSortingFunctor( new CubeDisplayPrimarySorter() )
+             .SetGroupSortingFunctor( new CubeDisplayColumnSorter() )
              .AliasGroup( "White", "W" )
              .AliasGroup( "Blue", "U" )
              .AliasGroup( "Black", "B" )
@@ -140,9 +168,28 @@ vcCollectionCubeDisplay::defaultGroup()
                   .BroadenGroup("Planeswalker")
                   .BroadenGroup("Land");
 
+   Group defaultSubGroupOrdering;
+   defaultSubGroupOrdering.GroupOn("cmc", false)
+                          .SetGroupSortingFunctor( new CubeDisplayItemSorter() );
+
+   defaultSubGroup.SetDefaultSubGroup( defaultSubGroupOrdering );
+
    defaultGrp.SetDefaultSubGroup( defaultSubGroup );
 
    return defaultGrp;
+}
+
+void 
+vcCollectionCubeDisplay::onItemSelection( wxListEvent& awxEvt )
+{
+   for( auto& oColumn : m_mapColGroups )
+   {
+      if( oColumn.second->GetColumnIndex() != awxEvt.GetIndex() )
+      {
+         oColumn.second->DeselectAll();
+      }
+   }
+   awxEvt.Skip();
 }
 
 std::map<wxString, std::vector<GroupItemData*>, Group::Sorting>

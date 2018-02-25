@@ -9,11 +9,18 @@
 
 class vcCollectionCubeGroup;
 
-class CubeDisplayPrimarySorter : public  Group::SortingOperator
+class CubeDisplayColumnSorter : public  Group::SortingOperator
 {
 public:
    bool operator()( const wxString& agrpLeft, const wxString& agrpRight ) const;
 };
+
+class CubeDisplayItemSorter : public  Group::SortingOperator
+{
+public:
+   bool operator()( const wxString& agrpLeft, const wxString& agrpRight ) const;
+};
+
 
 class vcCollectionCubeDisplay : public wxPanel
 {
@@ -32,6 +39,7 @@ public:
    bool IsEmpty();
 
 private:
+   wxDECLARE_EVENT_TABLE();
 
    std::map<wxString, GroupItemData> m_mapItemData;
    std::map<int, vcCollectionCubeGroup*> m_mapColGroups;
@@ -40,6 +48,7 @@ private:
 
    void clearDisplay();
    Group defaultGroup();
+   void onItemSelection( wxListEvent& awxEvt );
 
    std::map<wxString, 
             std::vector<GroupItemData*>, 

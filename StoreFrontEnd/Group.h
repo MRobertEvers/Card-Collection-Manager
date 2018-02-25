@@ -23,6 +23,18 @@ public:
    private:
       std::shared_ptr<SortingOperator> m_ptSorter;
    };
+
+   class ItemSorting
+   {
+   public:
+      ItemSorting();
+      ItemSorting( SortingOperator* aptSorting );
+      virtual bool operator()( const GroupItemData* agrpLeft, const GroupItemData* agrpRight ) const;
+   private:
+      std::shared_ptr<SortingOperator> m_ptSorter;
+   };
+
+
    Group(bool abIsEmpty = false);
    Group& GroupOn( const wxString& aszKey, bool abIsMetaKey = true );
 
@@ -34,11 +46,13 @@ public:
    Group& OverrideGrouping( const Group& aGrouping );
    Group& SetDefaultSubGroup( const Group& aGrouping );
    Group& AddSubGroup( const wxString& aszMajorGroup, const Group& aGrouping );
-   Group& SetSortingFunctor( SortingOperator* aptFunctor );
+   Group& SetGroupSortingFunctor( SortingOperator* aptFunctor );
+   Group& SetItemSortingFunctor( SortingOperator* aptFunctor );
 
    wxString GetGroup( const GroupItemData& aData ) const;
    Group GetSubGroup( const wxString& aszGroup ) const;
    std::shared_ptr<Sorting> GetSortingFunctor() const;
+   std::shared_ptr<ItemSorting> GetItemSortingFunctor() const;
    bool IsEmpty() const;
 
 private:
@@ -51,4 +65,5 @@ private:
    std::shared_ptr<Group> DefaultSubGroup;
    std::vector<Group> Overrides;
    std::shared_ptr<Sorting> SortingFunctor;
+   std::shared_ptr<ItemSorting> ItemSortingFunctor;
 };

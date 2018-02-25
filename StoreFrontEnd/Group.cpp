@@ -1,6 +1,27 @@
 #include "Group.h"
 #include "GroupItemData.h"
 
+Group::ItemSorting::ItemSorting()
+{
+   m_ptSorter = std::shared_ptr<SortingOperator>( new SortingOperator() );
+}
+
+Group::ItemSorting::ItemSorting( SortingOperator* aptSorting )
+   : ItemSorting()
+{
+   if( aptSorting != nullptr )
+   {
+      m_ptSorter = std::shared_ptr<SortingOperator>( aptSorting );
+   }
+}
+
+bool
+Group::ItemSorting::operator()( const GroupItemData* agrpLeft, const GroupItemData* agrpRight ) const
+{
+   return (*m_ptSorter)(agrpLeft->GetName(), agrpRight->GetName());
+}
+
+
 bool
 Group::SortingOperator::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
 {
@@ -35,6 +56,7 @@ Group::Group(bool abIsEmpty)
       DefaultSubGroup = std::shared_ptr<Group>( new Group( true ) );
    }
    SortingFunctor = std::shared_ptr<Sorting>( new Sorting() );
+   ItemSortingFunctor = std::shared_ptr<ItemSorting>( new ItemSorting() );
 }
 
 Group&
@@ -86,9 +108,16 @@ Group::AddSubGroup( const wxString& aszMajorGroup, const Group& aGrouping )
 
 // THIS TAKES OWNERSHIP OF THE POINTER
 Group& 
-Group::SetSortingFunctor( SortingOperator* aptFunctor )
+Group::SetGroupSortingFunctor( SortingOperator* aptFunctor )
 {
    SortingFunctor = std::shared_ptr<Sorting>(new Sorting(aptFunctor));
+   return *this;
+}
+
+Group& 
+Group::SetItemSortingFunctor( SortingOperator* aptFunctor )
+{
+   ItemSortingFunctor = std::shared_ptr<ItemSorting>( new ItemSorting( aptFunctor ) );
    return *this;
 }
 
@@ -156,6 +185,12 @@ std::shared_ptr<Group::Sorting>
 Group::GetSortingFunctor() const
 {
    return SortingFunctor;
+}
+
+std::shared_ptr<Group::ItemSorting>
+Group::GetItemSortingFunctor() const
+{
+   return ItemSortingFunctor;
 }
 
 bool 

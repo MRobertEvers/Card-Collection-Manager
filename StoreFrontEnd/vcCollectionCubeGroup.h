@@ -3,8 +3,8 @@
 #include "wx/listctrl.h"
 #include "Group.h"
 #include <vector>
+#include <map>
 
-class Group;
 class GroupItemData;
 
 class vcCollectionCubeGroup : public wxListView
@@ -17,6 +17,7 @@ public:
    ~vcCollectionCubeGroup();
 
    void PopulateList( std::vector<GroupItemData*> avecItemData, Group aGrp );
+   int GetColumnIndex();
    void DeselectAll();
    int GetSelection();
 
@@ -31,4 +32,11 @@ private:
 
    void onItemSelection( wxListEvent& awxEvt );
    void onItemDeselection( wxListEvent& awxEvt );
+
+   void performDisplay( std::map<wxString, std::vector<GroupItemData*>, Group::Sorting> amapGrps,
+                        const Group& agrp );
+   void displayNormal( GroupItemData* itemData );
+   void displayNormal( const wxString& buf, const wxString& aszHash );
+   void performDisplayWithSubGrouping( std::map<wxString, std::vector<GroupItemData*>, Group::Sorting> amapGrps,
+                                       const Group& agrp );
 };
