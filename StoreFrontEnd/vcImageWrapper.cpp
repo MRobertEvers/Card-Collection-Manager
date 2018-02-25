@@ -22,7 +22,14 @@ vcImageWrapper::SetImage(const wxString& aszImagePath)
 {
    freeImage();
    m_jpgPanel = new wxImagePanel(this, aszImagePath, wxBitmapType::wxBITMAP_TYPE_ANY);
-   this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
+   if( m_jpgPanel->IsOk )
+   {
+      this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
+   }
+   else
+   {
+      m_jpgPanel->Destroy();
+   }
 }
 
 void

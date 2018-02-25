@@ -145,7 +145,6 @@
     <ClCompile Include="ImageFetcher.cpp" />
     <ClCompile Include="IMenuEventHandler.cpp" />
     <ClCompile Include="StoreFrontEnd.cpp" />
-    <ClCompile Include="TestPopup.cpp" />
     <ClCompile Include="vcCollectionDeckBoxItemList.cpp" />
     <ClCompile Include="GroupItemData.cpp" />
     <ClCompile Include="vcEditableTraitList.cpp" />
@@ -175,7 +174,6 @@
     <ClInclude Include="ImageFetcher.h" />
     <ClInclude Include="IMenuEventHandler.h" />
     <ClInclude Include="StoreFrontEnd.h" />
-    <ClInclude Include="TestPopup.h" />
     <ClInclude Include="vcCollectionCubeDisplay.h" />
     <ClInclude Include="vcCollectionCubeGroup.h" />
     <ClInclude Include="vcCollectionDeckBoxItemList.h" />

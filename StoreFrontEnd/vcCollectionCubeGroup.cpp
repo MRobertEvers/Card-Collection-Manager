@@ -6,7 +6,7 @@
 #include "vcCollectionCubeDisplay.h"
 #include <algorithm>
 
-#define COLUMN_WIDTH 120
+#define COLUMN_WIDTH 154
 
 wxBEGIN_EVENT_TABLE( vcCollectionCubeGroup, wxPanel )
 EVT_LIST_ITEM_SELECTED( vcCollectionCubeDisplay::Group_List, vcCollectionCubeGroup::onItemSelection )
@@ -21,7 +21,7 @@ vcCollectionCubeGroup::vcCollectionCubeGroup( wxPanel* aptParent,
      m_szColumnName(aszColumn)
 {
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer( 1, 1, 0, 0 );
-
+   //this->SetScrollbar(wx)
    boxSizer->AddGrowableCol( 0 );
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer( boxSizer );
@@ -43,7 +43,7 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, G
    //this->InsertColumn( 0, m_szColumnName, wxLIST_FORMAT_LEFT, COLUMN_WIDTH );
 
    auto col = wxListItem();
-   col.SetFont( wxFont( wxFontInfo( 12 ).FaceName( "Helvetica" ).Bold() ).MakeBold() );
+   col.SetFont( wxFont( wxFontInfo( 12 ).FaceName( "Trebuchet MS" ).Bold() ).MakeBold() );
    col.SetColumn( 0 );
    col.SetText( szColumn );
    col.SetWidth( COLUMN_WIDTH );
@@ -70,7 +70,7 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, G
          int i = this->GetItemCount();
          long tmp = this->InsertItem( i, buf, 0 );
          this->SetItemData( tmp, i );
-         this->SetItemFont( i, wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ).Bold() );
+         this->SetItemFont( i, wxFont( wxFontInfo( 8 ).FaceName( "Trebuchet MS" ) ).Bold() );
          m_vecHashes.push_back( "" );
          //this->SetFont( wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ) );
       }
@@ -81,7 +81,7 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, G
          int i = this->GetItemCount();
          long tmp = this->InsertItem( i, buf, 0 );
          this->SetItemData( tmp, i );
-         this->SetItemFont( i, wxFont( wxFontInfo( 8 ).FaceName( "Helvetica" ) ) );
+         this->SetItemFont( i, wxFont( wxFontInfo( 8 ).FaceName( "Trebuchet MS" ) ) );
          m_vecHashes.push_back( itemData->GetHash() );
       }
    }

@@ -48,7 +48,12 @@ wxImagePanel::wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format)
       auto imageFile = std::ifstream(file.ToStdString().c_str());
       if( imageFile.good() )
       {
+         imageFile.close();
          std::remove(file.ToStdString().c_str());
+      }
+      else
+      {
+         imageFile.close();
       }
    }
    w = -1;
@@ -95,7 +100,7 @@ void wxImagePanel::render(wxDC&  dc)
       return;
    }
    //dc.DrawBitmap(image, 0, 0, false);
-   if( this->GetSize().GetWidth() + this->GetSize().GetHeight() <= 0 )
+   if( this->GetSize().GetWidth() <= 0 || this->GetSize().GetHeight() <= 0 )
    {
       return;
    }
@@ -107,9 +112,9 @@ void wxImagePanel::render(wxDC&  dc)
       resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
       w = neww;
       h = newh;
-      dc.DrawBitmap(resized, 0, 0, false);
    }
-   else
+   
+   if( IsOk )
    {
       dc.DrawBitmap(resized, 0, 0, false);
    }

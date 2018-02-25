@@ -105,9 +105,6 @@
     <ClCompile Include="ImageFetcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestPopup.cpp">
-      <Filter>Views</Filter>
-    </ClCompile>
     <ClCompile Include="IMenuEventHandler.cpp">
       <Filter>Views\Template</Filter>
     </ClCompile>
@@ -214,9 +211,6 @@
     </ClInclude>
     <ClInclude Include="IMenuEventHandler.h">
       <Filter>Views\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="TestPopup.h">
-      <Filter>Views</Filter>
     </ClInclude>
     <ClInclude Include="cCollectionsOverview.h">
       <Filter>Views\Overview</Filter>

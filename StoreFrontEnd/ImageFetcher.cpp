@@ -6,6 +6,8 @@
 #include <wx/sstream.h>
 #include <wx/imagjpeg.h>
 #include <wx/wfstream.h>
+#include <wx/utils.h> 
+#include <wx/mstream.h>
 #include "StoreFrontEnd.h"
 
 ImageFetcherCallback::ImageFetcherCallback()
@@ -119,29 +121,7 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
 {
    PrepareImageSetFolder(aszSet);
 
-   wxURL url;
-   if( !wxString(aszMUD).Trim().IsEmpty() )
-   {
-      url = (wxT("http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + aszMUD + "&type=card"));
-   }
-   else
-   {
-      url = (wxT("http://gatherer.wizards.com/Handlers/Image.ashx?name=" + aszCardName + "&type=card"));
-   }
-
-   if( url.GetError() == wxURL_NOERR )
-   {
-      wxString htmldata;
-      wxInputStream *in = url.GetInputStream();
-
-      if( in && in->IsOk() )
-      {
-         wxFileOutputStream ofStreamFile(aszFilePath);
-         in->Read(ofStreamFile);
-         ofStreamFile.Close();
-      }
-      delete in;
-   }
+   downloadImage(aszFilePath, aszCardName, aszSet, aszMUD);
 
    if( aptCallback != nullptr )
    {
@@ -157,6 +137,78 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
    m_mutexThreadList.unlock();
 
    return true;
+}
+
+
+void 
+ImageFetcher::downloadImage( const wxString& aszFilePath,
+                             const wxString& aszCardName,
+                             const wxString& aszSet,
+                             const wxString& aszMUD )
+{
+   for( int i = 0; i < 10; i++ )
+   {
+      if( tryDownload( aszFilePath, aszCardName, aszSet, aszMUD ) )
+      {
+         break;
+      }
+      else
+      {
+         // Delete the corrupt file.
+         auto imageFile = std::ifstream( aszFilePath.ToStdString().c_str() );
+         if( imageFile.good() )
+         {
+            imageFile.close();
+            std::remove( aszFilePath.ToStdString().c_str() );
+         }
+         else
+         {
+            imageFile.close();
+         }
+      }
+   }
+}
+
+bool 
+ImageFetcher::tryDownload( const wxString& aszFilePath,
+                           const wxString& aszCardName,
+                           const wxString& aszSet,
+                           const wxString& aszMUD )
+{
+   // I don't know why the downloads fail sometimes.
+   // But they are. So just try a couple times.
+   wxURL url;
+   if( !wxString( aszMUD ).Trim().IsEmpty() )
+   {
+      url = (wxT( "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + aszMUD + "&type=card" ));
+   }
+   else
+   {
+      url = (wxT( "http://gatherer.wizards.com/Handlers/Image.ashx?name=" + aszCardName + "&type=card" ));
+   }
+
+   if( url.GetError() == wxURL_NOERR )
+   {
+      wxString htmldata;
+      wxInputStream *in = url.GetInputStream();
+      int iTries = 20;
+      if( in && in->IsOk() )
+      {
+         wxFileOutputStream ofStreamFile( aszFilePath );
+         in->Read( ofStreamFile );
+         ofStreamFile.Close();
+      }
+      delete in;
+   }
+
+   // Check if the download works
+   bool bGood = false;
+
+   wxImage* img = new wxImage();
+   bGood = img->LoadFile( aszFilePath );
+   img->Destroy();
+
+   return bGood;
 }
 
 bool

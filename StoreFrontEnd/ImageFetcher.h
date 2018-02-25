@@ -45,6 +45,14 @@ public:
 
 private:
    ImageFetcher();
+   void downloadImage( const wxString& aszFilePath,
+                       const wxString& aszCardName,
+                       const wxString& aszSet,
+                       const wxString& aszMUD );
+   bool tryDownload( const wxString& aszFilePath,
+                     const wxString& aszCardName,
+                     const wxString& aszSet,
+                     const wxString& aszMUD );
    std::mutex m_mutexThreadList;
    std::set<wxString> m_setThreadList;
 
