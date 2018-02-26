@@ -29,7 +29,7 @@ vcCollectionCubeGroup::vcCollectionCubeGroup( wxPanel* aptParent,
 
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer( boxSizer );
-   this->SetSizeHints( wxSize( COLUMN_WIDTH-20, wxDefaultSize.GetHeight() ) );
+   this->SetSizeHints( wxSize( COLUMN_WIDTH, wxDefaultSize.GetHeight() ) );
 }
 
 vcCollectionCubeGroup::~vcCollectionCubeGroup()
@@ -51,7 +51,7 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, G
    col.SetColumn( 0 );
    col.SetText( szColumn );
    // Make this width slightly small to make it so the horizontal scrollbar doesnt appear.
-   col.SetWidth( COLUMN_WIDTH );
+   col.SetWidth( COLUMN_WIDTH - 20 );
    col.SetAlign( wxLIST_FORMAT_LEFT );
    auto ints = this->InsertColumn( 0, col );
 
