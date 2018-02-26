@@ -29,7 +29,7 @@ vcCollectionCubeGroup::vcCollectionCubeGroup( wxPanel* aptParent,
 
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer( boxSizer );
-   this->SetSizeHints( wxSize( COLUMN_WIDTH-10, wxDefaultSize.GetHeight() ) );
+   this->SetSizeHints( wxSize( COLUMN_WIDTH-20, wxDefaultSize.GetHeight() ) );
 }
 
 vcCollectionCubeGroup::~vcCollectionCubeGroup()
