@@ -48,11 +48,13 @@ EVT_LIST_ITEM_SELECTED( vcCollectionCubeDisplay::Group_List, vcCollectionCubeDis
 wxEND_EVENT_TABLE()
 
 vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID aiWID, const wxString& aszColID )
-   : wxPanel( aptParent, aiWID ), m_szColID(aszColID)
+   : wxScrolledWindow( aptParent, aiWID, wxDefaultPosition, wxDefaultSize, wxLB_ALWAYS_SB ), m_szColID(aszColID)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer( wxHORIZONTAL );
    this->SetSizer( boxSizer );
    RefreshList();
+   this->SetScrollRate( 10, 10 );
+   // this->GetSizer()->Add( new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( 600, 8000 ) ) );
 }
 
 vcCollectionCubeDisplay::~vcCollectionCubeDisplay()

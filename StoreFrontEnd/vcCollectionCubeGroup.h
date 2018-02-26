@@ -30,6 +30,8 @@ private:
    int m_iSelection;
    int m_iColumnIndex;
 
+   void onColumnResize( wxListEvent& awxEvt );
+
    void onItemSelection( wxListEvent& awxEvt );
    void onItemDeselection( wxListEvent& awxEvt );
 

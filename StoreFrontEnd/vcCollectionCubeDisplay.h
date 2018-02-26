@@ -22,7 +22,7 @@ public:
 };
 
 
-class vcCollectionCubeDisplay : public wxPanel
+class vcCollectionCubeDisplay : public wxScrolledWindow
 {
 public:
    enum

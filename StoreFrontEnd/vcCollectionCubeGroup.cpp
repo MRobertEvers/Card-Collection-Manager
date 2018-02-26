@@ -11,6 +11,7 @@
 #define COLUMN_TEXT_LENGTH 20
 
 wxBEGIN_EVENT_TABLE( vcCollectionCubeGroup, wxPanel )
+EVT_LIST_COL_BEGIN_DRAG( vcCollectionCubeDisplay::Group_List, vcCollectionCubeGroup::onColumnResize )
 EVT_LIST_ITEM_SELECTED( vcCollectionCubeDisplay::Group_List, vcCollectionCubeGroup::onItemSelection )
 EVT_LIST_ITEM_DESELECTED( vcCollectionCubeDisplay::Group_List, vcCollectionCubeGroup::onItemDeselection )
 wxEND_EVENT_TABLE()
@@ -28,7 +29,7 @@ vcCollectionCubeGroup::vcCollectionCubeGroup( wxPanel* aptParent,
 
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer( boxSizer );
-   this->SetSizeHints( wxSize( COLUMN_WIDTH, wxDefaultSize.GetHeight() ) );
+   this->SetSizeHints( wxSize( COLUMN_WIDTH-10, wxDefaultSize.GetHeight() ) );
 }
 
 vcCollectionCubeGroup::~vcCollectionCubeGroup()
@@ -49,10 +50,10 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, G
    col.SetFont( wxFont( wxFontInfo( 12 ).FaceName( "Trebuchet MS" ).Bold() ).MakeBold() );
    col.SetColumn( 0 );
    col.SetText( szColumn );
-   col.SetWidth( COLUMN_WIDTH-20 );
+   // Make this width slightly small to make it so the horizontal scrollbar doesnt appear.
+   col.SetWidth( COLUMN_WIDTH );
    col.SetAlign( wxLIST_FORMAT_LEFT );
    auto ints = this->InsertColumn( 0, col );
-   
 
    //map<wxString, vector<GroupItemData*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
    map<wxString, vector<GroupItemData*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
@@ -94,6 +95,12 @@ int
 vcCollectionCubeGroup::GetSelection()
 {
    return m_iSelection;
+}
+
+void 
+vcCollectionCubeGroup::onColumnResize( wxListEvent& awxEvt )
+{
+   awxEvt.Veto();
 }
 
 void
