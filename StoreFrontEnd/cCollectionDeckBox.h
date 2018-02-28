@@ -1,7 +1,7 @@
 #pragma once
-#include<map>
 #include"wx\wxprec.h"
 #include"IMenuEventHandler.h"
+#include<map>
 
 class vCollectionDeckBox;
 class MainFrame;
@@ -12,7 +12,8 @@ public:
    enum
    {
       Menu_DeckEditor = 0x4001,
-      Menu_Save = 0x4501
+      Menu_Save = 0x4501,
+      Menu_View_As_Cube = 0x4503
    };
 
    cCollectionDeckBox(MainFrame* aParent, const wxString& aszColName);

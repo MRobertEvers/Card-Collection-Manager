@@ -1,7 +1,7 @@
 #pragma once
+#include "wx/wxprec.h"
 #include <wx/listctrl.h>
 #include <wx/object.h> 
-#include "wx/wxprec.h"
 
 class vcCollectionDeckBoxItemList;
 class viCardEditor;

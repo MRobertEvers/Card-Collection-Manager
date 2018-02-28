@@ -14,6 +14,7 @@ EVT_MENU(Menu_Quit, MainFrame::OnQuit)
 EVT_MENU(Menu_About, MainFrame::OnAbout)
 EVT_MENU(Menu_Main, MainFrame::OnViewCollectionOverview)
 EVT_MENU(Menu_Import, MainFrame::OnImportSource)
+EVT_MENU( Menu_View_As, MainFrame::OnViewCollectionAs )
 wxEND_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title)
@@ -89,6 +90,21 @@ MainFrame::OnGenericMenuEvent(wxCommandEvent& awxEvt)
    if( m_bEvtHandlerView )
    {
       m_CurrentPanel->MenuEvent(awxEvt);
+   }
+}
+
+void 
+MainFrame::OnViewCollectionAs( wxCommandEvent& awxEvt )
+{
+   wxString szCollection = awxEvt.GetString();
+   int iType = awxEvt.GetInt();
+   if( iType == Menu_View_As_Deck )
+   {
+      setView( new cCollectionDeckBox( this, wxString( szCollection ) ) );
+   }
+   else if( iType == Menu_View_As_Cube )
+   {
+      setView( new cCollectionCube( this, wxString( szCollection ) ) );
    }
 }
 

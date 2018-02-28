@@ -1,4 +1,5 @@
 #include "vicListSelector.h"
+#include "StoreFrontEnd.h"
 #include <wx/arrstr.h>
 #include <algorithm>
 
@@ -93,6 +94,33 @@ bool
 vicListSelector::IsFocussed()
 {
    return m_wxComboBox->HasFocus();
+}
+
+CELIOption 
+vicListSelector::GetBestSelection()
+{
+   if( m_oSelection.Display == "" )
+   {
+      auto ptSF = StoreFrontEnd::Instance();
+      Query query;
+      query.SearchFor( m_wxComboBox->GetValue().ToStdString( ) );
+      query.UIDs();
+
+      auto vecPossible = ptSF->GetAllCardsStartingWith( query );
+      auto vecOptions = CELIOption::ParseCollectionItemsList( vecPossible );
+      if( vecOptions.size() > 0 )
+      {
+         return vecOptions[0];
+      }
+      else
+      {
+         return m_oSelection;
+      }
+   }
+   else
+   {
+      return m_oSelection;
+   }
 }
 
 CELIOption

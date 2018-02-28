@@ -150,6 +150,9 @@
     <ClCompile Include="vcCollectionCubeDisplay.cpp">
       <Filter>Views\Cube\Components</Filter>
     </ClCompile>
+    <ClCompile Include="CELIOption.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">

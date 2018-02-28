@@ -23,6 +23,7 @@ public:
    void ShowDropdown();
    void DismissDropDown();
    bool IsFocussed();
+   CELIOption GetBestSelection();
    CELIOption GetSelection();
 
    wxString GetText();

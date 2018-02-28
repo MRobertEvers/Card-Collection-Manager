@@ -27,7 +27,7 @@ class vcCollectionCubeDisplay : public wxScrolledWindow
 public:
    enum
    {
-      Group_List = 0x0
+      Group_List = 0x09
    };
    vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID aiWID, const wxString& aszColID );
    ~vcCollectionCubeDisplay();

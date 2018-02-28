@@ -1,7 +1,5 @@
 #include "StringHelper.h"
 
-
-
 StringHelper::StringHelper()
 {
 }

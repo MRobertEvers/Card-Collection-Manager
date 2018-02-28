@@ -54,7 +54,6 @@ vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID
    this->SetSizer( boxSizer );
    RefreshList();
    this->SetScrollRate( 10, 10 );
-   // this->GetSizer()->Add( new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( 600, 8000 ) ) );
 }
 
 vcCollectionCubeDisplay::~vcCollectionCubeDisplay()
@@ -89,7 +88,7 @@ vcCollectionCubeDisplay::RefreshList()
 
       grpList->PopulateList( grp.second, defGroup.GetSubGroup( grp.first ) );
 
-      this->GetSizer()->Add(grpList, wxSizerFlags(0).Left().Expand());
+      this->GetSizer()->Add(grpList, wxSizerFlags(1).Left());
    }
    PostSizeEvent();
    this->Thaw();

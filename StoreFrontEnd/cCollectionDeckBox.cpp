@@ -1,6 +1,7 @@
 #include "cCollectionDeckBox.h"
 #include "vCollectionDeckBox.h"
 #include "StoreFrontEnd.h"
+#include "MainWindow.h"
 
 cCollectionDeckBox::cCollectionDeckBox(MainFrame* aParent, const wxString& aszColName)
    : IMenuEventHandler(aParent), m_ColID(aszColName)
@@ -27,6 +28,7 @@ cCollectionDeckBox::BindEventHandler()
 {
    prepareMenuItem("Edit", Menu_DeckEditor);
    prepareMenuItem( "Save", Menu_Save );
+   prepareMenuItem( "View As Cube", Menu_View_As_Cube );
    registerMenu("Collection");
 }
 
@@ -41,5 +43,13 @@ cCollectionDeckBox::handleEvent(unsigned int aiEvent)
    {
       auto ptSF = StoreFrontEnd::Instance();
       ptSF->SaveCollection( m_ColID.ToStdString() );
+   }
+   else if( aiEvent == cCollectionDeckBox::Menu_View_As_Cube )
+   {
+      wxCommandEvent updateEvt( wxEVT_MENU );
+      updateEvt.SetId( MainFrame::Menu_View_As );
+      updateEvt.SetString( m_ColID );
+      updateEvt.SetInt( MainFrame::Menu_View_As_Cube );
+      ::wxPostEvent( m_wxDeckbox, updateEvt );
    }
 }

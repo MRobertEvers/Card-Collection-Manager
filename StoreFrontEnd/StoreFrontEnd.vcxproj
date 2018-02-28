@@ -138,6 +138,7 @@
     <ClCompile Include="cCollectionDeckBox.cpp" />
     <ClCompile Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
+    <ClCompile Include="CELIOption.cpp" />
     <ClCompile Include="Group.cpp" />
     <ClCompile Include="vcCollectionCubeDisplay.cpp" />
     <ClCompile Include="vcCollectionCubeGroup.cpp" />

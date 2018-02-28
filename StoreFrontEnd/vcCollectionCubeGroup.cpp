@@ -29,7 +29,7 @@ vcCollectionCubeGroup::vcCollectionCubeGroup( wxPanel* aptParent,
 
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer( boxSizer );
-   this->SetSizeHints( wxSize( COLUMN_WIDTH, wxDefaultSize.GetHeight() ) );
+   this->SetSizeHints( wxSize( COLUMN_WIDTH, 2000 ) );
 }
 
 vcCollectionCubeGroup::~vcCollectionCubeGroup()
@@ -72,6 +72,8 @@ vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, G
    {
       performDisplayWithSubGrouping( mapGroups, aGrp );
    }
+
+   this->SetSizeHints( wxSize( COLUMN_WIDTH, this->GetItemCount()*19.15 + 30 ) );
 }
 
 int 
@@ -206,6 +208,8 @@ vcCollectionCubeGroup::performDisplayWithSubGrouping(
 {
    Group subGroup = aGrp.GetSubGroup( "" );
 
+   int iLast = amapGrps.size();
+   int index = 0;
    for( auto groupData : amapGrps )
    {
       map<wxString, set<GroupItemData*, Group::ItemSorting>, Group::Sorting>
@@ -244,7 +248,10 @@ vcCollectionCubeGroup::performDisplayWithSubGrouping(
          }
       }
 
-      // Space in between each subgroup.
-      displayNormal( "", "" );
+      if( ++index != iLast )
+      {
+         // Space in between each subgroup.
+         displayNormal( "", "" );
+      }
    }
 }

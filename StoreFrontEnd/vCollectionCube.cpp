@@ -11,6 +11,7 @@
 wxBEGIN_EVENT_TABLE( vCollectionCube, wxPanel )
 EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
 EVT_BUTTON( viCollectionEditor::Changes_Accept, vCollectionCube::onEditorAccept )
+EVT_LIST_ITEM_SELECTED( viCardEditor::Image_Changed, vCollectionCube::onNewItemSelected )
 EVT_LIST_ITEM_SELECTED( vcCollectionCubeDisplay::Group_List, vCollectionCube::onNewItemSelected )
 EVT_BUTTON( viCollectionEditor::Changes_Decline, vCollectionCube::onEditorDecline )
 wxEND_EVENT_TABLE()
@@ -50,10 +51,12 @@ vCollectionCube::ShowCollectionEditor()
    if( m_viColEditor != 0 ) { return; }
 
    m_viColEditor = new viCollectionEditor( this, 4, m_wxszColID );
+   m_viColEditor->Show();
+   /*
    this->GetSizer()->Add( m_viColEditor, wxSizerFlags( 1 ).Top().Shaped() );
    auto iAdditionSize = m_viColEditor->GetSize().GetWidth();
    this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
-                               this->GetParent()->GetSize().GetY() );
+                               this->GetParent()->GetSize().GetY() );*/
 }
 
 void
@@ -62,8 +65,8 @@ vCollectionCube::CloseCollectionEditor()
    auto iAdditionSize = m_viColEditor->GetSize().GetWidth();
    m_viColEditor->Destroy();
    m_viColEditor = 0;
-   this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() - iAdditionSize,
-                               this->GetParent()->GetSize().GetY() );
+   //this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() - iAdditionSize,
+   //                            this->GetParent()->GetSize().GetY() );
 }
 
 void

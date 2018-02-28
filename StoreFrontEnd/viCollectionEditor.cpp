@@ -6,18 +6,19 @@
 #define TIMER_ID 5
 #define DROP_DELAY 210
 
-wxBEGIN_EVENT_TABLE(viCollectionEditor, wxPanel)
+wxBEGIN_EVENT_TABLE(viCollectionEditor, wxFrame )
 EVT_TEXT(vicListSelector::ComboBox, viCollectionEditor::onComboBoxTextChanged)
 EVT_BUTTON(vicListSelector::AcceptButton, viCollectionEditor::onComboBoxAccept)
 EVT_TIMER(TIMER_ID, viCollectionEditor::onDropDownDelay)
 EVT_COMBOBOX(vicListSelector::ComboBox, viCollectionEditor::onComboBoxSelection)
 EVT_BUTTON(Changes_Accept, viCollectionEditor::onAccept)
 EVT_BUTTON(Changes_Decline, viCollectionEditor::onDecline)
+EVT_CLOSE( viCollectionEditor::onClose )
 wxEND_EVENT_TABLE()
 
 
 viCollectionEditor::viCollectionEditor(wxWindow* aptParent, wxWindowID aiWID, wxString aszColID)
-   : wxPanel(aptParent, aiWID), m_szCollectionID(aszColID),
+   : wxFrame(aptParent, aiWID, "Collection Editor"), m_szCollectionID(aszColID),
      m_bHandleTextEvent(true), m_ulTimeLastKeyStroke(0), m_timer(this, TIMER_ID),
      m_bIsWaitingForDrop(false), m_bIsSelectionFlag(false)
 {
@@ -38,6 +39,7 @@ viCollectionEditor::viCollectionEditor(wxWindow* aptParent, wxWindowID aiWID, wx
 
 viCollectionEditor::~viCollectionEditor()
 {
+
 }
 
 void
@@ -112,7 +114,7 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
 
       auto vecszOptions = ptSF->GetAllCardsStartingWith(query);
 
-      auto vecOptions = parseCollectionItemsList(vecszOptions);
+      auto vecOptions = CELIOption::ParseCollectionItemsList(vecszOptions);
 
       m_vAddSelector->ResetOption();
       m_vAddSelector->SetOptions(vecOptions);
@@ -135,7 +137,7 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
       auto vecszOptions = ptSF->GetAllCardsStartingWith( m_szCollectionID.ToStdString(),
                                                          query );
 
-      auto vecOptions = parseCollectionItemsList(vecszOptions);
+      auto vecOptions = CELIOption::ParseCollectionItemsList(vecszOptions);
       m_vRemSelector->ResetOption();
       m_vRemSelector->SetOptions(vecOptions);
       m_vRemSelector->SetText(szEventDets);  
@@ -152,7 +154,7 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
 {
    if( awxEvt.GetInt() == Selectors::Add )
    {
-      auto oSelectionAdd = m_vAddSelector->GetSelection();
+      auto oSelectionAdd = m_vAddSelector->GetBestSelection();
       if( oSelectionAdd.Display != "" )
       {
          m_vListView->AddItem(oSelectionAdd);
@@ -161,7 +163,7 @@ viCollectionEditor::onComboBoxAccept(wxCommandEvent& awxEvt)
    else if( awxEvt.GetInt() == Selectors::Remove )
    {
       auto oSelectionRemove = m_vRemSelector->GetSelection();
-      auto oSelectionAdd = m_vAddSelector->GetSelection();
+      auto oSelectionAdd = m_vAddSelector->GetBestSelection();
       if( oSelectionRemove.Display != "" )
       {
          if( oSelectionAdd.Display != "" )
@@ -260,6 +262,16 @@ viCollectionEditor::onDecline(wxCommandEvent& awxEvt)
    awxEvt.Skip();
 }
 
+void 
+viCollectionEditor::onClose( wxCloseEvent& awxEvt )
+{
+   wxCommandEvent wxCloseEvent( wxEVT_BUTTON );
+   wxCloseEvent.SetId( Changes_Decline );
+   ::wxPostEvent( this->GetParent(), wxCloseEvent );
+
+   // Need to veto because the parent will destroy this.
+   awxEvt.Veto();
+}
 
 unsigned long 
 viCollectionEditor::getTime()
@@ -269,32 +281,4 @@ viCollectionEditor::getTime()
          std::chrono::system_clock::now().time_since_epoch()
          );
    return ms.count();
-}
-
-// TODO: This is ugly.
-// Expects LongName { options }
-vector<CELIOption>
-viCollectionEditor::parseCollectionItemsList(const vector<string>& avecItems)
-{
-   StoreFront* ptSF = StoreFrontEnd::Instance();
-   StringInterface parser;
-   
-   vector<CELIOption> vecRetVal;
-   for( auto& id : avecItems )
-   {
-      unsigned int Count;
-      string Name;
-      vector<pair<string,string>> Identifiers;
-      vector<pair<string,string>> MetaTags;
-
-      parser.ParseCardLine(id, Count, Name, Identifiers, MetaTags);
-
-      CELIOption option;
-      option.Display = ptSF->CollapseCardLine(id, false);
-
-      option.IDs = MetaTags;
-      vecRetVal.push_back(option);
-   }
-
-   return vecRetVal;
 }

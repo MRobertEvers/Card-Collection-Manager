@@ -9,6 +9,7 @@
 wxBEGIN_EVENT_TABLE(vCollectionDeckBox, wxPanel)
 EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionDeckBox::onCardChanged )
 EVT_BUTTON(viCollectionEditor::Changes_Accept, vCollectionDeckBox::onEditorAccept)
+EVT_LIST_ITEM_SELECTED( viCardEditor::Image_Changed, vCollectionDeckBox::onNewItemSelected )
 EVT_LIST_ITEM_SELECTED(vcCollectionDeckBoxItemList::List, vCollectionDeckBox::onNewItemSelected)
 EVT_BUTTON(viCollectionEditor::Changes_Decline, vCollectionDeckBox::onEditorDecline)
 wxEND_EVENT_TABLE()
@@ -47,10 +48,12 @@ vCollectionDeckBox::ShowCollectionEditor()
    if( m_viColEditor != 0 ) { return; }
 
    m_viColEditor = new viCollectionEditor(this, 4, m_wxszColID);
-   this->GetSizer()->Add(m_viColEditor, wxSizerFlags(1).Top().Shaped());
-   auto iAdditionSize = m_viColEditor->GetSize().GetWidth();
-   this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
-                               this->GetParent()->GetSize().GetY() );
+   m_viColEditor->Show();
+
+   //this->GetSizer()->Add(m_viColEditor, wxSizerFlags(1).Top().Shaped());
+   //auto iAdditionSize = m_viColEditor->GetSize().GetWidth();
+   //this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
+   //                            this->GetParent()->GetSize().GetY() );
 }
 
 void 
@@ -59,8 +62,8 @@ vCollectionDeckBox::CloseCollectionEditor()
    auto iAdditionSize = m_viColEditor->GetSize().GetWidth();
    m_viColEditor->Destroy();
    m_viColEditor = 0;
-   this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() - iAdditionSize,
-                               this->GetParent()->GetSize().GetY() );
+   //this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() - iAdditionSize,
+   //                            this->GetParent()->GetSize().GetY() );
 }
 
 void 
@@ -88,9 +91,7 @@ vCollectionDeckBox::onCardChanged( wxCommandEvent& awxEvt )
 void 
 vCollectionDeckBox::onNewItemSelected(wxListEvent& awxEvt)
 {
-   auto iIndex = awxEvt.GetIndex();
-   auto listItem = m_vcItemList->GetItemByListIndex(iIndex);
-   notifyCardEditor( listItem.GetHash() );
+   notifyCardEditor( awxEvt.GetString() );
    awxEvt.StopPropagation();
 }
 

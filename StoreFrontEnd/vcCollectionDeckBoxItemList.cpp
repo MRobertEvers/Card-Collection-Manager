@@ -128,7 +128,11 @@ vcCollectionDeckBoxItemList::onItemSelection(wxListEvent& awxEvt)
    m_iSelection = awxEvt.GetIndex();
    if( m_iSelection != -1 )
    {
-      awxEvt.Skip();
+      if( m_vecDataItemsDisplayOrder[m_iSelection] != NULL )
+      {
+         awxEvt.SetString( m_vecDataItemsDisplayOrder[m_iSelection]->GetHash() );
+         awxEvt.Skip();
+      }
    }
 }
 

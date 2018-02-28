@@ -1,13 +1,13 @@
 #pragma once
 #include "wx\wxprec.h"
-#include <vector>
-#include <wx/image.h>
-#include <wx/bitmap.h>
 #include "CETraitOption.h"
 #include "ImageFetcher.h"
-#include <wx/imagjpeg.h>
 #include <memory>
 #include <mutex>
+#include <vector>
+#include <wx/imagjpeg.h>
+#include <wx/image.h>
+#include <wx/bitmap.h>
 
 class vcEditableTraitList;
 class vcEditableItemList;
@@ -19,7 +19,8 @@ public:
    enum
    {
       Changes_Submit = 0x50,
-      Changes_Reset = 0x51
+      Changes_Reset = 0x51,
+      Image_Changed = 0x52
    };
    class viCardEditorImageCallBack : public ImageFetcherCallback
    {

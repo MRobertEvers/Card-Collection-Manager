@@ -9,7 +9,7 @@
 class vicListSelector;
 class vicCollectionEditorList;
 
-class viCollectionEditor : public wxPanel
+class viCollectionEditor : public wxFrame
 {
 public:
    enum
@@ -50,11 +50,9 @@ private:
    void onDropDownDelay(wxTimerEvent& awxEvt);
    void onAccept(wxCommandEvent& awxEvt);
    void onDecline(wxCommandEvent& awxEvt);
+   void onClose( wxCloseEvent& );
 
    unsigned long getTime();
-
-   std::vector<CELIOption>
-      parseCollectionItemsList(const std::vector<std::string>& avecItems);
 
    const char* ADD_BUTTON_TEXT = "Add";
    const char* REMOVE_BUTTON_TEXT = "Remove/Replace";

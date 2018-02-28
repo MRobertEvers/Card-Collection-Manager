@@ -19,17 +19,22 @@ class wxMenu;
 class IMenuEventHandler;
 
 // IDs for the controls and the menu commands. Taken from minimal sample.
-enum
-{
-   Menu_Quit = wxID_EXIT,
-   Menu_About = wxID_ABOUT,
-   Menu_Main = 0x71,
-   Menu_Import = 0x4
-};
+
 
 class MainFrame : public wxFrame
 {
 public:
+   enum
+   {
+      Menu_Quit = wxID_EXIT,
+      Menu_About = wxID_ABOUT,
+      Menu_Main = 0x71,
+      Menu_Import = 0x4,
+      Menu_View_As = 0x4500,
+      Menu_View_As_Deck = 0x4503,
+      Menu_View_As_Cube = 0x4502
+   };
+
    MainFrame(const wxString& title);
    ~MainFrame();
 
@@ -42,6 +47,7 @@ public:
    void OnViewCollectionOverview(wxCommandEvent& awxEvt);
    void OnImportSource(wxCommandEvent& awxEvt);
    void OnGenericMenuEvent(wxCommandEvent& awxEvt);
+   void OnViewCollectionAs( wxCommandEvent& awxEvt );
 
    void RegisterSendMenuEvents();
    void ReleaseMenuEventHandler();

@@ -1,9 +1,7 @@
 #pragma once
-
-#pragma once
-#include<map>
 #include"wx\wxprec.h"
 #include"IMenuEventHandler.h"
+#include<map>
 
 class vCollectionCube;
 class MainFrame;
@@ -14,7 +12,8 @@ public:
    enum
    {
       Menu_DeckEditor = 0x4001,
-      Menu_Save = 0x4501
+      Menu_Save = 0x4501,
+      Menu_View_As_Deck = 0x4502
    };
 
    cCollectionCube( MainFrame* aParent, const wxString& aszColName );
