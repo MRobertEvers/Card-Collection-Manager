@@ -1,7 +1,7 @@
 #pragma once
-#include <wx/listctrl.h>
-#include <wx/object.h> 
 #include "wx/wxprec.h"
+#include <wx/object.h> 
+#include <wx/grid.h>
 
 class vcCollectionDeckBoxItemList;
 class viCardEditor;
@@ -29,7 +29,8 @@ private:
    void onEditorAccept( wxCommandEvent& awxEvt );
    void onEditorDecline( wxCommandEvent& awxEvt );
    void onCardChanged( wxCommandEvent& awxEvt );
-   void onNewItemSelected( wxListEvent& awxEvt );
+   void onNewItemSelectView( wxCommandEvent& awxEvt );
+   void onNewItemSelected( wxGridEvent& awxEvt );
    void onDeckEditor( wxCommandEvent& awxEvt );
    void buildGroupPanel();
    void notifyCardEditor( const wxString& aszHash );

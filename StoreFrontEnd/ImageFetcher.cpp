@@ -205,6 +205,7 @@ ImageFetcher::tryDownload( const wxString& aszFilePath,
    bool bGood = false;
 
    wxLog::EnableLogging( false );
+   wxLogNull logNo;
    wxImage* img = new wxImage();
    bGood = img->LoadFile( aszFilePath );
    img->Destroy();

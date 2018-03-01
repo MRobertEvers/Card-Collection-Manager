@@ -48,7 +48,8 @@ private:
 
    void clearDisplay();
    Group defaultGroup();
-   void onItemSelection( wxListEvent& awxEvt );
+   wxColour getGroupColor( const wxString& aszGroup );
+   wxColour getGroupFontColor( const wxString& aszGroup );
 
    std::map<wxString, 
             std::vector<GroupItemData*>, 

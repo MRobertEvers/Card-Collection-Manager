@@ -4,18 +4,19 @@
 #include "StoreFrontEnd.h"
 #include "Group.h"
 #include <algorithm>
+#include <wx/gdicmn.h>
 
 bool 
 CubeDisplayColumnSorter::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
 {
-   std::vector<wxString> vecGrpOrder = { "W", "U", "B", "R", "G" };
+   std::vector<wxString> vecGrpOrder = { "W", "U", "B", "R", "G", "Multicolor", "Colorless" };
 
    auto iter_begin = vecGrpOrder.begin();
    auto iter_end = vecGrpOrder.end();
    
    int iLeft = std::distance( iter_begin, std::find( iter_begin, iter_end, agrpLeft ) );
    int iRight = std::distance( iter_begin, std::find( iter_begin, iter_end, agrpRight ) );
-   
+
    return iLeft == iRight ? agrpLeft < agrpRight : iLeft < iRight;
 }
 bool
@@ -44,7 +45,6 @@ CubeDisplayItemSorter::operator()( const wxString& agrpLeft, const wxString& agr
 }
 
 wxBEGIN_EVENT_TABLE( vcCollectionCubeDisplay, wxPanel )
-EVT_LIST_ITEM_SELECTED( vcCollectionCubeDisplay::Group_List, vcCollectionCubeDisplay::onItemSelection )
 wxEND_EVENT_TABLE()
 
 vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID aiWID, const wxString& aszColID )
@@ -53,7 +53,7 @@ vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID
    wxBoxSizer* boxSizer = new wxBoxSizer( wxHORIZONTAL );
    this->SetSizer( boxSizer );
    RefreshList();
-   this->SetScrollRate( 10, 10 );
+   this->SetScrollRate( 10, 20 );
 }
 
 vcCollectionCubeDisplay::~vcCollectionCubeDisplay()
@@ -84,13 +84,15 @@ vcCollectionCubeDisplay::RefreshList()
    for( auto& grp : mapGroups )
    {
       auto grpList = new vcCollectionCubeGroup( this, Group_List, grp.first, index );
+      grpList->SetSubSectionFontColor( getGroupFontColor( grp.first ) );
+      grpList->SetBackgroundColor( getGroupColor( grp.first ) );
       m_mapColGroups.insert( std::make_pair( index++, grpList ) );
 
       grpList->PopulateList( grp.second, defGroup.GetSubGroup( grp.first ) );
 
-      this->GetSizer()->Add(grpList, wxSizerFlags(1).Left());
+      this->GetSizer()->Add(grpList, wxSizerFlags(1).Left().Border(wxRIGHT, 3));
    }
-   PostSizeEvent();
+
    this->Thaw();
 }
 
@@ -180,17 +182,74 @@ vcCollectionCubeDisplay::defaultGroup()
    return defaultGrp;
 }
 
-void 
-vcCollectionCubeDisplay::onItemSelection( wxListEvent& awxEvt )
+wxColour 
+vcCollectionCubeDisplay::getGroupColor( const wxString& aszGroup )
 {
-   for( auto& oColumn : m_mapColGroups )
+   if( aszGroup == "W" )
    {
-      if( oColumn.second->GetColumnIndex() != awxEvt.GetIndex() )
-      {
-         oColumn.second->DeselectAll();
-      }
+      return wxColour( 255, 252, 243 );
    }
-   awxEvt.Skip();
+   else if( aszGroup == "U" )
+   {
+      return wxColour( 235, 245, 255 );
+   }
+   else if( aszGroup == "B" )
+   {
+      return wxColour( 227, 227, 227 );
+   }
+   else if( aszGroup == "R" )
+   {
+      return wxColour( 255, 231, 231 );
+   }
+   else if( aszGroup == "G" )
+   {
+      return wxColour( 242, 255, 230 );
+   }
+   else if( aszGroup == "Multicolor" )
+   {
+      return wxColour( 255, 255, 220 );
+   }
+   else if( aszGroup == "Colorless" )
+   {
+      return wxColour( 255, 241, 228 );
+   }
+
+   return wxColour();
+}
+
+wxColour 
+vcCollectionCubeDisplay::getGroupFontColor( const wxString& aszGroup )
+{
+   if( aszGroup == "W" )
+   {
+      return wxColour( 185, 159, 100 );
+   }
+   else if( aszGroup == "U" )
+   {
+      return wxColour( 0, 77, 153 );
+   }
+   else if( aszGroup == "B" )
+   {
+      return wxColour( 0, 0, 0 );
+   }
+   else if( aszGroup == "R" )
+   {
+      return wxColour( 153, 0, 0 );
+   }
+   else if( aszGroup == "G" )
+   {
+      return wxColour( 77, 153, 0 );
+   }
+   else if( aszGroup == "Multicolor" )
+   {
+      return wxColour( 179, 153, 0 );
+   }
+   else if( aszGroup == "Colorless" )
+   {
+      return wxColour( 153, 77, 0 );
+   }
+
+   return wxColour();
 }
 
 std::map<wxString, std::vector<GroupItemData*>, Group::Sorting>

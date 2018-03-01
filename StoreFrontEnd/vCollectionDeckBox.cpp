@@ -9,7 +9,7 @@
 wxBEGIN_EVENT_TABLE(vCollectionDeckBox, wxPanel)
 EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionDeckBox::onCardChanged )
 EVT_BUTTON(viCollectionEditor::Changes_Accept, vCollectionDeckBox::onEditorAccept)
-EVT_LIST_ITEM_SELECTED( viCardEditor::Image_Changed, vCollectionDeckBox::onNewItemSelected )
+EVT_BUTTON( viCardEditor::Image_Changed, vCollectionDeckBox::onNewItemSelectView )
 EVT_LIST_ITEM_SELECTED(vcCollectionDeckBoxItemList::List, vCollectionDeckBox::onNewItemSelected)
 EVT_BUTTON(viCollectionEditor::Changes_Decline, vCollectionDeckBox::onEditorDecline)
 wxEND_EVENT_TABLE()
@@ -26,7 +26,7 @@ vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent,
    // Order is Count, Name*, Mana Cost, Card Type
    this->SetSizer(boxSizer);
 
-   this->GetParent()->SetSize(550, 500);
+   this->GetParent()->SetMinSize( wxSize( 550, 500 ) );
    this->GetParent()->Layout();
    buildItemList();
 
@@ -89,6 +89,13 @@ vCollectionDeckBox::onCardChanged( wxCommandEvent& awxEvt )
 }
 
 void 
+vCollectionDeckBox::onNewItemSelectView( wxCommandEvent& awxEvt )
+{
+   notifyCardEditor( awxEvt.GetString() );
+   awxEvt.StopPropagation();
+}
+
+void 
 vCollectionDeckBox::onNewItemSelected(wxListEvent& awxEvt)
 {
    notifyCardEditor( awxEvt.GetString() );
@@ -117,9 +124,9 @@ vCollectionDeckBox::notifyCardEditor(const wxString& aszHash)
       m_viCardEditor = new viCardEditor(this, 5, m_wxszColID, aszHash);
       //m_viCardEditor->SetMinSize(wxSize(350, 500));
       this->GetSizer()->Add(m_viCardEditor, wxSizerFlags(1).Expand());
-      auto iAdditionSize = m_viCardEditor->GetSize().GetWidth();
-      this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
-                                  this->GetParent()->GetSize().GetY() );
+      //auto iAdditionSize = m_viCardEditor->GetSize().GetWidth();
+      //this->GetParent()->SetSize( this->GetParent()->GetSize().GetX() + iAdditionSize,
+      //                            this->GetParent()->GetSize().GetY() );
    }
    else
    {

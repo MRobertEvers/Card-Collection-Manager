@@ -147,6 +147,8 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
       }
    }
    m_bHandleTextEvent = true;
+   // This fixes the issue where sometimes the dropbox doesn't close right.
+   PostSizeEvent();
 }
 
 void 

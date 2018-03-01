@@ -32,7 +32,7 @@ viCardEditorImageCallBack::CallBack()
          ptCallback->SetDoCall(false);
       }
       // Perhaps need to perform this on the main thread.
-      wxListEvent updateEvt( wxEVT_LIST_ITEM_SELECTED );
+      wxCommandEvent updateEvt( wxEVT_BUTTON );
       updateEvt.SetId( Image_Changed );
       updateEvt.SetString( m_ptCardEditor->m_szDisplayingHash );
       ::wxPostEvent(m_ptCardEditor->GetParent(), updateEvt );
@@ -137,7 +137,9 @@ void
 viCardEditor::setImage(const wxString& aszImagePath)
 {
    this->Freeze();
+   wxLog::EnableLogging( false );
    m_jpgPanel->SetImage(aszImagePath);
+   wxLog::EnableLogging( true );
    this->Thaw();
 }
 
@@ -221,7 +223,6 @@ viCardEditor::refreshDisplay()
    {
       m_jpgPanel = new vcImageWrapper(this, 1);
       this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
-      //this->Layout();
    }
 
    fetchImage();
