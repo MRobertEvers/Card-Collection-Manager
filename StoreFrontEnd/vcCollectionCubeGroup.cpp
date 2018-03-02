@@ -204,7 +204,7 @@ vcCollectionCubeGroup::performDisplayWithSubGrouping(
    int index = 0;
    for( auto groupData : amapGrps )
    {
-      map<wxString, set<GroupItemData*, Group::ItemSorting>, Group::Sorting>
+      map<wxString, multiset<GroupItemData*, Group::ItemSorting>, Group::Sorting>
          mapSubGrpSorting( *subGroup.GetSortingFunctor() );
       for( auto& itemData : groupData.second )
       {

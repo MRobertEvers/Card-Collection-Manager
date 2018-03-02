@@ -85,6 +85,12 @@ viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash )
    }
 }
 
+wxString 
+viCardEditor::GetDisplayingCard()
+{
+   return m_szCardName;
+}
+
 void 
 viCardEditor::fetchImage()
 {
@@ -295,45 +301,56 @@ viCardEditor::buildSubmitResetButtons()
 void 
 viCardEditor::onChangesAccept(wxCommandEvent& awxEvt)
 {
-   // This MUST be thawed by the parent.
-   this->Freeze();
+   // Send to server.
+   auto vecEditedItems = submitChangesToServer();
+
+   // Save one of the editted UIDs so that the parent can find the new
+   // card.
+   if( vecEditedItems.size() > 0 )
+   {
+      awxEvt.SetString( vecEditedItems.front() );
+
+      // Send refresh event up to collection viewer.
+      awxEvt.Skip();
+   }
+}
+
+std::vector<std::string>
+viCardEditor::submitChangesToServer()
+{
+   // Returns a list of modified UIDs.
+   std::vector<std::string> vecRetVal;
 
    StringInterface stringEditor;
    auto ptSF = StoreFrontEnd::Instance();
 
-   // Send to server
    auto mapEditedTraits = m_wxTraitList->GetCurrentSelections();
-   auto mapEditedItems = m_wxEditableItemList->GetUIDModifiedMap();
    std::vector<std::pair<std::string, std::string>> vecStringCmds;
    for( auto& item : mapEditedTraits )
    {
-      vecStringCmds.push_back( std::make_pair(item.first.ToStdString(), 
-                                              item.second.ToStdString()) );
+      vecStringCmds.push_back( std::make_pair( item.first.ToStdString(),
+                                               item.second.ToStdString() ) );
    }
 
    std::vector<std::string> vecBulkChanges;
    int iChanged = 0;
-   wxString szUnchangedUID;
+   auto mapEditedItems = m_wxEditableItemList->GetUIDModifiedMap();
    for( auto& item : mapEditedItems )
    {
+      // item.second is a bool indicating if the item is checked.
       if( item.second )
       {
          iChanged++;
-         std::string szChangeCmd = stringEditor.CmdCreateModify( m_szCardName.ToStdString(), 
+         std::string szChangeCmd = stringEditor.CmdCreateModify( m_szCardName.ToStdString(),
                                                                  item.first.ToStdString(),
                                                                  vecStringCmds );
          vecBulkChanges.push_back( szChangeCmd );
-      }
-      else
-      {
-         szUnchangedUID = item.first;
+         vecRetVal.push_back( item.first.ToStdString() );
       }
    }
 
    ptSF->SubmitBulkChanges( m_szColID.ToStdString(), vecBulkChanges );
-
-   // Send refresh event up to collection viewer.
-   awxEvt.Skip();
+   return vecRetVal;
 }
 
 void 

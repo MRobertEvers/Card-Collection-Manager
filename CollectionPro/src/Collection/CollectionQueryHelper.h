@@ -44,8 +44,5 @@ private:
    multimap<string, ItemData> getHashGroupsEnumUIDs(const Query& aiQueryParms);
    vector<string> getListGroupedByHashEnumUIDs( const Query& aiQueryParms );
 
-   multimap<string, ItemData> getNameGroupsEnumHash(const Query& aiQueryParms);
-   vector<string> getListGroupedByNameEnumByHash( const Query& aiQueryParms );
-
    bool setFrontAndIsMatchToQuery(const Query& aiQueryParms, ItemData& rData);
 };

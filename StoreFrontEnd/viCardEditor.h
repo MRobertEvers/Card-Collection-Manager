@@ -39,6 +39,7 @@ public:
    ~viCardEditor();
 
    void DisplayNew(wxString aszColID, wxString aszCardHash );
+   wxString GetDisplayingCard();
 
 private:
    wxDECLARE_EVENT_TABLE();
@@ -68,4 +69,6 @@ private:
 
    void onChangesAccept(wxCommandEvent& awxEvt);
    void onChangesReset(wxCommandEvent& awxEvt);
+
+   std::vector<std::string> submitChangesToServer();
 };

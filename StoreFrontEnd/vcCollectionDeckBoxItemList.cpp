@@ -62,6 +62,8 @@ vcCollectionDeckBoxItemList::RefreshList()
    m_wxListControl->SetColumnWidth(3, wxLIST_AUTOSIZE);
    m_wxListControl->SetColumnWidth(4, wxLIST_AUTOSIZE);
    m_wxListControl->Thaw();
+   
+   this->Layout();
 }
 
 GroupItemData 

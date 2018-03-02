@@ -92,7 +92,7 @@ vcCollectionCubeDisplay::RefreshList()
 
       this->GetSizer()->Add(grpList, wxSizerFlags(1).Left().Border(wxRIGHT, 3));
    }
-
+   this->Layout();
    this->Thaw();
 }
 

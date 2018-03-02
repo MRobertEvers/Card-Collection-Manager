@@ -30,6 +30,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -69,7 +70,13 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\OpenSSL-Win32\bin;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\OpenSSL-Win32\bin;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -85,6 +92,8 @@
       <AdditionalLibraryDirectories>$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>comctl32.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;winmm.lib;advapi32.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -136,10 +145,12 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="cCollectionCube.cpp" />
     <ClCompile Include="cCollectionDeckBox.cpp" />
-    <ClCompile Include="cCollectionDeckBox.h" />
+    <ClInclude Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
     <ClCompile Include="CELIOption.cpp" />
     <ClCompile Include="Group.cpp" />
+    <ClCompile Include="json\jsoncpp.cpp" />
+    <ClCompile Include="ScryFallAPI.cpp" />
     <ClCompile Include="vcCollectionCubeDisplay.cpp" />
     <ClCompile Include="vcCollectionCubeGroup.cpp" />
     <ClCompile Include="vcEditableItemList.cpp" />
@@ -174,6 +185,8 @@
     <ClInclude Include="Group.h" />
     <ClInclude Include="ImageFetcher.h" />
     <ClInclude Include="IMenuEventHandler.h" />
+    <ClInclude Include="json\json.hpp" />
+    <ClInclude Include="ScryFallAPI.h" />
     <ClInclude Include="StoreFrontEnd.h" />
     <ClInclude Include="vcCollectionCubeDisplay.h" />
     <ClInclude Include="vcCollectionCubeGroup.h" />

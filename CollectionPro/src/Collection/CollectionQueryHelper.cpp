@@ -19,23 +19,8 @@ CollectionQueryHelper::~CollectionQueryHelper()
 vector<string>
 CollectionQueryHelper::QueryCollection(Query aiQueryParms)
 {
-   if( aiQueryParms.GetClassed() )
-   {
-      // TODO: Complete this implementation.
-      //return getListGroupedByNameEnumByHash(aiQueryParms);
-      return getListGroupedByHashEnumUIDs(aiQueryParms);
-   }
-   else if ( aiQueryParms.GetUIDs() )
-   {
-      return getListGroupedByHashEnumUIDs(aiQueryParms);
-   }
-   else
-   {
-      // Default search.
-      return getListGroupedByHashEnumUIDs(aiQueryParms);
 
-   }
-
+   return getListGroupedByHashEnumUIDs(aiQueryParms);
 }
 
 multimap<string, CollectionQueryHelper::ItemData>
@@ -79,6 +64,7 @@ CollectionQueryHelper::getHashGroupsEnumUIDs(const Query& aiQueryParms)
          }
          else
          {
+            // Add the card as an additional entry.
             cardData.Copy = copy.get();
             cardData.Groups.clear();
             cardData.Count = 1;
@@ -156,110 +142,6 @@ CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
       {
          ptColSource->CollapseCardLine(szLine);
       }
-
-      if( cardData.Front )
-      {
-         lstFront.push_back(szLine);
-      }
-      else
-      {
-         lstBack.push_back(szLine);
-      }
-   }
-
-   vector<string> lstRetVal;
-   for( auto& szLine : lstFront )
-   {
-      lstRetVal.push_back(szLine);
-   }
-
-   for( auto& szLine : lstBack )
-   {
-      lstRetVal.push_back(szLine);
-   }
-   return lstRetVal;
-}
-
-multimap<string, CollectionQueryHelper::ItemData>
-CollectionQueryHelper::getNameGroupsEnumHash(const Query& aiQueryParms)
-{
-   multimap<string, ItemData> mapSeenNames;
-   auto ptColSource = m_ptCollection->m_ptrCollectionSource;
-
-   for( auto iItem : m_ptCollection->getCollection() )
-   {
-      auto item = ptColSource->GetCardPrototype(iItem);
-      ItemData cardData;
-      cardData.Name = item->GetName();
-      cardData.Item = item.Value();
-
-      // 1. If we are only looking for certain card names, restrict here
-      // so we can save time by skipping this iteration.
-      if( !setFrontAndIsMatchToQuery(aiQueryParms, cardData) )
-      {
-         continue;
-      }
-
-      // 2. Count each occurence of an identical hash within a card if collapsing,
-      // otherwise add it.
-      auto lstCopies = item->FindCopies(m_ptCollection->GetIdentifier(), All);
-      for( auto copy : lstCopies )
-      {
-         // Look for copies that match.
-         cardData.Hash = copy->GetHash(aiQueryParms.GetHashType());
-         auto iter_Counted = cardData.Groups.find(cardData.Hash);
-         if( iter_Counted == cardData.Groups.end() )
-         {
-            cardData.Groups.insert(cardData.Hash);
-         }
-      }
-      mapSeenNames.insert(make_pair(cardData.Name, cardData));
-   }
-
-   return mapSeenNames;
-}
-
-vector<string>
-CollectionQueryHelper::getListGroupedByNameEnumByHash(const Query& aiQueryParms)
-{
-   auto mapSeenNames = getNameGroupsEnumHash(aiQueryParms);
-
-   auto ptColSource = m_ptCollection->m_ptrCollectionSource;
-   auto ptColDetails = m_ptCollection->m_ptrCollectionDetails;
-
-   vector<string> lstFront;
-   vector<string> lstBack;
-
-   // 3. Create the list of strings, shorten them if necessary.
-   for( auto card : mapSeenNames )
-   {
-      string szLine;
-      ItemData& cardData = card.second;
-      // Build the strings
-
-      // If Classed (We should be but check again) replaces the meta tags.
-      vector<Tag> vecMeta;
-      if( aiQueryParms.GetClassed() )
-      {
-         cardData.Count = 0;
-         for( auto& szUID : cardData.Groups )
-         {
-            vecMeta.push_back(make_pair(CopyItem::GetHashKey(), szUID));
-         }
-      }
-      else
-      {
-         vecMeta = cardData.Copy->GetMetaTags(aiQueryParms.GetMetaType());
-      }
-
-      szLine = CollectionObject::ToCardLine(
-         cardData.Copy->GetAddress(),
-         cardData.Name,
-         vector<Tag>(),
-         vecMeta,
-         *ptColDetails->GetAddress(),
-         cardData.Count
-      );
 
       if( cardData.Front )
       {

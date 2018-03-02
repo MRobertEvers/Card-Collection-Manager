@@ -55,6 +55,9 @@
     <Filter Include="Views\Cube\Components">
       <UniqueIdentifier>{4a01723e-c28a-433a-a4d3-970b99701fda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{a9a8439f-85c3-4309-ba5a-1858a1499278}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -108,9 +111,6 @@
     <ClCompile Include="IMenuEventHandler.cpp">
       <Filter>Views\Template</Filter>
     </ClCompile>
-    <ClCompile Include="cCollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
-    </ClCompile>
     <ClCompile Include="cCollectionDeckBox.cpp">
       <Filter>Views\Deckbox</Filter>
     </ClCompile>
@@ -152,6 +152,12 @@
     </ClCompile>
     <ClCompile Include="CELIOption.cpp">
       <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ScryFallAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="json\jsoncpp.cpp">
+      <Filter>Libraries</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +256,15 @@
     </ClInclude>
     <ClInclude Include="vcCollectionCubeDisplay.h">
       <Filter>Views\Cube\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ScryFallAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json\json.hpp">
+      <Filter>Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="cCollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

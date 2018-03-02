@@ -83,8 +83,15 @@ void
 vCollectionDeckBox::onCardChanged( wxCommandEvent& awxEvt )
 {
    m_vcItemList->RefreshList();
-   m_viCardEditor->DisplayNew( m_wxszColID, m_vcItemList->GetFirst().GetHash() );
+
+   m_viCardEditor->Freeze();
+
+   auto ptSF = StoreFrontEnd::Instance();
+   m_viCardEditor->DisplayNew( m_wxszColID,
+                               ptSF->GetMetaTagHash( m_viCardEditor->GetDisplayingCard().ToStdString() ,
+                                                     awxEvt.GetString().ToStdString() ) );
    m_viCardEditor->Layout();
+
    m_viCardEditor->Thaw();
 }
 
