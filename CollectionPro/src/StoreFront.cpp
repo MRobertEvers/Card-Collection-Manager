@@ -202,6 +202,24 @@ StoreFront::GetCommonAttribute(const string& aszCardName, const string& aszAttri
    return "";
 }
 
+string 
+StoreFront::GetIdentifyingAttribute( const string& aszCardName, 
+                                     const string& aszUID, 
+                                     const string& aszTrait )
+{
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         return copy->get()->GetIdentifyingAttribute(aszTrait);
+      }
+   }
+
+   return "";
+}
+
 vector<pair<string, string>>
 StoreFront::GetIdentifyingAttributes( const string& aszCardName,
                                       const string& aszUID )

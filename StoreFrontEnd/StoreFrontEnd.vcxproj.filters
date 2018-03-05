@@ -58,6 +58,9 @@
     <Filter Include="Libraries">
       <UniqueIdentifier>{a9a8439f-85c3-4309-ba5a-1858a1499278}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Libraries\cURL">
+      <UniqueIdentifier>{8f669614-fbfb-4eeb-a9df-6d00b3505e58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -265,6 +268,30 @@
     </ClInclude>
     <ClInclude Include="cCollectionDeckBox.h">
       <Filter>Views\Deckbox</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\curl.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\curlver.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\easy.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\mprintf.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\multi.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\stdcheaders.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\system.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="curl\typecheck-gcc.h">
+      <Filter>Libraries\cURL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

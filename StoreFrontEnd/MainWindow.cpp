@@ -5,7 +5,6 @@
 #include "cCollectionCube.h"
 #include "vCollectionsOverview.h"
 #include "cCollectionsOverview.h"
-#include "ScryfallAPI.h"
 #include <wx/defs.h> 
 
 // Events can be tied at run-time. This is compile time.

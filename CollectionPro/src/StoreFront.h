@@ -40,6 +40,7 @@ public:
    void SetAttribute(const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal);
    vector<pair<string, string>> GetMetaTags(const string& aszCardName, const string& aszUID);
    string GetCommonAttribute(const string& aszCardName, const string& aszAttribute);
+   string GetIdentifyingAttribute( const string& aszCardName, const string& aszUID, const string& aszTrait );
    vector<pair<string, string>> GetIdentifyingAttributes(const string& aszCardName, const string& aszUID);
    map<string, vector<string>> GetIdentifyingAttributeOptions(const string& aszCardName);
    string GetCardString(const string& aszCardname, const string& aszUID);

@@ -3,6 +3,7 @@
 #include <vector>
 #include "StoreFrontEnd.h"
 #include "vcEditableTraitListItem.h"
+#include "ScryFallAPI.h"
 
 using namespace std;
 
@@ -34,6 +35,13 @@ vcEditableTraitList::RefreshNew( const wxString& aszName,
 {
    clearList();
    auto ptSF = StoreFrontEnd::Instance();
+
+   auto szMUD = ptSF->GetIdentifyingAttribute( aszName.ToStdString(),
+                                               aszUID.ToStdString(),
+                                               "multiverseid" );
+
+   ScryFallAPI money;
+   auto szMoney = money.GetCardPrice( szMUD );
 
    // Lift the rest a function.
    auto vecPairAttrs = ptSF->GetPairedAttributes();
