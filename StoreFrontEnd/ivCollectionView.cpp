@@ -46,15 +46,8 @@ ivCollectionView::onEditorDecline( wxCommandEvent& awxEvt )
 void
 ivCollectionView::onCardChanged( wxCommandEvent& awxEvt )
 {
-   m_viCardEditor->Freeze();
-
    auto ptSF = StoreFrontEnd::Instance();
-   m_viCardEditor->DisplayNew( m_wxszColID,
-                              ptSF->GetMetaTagHash( m_viCardEditor->GetDisplayingCard().ToStdString(),
-                              awxEvt.GetString().ToStdString() ) );
-   m_viCardEditor->Layout();
-
-   m_viCardEditor->Thaw();
+   notifyCardEditor( ptSF->GetMetaTagHash( m_wxszColID.ToStdString(), m_viCardEditor->GetDisplayingCard().ToStdString()) );
 }
 
 void
@@ -81,6 +74,9 @@ ivCollectionView::notifyCardEditor( const wxString& aszHash )
    }
    else
    {
+      m_viCardEditor->Freeze();
       m_viCardEditor->DisplayNew( m_wxszColID, aszHash );
+      m_viCardEditor->Layout();
+      m_viCardEditor->Thaw();
    }
 }
