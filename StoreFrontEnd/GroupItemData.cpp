@@ -1,6 +1,7 @@
 #include "GroupItemData.h"
-#include <algorithm>
 #include "StoreFrontEnd.h"
+
+#include <algorithm>
 
 GroupItemData::GroupItemData()
 {
@@ -17,8 +18,6 @@ GroupItemData::GroupItemData(const wxString& aszCardName, DataStyle aDataStyle)
    {
       m_szName = aszCardName;
    }
-
-   getItemData();
 }
 
 
@@ -29,13 +28,15 @@ GroupItemData::~GroupItemData()
 int 
 GroupItemData::GetNumber() const
 {
+
    return m_iNumber;
 }
 
 wxString 
 GroupItemData::GetHash() const
 {
-   return m_szHash;
+   auto ptSF = StoreFrontEnd::Instance();
+   return ptSF->GetMetaTagHash(m_szName.ToStdString(), GetFirstUID().ToStdString());
 }
 
 wxString 
@@ -52,121 +53,75 @@ GroupItemData::GetFirstUID() const
 }
 
 wxString 
-GroupItemData::GetName() const
+GroupItemData::GetName( ) const
 {
    return m_szName;
 }
 
 wxString 
-GroupItemData::GetManaCost() const
+GroupItemData::GetManaCost( ) const
 {
-   return m_szManaCost;
+   auto ptSF = StoreFrontEnd::Instance();
+   auto szManaCost = ptSF->GetCommonAttribute( m_szName.ToStdString(), "manaCost" );
+   szManaCost.erase(std::remove( szManaCost.begin(), szManaCost.end(), '{'),
+                      szManaCost.end());
+   szManaCost.erase(std::remove( szManaCost.begin(), szManaCost.end(), '}'),
+                      szManaCost.end());
+   return szManaCost;
 }
 
 wxString 
-GroupItemData::GetCardType() const
+GroupItemData::GetCardType( ) const
 {
-   return m_szCardType;
+   auto ptSF = StoreFrontEnd::Instance();
+   return ptSF->GetCommonAttribute( m_szName.ToStdString(), "type" );
 }
 
 wxString 
-GroupItemData::GetSet() const
+GroupItemData::GetSet( ) const
 {
-   return m_szSet;
+   auto ptSF = StoreFrontEnd::Instance();
+   return ptSF->GetIdentifyingAttribute( m_szName.ToStdString(), GetFirstUID().ToStdString(), "set" );
 }
 
 wxString 
-GroupItemData::GetMetaTag(const wxString& aszKey) const
+GroupItemData::GetMetaTag(const wxString& aszKey, const wxString& aszUID) const
 {
-   StringInterface parser;
-   return parser.FindTagInList(m_vecMetaTags, aszKey.ToStdString());
+   auto ptSF = StoreFrontEnd::Instance();
+   return ptSF->GetMetaTag( m_szName.ToStdString(), aszUID.ToStdString(), aszKey.ToStdString() );
 }
 
 wxString 
 GroupItemData::GetAttribute(const wxString& aszKey) const
 {
-   StringInterface parser;
-   string szValue = parser.FindTagInList(m_vecIdentifiers, aszKey.ToStdString());
-   if( szValue == "" )
-   {
-      auto ptSF = StoreFrontEnd::Instance();
-      szValue = ptSF->GetCommonAttribute(m_szName.ToStdString(), aszKey.ToStdString());
-   }
-   return szValue;
+   auto ptSF = StoreFrontEnd::Instance();
+   return ptSF->GetCommonAttribute( m_szName.ToStdString(), aszKey.ToStdString() );
 }
 
 void 
 GroupItemData::parseLongName(const wxString& aszName)
 {
    StringInterface parser;
-
+   vector<pair<string, string>> vecIDs;
+   vector<pair<string, string>> vecMeta;
    unsigned int Count;
    string Name;
 
    parser.ParseCardLine( aszName.ToStdString(), Count, Name,
-                         m_vecIdentifiers, m_vecMetaTags );
+                         vecIDs, vecMeta );
 
    m_iNumber = Count;
    m_szName = Name;
-   m_szSet = parser.FindTagInList(m_vecIdentifiers, "set");
 
-   if( m_vecMetaTags.size() > 0 )
+   if( vecMeta.size() > 0 )
    {
       StringInterface szIface;
-      for( auto& szMeta : m_vecMetaTags )
+      for( auto& szMeta : vecMeta )
       {
          if( szMeta.first == szIface.GetUIDKey() )
          {
             m_vecUIDs.push_back( szMeta.second );
          }
       }
-
-      getItemHash( parser.FindTagInList( m_vecMetaTags, szIface.GetUIDKey() ) );
    }
-}
-
-void 
-GroupItemData::getItemData()
-{
-   // m_szName should be populated by now.
-   auto ptSF = StoreFrontEnd::Instance();
-
-   // Get the Set options, mana cost, and card type.
-
-   auto mapOptions = ptSF->GetIdentifyingAttributeOptions(m_szName.ToStdString());
-   // TODO: This should not be a string literal.
-   auto iter_set = mapOptions.find("set");
-   if( iter_set != mapOptions.end() )
-   {
-      for( auto& szOption : iter_set->second )
-      {
-         m_vecSetOptions.push_back(szOption);
-      }
-
-      StringInterface parser;
-      if( m_szSet == "" )
-      {
-         string szVal;
-         parser.ListToDelimStr( iter_set->second.begin(), iter_set->second.end(),
-                                szVal, "", "," );
-         m_szSet = szVal;
-      }
-   }
-
-
-
-   m_szCardType = ptSF->GetCommonAttribute(m_szName.ToStdString(), "type");
-   m_szManaCost = ptSF->GetCommonAttribute(m_szName.ToStdString(), "manaCost");
-   m_szManaCost.erase(std::remove(m_szManaCost.begin(), m_szManaCost.end(), '{'),
-                      m_szManaCost.end());
-   m_szManaCost.erase(std::remove(m_szManaCost.begin(), m_szManaCost.end(), '}'),
-                      m_szManaCost.end());
-
-}
-
-void 
-GroupItemData::getItemHash(const wxString& aszUID)
-{
-   auto ptSF = StoreFrontEnd::Instance();
-   m_szHash = ptSF->GetMetaTagHash( m_szName.ToStdString(), aszUID.ToStdString() );
 }

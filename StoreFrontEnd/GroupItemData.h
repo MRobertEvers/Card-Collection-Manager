@@ -24,24 +24,15 @@ public:
    wxString GetManaCost() const;
    wxString GetCardType() const;
    wxString GetSet() const;
-   wxString GetMetaTag(const wxString& aszKey) const;
+   wxString GetMetaTag(const wxString& aszKey, const wxString& aszUID = "" ) const;
    wxString GetAttribute(const wxString& aszKey) const;
 
 private:
    // Number, name, mana cost, card type
    int m_iNumber;
-   wxString m_szHash;
    wxString m_szName;
-   wxString m_szSet;
-   wxString m_szManaCost;
-   wxString m_szCardType;
    vector<wxString> m_vecUIDs;
-   vector<wxString> m_vecSetOptions;
-   vector<pair<string, string>> m_vecIdentifiers;
-   vector<pair<string, string>> m_vecMetaTags;
 
    void parseLongName(const wxString& aszName);
-   void getItemData();
-   void getItemHash(const wxString& aszUID);
 };
 

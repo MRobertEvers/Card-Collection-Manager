@@ -191,6 +191,22 @@ StoreFront::GetMetaTags(const string& aszCardName, const string& aszUID)
 }
 
 string 
+StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID, const string& aszTagKey )
+{
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         return (*copy.Value())->GetMetaTag( aszTagKey, MetaTagType::Public );
+      }
+   }
+
+   return "";
+}
+
+string 
 StoreFront::GetCommonAttribute(const string& aszCardName, const string& aszAttribute)
 {
    auto item = m_ColSource->GetCardPrototype(aszCardName);

@@ -74,7 +74,6 @@ ivCollectionView::onDeckEditor( wxCommandEvent& awxEvt )
 void
 ivCollectionView::notifyCardEditor( const wxString& aszHash )
 {
-   this->Freeze();
    if( m_viCardEditor == nullptr )
    {
       m_viCardEditor = new viCardEditor( this, 5, m_wxszColID, aszHash );
@@ -84,6 +83,4 @@ ivCollectionView::notifyCardEditor( const wxString& aszHash )
    {
       m_viCardEditor->DisplayNew( m_wxszColID, aszHash );
    }
-   PostSizeEvent();
-   this->Thaw();
 }

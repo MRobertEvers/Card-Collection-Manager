@@ -7,11 +7,6 @@
 #include "../Support/StringHelper.h"
 #include "../Addressing/Addresser.h"
 #include "../Config.h"
-#include "AddAction.h"
-#include "RemoveAction.h"
-#include "ChangeAction.h"
-#include "ReplaceAction.h"
-#include "AddFromAction.h"
 #include "CollectionIO.h"
 #include "../StringInterface.h"
 
@@ -24,7 +19,6 @@ Collection::Collection( string aszName,
 {
    m_ptrCollectionTracker = new CollectionTracker( this );
    m_ptrCollectionDetails = new CollectionDetails();
-   m_ptrTransactionManager = new TransactionManager( this );
    m_ptrCollectionQueryHelper = new CollectionQueryHelper( this );
 
    m_ptrCollectionDetails->SetName( aszName );
@@ -42,7 +36,6 @@ Collection::~Collection()
 {
    delete m_ptrCollectionTracker;
    delete m_ptrCollectionDetails;
-   delete m_ptrTransactionManager;
    delete m_ptrCollectionQueryHelper;
 }
 
@@ -71,86 +64,36 @@ Collection::ChildAdded()
 
 void
 Collection::AddItem( string aszName,
-   vector<Tag> alstAttrs,
-   vector<Tag> alstMetaTags,
-   bool abCloseTransaction )
+                     vector<Tag> alstAttrs,
+                     vector<Tag> alstMetaTags )
 {
-   AddAction addAction;
-   addAction.SetIDs( alstAttrs );
-   addAction.SetMeta( alstMetaTags );
-   addAction.SetName( aszName );
-
-   m_ptrTransactionManager->IncludeAction( addAction );
-
-   m_ptrTransactionManager->FinalizeTransaction( abCloseTransaction );
-}
-
-void
-Collection::AddItemFrom( string aszName,
-   string aszIdentifyingHash,
-   const Location& aAddress,
-   bool abCloseTransaction )
-{
-   AddFromAction afAction;
-   afAction.SetHash( aszIdentifyingHash );
-   afAction.SetName( aszName );
-   //   afAction.SetResi(aAddress);
-
-   m_ptrTransactionManager->IncludeAction( afAction );
-
-   m_ptrTransactionManager->FinalizeTransaction( abCloseTransaction );
+   addItem( aszName, alstAttrs, alstMetaTags );
 }
 
 void
 Collection::RemoveItem( string aszName,
-   string aszUID,
-   bool abCloseTransaction )
+                        string aszUID )
 {
-   RemoveAction rmAction;
-   rmAction.SetUID( aszUID );
-   rmAction.SetName( aszName );
-
-   m_ptrTransactionManager->IncludeAction( rmAction );
-
-   m_ptrTransactionManager->FinalizeTransaction( abCloseTransaction );
+   removeItem( aszName, aszUID );
 }
 
 void
 Collection::ChangeItem( string aszName,
-   string aszIdentifyingHash,
-   vector<Tag> alstChanges,
-   vector<Tag> alstMetaChanges,
-   bool abCloseTransaction )
+                        string aszUID,
+                        vector<Tag> alstChanges,
+                        vector<Tag> alstMetaChanges )
 {
-   ChangeAction chAction;
-   chAction.SetIDs( alstChanges );
-   chAction.SetMeta( alstMetaChanges );
-   chAction.SetUID( aszIdentifyingHash );
-   chAction.SetName( aszName );
-
-   m_ptrTransactionManager->IncludeAction( chAction );
-
-   m_ptrTransactionManager->FinalizeTransaction( abCloseTransaction );
+   changeItem( aszName, aszUID, alstChanges, alstMetaChanges );
 }
 
 void
 Collection::ReplaceItem( string aszName,
-   string aszIdentifyingHash,
-   string aszNewName,
-   vector<Tag> alstIdChanges,
-   vector<Tag> alstMetaChanges,
-   bool abCloseTransaction )
+                         string aszIdentifyingHash,
+                         string aszNewName,
+                         vector<Tag> alstIdChanges,
+                         vector<Tag> alstMetaChanges )
 {
-   ReplaceAction rpAction;
-   rpAction.SetIDs( alstIdChanges );
-   rpAction.SetMeta( alstMetaChanges );
-   rpAction.SetNewCard( aszNewName );
-   rpAction.SetUID( aszIdentifyingHash );
-   rpAction.SetName( aszName );
-
-   m_ptrTransactionManager->IncludeAction( rpAction );
-
-   m_ptrTransactionManager->FinalizeTransaction( abCloseTransaction );
+   replaceItem( aszName, aszIdentifyingHash, aszNewName, alstIdChanges, alstMetaChanges );
 }
 
 vector<string>
@@ -235,8 +178,6 @@ Collection::getCollection()
    {
       m_lstItemCacheIndexes = m_ptrCollectionSource->
          GetCollectionCache( GetIdentifier() );
-
-      m_ptrTransactionManager->TransactionsAsynced();
    }
 
    return m_lstItemCacheIndexes;

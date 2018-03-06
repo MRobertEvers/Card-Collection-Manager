@@ -12,8 +12,6 @@
 
 using namespace std;
 
-typedef unsigned int CollectionObjectID;
-
 // CollectionSource
 //  Maintains an unprocessed set of all objects defined in the library file.
 class CollectionSource
