@@ -162,6 +162,9 @@
     <ClCompile Include="json\jsoncpp.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
+    <ClCompile Include="ivCollectionView.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -292,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="curl\typecheck-gcc.h">
       <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="ivCollectionView.h">
+      <Filter>Views\Template</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

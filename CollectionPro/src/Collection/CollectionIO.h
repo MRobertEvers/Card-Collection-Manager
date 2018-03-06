@@ -29,14 +29,6 @@ public:
 
    bool LoadCollection( const std::string& aszFileName, CollectionFactory* aoFactory );
 
-   bool PrepareCollectionInitialization( const std::string& aszFileName );
-
-   bool PrepareCollectionItems();
-
-   bool PopulateCollectionFields();
-
-   bool ConsolodateItems();
-
 private:
    // Used to store data that must persist between steps.
    struct LoadToken
@@ -48,7 +40,6 @@ private:
       std::string CollectionChildCount;
       std::string CollectionSessionTime;
       std::vector<std::string> MetaTagLines;
-      std::vector<std::string> AddFromCardLines;
       std::vector<std::string> OverheadPropertyLines;
       std::vector<std::string> OverheadProcessLines;
       std::vector<std::string> CardLines;
@@ -59,7 +50,19 @@ private:
    CollectionFactory* m_ptFactory;
    std::unique_ptr<LoadToken> m_ptLoadToken;
 
-   bool loadOverheadFile( );
+   // Capitalized b/c main algo.
+   bool PrepareCollectionInitialization( const std::string& aszFileName );
+
+   bool PrepareCollectionItems();
+
+   bool PopulateCollectionFields();
+
+   bool ConsolodateItems();
+
+   bool FinalizeLoad();
+
+   bool loadOverheadFile();
+   bool loadOverheadLine( const std::string& aszLine );
    bool storeOverheadProperyLineValue( const std::string& aszLine );
    bool loadPotentialItem( const string& aszName,
                            const vector<Tag>& alstAttrs,
@@ -68,7 +71,6 @@ private:
    bool bindMetaTagLine( const std::string& aszLine );
    bool isAOlderThanB( const std::shared_ptr<CopyItem>& aA, const std::shared_ptr<CopyItem>& aB );
    bool isAOlderThanB( const std::string& aA, const std::string& aB );
-   bool isItemLocal( const std::vector<Tag>& avecMeta );
    bool transferCopyFirstToSecond( const std::shared_ptr<CopyItem>& aA, const std::shared_ptr<CopyItem>& aB );
 
 public:

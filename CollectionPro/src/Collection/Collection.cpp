@@ -1,7 +1,7 @@
 #include "Collection.h"
 
-#include <ctime>
 #include <iomanip>
+#include <ctime>
 #include <algorithm>
 
 #include "../Support/ListHelper.h"
@@ -210,19 +210,6 @@ Collection::LoadCollection( const string& aszFileName,
 
    CollectionIO loader(this);
    loader.LoadCollection( aszFileName, aoFactory );
-   
-   // TODO: Put the below in the loader.
-   IsLoaded = (GetIdentifier().GetMain() != "");
-
-   if( IsLoaded )
-   {
-      m_ptrCollectionTracker->Track();
-
-      if( GetName() == "" )
-      {
-         m_ptrCollectionDetails->SetName( aszFileName );
-      }
-   }
 }
 
 // Returns all the copies impacted by this function.
@@ -410,113 +397,6 @@ Collection::modifyItem( CopyItem* aptCopy,
       MetaTagType mTagType = CopyItem::DetermineMetaTagType( alstMetaChanges[i].first );
       aptCopy->
          SetMetaTag( alstMetaChanges[i].first, alstMetaChanges[i].second, mTagType );
-   }
-}
-
-// This should only be called during initial loading.
-void Collection::loadMetaTagFile()
-{
-   string szFileName;
-   string szPlainHash;
-   vector<string> lstMetaLines;
-   TryGet<CollectionObject> item;
-
-   szFileName = CollectionIO::GetMetaFile( m_ptrCollectionDetails->GetFileName() );
-   CollectionIO::GetFileLines( szFileName, lstMetaLines );
-
-   for( size_t i = 0; i < lstMetaLines.size(); i++ )
-   {
-      CollectionObject::PseudoIdentifier sudoItem;
-      CollectionObject::ParseCardLine( lstMetaLines[i], sudoItem );
-
-      vector<Tag> lstMetaTags = sudoItem.MetaTags;
-
-      // Clear the meta so the hash may be obtained.
-      sudoItem.MetaString = "";
-      sudoItem.MetaTags.clear();
-
-      int iRealCard = m_ptrCollectionSource->LoadCard( sudoItem.Name );
-      if( iRealCard == -1 ) { continue; }
-
-      item = m_ptrCollectionSource->GetCardPrototype( iRealCard );
-
-      szPlainHash = item->GenerateHash( GetIdentifier(),
-         sudoItem.Identifiers,
-         sudoItem.MetaTags );
-
-      // Gets the first matching item resident in this collection.
-      auto matchingCopy = item->FindCopy( szPlainHash, Hash );
-      if( matchingCopy.Good() )
-      {
-         MetaTagType mTagType;
-         auto copy = matchingCopy.Value()->get();
-         for( size_t t = 0; t < lstMetaTags.size(); t++ )
-         {
-            mTagType = CopyItem::DetermineMetaTagType( lstMetaTags[t].first );
-            copy->SetMetaTag( lstMetaTags[t].first,
-               lstMetaTags[t].second,
-               mTagType, false );
-         }
-      }
-   }
-}
-
-// Returns true if the line could be processed by the collections
-// Only returns true for data lines.
-bool Collection::loadOverheadLine( const string& aszLine )
-{
-   string szDefKey( Config::CollectionDefinitionKey );
-   if( aszLine.size() < 2 ) { return true; }
-   if( aszLine.substr( 0, szDefKey.size() ) == szDefKey )
-   {
-      // The line is a data line.
-      loadCollectionDataLine( aszLine );
-      return true;
-   }
-   else
-   {
-      return false;
-   }
-}
-
-// Expects the input to be of the form : Key = "Value"
-void
-Collection::loadCollectionDataLine( const string& aszData )
-{
-   string szBaseLine = aszData.substr( 2 );
-   vector<string> lstSplitLine = StringHelper::Str_Split( szBaseLine, "=" );
-
-   if( lstSplitLine.size() != 2 ) { return; }
-
-   vector<string>::iterator iter_Lines = lstSplitLine.begin();
-   for( ; iter_Lines != lstSplitLine.end(); ++iter_Lines )
-   {
-      *iter_Lines = StringHelper::Str_Trim( *iter_Lines, ' ' );
-   }
-
-   string szKey = lstSplitLine.at( 0 );
-   string szValue = lstSplitLine.at( 1 );
-   szValue = StringHelper::Str_Trim( szValue, '\"' );
-
-   if( szKey == "Name" )
-   {
-      m_ptrCollectionDetails->SetName( szValue );
-   }
-   else if( szKey == "ID" )
-   {
-      m_ptrCollectionDetails->AssignAddress( szValue );
-   }
-   else if( szKey == "CC" )
-   {
-      m_ptrCollectionDetails->SetChildrenCount( stoi( szValue ) );
-   }
-   else if( szKey == "Session" )
-   {
-      tm tm{};
-      istringstream str_stream( szValue );
-      str_stream >> get_time( &tm, "%Y-%m-%d_%T" );
-      time_t time = mktime( &tm );
-      m_ptrCollectionDetails->SetTimeStamp( time );
    }
 }
 

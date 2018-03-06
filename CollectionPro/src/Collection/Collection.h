@@ -119,11 +119,6 @@ private:
       const vector<Tag>& alstChanges,
       const vector<Tag>& alstMetaChanges);
 
-   void loadMetaTagFile();
-
-   bool loadOverheadLine(const string& aszLine);
-   void loadCollectionDataLine(const string& aszData);
-
    void loadInterfaceLine(const string& aszLine);
 
    void loadAdditionLine(const string& aszLine);

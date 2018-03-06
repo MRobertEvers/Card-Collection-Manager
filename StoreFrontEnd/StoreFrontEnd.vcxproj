@@ -161,6 +161,7 @@ xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
     <ClCompile Include="cCollectionsOverview.cpp" />
     <ClCompile Include="CELIOption.cpp" />
     <ClCompile Include="Group.cpp" />
+    <ClCompile Include="ivCollectionView.cpp" />
     <ClCompile Include="json\jsoncpp.cpp" />
     <ClCompile Include="ScryFallAPI.cpp" />
     <ClCompile Include="vcCollectionCubeDisplay.cpp" />
@@ -205,6 +206,7 @@ xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
     <ClInclude Include="Group.h" />
     <ClInclude Include="ImageFetcher.h" />
     <ClInclude Include="IMenuEventHandler.h" />
+    <ClInclude Include="ivCollectionView.h" />
     <ClInclude Include="json\json.hpp" />
     <ClInclude Include="ScryFallAPI.h" />
     <ClInclude Include="StoreFrontEnd.h" />

@@ -6,6 +6,8 @@
 #include "../Addressing/Addresser.h"
 
 #include <algorithm>
+#include <iomanip>
+#include <ctime>
 
 using namespace std;
 
@@ -38,6 +40,7 @@ CollectionIO::LoadCollection( const string& aszFileName, CollectionFactory* aoFa
    PrepareCollectionItems();
    PopulateCollectionFields();
    ConsolodateItems();
+   FinalizeLoad();
 
    return true;
 }
@@ -71,9 +74,8 @@ CollectionIO::PrepareCollectionInitialization( const string& aszFileName )
 bool 
 CollectionIO::PrepareCollectionItems()
 {
-   // Requres the collection card lines.
-
    // a. Expand any shorthand card lines.
+   // Treats ALL lines as addition lines.
    for( auto& szCardLine : m_ptLoadToken->CardLines )
    {
       m_ptCollection->m_ptrCollectionSource->ExpandAdditionLine( szCardLine );
@@ -112,16 +114,16 @@ CollectionIO::PrepareCollectionItems()
 bool 
 CollectionIO::PopulateCollectionFields()
 {
-   for( auto& szPropertLine : m_ptLoadToken->OverheadPropertyLines )
-   {
-      m_ptCollection->loadOverheadLine( szPropertLine );
-   }
-
    m_ptCollection->m_ptrCollectionDetails->SetName( m_ptLoadToken->CollectionName );
    m_ptCollection->m_ptrCollectionDetails->SetProcessLines( m_ptLoadToken->OverheadProcessLines );
    m_ptCollection->m_ptrCollectionDetails->SetFileName( m_ptLoadToken->CollectionFileName );
 
    m_ptCollection->m_ptrCollectionDetails->SetInitialized( true );
+
+   for( auto& szPropertLine : m_ptLoadToken->OverheadPropertyLines )
+   {
+      loadOverheadLine( szPropertLine );
+   }
 
    return true;
 }
@@ -260,6 +262,24 @@ CollectionIO::ConsolodateItems()
 }
 
 bool 
+CollectionIO::FinalizeLoad()
+{
+   // TODO: Put the below in the loader.
+   m_ptCollection->IsLoaded = (m_ptCollection->GetIdentifier().GetMain() != "");
+
+   if( m_ptCollection->IsLoaded )
+   {
+      m_ptCollection->m_ptrCollectionTracker->Track();
+
+      if( m_ptCollection->GetName() == "" )
+      {
+         m_ptCollection->m_ptrCollectionDetails->SetName( m_ptLoadToken->CollectionFileName );
+      }
+   }
+   return true;
+}
+
+bool 
 CollectionIO::loadOverheadFile()
 {
    // Requres the collection file name.
@@ -290,6 +310,48 @@ CollectionIO::loadOverheadFile()
    }
 
    return true;
+}
+
+bool 
+CollectionIO::loadOverheadLine(const std::string& aszLine)
+{
+   auto ptDetails = m_ptCollection->m_ptrCollectionDetails;
+
+   string szBaseLine = aszLine.substr( 2 );
+   vector<string> lstSplitLine = StringHelper::Str_Split( szBaseLine, "=" );
+
+   if( lstSplitLine.size() != 2 ) { return false; }
+
+   vector<string>::iterator iter_Lines = lstSplitLine.begin();
+   for( ; iter_Lines != lstSplitLine.end(); ++iter_Lines )
+   {
+      *iter_Lines = StringHelper::Str_Trim( *iter_Lines, ' ' );
+   }
+
+   string szKey = lstSplitLine.at( 0 );
+   string szValue = lstSplitLine.at( 1 );
+   szValue = StringHelper::Str_Trim( szValue, '\"' );
+
+   if( szKey == "Name" )
+   {
+      ptDetails->SetName( szValue );
+   }
+   else if( szKey == "ID" )
+   {
+      ptDetails->AssignAddress( szValue );
+   }
+   else if( szKey == "CC" )
+   {
+      ptDetails->SetChildrenCount( stoi( szValue ) );
+   }
+   else if( szKey == "Session" )
+   {
+      tm tm{};
+      istringstream str_stream( szValue );
+      str_stream >> get_time( &tm, "%Y-%m-%d_%T" );
+      time_t time = mktime( &tm );
+      ptDetails->SetTimeStamp( time );
+   }
 }
 
 bool 
@@ -429,20 +491,6 @@ CollectionIO::isAOlderThanB( const std::string& aA, const std::string& aB )
    return lSessOld <= lSessNew;
 }
 
-bool 
-CollectionIO::isItemLocal( const std::vector<Tag>& avecMeta )
-{
-   StringInterface stringIFace;
-   auto szAddr = stringIFace.FindTagInList( avecMeta, CopyItem::GetAddressKey() );
-   if( szAddr != "" )
-   {
-      return Address( szAddr ) == Address( m_ptLoadToken->CollectionAddress );
-   }
-   else
-   {
-      return true;
-   }
-}
 
 bool 
 CollectionIO::transferCopyFirstToSecond( const std::shared_ptr<CopyItem>& aA,
