@@ -1,15 +1,16 @@
 #include "CollectionTest.h"
-
-#include<cstdio>
-#include<Windows.h>
-#include <iostream>
-#include <fstream>
 #include "../Collection/Collection.h"
 #include "../Config.h"
+#include "../Support/TypeDefs.h"
 #include "../Collection/CollectionSource.h"
 #include "../rapidxml-1.13\rapidxml_print.hpp"
 #include "../rapidxml-1.13\rapidxml.hpp"
 #include "../rapidxml-1.13\rapidxml_utils.hpp"
+
+#include <cstdio>
+#include <Windows.h>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -40,7 +41,7 @@ CollectionTest::AddItem_Test()
    bool bRetval = true;
    auto col = getTestCollection();
    auto szCardName = *cardName(0);
-   col->AddItem(szCardName);
+   col->AddItem(szCardName, vector<Tag>(), vector<Tag>() );
 
    auto addedItem = m_ptColSource->GetCardPrototype(szCardName);
    auto lstCopies = addedItem->FindCopies(col->GetIdentifier(), All);
@@ -60,7 +61,7 @@ CollectionTest::RemoveItem_Test()
    bool bRetval = true;
    auto col = getTestCollection();
    auto szCardName = *cardName(0);
-   col->AddItem(szCardName);
+   col->AddItem(szCardName, vector<Tag>(), vector<Tag>() );
 
    auto addedItem = m_ptColSource->GetCardPrototype(szCardName);
    auto lstCopies = addedItem->FindCopies(col->GetIdentifier(), All);
@@ -87,7 +88,7 @@ CollectionTest::RemoveItem_OtherCollectionsRef_Test()
    auto szCardName = *cardName(0);
 
    // Add the item to the test collection
-   col->AddItem(szCardName);
+   col->AddItem(szCardName, vector<Tag>(), vector<Tag>() );
    auto addedItem = m_ptColSource->GetCardPrototype(szCardName);
    auto addedCopy = addedItem->FindCopies(col->GetIdentifier(), All)[0];
 
@@ -125,7 +126,7 @@ CollectionTest::AddItemFrom_Test()
    auto szCardName = *cardName(0);
 
    // Add the item to the test collection
-   col->AddItem(szCardName);
+   col->AddItem(szCardName, vector<Tag>(), vector<Tag>() );
    auto addedItem = m_ptColSource->GetCardPrototype(szCardName);
    auto addedCopy = addedItem->FindCopies(col->GetIdentifier(), All)[0];
 

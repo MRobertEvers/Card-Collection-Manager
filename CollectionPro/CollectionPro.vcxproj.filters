@@ -86,9 +86,6 @@
     <ClInclude Include="src\Support\TryGet.h">
       <Filter>Support</Filter>
     </ClInclude>
-    <ClInclude Include="src\Collection\CollectionDeltaClass.h">
-      <Filter>Collection\DataHelpers</Filter>
-    </ClInclude>
     <ClInclude Include="src\Collection\CollectionDetails.h">
       <Filter>Collection\DataHelpers</Filter>
     </ClInclude>
@@ -186,9 +183,6 @@
     </ClCompile>
     <ClCompile Include="src\Collection\MetaTag.cpp">
       <Filter>CollectionObjects\DataHelpers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\CollectionDeltaClass.cpp">
-      <Filter>Collection\DataHelpers</Filter>
     </ClCompile>
     <ClCompile Include="src\Collection\CollectionDetails.cpp">
       <Filter>Collection\DataHelpers</Filter>

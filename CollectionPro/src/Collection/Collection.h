@@ -7,6 +7,7 @@
 using namespace std;
 
 class CollectionFactory;
+class CollectionItem;
 
 // Collection
 //  Maintains a list of Collection Objects.
@@ -22,10 +23,11 @@ public:
    Location  GetIdentifier();
    unsigned int GetChildCount();
    void ChildAdded();
+   bool IsLoaded();
 
    void AddItem( string aszName,
-                 vector<Tag> alstAttrs = vector<Tag>(),
-                 vector<Tag> alstMetaTags = vector<Tag>() );
+                 vector<Tag> alstAttrs,
+                 vector<Tag> alstMetaTags );
 
    void RemoveItem( string aszName,
                     string aszUID );
@@ -44,14 +46,17 @@ public:
    void SaveCollection();
 
    bool InitializeCollection();
+
    bool InitializeCollection( string aszFileName );
+
    void LoadCollection( const string& aszFileName,
                         CollectionFactory* aoFactory );
+
    void LoadChanges(vector<string> aszLines);
 
    vector<string> QueryCollection( Query aiQueryParms );
 
-   bool IsLoaded = false;
+   vector<int> GetCollectionItems();
 
 private:
    friend class CollectionIO;
@@ -63,18 +68,11 @@ private:
    CollectionTracker* m_ptrCollectionTracker;
    CollectionQueryHelper* m_ptrCollectionQueryHelper;
 
-   vector<int> m_lstItemCacheIndexes;
-   vector<int> getCollection();
-
    // These all locate by name and hash for a second 
    // time so we dont risk dangling references.
-   CopyItem* addItem( const string& aszName,
-                      const vector<Tag>& alstAttrs,
-                      const vector<Tag>& alstMetaTags);
-
-   void addItemFrom( const string& aszName,
-                     const string& aszUID,
-                     const Identifier& aAddress );
+   void addItem( const string& aszName,
+                 const vector<Tag>& alstAttrs,
+                 const vector<Tag>& alstMetaTags);
 
    void removeItem( const string& aszName,
                     const string& aszUID );
@@ -89,9 +87,6 @@ private:
                      const string& aszNewName,
                      const vector<Tag>& alstChanges,
                      const vector<Tag>& alstMetaChanges );
-
-   void registerItem(int aiCacheIndex);
-   void unregisterItem(int aiCacheIndex);
 
    void modifyItem( CopyItem* aptCopy,
                     const vector<Tag>& alstChanges,

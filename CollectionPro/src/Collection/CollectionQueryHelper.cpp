@@ -24,13 +24,13 @@ CollectionQueryHelper::QueryCollection(Query aiQueryParms)
 }
 
 multimap<string, CollectionQueryHelper::ItemData>
-CollectionQueryHelper::getHashGroupsEnumUIDs(const Query& aiQueryParms)
+CollectionQueryHelper::createHashToItemMap(const Query& aiQueryParms)
 {
    multimap<string, ItemData> mapSeenHashes;
    auto ptColSource = m_ptCollection->m_ptrCollectionSource;
 
    multimap<string, ItemData> mapCardHashes;
-   for( auto iItem : m_ptCollection->getCollection() )
+   for( auto iItem : m_ptCollection->GetCollectionItems() )
    {
       auto item = ptColSource->GetCardPrototype(iItem);
       ItemData cardData;
@@ -84,7 +84,7 @@ CollectionQueryHelper::getHashGroupsEnumUIDs(const Query& aiQueryParms)
 vector<string>
 CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
 {
-   auto mapSeenHashes = getHashGroupsEnumUIDs(aiQueryParms);
+   auto mapSeenHashes = createHashToItemMap(aiQueryParms);
 
    auto ptColSource = m_ptCollection->m_ptrCollectionSource;
    auto ptColDetails = m_ptCollection->m_ptrCollectionDetails;

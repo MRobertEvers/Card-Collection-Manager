@@ -30,7 +30,7 @@ CollectionTracker::Track()
    source = m_ptrTrackedCollection->m_ptrCollectionSource;
    colAddress = m_ptrTrackedCollection->GetIdentifier();
 
-   lstNewItems = m_ptrTrackedCollection->getCollection();
+   lstNewItems = m_ptrTrackedCollection->GetCollectionItems();
    for( iter_Item  = lstNewItems.begin();
         iter_Item != lstNewItems.end();
         iter_Item++ )

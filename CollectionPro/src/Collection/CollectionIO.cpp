@@ -263,10 +263,10 @@ CollectionIO::ConsolodateItems()
 bool 
 CollectionIO::FinalizeLoad()
 {
-   // TODO: Put the below in the loader.
-   m_ptCollection->IsLoaded = (m_ptCollection->GetIdentifier().GetMain() != "");
+   bool bIsLoaded = (m_ptCollection->GetIdentifier().GetMain() != "");
+   m_ptCollection->m_ptrCollectionDetails->SetIsLoaded( bIsLoaded );
 
-   if( m_ptCollection->IsLoaded )
+   if( bIsLoaded )
    {
       m_ptCollection->m_ptrCollectionTracker->Track();
 

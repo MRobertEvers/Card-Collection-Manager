@@ -3,14 +3,21 @@
 #include <vector>
 #include <memory>
 
-#include "CollectionDeltaClass.h"
-
 class Collection;
 class CopyItem;
 
 typedef std::pair<std::shared_ptr<CopyItem>, CopyItem> SnapShot;
 typedef std::vector<SnapShot> CopyList;
 typedef std::vector<std::shared_ptr<CopyItem>> RealCopyList;
+
+struct CollectionDeltaClass
+{
+public:
+   std::vector<std::string> Additions;
+   std::vector<std::string> Removals;
+   std::vector<std::string> Changes;
+};
+
 
 class CollectionTracker
 {

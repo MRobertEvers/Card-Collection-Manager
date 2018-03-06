@@ -51,6 +51,13 @@ vCollectionCube::onNewItemSelected( wxGridEvent& awxEvt )
 }
 
 void
+vCollectionCube::onCardChanged( wxCommandEvent& awxEvt )
+{
+   m_vcItemList->RefreshList();
+   this->ivCollectionView::onCardChanged( awxEvt );
+}
+
+void
 vCollectionCube::buildGroupPanel()
 {
    m_vcItemList = new vcCollectionCubeDisplay( this, 0, m_wxszColID );

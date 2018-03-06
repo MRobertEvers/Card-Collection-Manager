@@ -72,12 +72,11 @@ CollectionFactory::LoadCollectionFromFile(string aszFileName)
 
       // Load the collection
       oCol->LoadCollection(aszFileName, this);
-      if( oCol->IsLoaded )
+      if( oCol->IsLoaded() )
       {
          m_lstCollections.push_back(shared_ptr<Collection>(oCol));
          szRetVal = szFoundID.GetFullAddress();
 
-         m_ColSource->NotifyNeedToSync(szFoundID);
          bKeepCol = true;
       }
    }

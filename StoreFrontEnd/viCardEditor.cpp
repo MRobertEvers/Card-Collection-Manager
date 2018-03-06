@@ -36,8 +36,6 @@ viCardEditorImageCallBack::CallBack()
       updateEvt.SetId( Image_Changed );
       updateEvt.SetString( m_ptCardEditor->m_szDisplayingHash );
       ::wxPostEvent(m_ptCardEditor->GetParent(), updateEvt );
-      //m_ptCardEditor->DisplayNew( m_ptCardEditor->m_szColID,
-      //                            m_ptCardEditor->m_szDisplayingHash );
 
    }
    m_mutex->unlock();
@@ -81,6 +79,7 @@ viCardEditor::DisplayNew(wxString aszColID, wxString aszCardHash )
       refreshDisplay();
       refreshEditor();
       refreshSelector();
+      this->Layout();
       this->Thaw();
    }
 }
@@ -183,6 +182,7 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
    query.FindHash( aszCardHash.ToStdString() );
    query.UIDs();
 
+   // TODO: This is a bottleneck.
    vecItems = ptSF->GetAllCardsStartingWith( m_szColID.ToStdString(), query );
 
    // There should only be ONE item in the list.

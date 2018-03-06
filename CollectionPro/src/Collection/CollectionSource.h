@@ -1,7 +1,4 @@
 #pragma once
-#include<string>
-#include<vector>
-
 #include "../rapidxml-1.13\rapidxml_print.hpp"
 #include "../rapidxml-1.13\rapidxml.hpp"
 #include "../rapidxml-1.13\rapidxml_utils.hpp"
@@ -9,6 +6,9 @@
 #include "SourceObject.h"
 #include "CollectionObject.h"
 #include "Query.h"
+
+#include<string>
+#include<vector>
 
 using namespace std;
 
@@ -40,21 +40,14 @@ public:
    int LoadCard(string aszCardName);
 
    TryGet<CollectionObject> GetCardPrototype(int aiCacheIndex);
-   TryGet<CollectionObject> GetCardPrototype(std::string aszCardName);
+   TryGet<CollectionObject> GetCardPrototype(string aszCardName);
 
-   // This needs to be called whenever a child collection adds a card.
-   // It will let other collections know that they need to check their lists.
-   void NotifyNeedToSync(const Location& aAddrForcedSync);
-   bool IsSyncNeeded(const Location& aAddrNeedSync);
+   vector<int> GetCollectionCache( Location aAddrColID,
+                                   CollectionObjectType aColItemType );
+   vector<shared_ptr<CopyItem>> GetCollection( Location aAddrColID,
+                                               CollectionObjectType aColItemType );
 
-   std::vector<int>
-      GetCollectionCache(Location aAddrColID,
-         CollectionObjectType aColItemType = CollectionObjectType::All);
-   std::vector<std::shared_ptr<CopyItem>>
-      GetCollection(Location aAddrColID,
-         CollectionObjectType aColItemType = CollectionObjectType::All);
-
-   std::vector<std::string> GetAllCardsStartingWith(const Query& aszText);
+   vector<string> GetAllCardsStartingWith(const Query& aszText);
 
    // ClearCache
    //  Deletes all collection objects in the cache.
@@ -67,7 +60,7 @@ public:
    // CollapseCardLine
    //  Utilizes its knowledge of all cards to shrink the identifier
    //  to a more compact unique representation.
-   void CollapseCardLine(std::string& rszCard, bool abIncludeCount = true);
+   void CollapseCardLine(string& rszCard, bool abIncludeCount = true);
    void ExpandAdditionLine( string& rszLine );
 
 private:
@@ -75,12 +68,11 @@ private:
    vector<SourceObject> m_vecCardDataBuffer;
    vector<CollectionObject> m_vecCardCache;
 
+   char* m_AllCharBuff;
+   unsigned int m_iAllCharBuffSize;
+
    // Used for caching searches over 5 chars.
    vector<pair<string, vector<SourceObject>>> m_lstSearchCache;
-
-   // Tracks whether a certain collection, identified by its location id,
-   // needs to sync.
-   map<Location, bool> m_mapSync;
 
    void loadCard(rapidxml::xml_node<char> * xmlNode_Card);
    int loadCardToCache(unsigned int iDataBuffInd);
@@ -92,9 +84,6 @@ private:
 
    void resetBuffer();
    void finalizeBuffer();
-
-   char* m_AllCharBuff;
-   unsigned int m_iAllCharBuffSize;
 
 private:
    static const unsigned int ms_iMaxBufferSize = 5000000;

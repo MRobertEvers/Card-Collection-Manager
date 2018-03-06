@@ -176,7 +176,8 @@ StoreFront::GetMetaTags(const string& aszCardName, const string& aszUID)
 }
 
 string 
-StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID, const string& aszTagKey )
+StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID, 
+                        const string& aszTagKey )
 {
    auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )

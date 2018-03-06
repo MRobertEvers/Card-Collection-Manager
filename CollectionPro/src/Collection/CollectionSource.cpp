@@ -1,8 +1,5 @@
 #include "..\stdafx.h"
 
-#include "../rapidxml-1.13\rapidxml_print.hpp"
-#include "../rapidxml-1.13\rapidxml.hpp"
-#include "../rapidxml-1.13\rapidxml_utils.hpp"
 #include "../Config.h"
 #include "../Support/StringHelper.h"
 #include "../StringInterface.h"
@@ -17,12 +14,14 @@
 using namespace rapidxml;
 using namespace std;
 
-CollectionSource::CollectionSource() {
+CollectionSource::CollectionSource()
+{
    m_bIsLoaded = false;
    resetBuffer();
 }
 
-CollectionSource::~CollectionSource() {
+CollectionSource::~CollectionSource()
+{
    m_vecCardCache.clear();
    m_vecCardDataBuffer.clear();
 
@@ -30,16 +29,18 @@ CollectionSource::~CollectionSource() {
 }
 
 // The source file needs to be handled independently of this .exe.
-void 
-CollectionSource::LoadLib(string aszFilePath) {
+void
+CollectionSource::LoadLib( string aszFilePath )
+{
    Config* config = Config::Instance();
 
    // Verify the file is good.
-   ifstream file(aszFilePath);
-   if (!file.good()) {
+   ifstream file( aszFilePath );
+   if( !file.good() )
+   {
       // TODO Close collection.
       return Debug::Log( "CollectionSource",
-                         "Could not load library from " + aszFilePath );
+         "Could not load library from " + aszFilePath );
    }
 
    stringstream buffer;
@@ -48,16 +49,17 @@ CollectionSource::LoadLib(string aszFilePath) {
 
    // Prepare the document to be read.
    xml_document<> doc;
-   string* textContent = new string(buffer.str());
-   doc.parse<0>(&textContent->front());
+   string* textContent = new string( buffer.str() );
+   doc.parse<0>( &textContent->front() );
 
    xml_node<> *xmlNode_CardDatabase = doc.first_node();
-   xml_node<>* xmlNode_Cards = xmlNode_CardDatabase->first_node("cards");
+   xml_node<>* xmlNode_Cards = xmlNode_CardDatabase->first_node( "cards" );
 
    // Load the cards.
    xml_node<>* xmlNode_Card = xmlNode_Cards->first_node();
-   while( xmlNode_Card != 0 ) {
-      loadCard(xmlNode_Card);
+   while( xmlNode_Card != 0 )
+   {
+      loadCard( xmlNode_Card );
       xmlNode_Card = xmlNode_Card->next_sibling();
    }
 
@@ -70,21 +72,21 @@ CollectionSource::LoadLib(string aszFilePath) {
 
 
 int
-CollectionSource::LoadCard(string aszCardName)
+CollectionSource::LoadCard( string aszCardName )
 {
    Config* config = Config::Instance();
-   string szCardName = StringHelper::Str_Trim(aszCardName, ' ');
+   string szCardName = StringHelper::Str_Trim( aszCardName, ' ' );
 
    // Since it is faster to look in the cache, check that first.
-   int iCacheLocation = findInCache(szCardName);
+   int iCacheLocation = findInCache( szCardName );
    if( iCacheLocation == -1 )
    {
       // Look in the Source Object Buffer for a matching item.
       // If the card is found in the buffer, create a CollectionObject and cache it.
-      int iFound = findInBuffer(szCardName);
+      int iFound = findInBuffer( szCardName );
       if( iFound != -1 )
       {
-         iCacheLocation = loadCardToCache(iFound);
+         iCacheLocation = loadCardToCache( iFound );
       }
    }
 
@@ -93,70 +95,35 @@ CollectionSource::LoadCard(string aszCardName)
 
 
 TryGet<CollectionObject>
-CollectionSource::GetCardPrototype(int aiCacheIndex)
+CollectionSource::GetCardPrototype( int aiCacheIndex )
 {
    TryGet<CollectionObject> ColRetVal;
-   if( aiCacheIndex < m_vecCardCache.size() ) 
+   if( aiCacheIndex < m_vecCardCache.size() )
    {
-      ColRetVal.Set(&m_vecCardCache.at(aiCacheIndex));
+      ColRetVal.Set( &m_vecCardCache.at( aiCacheIndex ) );
    }
 
    return ColRetVal;
 }
 
 TryGet<CollectionObject>
-CollectionSource::GetCardPrototype(string aszCardName)
+CollectionSource::GetCardPrototype( string aszCardName )
 {
-   int iCacheIndex = LoadCard(aszCardName);
-   return GetCardPrototype(iCacheIndex);
-}
-
-// Notifies all collections other than the input collection that they
-// need to sync.
-void
-CollectionSource::NotifyNeedToSync(const Location& aAddrForcedSync) 
-{
-   for( auto iter_SyncCols = m_mapSync.begin();
-             iter_SyncCols != m_mapSync.end();
-             ++iter_SyncCols )
-   {
-      if( iter_SyncCols->first != aAddrForcedSync )
-      {
-         iter_SyncCols->second = true;
-      }
-      else
-      {
-         iter_SyncCols->second = false;
-      }
-   }
-}
-
-bool 
-CollectionSource::IsSyncNeeded(const Location& aAddrNeedSync)
-{
-   auto oFound = m_mapSync.find(aAddrNeedSync);
-   if( oFound != m_mapSync.end() ) 
-   {
-      return oFound->second;
-   }
-   else 
-   {
-      m_mapSync.insert(make_pair(aAddrNeedSync, false));
-      return false;
-   }
+   int iCacheIndex = LoadCard( aszCardName );
+   return GetCardPrototype( iCacheIndex );
 }
 
 vector<int>
 CollectionSource::GetCollectionCache( Location aAddrColID,
-                                      CollectionObjectType aColItemType ) 
+                                      CollectionObjectType aColItemType )
 {
    vector<int> lstRetVal;
 
-   for( size_t i = 0; i < m_vecCardCache.size(); i++ ) 
+   for( size_t i = 0; i < m_vecCardCache.size(); i++ )
    {
-      if( m_vecCardCache[i].FindCopies(aAddrColID, aColItemType).size() > 0 )
+      if( m_vecCardCache[i].FindCopies( aAddrColID, aColItemType ).size() > 0 )
       {
-         lstRetVal.push_back(i);
+         lstRetVal.push_back( i );
       }
    }
 
@@ -165,18 +132,18 @@ CollectionSource::GetCollectionCache( Location aAddrColID,
 
 vector<shared_ptr<CopyItem>>
 CollectionSource::GetCollection( Location aAddrColID,
-                                 CollectionObjectType aColItemType) 
+                                 CollectionObjectType aColItemType )
 {
    vector<shared_ptr<CopyItem>> lstRetVal;
 
-   for( auto& item : m_vecCardCache ) 
+   for( auto& item : m_vecCardCache )
    {
-      auto lstCopies = item.FindCopies(aAddrColID, aColItemType);
+      auto lstCopies = item.FindCopies( aAddrColID, aColItemType );
 
       auto iter_Copy = lstCopies.begin();
-      for( ; iter_Copy != lstCopies.end(); ++iter_Copy ) 
+      for( ; iter_Copy != lstCopies.end(); ++iter_Copy )
       {
-         lstRetVal.push_back(*iter_Copy);
+         lstRetVal.push_back( *iter_Copy );
       }
    }
 
@@ -185,35 +152,35 @@ CollectionSource::GetCollection( Location aAddrColID,
 
 // This is not case sensitive
 vector<string>
-CollectionSource::GetAllCardsStartingWith(const Query& aQuery)
+CollectionSource::GetAllCardsStartingWith( const Query& aQuery )
 {
    vector<string> lstCards;
    string szSearch = aQuery.GetSearch();
-   transform(szSearch.begin(), szSearch.end(), szSearch.begin(), ::tolower);
+   transform( szSearch.begin(), szSearch.end(), szSearch.begin(), ::tolower );
 
    bool bActiveCache = szSearch.size() > 2;
 
-   if( !bActiveCache ) 
+   if( !bActiveCache )
    {
       m_lstSearchCache.clear();
    }
 
    // Check if the search is cached already
-   if( bActiveCache ) 
+   if( bActiveCache )
    {
       int iEnd = m_lstSearchCache.size();
-      for( int i = iEnd - 1; i >= 0; i-- ) 
+      for( int i = iEnd - 1; i >= 0; i-- )
       {
          auto pairICache = m_lstSearchCache[i];
          if( pairICache.first == szSearch )
          {
             break;
          }
-         else if( szSearch.substr(0, pairICache.first.size()) == pairICache.first )
+         else if( szSearch.substr( 0, pairICache.first.size() ) == pairICache.first )
          {
             break;
          }
-         else 
+         else
          {
             m_lstSearchCache.pop_back();
          }
@@ -224,11 +191,11 @@ CollectionSource::GetAllCardsStartingWith(const Query& aQuery)
    //  the sublist.
    vector<SourceObject>* lstSearchList;
    vector<SourceObject> lstCache;
-   if( bActiveCache && m_lstSearchCache.size() > 0 ) 
+   if( bActiveCache && m_lstSearchCache.size() > 0 )
    {
       lstSearchList = &m_lstSearchCache[m_lstSearchCache.size() - 1].second;
    }
-   else 
+   else
    {
       lstSearchList = &m_vecCardDataBuffer;
    }
@@ -239,59 +206,59 @@ CollectionSource::GetAllCardsStartingWith(const Query& aQuery)
    vector<SourceObject>::iterator iter_Cards = lstSearchList->begin();
    for( ; iter_Cards != lstSearchList->end(); ++iter_Cards )
    {
-      string szCard = iter_Cards->GetName(m_AllCharBuff);
-      transform(szCard.begin(), szCard.end(), szCard.begin(), ::tolower);
+      string szCard = iter_Cards->GetName( m_AllCharBuff );
+      transform( szCard.begin(), szCard.end(), szCard.begin(), ::tolower );
       size_t iFindIndex = 0;
-      iFindIndex = szCard.find(szSearch);
-      if( iFindIndex != string::npos ) 
+      iFindIndex = szCard.find( szSearch );
+      if( iFindIndex != string::npos )
       {
-         auto szStore = iter_Cards->GetName(m_AllCharBuff);
+         auto szStore = iter_Cards->GetName( m_AllCharBuff );
          vector<Tag> vecMeta;
          if( aQuery.GetUIDs() )
          {
-            auto mapSets = iter_Cards->GetIDAttrRestrictions(m_AllCharBuff);
+            auto mapSets = iter_Cards->GetIDAttrRestrictions( m_AllCharBuff );
 
             // TODO: This should not be a literal string.
-            auto iter_Set = mapSets.find("set");
+            auto iter_Set = mapSets.find( "set" );
             if( iter_Set != mapSets.end() )
             {
                for( auto szOpt : iter_Set->second )
                {
-                  vecMeta.push_back(make_pair("set", szOpt));
+                  vecMeta.push_back( make_pair( "set", szOpt ) );
                }
             }
          }
 
-         szStore = CollectionObject::ToCardLine( Address(), szStore, 
-                                                 vector<Tag>(), vecMeta );
-         if( iFindIndex == 0 ) 
+         szStore = CollectionObject::ToCardLine( Address(), szStore,
+            vector<Tag>(), vecMeta );
+         if( iFindIndex == 0 )
          {
-            lstStartCards.push_back(szStore);
+            lstStartCards.push_back( szStore );
          }
-         else 
+         else
          {
-            lstOthers.push_back(szStore);
+            lstOthers.push_back( szStore );
          }
 
-         if( bActiveCache ) 
+         if( bActiveCache )
          {
-            lstCache.push_back(*iter_Cards);
+            lstCache.push_back( *iter_Cards );
          }
       }
    }
 
-   for( string sz : lstStartCards ) 
+   for( string sz : lstStartCards )
    {
-      lstCards.push_back(sz);
+      lstCards.push_back( sz );
    }
    for( string sz : lstOthers )
    {
-      lstCards.push_back(sz);
+      lstCards.push_back( sz );
    }
 
-   if( bActiveCache ) 
+   if( bActiveCache )
    {
-      m_lstSearchCache.push_back(make_pair(szSearch, lstCache));
+      m_lstSearchCache.push_back( make_pair( szSearch, lstCache ) );
    }
 
    return lstCards;
@@ -305,13 +272,13 @@ CollectionSource::ClearCache()
 }
 
 bool
-CollectionSource::IsLoaded() 
+CollectionSource::IsLoaded()
 {
    return m_bIsLoaded;
 }
 
 void
-CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
+CollectionSource::CollapseCardLine( string& rszCard, bool abIncludeCount )
 {
    Config* config = Config::Instance();
    string szFirstKey = "";
@@ -320,7 +287,7 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
    vector<TraitItem> vecPrototypeTraits;
    CollectionObject::PseudoIdentifier oParser;
 
-   bool bGoodParse = CollectionObject::ParseCardLine(rszCard, oParser);
+   bool bGoodParse = CollectionObject::ParseCardLine( rszCard, oParser );
    if( bGoodParse )
    {
       // Get which traits are paired from the config.
@@ -349,7 +316,7 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
          {
             if( iIgnoreSecond == -1 && iHaveSecond == -1 )
             {
-               vecRemoveKeys.push_back(keyPair.second);
+               vecRemoveKeys.push_back( keyPair.second );
                continue;
             }
          }
@@ -358,13 +325,13 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
          {
             if( iIgnoreFirst == -1 && iHaveFirst == -1 )
             {
-               vecKeepKeys.push_back(keyPair.first);
+               vecKeepKeys.push_back( keyPair.first );
                continue;
             }
          }
 
-         vecKeepKeys.push_back(keyPair.first);
-         vecRemoveKeys.push_back(keyPair.second);
+         vecKeepKeys.push_back( keyPair.first );
+         vecRemoveKeys.push_back( keyPair.second );
       }
 
       for( auto szRemoveKey : vecRemoveKeys )
@@ -378,7 +345,7 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
       // Use the first of a pair for paired keys.
       vector<string> vecImportantValues;
       StringInterface stringIFace;
-      auto oCard = GetCardPrototype(oParser.Name);
+      auto oCard = GetCardPrototype( oParser.Name );
       if( oCard.Good() )
       {
          for( auto keepKey : vecIdentifyingKeys )
@@ -387,7 +354,7 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
 
             if( szFoundValue != "" )
             {
-               vecImportantValues.push_back(szFoundValue);
+               vecImportantValues.push_back( szFoundValue );
             }
          }
       }
@@ -396,11 +363,11 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
       string szShort;
       if( abIncludeCount )
       {
-         szShort += "x" + to_string(oParser.Count) + " ";
+         szShort += "x" + to_string( oParser.Count ) + " ";
       }
 
       szShort += oParser.Name;
-      
+
       if( vecImportantValues.size() > 0 )
       {
          szShort += " ";
@@ -410,7 +377,7 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
             szShort += szVal;
             szShort += ",";
          }
-         szShort = szShort.substr(0, szShort.size() - 1);
+         szShort = szShort.substr( 0, szShort.size() - 1 );
          szShort += "]";
       }
 
@@ -496,93 +463,98 @@ CollectionSource::ExpandAdditionLine( string& rszLine )
    }
 }
 
-void 
-CollectionSource::loadCard(rapidxml::xml_node<char> * xmlNode_Card) 
+void
+CollectionSource::loadCard( rapidxml::xml_node<char> * xmlNode_Card )
 {
    Config* config = Config::Instance();
    SourceObject* sO = getNewSourceObject();
 
    xml_node<> *xmlNode_CardAttribute = xmlNode_Card->first_node();
-   while( xmlNode_CardAttribute != 0 ) {
+   while( xmlNode_CardAttribute != 0 )
+   {
       string szCardKey = xmlNode_CardAttribute->name();
-      char keyCode = config->GetKeyCode(szCardKey);
-      if( keyCode != -1 ) {
-         m_iAllCharBuffSize += sO->AddAttribute(szCardKey, xmlNode_CardAttribute->value(),
-            m_AllCharBuff, ms_iMaxBufferSize);
+      char keyCode = config->GetKeyCode( szCardKey );
+      if( keyCode != -1 )
+      {
+         m_iAllCharBuffSize += sO->AddAttribute( szCardKey, xmlNode_CardAttribute->value(),
+            m_AllCharBuff, ms_iMaxBufferSize );
       }
 
       xmlNode_CardAttribute = xmlNode_CardAttribute->next_sibling();
    }
 }
 
-int 
-CollectionSource::loadCardToCache(unsigned int iDataBuffInd)
+int
+CollectionSource::loadCardToCache( unsigned int iDataBuffInd )
 {
    Config* config = Config::Instance();
-   SourceObject* oSource = &m_vecCardDataBuffer.at(iDataBuffInd);
-   string szCardName = oSource->GetName(m_AllCharBuff);
+   SourceObject* oSource = &m_vecCardDataBuffer.at( iDataBuffInd );
+   string szCardName = oSource->GetName( m_AllCharBuff );
 
    // Get the static Attrs
-   vector<Tag> lstStaticAttrs = oSource->GetAttributes(m_AllCharBuff);
+   vector<Tag> lstStaticAttrs = oSource->GetAttributes( m_AllCharBuff );
 
    // Build the trait items from each of the ID attrs and their
    // allowed values.
-   auto lstAttrRestrictions = oSource->GetIDAttrRestrictions(m_AllCharBuff);
+   auto lstAttrRestrictions = oSource->GetIDAttrRestrictions( m_AllCharBuff );
 
    vector<TraitItem> lstIdentifyingTraits;
    auto iter_Traits = lstAttrRestrictions.begin();
    for( ; iter_Traits != lstAttrRestrictions.end(); ++iter_Traits )
    {
       TraitItem newTrait( iter_Traits->first,
-                          iter_Traits->second,
-                          config->GetPairedKeysList() );
-      lstIdentifyingTraits.push_back(newTrait);
+         iter_Traits->second,
+         config->GetPairedKeysList() );
+      lstIdentifyingTraits.push_back( newTrait );
    }
 
    CollectionObject oCard( szCardName, lstStaticAttrs,
-                           lstIdentifyingTraits );
+      lstIdentifyingTraits );
 
    // Store the location of the CollectionObject in the cache
-   oSource->SetCacheIndex(m_vecCardCache.size());
+   oSource->SetCacheIndex( m_vecCardCache.size() );
 
    // Cache the CollectionObject
-   m_vecCardCache.push_back(oCard);
+   m_vecCardCache.push_back( oCard );
    return m_vecCardCache.size() - 1;
 }
 
-SourceObject* 
+SourceObject*
 CollectionSource::getNewSourceObject()
 {
-   m_vecCardDataBuffer.push_back(SourceObject(m_iAllCharBuffSize));
+   m_vecCardDataBuffer.push_back( SourceObject( m_iAllCharBuffSize ) );
    return &m_vecCardDataBuffer.back();
 }
 
 int
-CollectionSource::findInBuffer( const string& aszCardName ) 
+CollectionSource::findInBuffer( const string& aszCardName )
 {
    // Binary search chokes on all sorts of characters so Im just 
    // using linear search.
    string szCardNameFixed = aszCardName;
 
-   StringHelper::convertToSearchString(szCardNameFixed);
+   StringHelper::convertToSearchString( szCardNameFixed );
 
    int iSize = m_vecCardDataBuffer.size();
    int iLeft = 0;
    int iRight = iSize;
-   if( iRight < 1 ) {
+   if( iRight < 1 )
+   {
       return -1;
    }
 
    string szName;
-   while( iLeft <= iRight ) {
+   while( iLeft <= iRight )
+   {
       int middle = (iLeft + iRight) / 2;
 
-      if( middle < 0 || middle >= iSize ) {
+      if( middle < 0 || middle >= iSize )
+      {
          return -1;
       }
 
-      szName = m_vecCardDataBuffer.at(middle).GetName(m_AllCharBuff);
-      StringHelper::convertToSearchString(szName);
+      szName = m_vecCardDataBuffer.at( middle ).GetName( m_AllCharBuff );
+      StringHelper::convertToSearchString( szName );
 
       if( szName == szCardNameFixed )
          return middle;
@@ -595,13 +567,13 @@ CollectionSource::findInBuffer( const string& aszCardName )
 }
 
 int
-CollectionSource::findInCache( const string& aszName ) 
+CollectionSource::findInCache( const string& aszName )
 {
    auto iter_ColObj = m_vecCardCache.begin();
    int index = 0;
    for( ; iter_ColObj != m_vecCardCache.end(); ++iter_ColObj )
    {
-      if( iter_ColObj->GetName() == aszName ) 
+      if( iter_ColObj->GetName() == aszName )
       {
          return index;
       }
@@ -610,7 +582,7 @@ CollectionSource::findInCache( const string& aszName )
    return -1;
 }
 
-void 
+void
 CollectionSource::resetBuffer()
 {
    m_vecCardCache.clear();
@@ -621,11 +593,11 @@ CollectionSource::resetBuffer()
    m_AllCharBuff = new char[ms_iMaxBufferSize];
 }
 
-void 
-CollectionSource::finalizeBuffer() 
+void
+CollectionSource::finalizeBuffer()
 {
    char* newBufferSize = new char[m_iAllCharBuffSize];
-   memcpy(newBufferSize, m_AllCharBuff, m_iAllCharBuffSize);
+   memcpy( newBufferSize, m_AllCharBuff, m_iAllCharBuffSize );
    delete[] m_AllCharBuff;
    m_AllCharBuff = newBufferSize;
 }

@@ -114,6 +114,18 @@ CollectionDetails::IsInitialized()
 }
 
 void 
+CollectionDetails::SetIsLoaded( bool abLoaded )
+{
+   m_bIsLoaded = abLoaded;
+}
+
+bool 
+CollectionDetails::IsLoaded()
+{
+   return m_bIsLoaded;
+}
+
+void 
 CollectionDetails::SetProcessLines( const std::vector<std::string>& alstProcesslines )
 {
    m_vecProcessLines = alstProcesslines;

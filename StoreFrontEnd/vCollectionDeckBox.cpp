@@ -49,6 +49,13 @@ vCollectionDeckBox::onNewItemSelected(wxListEvent& awxEvt)
    awxEvt.StopPropagation();
 }
 
+void 
+vCollectionDeckBox::onCardChanged( wxCommandEvent& awxEvt )
+{
+   m_vcItemList->RefreshList();
+   this->ivCollectionView::onCardChanged( awxEvt );
+}
+
 
 void 
 vCollectionDeckBox::buildItemList()

@@ -130,7 +130,6 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
   <ItemGroup>
     <ClInclude Include="src\Addressing\Addresser.h" />
     <ClInclude Include="src\Collection\Collection.h" />
-    <ClInclude Include="src\Collection\CollectionDeltaClass.h" />
     <ClInclude Include="src\Collection\CollectionDetails.h" />
     <ClInclude Include="src\Collection\CollectionFactory.h" />
     <ClInclude Include="src\Collection\CollectionIO.h" />
@@ -166,7 +165,6 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
   <ItemGroup>
     <ClCompile Include="src\Addressing\Addresser.cpp" />
     <ClCompile Include="src\Collection\Collection.cpp" />
-    <ClCompile Include="src\Collection\CollectionDeltaClass.cpp" />
     <ClCompile Include="src\Collection\CollectionDetails.cpp" />
     <ClCompile Include="src\Collection\CollectionFactory.cpp" />
     <ClCompile Include="src\Collection\CollectionIO.cpp" />

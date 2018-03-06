@@ -28,6 +28,9 @@ public:
    void SetInitialized(bool abInits);
    bool IsInitialized();
 
+   void SetIsLoaded( bool abLoaded );
+   bool IsLoaded();
+
    void SetProcessLines(const std::vector<std::string>& alstProcesslines);
    std::vector<std::string> GetProcessLines();
 
@@ -37,6 +40,7 @@ public:
 
 private:
    bool m_bInitialized;
+   bool m_bIsLoaded;
    std::string m_szName;
    std::string m_szFile;
    std::string m_szFileName;

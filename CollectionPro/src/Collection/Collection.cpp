@@ -14,8 +14,8 @@ using namespace std;
 
 // An ID will be given to the collection if there is a parent.
 Collection::Collection( string aszName,
-   CollectionSource* aoSource,
-   string aszID )
+                        CollectionSource* aoSource,
+                        string aszID )
 {
    m_ptrCollectionTracker = new CollectionTracker( this );
    m_ptrCollectionDetails = new CollectionDetails();
@@ -46,7 +46,6 @@ string Collection::GetName()
 
 Location Collection::GetIdentifier()
 {
-
    return Location( *m_ptrCollectionDetails->GetAddress() );
 }
 
@@ -60,6 +59,12 @@ void
 Collection::ChildAdded()
 {
    m_ptrCollectionDetails->IncrementChildCount();
+}
+
+bool 
+Collection::IsLoaded()
+{
+   return m_ptrCollectionDetails->IsLoaded();
 }
 
 void
@@ -151,153 +156,62 @@ Collection::QueryCollection( Query aiQueryParms )
    return m_ptrCollectionQueryHelper->QueryCollection( aiQueryParms );
 }
 
-vector<int>
-Collection::getCollection()
+vector<int> 
+Collection::GetCollectionItems()
 {
-   if( m_ptrCollectionSource->IsSyncNeeded( GetIdentifier() ) )
-   {
-      m_lstItemCacheIndexes = m_ptrCollectionSource->
-         GetCollectionCache( GetIdentifier() );
-   }
-
-   return m_lstItemCacheIndexes;
+   return m_ptrCollectionSource->GetCollectionCache( GetIdentifier(), All );
 }
 
-CopyItem*
-Collection::addItem(
-   const string& aszName,
-   const vector<Tag>& alstAttrs,
-   const vector<Tag>& alstMetaTags )
+void 
+Collection::addItem( const string& aszName,
+                     const vector<Tag>& alstAttrs,
+                     const vector<Tag>& alstMetaTags )
 {
-   CopyItem* cItem;
-   int iCache = m_ptrCollectionSource->LoadCard( aszName );
-   if( iCache == -1 )
-   {
-      // TODO Could Not Load.
-      return nullptr;
-   }
-
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
 
-   cItem = item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags ).get();
-
-   registerItem( iCache );
-
-   // Notify other collections they may need to sync since this may have
-   //  been borrowed by other collections.
-   // There should never be other copies with that hash not in resident. 
-   // They are removed at load time.
-   m_ptrCollectionSource->NotifyNeedToSync( GetIdentifier() );
-
-   return cItem;
-}
-
-void
-Collection::addItemFrom(
-   const string& aszName,
-   const string& aszIdentifyingHash,
-   const Identifier& aResiAddress )
-{
-   TryGet<CollectionObject> item;
-
-   int iCache = m_ptrCollectionSource->LoadCard( aszName );
-   item = m_ptrCollectionSource->GetCardPrototype( iCache );
-   if( !item.Good() ) { return; }
-
-   auto cItem = item->FindCopy( aszIdentifyingHash );
-   if( !cItem.Good() ) { return; }
-   auto copy = cItem.Value()->get();
-
-   copy->AddResident( GetIdentifier() );
-
-   registerItem( iCache );
+   item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags ).get();
 }
 
 void
 Collection::removeItem( const string& aszName,
-   const string& aszUID )
+                        const string& aszUID )
 {
-   // The copy is already verified to exist at this point
-   int iCache = m_ptrCollectionSource->LoadCard( aszName );
 
-   TryGet<CollectionObject> item = m_ptrCollectionSource->GetCardPrototype( iCache );
+   auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
 
    item->RemoveCopy( GetIdentifier(), aszUID );
-
-   // Remove any items from the cache that are no longer in this collection.
-   int iRemainingCopies = item->FindCopies( GetIdentifier(), All ).size();
-   if( iRemainingCopies == 0 )
-   {
-      unregisterItem( iCache );
-   }
-
-   // Notify other collections they may need to sync since this may have been 
-   //  borrowed by other collections.
-   m_ptrCollectionSource->NotifyNeedToSync( GetIdentifier() );
 }
 
 void
 Collection::changeItem( const string& aszName,
-   const string& aszUID,
-   const vector<Tag>& alstChanges,
-   const vector<Tag>& alstMetaChanges )
+                        const string& aszUID,
+                        const vector<Tag>& alstChanges,
+                        const vector<Tag>& alstMetaChanges )
 {
-   int iCache = m_ptrCollectionSource->LoadCard( aszName );
-
-   TryGet<CollectionObject> item = m_ptrCollectionSource->GetCardPrototype( iCache );
-   CopyItem* cItem = item->FindCopy( aszUID ).Value()->get();
-   if( cItem == nullptr ) { return; }
-
-   modifyItem( cItem, alstChanges, alstMetaChanges );
-
-   // Notify other collections they may need to sync since this may have been
-   //  borrowed by other collections.
-   m_ptrCollectionSource->NotifyNeedToSync( GetIdentifier() );
+   auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
+   auto cItem = item->FindCopy( aszUID );
+   if( cItem.Good() ) 
+   { 
+      modifyItem( cItem.Value()->get(), alstChanges, alstMetaChanges );
+   }
 }
 
 
 void
 Collection::replaceItem( const string& aszName,
-   const string& aszUID,
-   const string& aszNewName,
-   const vector<Tag>& alstIdChanges,
-   const vector<Tag>& alstMetaChanges )
+                         const string& aszUID,
+                         const string& aszNewName,
+                         const vector<Tag>& alstIdChanges,
+                         const vector<Tag>& alstMetaChanges )
 {
-   int iCache = m_ptrCollectionSource->LoadCard( aszName );
-   int iNewCache = m_ptrCollectionSource->LoadCard( aszNewName );
-
-   TryGet<CollectionObject> item = m_ptrCollectionSource->GetCardPrototype( iCache );
-   TryGet<CollectionObject> newItem = m_ptrCollectionSource->GetCardPrototype( iNewCache );
+   auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
+   auto newItem = m_ptrCollectionSource->GetCardPrototype( aszNewName );
    auto cItem = item->FindCopy( aszUID );
-   if( !cItem.Good() ) { return; }
-
-   removeItem( item->GetName(), aszUID );
-   addItem( newItem->GetName(), alstIdChanges, alstMetaChanges );
-}
-
-void
-Collection::registerItem( int aiCacheIndex )
-{
-   auto iter_find = find( m_lstItemCacheIndexes.begin(), m_lstItemCacheIndexes.end(), aiCacheIndex );
-   if( iter_find == m_lstItemCacheIndexes.end() )
-   {
-      m_lstItemCacheIndexes.push_back( aiCacheIndex );
+   if( cItem.Good() ) 
+   { 
+      removeItem( item->GetName(), aszUID );
+      addItem( newItem->GetName(), alstIdChanges, alstMetaChanges );
    }
-}
-
-void
-Collection::unregisterItem( int aiCacheIndex )
-{
-   vector<int> lstNewCacheIndexes;
-   for( auto iCache : m_lstItemCacheIndexes )
-   {
-      if( iCache != aiCacheIndex )
-      {
-         lstNewCacheIndexes.push_back( iCache );
-      }
-   }
-
-   m_lstItemCacheIndexes = lstNewCacheIndexes;
 }
 
 void
@@ -307,15 +221,13 @@ Collection::modifyItem( CopyItem* aptCopy,
 {
    for( size_t i = 0; i < alstChanges.size(); i++ )
    {
-      aptCopy->
-         SetIdentifyingAttribute( alstChanges[i].first, alstChanges[i].second );
+      aptCopy->SetIdentifyingAttribute( alstChanges[i].first, alstChanges[i].second );
    }
 
    for( size_t i = 0; i < alstMetaChanges.size(); i++ )
    {
       MetaTagType mTagType = CopyItem::DetermineMetaTagType( alstMetaChanges[i].first );
-      aptCopy->
-         SetMetaTag( alstMetaChanges[i].first, alstMetaChanges[i].second, mTagType );
+      aptCopy->SetMetaTag( alstMetaChanges[i].first, alstMetaChanges[i].second, mTagType );
    }
 }
 

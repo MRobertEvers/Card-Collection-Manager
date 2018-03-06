@@ -41,7 +41,7 @@ private:
 
    Collection * m_ptCollection;
 
-   multimap<string, ItemData> getHashGroupsEnumUIDs(const Query& aiQueryParms);
+   multimap<string, ItemData> createHashToItemMap(const Query& aiQueryParms);
    vector<string> getListGroupedByHashEnumUIDs( const Query& aiQueryParms );
 
    bool setFrontAndIsMatchToQuery(const Query& aiQueryParms, ItemData& rData);
