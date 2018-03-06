@@ -4,7 +4,6 @@
 
 #include "CollectionObject.h"
 #include "Collection.h"
-#include "../Support/ListHelper.h"
 #include "../Support/TryGet.h"
 
 CollectionTracker::CollectionTracker(Collection* aptrTCollection)
@@ -106,9 +105,15 @@ CollectionTracker::CalculateChanges()
             // to a snapshot's memory location in the old list.
             // If so, then compare the snapshots to see what changed.
             CopyItem* cCopyCurrentState = iter_CopyCurrent->first.get();
-            int iFound = ListHelper::List_Find( cCopyCurrentState,
-                                                *lstOldSnapshots, 
-                                                fnPtrCmper );
+            int iFound = -1;
+            for( size_t i = 0; i < lstOldSnapshots->size(); i++ )
+            {
+               if( cCopyCurrentState == lstOldSnapshots->at( i ).first.get() )
+               {
+                  iFound = i;
+               }
+            }
+
             if (iFound != -1 )
             {
                CopyItem cSnapshotCopy = lstOldSnapshots->at(iFound).second;

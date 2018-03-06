@@ -4,7 +4,6 @@
 #include <ctime>
 #include <algorithm>
 
-#include "../Support/ListHelper.h"
 #include "../Support/StringHelper.h"
 #include "../Addressing/Addresser.h"
 #include "../Config.h"
@@ -358,9 +357,8 @@ Collection::replaceItem( const string& aszName,
 void
 Collection::registerItem( int aiCacheIndex )
 {
-   int iFound = ListHelper::List_Find( aiCacheIndex, m_lstItemCacheIndexes );
-
-   if( iFound == -1 )
+   auto iter_find = find( m_lstItemCacheIndexes.begin(), m_lstItemCacheIndexes.end(), aiCacheIndex );
+   if( iter_find == m_lstItemCacheIndexes.end() )
    {
       m_lstItemCacheIndexes.push_back( aiCacheIndex );
    }
@@ -443,6 +441,7 @@ void Collection::loadAdditionLine( const string& aszLine )
    string szLine = aszLine;
    Address aParentAddress;
    CollectionObject::PseudoIdentifier sudoItem;
+   StringInterface stringIFace;
    bool bThisIsParent = true;
 
    // Convert the line to the official form if needed.
@@ -450,22 +449,17 @@ void Collection::loadAdditionLine( const string& aszLine )
 
    CollectionObject::ParseCardLine( szLine, sudoItem );
 
-   int iFoundAddress = ListHelper::List_Find( string( "Parent" ),
-      sudoItem.MetaTags,
-      Config::Instance()->GetTagHelper() );
-   if( iFoundAddress != -1 )
+   auto szAddr = stringIFace.FindTagInList( sudoItem.MetaTags, CopyItem::GetAddressKey() );
+   if( szAddr != "" )
    {
-      aParentAddress = Address( sudoItem.MetaTags.at( iFoundAddress ).second );
-      int iFoundHash = ListHelper::List_Find( string( Config::HashKey ),
-         sudoItem.MetaTags,
-         Config::Instance()->GetTagHelper() );
-      szID = sudoItem.MetaTags.at( iFoundHash ).second;
+      aParentAddress = Address( szAddr );
+      szID = stringIFace.FindTagInList( sudoItem.MetaTags, CopyItem::GetHashKey() );
       bThisIsParent = !(aParentAddress == GetIdentifier());
    }
 
    // If the ID is specified, then we assume the card already exists.
-   if( !bThisIsParent && // This is not the parent
-      szID != "" )       // and the id was specified.
+   if( (!bThisIsParent) && // This is not the parent
+       (szID != "") )       // and the id was specified.
    {
       for( size_t i = 0; i < sudoItem.Count; i++ )
       {
@@ -486,18 +480,15 @@ void Collection::loadAdditionLine( const string& aszLine )
 // This needs "Card Name : { __hash="hashval" }" All other values are irrelevant.
 void Collection::loadRemoveLine( const string& aszLine )
 {
+   StringInterface stringIFace;
    CollectionObject::PseudoIdentifier sudoItem;
    CollectionObject::ParseCardLine( aszLine, sudoItem );
 
    for( size_t i = 0; i < sudoItem.Count; i++ )
    {
-      string szUID;
-      int iUID = ListHelper::List_Find( CopyItem::GetUIDKey(),
-         sudoItem.MetaTags,
-         Config::Instance()->GetTagHelper() );
-      if( iUID != -1 )
+      string szUID = stringIFace.FindTagInList( sudoItem.MetaTags, CopyItem::GetUIDKey() );;
+      if( szUID != "" )
       {
-         szUID = sudoItem.MetaTags[iUID].second;
          RemoveItem( sudoItem.Name, szUID );
       }
       else { break; }
@@ -505,6 +496,7 @@ void Collection::loadRemoveLine( const string& aszLine )
 }
 void Collection::loadDeltaLine( const string& aszLine )
 {
+   StringInterface stringIFace;
    vector<string> lstOldNew = StringHelper::Str_Split( aszLine, "->" );
 
    CollectionObject::PseudoIdentifier sudoOldItem;
@@ -514,15 +506,12 @@ void Collection::loadDeltaLine( const string& aszLine )
    CollectionObject::ParseCardLine( lstOldNew[1], sudoNewItem );
 
    int iCache;
-   int iUID = ListHelper::List_Find( CopyItem::GetUIDKey(),
-      sudoOldItem.MetaTags,
-      Config::Instance()->GetTagHelper() );
-   if( (iUID != -1) &&
-      (iCache = m_ptrCollectionSource->LoadCard( sudoOldItem.Name )) != -1 )
+   string szUID  = stringIFace.FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );;
+   if( (szUID != "") &&
+       ((iCache = m_ptrCollectionSource->LoadCard( sudoOldItem.Name )) != -1) )
    {
-      string szUID; TryGet<CollectionObject> itemOld; CopyItem* cItem;
+      TryGet<CollectionObject> itemOld; CopyItem* cItem;
 
-      szUID = sudoOldItem.MetaTags[iUID].second;
       itemOld = m_ptrCollectionSource->GetCardPrototype( iCache );
       cItem = itemOld->FindCopy( szUID )->get();
 
@@ -532,19 +521,19 @@ void Collection::loadDeltaLine( const string& aszLine )
          if( sudoOldItem.Name == sudoNewItem.Name )
          {
             ChangeItem( sudoOldItem.Name,
-               szUID,
-               sudoNewItem.Identifiers,
-               sudoNewItem.MetaTags );
+                        szUID,
+                        sudoNewItem.Identifiers,
+                        sudoNewItem.MetaTags );
          }
          else if( (iNewCache = m_ptrCollectionSource->LoadCard( sudoNewItem.Name )) != -1 )
          {
             TryGet<CollectionObject> itemNew = m_ptrCollectionSource->
-               GetCardPrototype( iNewCache );
+                                                GetCardPrototype( iNewCache );
             ReplaceItem( sudoOldItem.Name,
-               szUID,
-               sudoNewItem.Name,
-               sudoNewItem.Identifiers,
-               sudoNewItem.MetaTags );
+                         szUID,
+                         sudoNewItem.Name,
+                         sudoNewItem.Identifiers,
+                         sudoNewItem.MetaTags );
          }
       }
 

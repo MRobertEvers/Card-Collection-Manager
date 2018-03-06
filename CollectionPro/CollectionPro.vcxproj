@@ -162,7 +162,6 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClInclude Include="src\StoreFront.h" />
     <ClInclude Include="src\StringInterface.h" />
     <ClInclude Include="src\Support\JSONImporter.h" />
-    <ClInclude Include="src\Support\ListHelper.h" />
     <ClInclude Include="src\Support\MD5.h" />
     <ClInclude Include="src\Support\StringHelper.h" />
     <ClInclude Include="src\Support\TryGet.h" />
@@ -205,7 +204,6 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClCompile Include="src\StoreFrontEntry.cpp" />
     <ClCompile Include="src\StringInterface.cpp" />
     <ClCompile Include="src\Support\JSONImporter.cpp" />
-    <ClCompile Include="src\Support\ListHelper.cpp" />
     <ClCompile Include="src\Support\MD5.cpp" />
     <ClCompile Include="src\Support\StringHelper.cpp" />
     <ClCompile Include="src\Tests\AddressTest.cpp" />

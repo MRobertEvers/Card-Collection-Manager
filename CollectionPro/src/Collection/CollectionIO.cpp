@@ -1,7 +1,6 @@
 #include "CollectionIO.h"
 #include "Collection.h"
 #include "CollectionFactory.h"
-#include "../Support/ListHelper.h"
 #include "../StringInterface.h"
 #include "../Addressing/Addresser.h"
 

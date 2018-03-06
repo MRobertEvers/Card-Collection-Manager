@@ -5,7 +5,7 @@
 #include "../rapidxml-1.13\rapidxml_utils.hpp"
 #include "../Config.h"
 #include "../Support/StringHelper.h"
-#include "../Support/ListHelper.h"
+#include "../StringInterface.h"
 #include "CollectionSource.h"
 
 
@@ -331,10 +331,17 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
       vector<string> vecRemoveKeys;
       for( auto keyPair : vecPairedKeys )
       {
-         int iHaveFirst = ListHelper::List_Find(keyPair.first, vecKeepKeys);
-         int iIgnoreFirst = ListHelper::List_Find(keyPair.first, vecRemoveKeys);
-         int iHaveSecond = ListHelper::List_Find(keyPair.second, vecKeepKeys);
-         int iIgnoreSecond = ListHelper::List_Find(keyPair.second, vecRemoveKeys);
+         auto iter_find = find( vecKeepKeys.begin(), vecKeepKeys.end(), keyPair.first );
+         int iHaveFirst = distance( vecKeepKeys.begin(), iter_find );
+
+         iter_find = find( vecRemoveKeys.begin(), vecRemoveKeys.end(), keyPair.first );
+         int iIgnoreFirst = distance( vecRemoveKeys.begin(), iter_find );
+
+         iter_find = find( vecKeepKeys.begin(), vecKeepKeys.end(), keyPair.second );
+         int iHaveSecond = distance( vecKeepKeys.begin(), iter_find );
+
+         iter_find = find( vecRemoveKeys.begin(), vecRemoveKeys.end(), keyPair.second );
+         int iIgnoreSecond = distance( vecRemoveKeys.begin(), iter_find );
 
          // We already have this key.
          // Remove its pair.
@@ -362,26 +369,21 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
 
       for( auto szRemoveKey : vecRemoveKeys )
       {
-         int iKeyInd = ListHelper::List_Find(szRemoveKey, vecIdentifyingKeys);
-         vecIdentifyingKeys.erase(vecIdentifyingKeys.begin() + iKeyInd);
+         auto iter_find = find( vecIdentifyingKeys.begin(), vecIdentifyingKeys.end(), szRemoveKey );
+         vecIdentifyingKeys.erase( iter_find );
       }
 
       // Now get the trait value for each of the remaining keys.
       // A list of each key needed to identify a card.
       // Use the first of a pair for paired keys.
       vector<string> vecImportantValues;
+      StringInterface stringIFace;
       auto oCard = GetCardPrototype(oParser.Name);
       if( oCard.Good() )
       {
          for( auto keepKey : vecIdentifyingKeys )
          {
-            string szFoundValue = "";
-            int iTagInd = ListHelper::List_Find(keepKey, oParser.Identifiers,
-               config->GetTagHelper(Key));
-            if( iTagInd != -1 )
-            {
-               szFoundValue = oParser.Identifiers[iTagInd].second;
-            }
+            string szFoundValue = stringIFace.FindTagInList( oParser.Identifiers, keepKey );
 
             if( szFoundValue != "" )
             {
