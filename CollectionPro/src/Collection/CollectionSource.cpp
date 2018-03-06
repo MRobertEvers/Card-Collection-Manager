@@ -416,6 +416,84 @@ CollectionSource::CollapseCardLine(string& rszCard, bool abIncludeCount)
    }
 }
 
+// Modifies the string to the long hand version if it is a shorthand,
+// otherwise, this does nothing.
+// Takes the form Name [id]
+// Can also take the form Name [id1=val1,id2=val2]
+// Can also take the form Name [val1,val2]
+// TODO: move this to the collection source.
+void
+CollectionSource::ExpandAdditionLine( string& rszLine )
+{
+   string szKey, szDetails, szName, szId, szCount;
+
+   int iDetEnd = rszLine.find_first_of( ']' );
+   int iNameStart = rszLine.find_first_of( ' ' );
+   if( iNameStart == string::npos )
+   {
+      iNameStart = 0;
+   }
+
+   if( iDetEnd == rszLine.size() - 1 )
+   {
+      int iDetStart = rszLine.find_first_of( '[' );
+      szCount = rszLine.substr( 0, iNameStart );
+      szName = rszLine.substr( iNameStart, iDetStart - iNameStart );
+      szName = StringHelper::Str_Trim( szName, ' ' );
+      szId = rszLine.substr( iDetStart + 1, rszLine.size() - iDetStart - 2 );
+      auto card = GetCardPrototype( szName );
+
+      auto vecVals = StringHelper::Str_Split( szId, "," );
+
+      // Find the key for each unpair value.
+      for( auto& szPair : vecVals )
+      {
+         bool bGoodVal = false;
+
+         // Check if the dets are solo.
+         bool bNeedMatch = szId.find_first_of( '=' ) == string::npos;
+         if( bNeedMatch )
+         {
+            if( card.Good() )
+            {
+               bGoodVal = card->MatchIdentifyingTrait( szPair, szKey );
+            }
+
+            if( bGoodVal )
+            {
+               szPair = szKey + "=" + szPair;
+            }
+         }
+      }
+
+      // Now we have to put quotes around each of the "values"
+      for( auto& szPair : vecVals )
+      {
+         auto vecSplitPair = StringHelper::Str_Split( szPair, "=" );
+         if( vecSplitPair.size() == 2 )
+         {
+            string szKeyVal = vecSplitPair[0];
+            string szValVal = vecSplitPair[1];
+
+            // Make sure we dont double down on "
+            szValVal = StringHelper::Str_Trim( szValVal, '"' );
+            szPair = szKeyVal + "=\"" + szValVal + "\"";
+         }
+      }
+
+      // Wrap szID with { }
+      szDetails = "{ ";
+      for( auto& szPair : vecVals )
+      {
+         szDetails += szPair;
+         szDetails += " ";
+      }
+      szDetails += "}";
+
+      rszLine = szCount + " " + szName + " " + szDetails;
+   }
+}
+
 void 
 CollectionSource::loadCard(rapidxml::xml_node<char> * xmlNode_Card) 
 {

@@ -54,6 +54,7 @@ public:
    string GetHashKey();
    string GetAddressKey();
 
+   bool IsCollectionOverheadPropertyLine( const string& aszLine );
 public:
    template<class Iter>
    bool ListToDelimStr( const Iter aptBegin,

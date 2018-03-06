@@ -70,6 +70,7 @@ public:
    //  Utilizes its knowledge of all cards to shrink the identifier
    //  to a more compact unique representation.
    void CollapseCardLine(std::string& rszCard, bool abIncludeCount = true);
+   void ExpandAdditionLine( string& rszLine );
 
 private:
    bool m_bIsLoaded;

@@ -56,8 +56,7 @@ public:
    void SaveCollection();
 
    bool InitializeCollection();
-   bool InitializeCollection( string aszFileName,
-                              vector<string>& rlstInitializeLines );
+   bool InitializeCollection( string aszFileName );
    void LoadCollection( const string& aszFileName,
                         CollectionFactory* aoFactory );
    void LoadChanges(vector<string> aszLines);
@@ -67,6 +66,7 @@ public:
    bool IsLoaded = false;
 
 private:
+   friend class CollectionIO;
    friend class CollectionQueryHelper;
    friend class CollectionTracker;
    friend class TransactionManager;
@@ -121,7 +121,6 @@ private:
 
    void loadMetaTagFile();
 
-   void loadOverheadFile(vector<string>& rlstUnprocessedLines);
    bool loadOverheadLine(const string& aszLine);
    void loadCollectionDataLine(const string& aszData);
 
@@ -130,9 +129,6 @@ private:
    void loadAdditionLine(const string& aszLine);
    void loadRemoveLine(const string& aszLine);
    void loadDeltaLine(const string& aszLine);
-
-   // TODO: move this to the collection source.
-   void expandAdditionLine(string& aszLine);
 
 private:
    void saveHistory();

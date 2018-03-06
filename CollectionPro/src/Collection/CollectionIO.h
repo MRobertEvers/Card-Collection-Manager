@@ -4,9 +4,12 @@
 #include <list>
 #include <fstream>
 #include <sstream>
+#include <memory>
+#include <map>
 
 #include "../Config.h"
 #include "../Support/StringHelper.h"
+#include "../Support/TypeDefs.h"
 #include "CopyItem.h"
 #include "CollectionObject.h"
 #include "Collection.h"
@@ -19,44 +22,67 @@ class Collection;
 class CollectionIO
 {
 public:
-   CollectionIO();
+   CollectionIO( Collection* aptCollection );
    ~CollectionIO();
 
-   bool GetFileLines( std::string aszFileName,
-                      std::vector<std::string>& rlstFileLines );
-   bool GetNameAndCollectionLines(std::vector<std::string> alstAllLines,
-      std::string& rszName, std::vector<std::string>& rlstCardLines);
+   bool InitializeCollection( const std::string& aszFileName );
 
-   bool CaptureUnlistedItems(Location aAddrColID,
-      CollectionSource* aptCollectionSource,
-      std::map<int, std::list<CopyItem*>>& rlstAdditionalItems,
-      std::map<int, std::list<CopyItem*>>& rlstAlreadyCapturedItems);
+   bool LoadCollection( const std::string& aszFileName, CollectionFactory* aoFactory );
 
-   bool ConsolodateLocalItems(Location aAddrColID,
-      CollectionSource* aptCollectionSource,
-      std::map<int, std::list<CopyItem*>>& rlstPotentialDuplicates,
-      std::map<int, std::list<CopyItem*>>& rlstNonDuplicates);
+   bool PrepareCollectionInitialization( const std::string& aszFileName );
 
-   bool RejoinAsyncedLocalItems(Location aAddrColID,
-      CollectionSource* aptCollectionSource,
-      unsigned long aulNewItemTS,
-      std::map<int, std::list<CopyItem*>>& rlstPotentialDuplicates,
-      std::map<int, std::list<CopyItem*>>& rlstNonDuplicates);
+   bool PrepareCollectionItems();
 
-   bool ConsolodateBorrowedItems(Location aAddrColID,
-      CollectionSource* aptCollectionSource,
-      CollectionFactory* aptCollFactory);
+   bool PopulateCollectionFields();
 
-   bool RegisterRemainingInList( std::vector<int>& alstRegistry, 
-                                 std::map<int, std::list<CopyItem*>>& amapNewItems );
+   bool ConsolodateItems();
 
-   bool ReleaseUnfoundReferences(Location aAddrColID,
-      CollectionSource* aptCollectionSource);
+private:
+   // Used to store data that must persist between steps.
+   struct LoadToken
+   {
+   public:
+      std::string CollectionName;
+      std::string CollectionFileName;
+      std::string CollectionAddress;
+      std::string CollectionChildCount;
+      std::string CollectionSessionTime;
+      std::vector<std::string> MetaTagLines;
+      std::vector<std::string> AddFromCardLines;
+      std::vector<std::string> OverheadPropertyLines;
+      std::vector<std::string> OverheadProcessLines;
+      std::vector<std::string> CardLines;
+      std::map<std::string,std::vector<std::shared_ptr<CopyItem>>> CardItems;
+   };
+private:
+   Collection* m_ptCollection;
+   CollectionFactory* m_ptFactory;
+   std::unique_ptr<LoadToken> m_ptLoadToken;
 
-   bool CollectionFileExists(std::string aszFileName);
-   std::string GetCollectionFile(std::string aszCollectionName);
-   std::string GetMetaFile(std::string aszCollectionName);
-   std::string GetHistoryFile(std::string aszCollectionName);
-   std::string GetOverheadFile(std::string aszCollectionName);
+   bool loadOverheadFile( );
+   bool storeOverheadProperyLineValue( const std::string& aszLine );
+   bool loadPotentialItem( const string& aszName,
+                           const vector<Tag>& alstAttrs,
+                           const vector<Tag>& alstMetaTags );
+   bool loadMetaTagFile();
+   bool bindMetaTagLine( const std::string& aszLine );
+   bool isAOlderThanB( const std::shared_ptr<CopyItem>& aA, const std::shared_ptr<CopyItem>& aB );
+   bool isAOlderThanB( const std::string& aA, const std::string& aB );
+   bool isItemLocal( const std::vector<Tag>& avecMeta );
+   bool transferCopyFirstToSecond( const std::shared_ptr<CopyItem>& aA, const std::shared_ptr<CopyItem>& aB );
+
+public:
+   static bool CollectionFileExists( std::string aszFileName );
+   static std::string StripFileName( std::string aszFilePath );
+   static std::string GetCollectionFile( std::string aszCollectionName );
+   static std::string GetMetaFile( std::string aszCollectionName );
+   static std::string GetHistoryFile( std::string aszCollectionName );
+   static std::string GetOverheadFile( std::string aszCollectionName );
+
+   static bool GetFileLines( std::string aszFileName,
+                             std::vector<std::string>& rlstFileLines );
+   static bool GetNameAndCollectionLines( std::vector<std::string> alstAllLines,
+                                          std::string& rszName,
+                                          std::vector<std::string>& rlstCardLines );
 };
 

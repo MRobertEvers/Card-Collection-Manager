@@ -50,14 +50,28 @@ CollectionObject::~CollectionObject()
    m_lstCopies.clear();
 }
 
+std::shared_ptr<CopyItem>
+CollectionObject::CreateCopy( const Identifier& aAddrColID,
+                              const vector<Tag>& alstAttrs,
+                              const vector<Tag>& alstMetaTags ) const
+{
+   return std::shared_ptr<CopyItem>(CopyItem::CreateCopyItem( this, aAddrColID, alstAttrs, alstMetaTags ));
+}
+
 shared_ptr<CopyItem>
 CollectionObject::AddCopy( const Location& aAddrColID,
-                         const vector<Tag>& alstAttrTags,
-                         const vector<Tag>& alstMetaTags )
+                           const vector<Tag>& alstAttrTags,
+                           const vector<Tag>& alstMetaTags )
 {
-   CopyItem* newCopy = createCopy(aAddrColID, alstAttrTags, alstMetaTags);
-   m_lstCopies.push_back(shared_ptr<CopyItem>(newCopy));
-   return m_lstCopies.back();
+   auto newCopy = CreateCopy(aAddrColID, alstAttrTags, alstMetaTags);
+   return AddCopy( newCopy );
+}
+
+shared_ptr<CopyItem> 
+CollectionObject::AddCopy( const shared_ptr<CopyItem>& aCopy )
+{
+   m_lstCopies.push_back( aCopy );
+   return aCopy;
 }
 
 bool 
@@ -86,11 +100,8 @@ CollectionObject::GenerateHash( const Identifier& aAddrIdentifier,
                               const vector<Tag>& alstAttrs,
                               const vector<Tag>& alstMetaTags ) const
 {
-   CopyItem* hashCopy = createCopy( aAddrIdentifier, alstAttrs, alstMetaTags );
-   string szHash = hashCopy->GetHash();
-   delete hashCopy;
-
-   return szHash;
+   auto hashCopy = CreateCopy( aAddrIdentifier, alstAttrs, alstMetaTags );
+   return hashCopy->GetHash();
 }
 
 void 
@@ -131,15 +142,22 @@ TryGetCopy<shared_ptr<CopyItem>>
 CollectionObject::FindCopy( const string& aszUID, 
                             FindType aiType  ) const
 {
+   return FindCopy( aszUID, aiType, m_lstCopies );
+}
+
+TryGetCopy<shared_ptr<CopyItem>> 
+CollectionObject::FindCopy( const string& aszUID, FindType aiType,
+                            const vector<shared_ptr<CopyItem>>& avecCopies ) const
+{
    TryGetCopy<shared_ptr<CopyItem>> oRetval;
    bool match = false;
-   for( auto ptCopy : m_lstCopies )
+   for( auto ptCopy : avecCopies )
    {
-      match |= (aiType & UID)  > 0 && ptCopy->GetUID()  == aszUID;
+      match |= (aiType & UID)  > 0 && ptCopy->GetUID() == aszUID;
       match |= (aiType & Hash) > 0 && ptCopy->GetHash() == aszUID;
       if( match )
       {
-         oRetval.Set( shared_ptr<CopyItem>(ptCopy) );
+         oRetval.Set( shared_ptr<CopyItem>( ptCopy ) );
          break;
       }
    }
@@ -344,13 +362,6 @@ CollectionObject::SetIdentifyingTraitDefaults( CopyItem* aptItem ) const
    }
 }
 
-CopyItem* 
-CollectionObject::createCopy( const Identifier& aAddrColID,
-                            const vector<Tag>& alstAttrs,
-                            const vector<Tag>& alstMetaTags ) const
-{
-   return CopyItem::CreateCopyItem( this, aAddrColID, alstAttrs, alstMetaTags );
-}
 
 // Does not update session.
 void 

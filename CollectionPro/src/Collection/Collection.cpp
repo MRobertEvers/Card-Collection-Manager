@@ -195,117 +195,23 @@ Collection::InitializeCollection()
    return true;
 }
 
-// Loads the data file of the collection.
-bool
-Collection::InitializeCollection( string aszFileName,
-   vector<string>& rlstInitializeLines )
+
+bool 
+Collection::InitializeCollection( string aszFileName )
 {
-   if( !m_ptrCollectionDetails->IsInitialized() )
-   {
-      vector<string> lstCardLines;
-      vector<string> lstFileLines;
-      CollectionIO loader;
-      string szName;
-
-      if( !loader.GetFileLines( aszFileName, lstFileLines ) )
-      {
-         return false;
-      }
-
-      m_ptrCollectionDetails->SetFile( aszFileName );
-
-      loader.GetNameAndCollectionLines( lstFileLines, szName, lstCardLines );
-      m_ptrCollectionDetails->SetName( szName );
-
-      loadOverheadFile( rlstInitializeLines );
-      m_ptrCollectionDetails->SetProcessLines( rlstInitializeLines );
-
-      m_ptrCollectionDetails->SetInitialized( true );
-   }
-
-   return true;
+   CollectionIO loader( this );
+   return loader.InitializeCollection( aszFileName );
 }
 
 void
 Collection::LoadCollection( const string& aszFileName,
-   CollectionFactory* aoFactory )
+                            CollectionFactory* aoFactory )
 {
-   map<int, list<CopyItem*>> mapNewlyAddedItems;
-   map<int, list<CopyItem*>> mapExistingItems;
-   vector<string> lstDummyList;
-   vector<string> lstFileLines;
-   vector<string> lstCardLines;
-   CollectionIO loader;
-   string szName;
 
-   // Loads the name, etc. if necessary. Usually this is already done by now.
-   InitializeCollection( aszFileName, lstDummyList );
-
-   loader.GetFileLines( aszFileName, lstFileLines );
-   loader.GetNameAndCollectionLines( lstFileLines, szName, lstCardLines );
-
-   // If the cardline is shorthand, expand it.
-   for( auto& szCardLine : lstCardLines )
-   {
-      expandAdditionLine( szCardLine );
-   }
-
-   // Store off all the existing copies in mapExistingItems.
-   loader.CaptureUnlistedItems( GetIdentifier(),
-      m_ptrCollectionSource,
-      mapExistingItems,
-      mapNewlyAddedItems );
-
-   // Load the collection based on the file.
-   LoadChanges( lstCardLines );
-   loadMetaTagFile();
-
-   // Store off all the copies that aren't in mapExistingItems.
-   // Store them in mapNewlyAddedItems.
-   loader.CaptureUnlistedItems( GetIdentifier(),
-      m_ptrCollectionSource,
-      mapNewlyAddedItems,
-      mapExistingItems );
-
-   // Consolodate local items that match exactly in the newly
-   // added and existing items.
-   loader.ConsolodateLocalItems( GetIdentifier(),
-      m_ptrCollectionSource,
-      mapNewlyAddedItems,
-      mapExistingItems );
-
-   // If we have two identical copies with unlike session dates,
-   // use the later ones.
-   loader.RejoinAsyncedLocalItems( GetIdentifier(),
-      m_ptrCollectionSource,
-      m_ptrCollectionDetails->GetTimeStamp(),
-      mapNewlyAddedItems,
-      mapExistingItems );
-
-   // Now Verify Borrowed Cards (i.e. Parent != this) that were just
-   //  loaded exist. Two things can happen in this case. 
-   // If the claimed collection exists, then try to find the referenced item
-   //  and use that instead, if that fails, delete the item.
-   // If the claimed collection does not exist, then try to find an identical
-   //  copy that may have been created by another collection and use that.
-   //  If that fails, use the one created.
-   loader.ConsolodateBorrowedItems( GetIdentifier(),
-      m_ptrCollectionSource,
-      aoFactory );
-
-   // Make sure the remaining items are registered.
-   loader.RegisterRemainingInList( m_lstItemCacheIndexes,
-      mapExistingItems );
-
-   // Now this collection is COMPLETELY LOADED. Since other collections can
-   //  reference this collection, without this collection being loaded,
-   //  those other collections may have created copies of card in this 
-   //  collection already; if that is the case, use those copies. Additionally,
-   //  check that all the copies referenced by the other collections still
-   //  exist, if not, delete those copies.
-   loader.ReleaseUnfoundReferences( GetIdentifier(),
-      m_ptrCollectionSource );
-
+   CollectionIO loader(this);
+   loader.LoadCollection( aszFileName, aoFactory );
+   
+   // TODO: Put the below in the loader.
    IsLoaded = (GetIdentifier().GetMain() != "");
 
    if( IsLoaded )
@@ -512,12 +418,11 @@ void Collection::loadMetaTagFile()
 {
    string szFileName;
    string szPlainHash;
-   CollectionIO ioHelper;
    vector<string> lstMetaLines;
    TryGet<CollectionObject> item;
 
-   szFileName = ioHelper.GetMetaFile( m_ptrCollectionDetails->GetFileName() );
-   ioHelper.GetFileLines( szFileName, lstMetaLines );
+   szFileName = CollectionIO::GetMetaFile( m_ptrCollectionDetails->GetFileName() );
+   CollectionIO::GetFileLines( szFileName, lstMetaLines );
 
    for( size_t i = 0; i < lstMetaLines.size(); i++ )
    {
@@ -552,28 +457,6 @@ void Collection::loadMetaTagFile()
                lstMetaTags[t].second,
                mTagType, false );
          }
-      }
-   }
-}
-
-void Collection::loadOverheadFile( vector<string>& rlstUnprocessedLines )
-{
-   // This should only be called during initial loading.
-   string szFileName;
-   CollectionIO ioHelper;
-   vector<string> lstCollectionLines;
-
-   szFileName = ioHelper.GetOverheadFile( m_ptrCollectionDetails->GetFileName() );
-   ioHelper.GetFileLines( szFileName, lstCollectionLines );
-
-   auto iter_Lines = lstCollectionLines.cbegin();
-   for( ; iter_Lines != lstCollectionLines.cend(); ++iter_Lines )
-   {
-      // If the line is not an overhead data line, then it is a process
-      // line.
-      if( !loadOverheadLine( *iter_Lines ) )
-      {
-         rlstUnprocessedLines.push_back( *iter_Lines );
       }
    }
 }
@@ -683,7 +566,7 @@ void Collection::loadAdditionLine( const string& aszLine )
    bool bThisIsParent = true;
 
    // Convert the line to the official form if needed.
-   expandAdditionLine( szLine );
+   m_ptrCollectionSource->ExpandAdditionLine( szLine );
 
    CollectionObject::ParseCardLine( szLine, sudoItem );
 
@@ -788,84 +671,6 @@ void Collection::loadDeltaLine( const string& aszLine )
    }
 }
 
-// Modifies the string to the long hand version if it is a shorthand,
-// otherwise, this does nothing.
-// Takes the form Name [id]
-// Can also take the form Name [id1=val1,id2=val2]
-// Can also take the form Name [val1,val2]
-// TODO: move this to the collection source.
-void
-Collection::expandAdditionLine( string& rszLine )
-{
-   string szKey, szDetails, szName, szId, szCount;
-
-   int iDetEnd = rszLine.find_first_of( ']' );
-   int iNameStart = rszLine.find_first_of( ' ' );
-   if( iNameStart == string::npos )
-   {
-      iNameStart = 0;
-   }
-
-   if( iDetEnd == rszLine.size() - 1 )
-   {
-      int iDetStart = rszLine.find_first_of( '[' );
-      szCount = rszLine.substr( 0, iNameStart );
-      szName = rszLine.substr( iNameStart, iDetStart - iNameStart );
-      szName = StringHelper::Str_Trim( szName, ' ' );
-      szId = rszLine.substr( iDetStart + 1, rszLine.size() - iDetStart - 2 );
-      auto card = m_ptrCollectionSource->GetCardPrototype( szName );
-
-      auto vecVals = StringHelper::Str_Split( szId, "," );
-
-      // Find the key for each unpair value.
-      for( auto& szPair : vecVals )
-      {
-         bool bGoodVal = false;
-
-         // Check if the dets are solo.
-         bool bNeedMatch = szId.find_first_of( '=' ) == string::npos;
-         if( bNeedMatch )
-         {
-            if( card.Good() )
-            {
-               bGoodVal = card->MatchIdentifyingTrait( szPair, szKey );
-            }
-
-            if( bGoodVal )
-            {
-               szPair = szKey + "=" + szPair;
-            }
-         }
-      }
-
-      // Now we have to put quotes around each of the "values"
-      for( auto& szPair : vecVals )
-      {
-         auto vecSplitPair = StringHelper::Str_Split( szPair, "=" );
-         if( vecSplitPair.size() == 2 )
-         {
-            string szKeyVal = vecSplitPair[0];
-            string szValVal = vecSplitPair[1];
-
-            // Make sure we dont double down on "
-            szValVal = StringHelper::Str_Trim( szValVal, '"' );
-            szPair = szKeyVal + "=\"" + szValVal + "\"";
-         }
-      }
-
-      // Wrap szID with { }
-      szDetails = "{ ";
-      for( auto& szPair : vecVals )
-      {
-         szDetails += szPair;
-         szDetails += " ";
-      }
-      szDetails += "}";
-
-      rszLine = szCount + " " + szName + " " + szDetails;
-   }
-}
-
 void
 Collection::saveHistory()
 {
@@ -898,9 +703,8 @@ Collection::saveHistory()
       asctime_s( str, sizeof str, &timeinfo );
       str[strlen( str ) - 1] = 0;
 
-      CollectionIO ioHelper;
       ofstream oHistFile;
-      string szHistFile = ioHelper.GetHistoryFile( m_ptrCollectionDetails->GetFileName() );
+      string szHistFile = CollectionIO::GetHistoryFile( m_ptrCollectionDetails->GetFileName() );
       oHistFile.open( szHistFile, ios_base::app );
 
       oHistFile << "[" << str << "] " << endl;
@@ -918,12 +722,11 @@ Collection::saveHistory()
 void Collection::saveMeta()
 {
    ofstream oMetaFile;
-   CollectionIO ioHelper;
    Query listQuery(true);
    listQuery.IncludeMetaType( Persistent );
    vector<string> lstMetaLines = QueryCollection( listQuery );
 
-   oMetaFile.open( ioHelper.GetMetaFile( m_ptrCollectionDetails->GetFileName() ) );
+   oMetaFile.open( CollectionIO::GetMetaFile( m_ptrCollectionDetails->GetFileName() ) );
 
    vector<string>::iterator iter_MetaLine = lstMetaLines.begin();
    for( ; iter_MetaLine != lstMetaLines.end(); ++iter_MetaLine )
@@ -941,8 +744,7 @@ void
 Collection::saveOverhead()
 {
    ofstream oColFile;
-   CollectionIO ioHelper;
-   oColFile.open( ioHelper.GetOverheadFile( m_ptrCollectionDetails->GetFileName() ) );
+   oColFile.open( CollectionIO::GetOverheadFile( m_ptrCollectionDetails->GetFileName() ) );
 
    tm otm;
    time_t time = m_ptrCollectionDetails->GetTimeStamp();

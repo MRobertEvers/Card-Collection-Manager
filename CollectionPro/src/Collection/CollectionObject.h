@@ -53,10 +53,16 @@ public:
                      const vector<Tag>& alstCommon,
                      const vector<TraitItem>& alstRestrictions );
    ~CollectionObject();
+
+   std::shared_ptr<CopyItem> CreateCopy( const Identifier& aAddrColID,
+                                         const vector<Tag>& alstAttrs = vector<Tag>(),
+                                         const vector<Tag>& alstMetaTags = vector<Tag>() ) const;
+
    // Adds an item to the list of copies.
    shared_ptr<CopyItem> AddCopy( const Location& aAddrColID,
                                  const vector<Tag>& alstAttrTags,
                                  const vector<Tag>& alstMetaTags );
+   shared_ptr<CopyItem> AddCopy( const shared_ptr<CopyItem>& aCopy );
 
    bool RemoveCopy( const Location& aAddrColID,
                     const string aszUniqueID );
@@ -70,6 +76,9 @@ public:
 
    TryGetCopy<shared_ptr<CopyItem>> FindCopy( const string& aszUniqueID,
                                               FindType aiType = UID ) const;
+   TryGetCopy<shared_ptr<CopyItem>> FindCopy( const string& aszUniqueID,
+                                              FindType aiType,
+                                              const vector<shared_ptr<CopyItem>>& avecCopies ) const;
    vector<shared_ptr<CopyItem>> FindCopies( const Identifier& aCollection,
                                             CollectionObjectType aSearchType ) const;
    vector<shared_ptr<CopyItem>> FindCopies(const Location& aCollection,
@@ -113,10 +122,6 @@ public:
 
 
 private:
-   CopyItem * createCopy(const Identifier& aAddrColID,
-      const vector<Tag>& alstAttrs = vector<Tag>(),
-      const vector<Tag>& alstMetaTags = vector<Tag>()) const;
-
    void setCopyPairAttrs(CopyItem* aptItem, const string& aszKey, int iVal) const;
    void setCopyPairAttrs( CopyItem* aptItem, const string& aszKey, int iVal,
                           vector<string> avecSkipAttrs ) const;

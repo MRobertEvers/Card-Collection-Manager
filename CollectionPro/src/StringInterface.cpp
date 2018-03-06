@@ -1,7 +1,9 @@
 #include "StringInterface.h"
-#include <algorithm>
 #include "Support/StringHelper.h"
 #include "Collection\CopyItem.h"
+#include "Config.h"
+
+#include <algorithm>
 
 using namespace std;
 
@@ -375,4 +377,12 @@ string
 StringInterface::GetAddressKey()
 {
    return CopyItem::GetAddressKey();
+}
+
+bool 
+StringInterface::IsCollectionOverheadPropertyLine( const string& aszLine )
+{
+   string szDefKey( Config::CollectionDefinitionKey );
+   if( aszLine.size() < szDefKey.size() ) { return false; }
+   return (aszLine.substr( 0, szDefKey.size() ) == szDefKey);
 }

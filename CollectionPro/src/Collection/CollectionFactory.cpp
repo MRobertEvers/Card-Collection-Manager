@@ -61,7 +61,7 @@ CollectionFactory::LoadCollectionFromFile(string aszFileName)
 
    // Create a collection object to work with.
    oCol = new Collection(Config::NotFoundString, m_ColSource);
-   bInitialized = oCol->InitializeCollection(aszFileName, lstActionLines);
+   bInitialized = oCol->InitializeCollection(aszFileName);
    auto szFoundID = oCol->GetIdentifier();
 
    // Only load the collection if it doesn't already exist.
@@ -69,18 +69,6 @@ CollectionFactory::LoadCollectionFromFile(string aszFileName)
    {
       // Stop circular loading.
       m_setInLoading.insert(aszFileName);
-
-      // Performs all action lines after unless Pre- is at the beginning of the line.
-      for( auto iter_actions = lstActionLines.begin();
-                iter_actions != lstActionLines.end();
-              ++iter_actions )
-      {
-         auto szAction = *iter_actions;
-         if( processAction( szAction, true ) )
-         {
-            lstActionLines.erase(iter_actions);
-         }
-      }
 
       // Load the collection
       oCol->LoadCollection(aszFileName, this);
@@ -91,15 +79,6 @@ CollectionFactory::LoadCollectionFromFile(string aszFileName)
 
          m_ColSource->NotifyNeedToSync(szFoundID);
          bKeepCol = true;
-      }
-
-      // Perform post processing.
-      for( auto iter_actions = lstActionLines.begin();
-                iter_actions != lstActionLines.end();
-              ++iter_actions )
-      {
-         auto szAction = *iter_actions;
-         processAction( szAction, false );
       }
    }
 
