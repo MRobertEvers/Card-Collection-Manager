@@ -32,7 +32,6 @@ public:
    void SubmitBulkChanges(const string& aszCollection, vector<string> alstChanges);
    string GetCollectionName(const string& aszCollectionID);
    string GetCollectionID(const string& aszCollectionName);
-   vector<string> GetCollectionMetaData(const string& aszCollection);
    vector<string> GetAllCardsStartingWith(const string& aszColID, const Query& aszSearch);
 
    // Card Accessors

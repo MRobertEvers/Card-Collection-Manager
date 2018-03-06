@@ -23,9 +23,6 @@
     <Filter Include="Collection\DataHelpers">
       <UniqueIdentifier>{e7986947-339c-4624-8ed8-3cf9f71d94ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Collection\DataHelpers\Actions">
-      <UniqueIdentifier>{82d99396-4570-4498-a060-9ca0cb79c23a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tests">
       <UniqueIdentifier>{5d54d0ad-8374-4d43-8e61-8361ce3170fa}</UniqueIdentifier>
     </Filter>
@@ -97,30 +94,6 @@
     </ClInclude>
     <ClInclude Include="src\Collection\CollectionTracker.h">
       <Filter>Collection\DataHelpers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Collection\Transaction.h">
-      <Filter>Collection\DataHelpers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Collection\TransactionManager.h">
-      <Filter>Collection\DataHelpers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Collection\Action.h">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Collection\AddAction.h">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Collection\AddFromAction.h">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Collection\ChangeAction.h">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Collection\RemoveAction.h">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Collection\ReplaceAction.h">
-      <Filter>Collection\DataHelpers\Actions</Filter>
     </ClInclude>
     <ClInclude Include="src\Collection\CollectionIO.h">
       <Filter>Collection\DataHelpers</Filter>
@@ -222,30 +195,6 @@
     </ClCompile>
     <ClCompile Include="src\Collection\CollectionTracker.cpp">
       <Filter>Collection\DataHelpers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\Transaction.cpp">
-      <Filter>Collection\DataHelpers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\TransactionManager.cpp">
-      <Filter>Collection\DataHelpers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\Action.cpp">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\AddAction.cpp">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\AddFromAction.cpp">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\ChangeAction.cpp">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\RemoveAction.cpp">
-      <Filter>Collection\DataHelpers\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Collection\ReplaceAction.cpp">
-      <Filter>Collection\DataHelpers\Actions</Filter>
     </ClCompile>
     <ClCompile Include="src\Collection\CollectionIO.cpp">
       <Filter>Collection\DataHelpers</Filter>

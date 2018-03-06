@@ -131,21 +131,6 @@ StoreFront::GetCollectionID(const string& aszCollectionName)
    return m_ColFactory->GetCollectionID(aszCollectionName);
 }
 
-// Requires Collection ID
-vector<string> 
-StoreFront::GetCollectionMetaData(const string& aszCollection)
-{
-   if( m_ColFactory->CollectionExists(aszCollection) )
-   {
-      return m_ColFactory->GetCollection(aszCollection)->GetMetaData();
-   }
-   else
-   {
-      vector<string> noRetval;
-      return noRetval;
-   }
-}
-
 vector<string> 
 StoreFront::GetAllCardsStartingWith( const string& aszColID, 
                                      const Query& aszSearch )

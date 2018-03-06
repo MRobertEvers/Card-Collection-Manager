@@ -92,7 +92,7 @@ CollectionTest::RemoveItem_OtherCollectionsRef_Test()
    auto addedCopy = addedItem->FindCopies(col->GetIdentifier(), All)[0];
 
    auto colBorrower = getTestCollection("TestID2", false);
-   colBorrower->AddItemFrom(szCardName, addedCopy->GetUID(), col->GetIdentifier());
+   //colBorrower->AddItemFrom(szCardName, addedCopy->GetUID(), col->GetIdentifier());
    
    // Borrow from the test collection.
    auto lstBorrowedCopies = m_ptColSource->GetCollection(colBorrower->GetIdentifier(), All);
@@ -130,7 +130,7 @@ CollectionTest::AddItemFrom_Test()
    auto addedCopy = addedItem->FindCopies(col->GetIdentifier(), All)[0];
 
    auto colBorrower = getTestCollection("TestID2", false);
-   colBorrower->AddItemFrom(szCardName, addedCopy->GetUID(), col->GetIdentifier());
+   //colBorrower->AddItemFrom(szCardName, addedCopy->GetUID(), col->GetIdentifier());
    
    auto lstBorrowedCopies = m_ptColSource->GetCollection(colBorrower->GetIdentifier(), All);
    auto addedFromCopy = lstBorrowedCopies[0];

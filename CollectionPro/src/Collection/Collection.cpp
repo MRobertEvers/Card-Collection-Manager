@@ -96,26 +96,6 @@ Collection::ReplaceItem( string aszName,
    replaceItem( aszName, aszIdentifyingHash, aszNewName, alstIdChanges, alstMetaChanges );
 }
 
-vector<string>
-Collection::GetMetaData()
-{
-   vector<string> lstRetval;
-   lstRetval.push_back( "Name=\"" + GetName() + "\"" );
-
-   lstRetval.push_back( "ID=\"" + GetIdentifier().GetFullAddress() + "\"" );
-
-   // For Each tagged item, produces "LongName : MetaData"
-   for( auto metaData : m_lstTaggedItems )
-   {
-      string szMetaData = metaData.first + ": {" +
-         metaData.second.first + "=\"" +
-         metaData.second.second + "\" }";
-      lstRetval.push_back( szMetaData );
-   }
-
-   return lstRetval;
-}
-
 void
 Collection::SaveCollection()
 {
