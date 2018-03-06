@@ -58,6 +58,8 @@ public:
 
    vector<int> GetCollectionItems();
 
+   void InvalidateState();
+
 private:
    friend class CollectionIO;
    friend class CollectionQueryHelper;

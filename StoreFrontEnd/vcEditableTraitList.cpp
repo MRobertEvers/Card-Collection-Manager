@@ -40,9 +40,6 @@ vcEditableTraitList::RefreshNew( const wxString& aszName,
                                                aszUID.ToStdString(),
                                                "multiverseid" );
 
-   ScryFallAPI money;
-   auto szMoney = money.GetCardPrice( szMUD );
-
    // Lift the rest a function.
    auto vecPairAttrs = ptSF->GetPairedAttributes();
    storePairedAttrs(vecPairAttrs);

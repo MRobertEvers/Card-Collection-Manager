@@ -15,6 +15,7 @@ public:
    ~CollectionQueryHelper();
 
    vector<string> QueryCollection(Query aiQueryParms);
+   void InvalidateState();
 private:
    struct ItemData
    {
@@ -39,10 +40,16 @@ private:
       set<string> Groups;
    };
 
+private:
    Collection * m_ptCollection;
+   bool m_bInvalidState;
+   multimap<string, ItemData> m_mapFastSearchCache;
 
    multimap<string, ItemData> createHashToItemMap(const Query& aiQueryParms);
-   vector<string> getListGroupedByHashEnumUIDs( const Query& aiQueryParms );
+   void memoizeHashToCollapsedItemMap();
+   vector<string> queryMemoList( const Query& aiQueryParms );
+   vector<string> queryCompleteList( const Query& aiQueryParms );
+   vector<string> performQuery( const Query& aiQueryParms, const multimap<string, ItemData>& amapSearch );
 
    bool setFrontAndIsMatchToQuery(const Query& aiQueryParms, ItemData& rData);
 };

@@ -182,21 +182,21 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
    query.FindHash( aszCardHash.ToStdString() );
    query.UIDs();
 
-   // TODO: This is a bottleneck.
    vecItems = ptSF->GetAllCardsStartingWith( m_szColID.ToStdString(), query );
 
    // There should only be ONE item in the list.
-   for( auto& item : vecItems )
+   if( vecItems.size() > 0 )
    {
+      auto item = vecItems.at( 0 );
       unsigned int Count;
       string Name;
       vector<pair<string, string>> Identifiers;
       vector<pair<string, string>> MetaTags;
 
-      parser.ParseCardLine(item, Count, Name, Identifiers, MetaTags);
+      parser.ParseCardLine( item, Count, Name, Identifiers, MetaTags );
       m_szCardName = Name;
 
-      auto mapOptions = ptSF->GetIdentifyingAttributeOptions(Name);
+      auto mapOptions = ptSF->GetIdentifyingAttributeOptions( Name );
       for( auto& pairAttr : Identifiers )
       {
          CETraitOption option;
@@ -204,19 +204,16 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
 
          option.Key = pairAttr.first;
 
-         auto iter_traits = mapOptions.find(pairAttr.first);
+         auto iter_traits = mapOptions.find( pairAttr.first );
          option.Options = iter_traits->second;
 
-         m_vecAttrs.push_back(option);
+         m_vecAttrs.push_back( option );
       }
 
       for( auto& pairUID : MetaTags )
       {
-         m_vecUIDs.push_back(pairUID.second);
+         m_vecUIDs.push_back( pairUID.second );
       }
-
-      // Break if there is more than one for some reason.
-      break;
    }
 
    return true;

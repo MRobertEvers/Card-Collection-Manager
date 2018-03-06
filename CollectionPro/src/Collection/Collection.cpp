@@ -163,6 +163,14 @@ Collection::GetCollectionItems()
 }
 
 void 
+Collection::InvalidateState()
+{
+   // For any component that may cache data for speed,
+   // this tells it that it needs to refresh.
+   m_ptrCollectionQueryHelper->InvalidateState();
+}
+
+void 
 Collection::addItem( const string& aszName,
                      const vector<Tag>& alstAttrs,
                      const vector<Tag>& alstMetaTags )
@@ -170,6 +178,7 @@ Collection::addItem( const string& aszName,
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
 
    item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags ).get();
+   InvalidateState();
 }
 
 void
@@ -180,6 +189,7 @@ Collection::removeItem( const string& aszName,
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
 
    item->RemoveCopy( GetIdentifier(), aszUID );
+   InvalidateState();
 }
 
 void
@@ -193,6 +203,7 @@ Collection::changeItem( const string& aszName,
    if( cItem.Good() ) 
    { 
       modifyItem( cItem.Value()->get(), alstChanges, alstMetaChanges );
+      InvalidateState();
    }
 }
 
@@ -211,6 +222,7 @@ Collection::replaceItem( const string& aszName,
    { 
       removeItem( item->GetName(), aszUID );
       addItem( newItem->GetName(), alstIdChanges, alstMetaChanges );
+      InvalidateState();
    }
 }
 

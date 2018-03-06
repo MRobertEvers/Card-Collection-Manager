@@ -4,7 +4,7 @@
 using namespace std;
 
 CollectionQueryHelper::CollectionQueryHelper(Collection* aptCollection)
-   : m_ptCollection(aptCollection)
+   : m_ptCollection(aptCollection), m_bInvalidState(true)
 {
 
 }
@@ -14,13 +14,25 @@ CollectionQueryHelper::~CollectionQueryHelper()
 
 }
 
-
-// TODO: Create more logical function flow.
 vector<string>
 CollectionQueryHelper::QueryCollection(Query aiQueryParms)
 {
+   if( aiQueryParms.GetIsHashSearch() && aiQueryParms.GetCollapsed() && aiQueryParms.GetUIDs() )
+   {
+      // Fast Search
+      return queryMemoList( aiQueryParms );
+   }
+   else
+   {
+      // Full Search
+      return queryCompleteList( aiQueryParms );
+   }
+}
 
-   return getListGroupedByHashEnumUIDs(aiQueryParms);
+void
+CollectionQueryHelper::InvalidateState()
+{
+   m_bInvalidState = true;
 }
 
 multimap<string, CollectionQueryHelper::ItemData>
@@ -53,7 +65,6 @@ CollectionQueryHelper::createHashToItemMap(const Query& aiQueryParms)
          // Look for copies that match.
          cardData.Hash = copy->GetHash(aiQueryParms.GetHashType());
 
-
          auto iter_Counted = mapCardHashes.find(cardData.Hash);
          if( ( aiQueryParms.GetCollapsed() )       &&
              ( iter_Counted != mapCardHashes.end() ) )
@@ -79,12 +90,55 @@ CollectionQueryHelper::createHashToItemMap(const Query& aiQueryParms)
    return mapSeenHashes;
 }
 
-// TODO Refactor this/ Make note of the options that this cares about
-// and what they do.
-vector<string>
-CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
+void 
+CollectionQueryHelper::memoizeHashToCollapsedItemMap()
 {
-   auto mapSeenHashes = createHashToItemMap(aiQueryParms);
+   // This function is used to speed up searches on hashes.
+   m_mapFastSearchCache.clear();
+
+   Query qAllItems(true);
+   qAllItems.UIDs();
+   auto multiMap = createHashToItemMap( qAllItems );
+   m_mapFastSearchCache.insert( multiMap.begin(), multiMap.end() );
+}
+
+vector<string> 
+CollectionQueryHelper::queryMemoList( const Query& aiQueryParms )
+{
+   // This function should only be used if the caller
+   // is searching for specific hashes.
+   if( m_bInvalidState )
+   {
+      memoizeHashToCollapsedItemMap();
+      m_bInvalidState = false;
+   }
+
+   // Perform the hash Search.
+   multimap<string, ItemData> mapSearch;
+   for( auto& szFindHash : aiQueryParms.GetHashes() )
+   {
+      auto iter_findHash = m_mapFastSearchCache.find( szFindHash );
+      if( iter_findHash != m_mapFastSearchCache.end() )
+      {
+         mapSearch.insert( *iter_findHash );
+      }
+   }
+
+   return performQuery( aiQueryParms, mapSearch );
+}
+
+vector<string>
+CollectionQueryHelper::queryCompleteList( const Query& aiQueryParms )
+{
+   auto mapSeenHashes = createHashToItemMap( aiQueryParms );
+   return performQuery( aiQueryParms, mapSeenHashes );
+}
+
+vector<string> 
+CollectionQueryHelper::performQuery( const Query& aiQueryParms, 
+                                     const multimap<string, ItemData>& amapSearch )
+{
+   auto& mapSeenHashes = amapSearch;
 
    auto ptColSource = m_ptCollection->m_ptrCollectionSource;
    auto ptColDetails = m_ptCollection->m_ptrCollectionDetails;
@@ -99,7 +153,7 @@ CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
       if( aiQueryParms.GetHashes().size() > 0 )
       {
          auto vecHashes = aiQueryParms.GetHashes();
-         if( find(vecHashes.begin(), vecHashes.end(), card.second.Hash) == vecHashes.end() )
+         if( find( vecHashes.begin(), vecHashes.end(), card.second.Hash ) == vecHashes.end() )
          {
             continue;
          }
@@ -121,12 +175,12 @@ CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
       {
          for( auto& szUID : cardData.Groups )
          {
-            vecMeta.push_back(make_pair(CopyItem::GetUIDKey(), szUID));
+            vecMeta.push_back( make_pair( CopyItem::GetUIDKey(), szUID ) );
          }
       }
       else
       {
-         vecMeta = cardData.Copy->GetMetaTags(aiQueryParms.GetMetaType());
+         vecMeta = cardData.Copy->GetMetaTags( aiQueryParms.GetMetaType() );
       }
 
       szLine = CollectionObject::ToCardLine(
@@ -140,28 +194,28 @@ CollectionQueryHelper::getListGroupedByHashEnumUIDs( const Query& aiQueryParms )
 
       if( aiQueryParms.GetShort() )
       {
-         ptColSource->CollapseCardLine(szLine);
+         ptColSource->CollapseCardLine( szLine );
       }
 
       if( cardData.Front )
       {
-         lstFront.push_back(szLine);
+         lstFront.push_back( szLine );
       }
       else
       {
-         lstBack.push_back(szLine);
+         lstBack.push_back( szLine );
       }
    }
 
    vector<string> lstRetVal;
    for( auto& szLine : lstFront )
    {
-      lstRetVal.push_back(szLine);
+      lstRetVal.push_back( szLine );
    }
 
    for( auto& szLine : lstBack )
    {
-      lstRetVal.push_back(szLine);
+      lstRetVal.push_back( szLine );
    }
    return lstRetVal;
 }

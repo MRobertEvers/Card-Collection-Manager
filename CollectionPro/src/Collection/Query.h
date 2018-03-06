@@ -47,6 +47,7 @@ public:
    bool GetUIDs() const { return m_bUIDs; }
    bool GetClassed() const { return m_bClassed; }
    std::vector<std::string> GetHashes() const { return m_vecHashes;  }
+   bool GetIsHashSearch() const { return m_vecHashes.size() > 0; }
 
 private:
    bool m_bClassed;
