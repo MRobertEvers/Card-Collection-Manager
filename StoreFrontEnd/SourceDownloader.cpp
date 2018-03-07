@@ -11,7 +11,7 @@ SourceDownloaderFunctor::SourceDownloaderFunctor()
    : m_ptOfStream(new std::ofstream )
 {
    StoreFront* ptSF = StoreFrontEnd::Server();
-   m_ptOfStream->open( ptSF->GetImportSourceFilePath() + ".zip" );
+   m_ptOfStream->open( ptSF->GetImportSourceFilePath() + ".zip", ofstream::binary );
 }
 
 SourceDownloader::
@@ -34,7 +34,7 @@ SourceDecompressorFunctor::SourceDecompressorFunctor()
    : m_ptOfStream( new std::ofstream )
 {
    StoreFront* ptSF = StoreFrontEnd::Server();
-   m_ptOfStream->open( ptSF->GetImportSourceFilePath() );
+   m_ptOfStream->open( ptSF->GetImportSourceFilePath(), ofstream::binary );
 }
 
 SourceDownloader::

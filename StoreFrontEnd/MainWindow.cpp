@@ -25,7 +25,7 @@ MainFrame::MainFrame(const wxString& title)
    wxInitAllImageHandlers();
    
    SourceDownloader oP;
-   //oP.FetchMTGJson();
+   oP.FetchMTGJson();
    oP.UnzipMTGJson();
 
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
