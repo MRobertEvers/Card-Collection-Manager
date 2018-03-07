@@ -83,14 +83,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\wxWidgets-3.1.0\lib\vc_lib;C:\wxWidgets-3.1.0\include\msvc;C:\wxWidgets-3.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;C:\wxWidgets-3.1.0\lib\vc_lib;C:\wxWidgets-3.1.0\include\msvc;C:\wxWidgets-3.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;winmm.lib;advapi32.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -98,6 +98,8 @@
     <PostBuildEvent>
       <Command>xcopy /y /d  "$(ProjectDir)Libs\OpenSSL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
+xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
+
 
 </Command>
     </PostBuildEvent>
@@ -120,20 +122,22 @@ xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(WXWIN)\include;$(WXWIN)\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;$(WXWIN)\include;$(WXWIN)\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;winmm.lib;advapi32.lib;wxmsw31u_core.lib;wxbase31u.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxmsw31u_core.lib;wxbase31u.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d  "$(ProjectDir)Libs\OpenSSL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
+xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
+
 
 </Command>
     </PostBuildEvent>
@@ -160,10 +164,12 @@ xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
     <ClInclude Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
     <ClCompile Include="CELIOption.cpp" />
+    <ClCompile Include="CURLAPI.cpp" />
     <ClCompile Include="Group.cpp" />
     <ClCompile Include="ivCollectionView.cpp" />
     <ClCompile Include="json\jsoncpp.cpp" />
     <ClCompile Include="ScryFallAPI.cpp" />
+    <ClCompile Include="SourceDownloader.cpp" />
     <ClCompile Include="vcCollectionCubeDisplay.cpp" />
     <ClCompile Include="vcCollectionCubeGroup.cpp" />
     <ClCompile Include="vcEditableItemList.cpp" />
@@ -189,12 +195,14 @@ xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
     <ClCompile Include="vicListSelector.cpp" />
     <ClCompile Include="viCollectionEditor.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
+    <ClInclude Include="Zip\unzip.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="cCollectionCube.h" />
     <ClInclude Include="cCollectionsOverview.h" />
     <ClInclude Include="CETraitOption.h" />
+    <ClInclude Include="CURLAPI.h" />
     <ClInclude Include="curl\curl.h" />
     <ClInclude Include="curl\curlver.h" />
     <ClInclude Include="curl\easy.h" />
@@ -209,6 +217,7 @@ xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
     <ClInclude Include="ivCollectionView.h" />
     <ClInclude Include="json\json.hpp" />
     <ClInclude Include="ScryFallAPI.h" />
+    <ClInclude Include="SourceDownloader.h" />
     <ClInclude Include="StoreFrontEnd.h" />
     <ClInclude Include="vcCollectionCubeDisplay.h" />
     <ClInclude Include="vcCollectionCubeGroup.h" />

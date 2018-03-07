@@ -21,7 +21,7 @@ CollectionTest::CollectionTest()
    writeTestColSourceFile();
 
    m_ptColSource = new CollectionSource();
-   m_ptColSource->LoadLib(Config::Instance()->GetSourceFile());
+   m_ptColSource->LoadLib(Config::Instance()->GetSourceFilePath());
 }
 
 
@@ -211,11 +211,11 @@ CollectionTest::writeTestColSourceFile()
    // Save to file
    // Expects the config folder to already exist.
    // Create the test folder
-   auto srcFile = Config::Instance()->GetSourceFolder();
+   auto srcFile = Config::Instance()->GetSourceDirectory();
    CreateDirectory(srcFile.c_str(), NULL);
 
    // Get the source file name.
-   srcFile = Config::Instance()->GetSourceFile();
+   srcFile = Config::Instance()->GetSourceFilePath();
    std::fstream file_stored(srcFile.c_str(), ios::out);
    file_stored << *xmlCardDoc;
    file_stored.close();
@@ -226,7 +226,7 @@ CollectionTest::writeTestColSourceFile()
 void
 CollectionTest::deleteTestColSourceFile()
 {
-   std::remove( Config::Instance()->GetSourceFile().c_str() );
+   std::remove( Config::Instance()->GetSourceFilePath().c_str() );
 }
 
 std::shared_ptr<Collection> 

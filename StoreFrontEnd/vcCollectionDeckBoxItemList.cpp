@@ -39,7 +39,7 @@ vcCollectionDeckBoxItemList::~vcCollectionDeckBoxItemList()
 void 
 vcCollectionDeckBoxItemList::RefreshList()
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    Query query;
    query.UIDs();
    query.IncludeCount();

@@ -5,6 +5,7 @@
 #include "cCollectionCube.h"
 #include "vCollectionsOverview.h"
 #include "cCollectionsOverview.h"
+#include "SourceDownloader.h"
 #include <wx/defs.h> 
 
 // Events can be tied at run-time. This is compile time.
@@ -20,9 +21,12 @@ wxEND_EVENT_TABLE()
 MainFrame::MainFrame(const wxString& title)
    : wxFrame(NULL, sfMAIN_WINDOW, title), m_bEvtHandlerView(false), m_bEvtHandlerViewFlag(false)
 {
-   StoreFrontEnd::Instance();
+   StoreFrontEnd::Server();
    wxInitAllImageHandlers();
    
+   SourceDownloader oP;
+   //oP.FetchMTGJson();
+   oP.UnzipMTGJson();
 
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);
@@ -82,7 +86,7 @@ MainFrame::OnViewCollectionOverview(wxCommandEvent& awxEvt)
 void 
 MainFrame::OnImportSource(wxCommandEvent& awxEvt)
 {
-   StoreFrontEnd::Instance()->ImportCollectionSource();
+   StoreFrontEnd::Server()->ImportCollectionSource();
 }
 
 void 
@@ -179,7 +183,7 @@ MainFrame::viewCollectionsOverview()
 void 
 MainFrame::viewCollection(const wxString& aszColName)
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    auto szName = ptSF->GetCollectionID(aszColName.ToStdString());
    // setView( new cCollectionDeckBox(this, wxString(szName)) );
    setView( new cCollectionCube( this, wxString( szName ) ) );

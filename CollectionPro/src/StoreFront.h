@@ -55,7 +55,14 @@ public:
    // Config accessors
    //
    vector<pair<string, string>> GetPairedAttributes();
-   string GetImagesPath();
+   string GetImagesDirectory();
+   string GetCollectionsDirectory();
+   string GetCollectionsMetaDirectory();
+   string GetCollectionsHistoryDirectory();
+   string GetCollectionsOverheadDirectory();
+   string GetImportSourceFileName();
+   string GetSourcePath();
+   string GetSourceFileName();
    string GetSourceFilePath();
    string GetImportSourceFilePath();
 

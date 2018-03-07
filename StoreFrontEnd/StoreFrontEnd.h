@@ -1,8 +1,8 @@
 #pragma once
-#include <memory>
 #include "../CollectionPro/src/StoreFront.h"
 #include "../CollectionPro/src/StringInterface.h"
 #include "../CollectionPro/src/Config.h"
+#include <memory>
 
 class wxString;
 class ImageFetcherCallback;
@@ -10,19 +10,29 @@ class ImageFetcherCallback;
 class StoreFrontEnd
 {
 public:
-   StoreFrontEnd();
-   ~StoreFrontEnd();
-
    bool DownloadCardImage( const wxString& aszFilePath,
                            const wxString& aszCardName,
                            const wxString& aszSet,
                            const wxString& aszMUD,
                            std::shared_ptr<ImageFetcherCallback> aptCallback );
 
+   bool DownloadImportSourceFile();
+
+   void EstablishFolderStructure();
+
+   void establishFolder( const wxString& aszPath );
+
+private:
+   StoreFrontEnd();
+   ~StoreFrontEnd();
+
+
 
 public:
-   static StoreFront* Instance();
-  
+   static StoreFront* Server();
+   static StoreFrontEnd* Client();
+
 private:
    static StoreFront* m_ptInstance;
+   static StoreFrontEnd* m_ptClient;
 };

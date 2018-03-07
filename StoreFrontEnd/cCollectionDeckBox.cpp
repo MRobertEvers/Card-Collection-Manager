@@ -6,7 +6,7 @@
 cCollectionDeckBox::cCollectionDeckBox(MainFrame* aParent, const wxString& aszColName)
    : IMenuEventHandler(aParent), m_ColID(aszColName)
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    m_wxDeckbox = new vCollectionDeckBox(aParent, 9, m_ColID );
 
    registerSendMenuEvents();
@@ -41,7 +41,7 @@ cCollectionDeckBox::handleEvent(unsigned int aiEvent)
    }
    else if( aiEvent == Menu_Save )
    {
-      auto ptSF = StoreFrontEnd::Instance();
+      auto ptSF = StoreFrontEnd::Server();
       ptSF->SaveCollection( m_ColID.ToStdString() );
    }
    else if( aiEvent == cCollectionDeckBox::Menu_View_As_Cube )

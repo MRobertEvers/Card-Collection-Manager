@@ -34,7 +34,7 @@ vcEditableTraitList::RefreshNew( const wxString& aszName,
                                  const wxString& aszUID )
 {
    clearList();
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
 
    auto szMUD = ptSF->GetIdentifyingAttribute( aszName.ToStdString(),
                                                aszUID.ToStdString(),

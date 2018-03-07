@@ -1,6 +1,6 @@
 #include "ScryFallAPI.h"
 #include "wx/wxprec.h"
-#include "curl/curl.h"
+
 #include "json\json.hpp"
 
 const char* ScryFallAPI::API_URL_BASE = "https://api.scryfall.com/";
@@ -32,26 +32,7 @@ ScryFallAPI::GetCardPrice( const std::string& aszMUD )
 std::string 
 ScryFallAPI::curlRequest( const std::string& aszRequest )
 {
-   CURL *curl;
-   CURLcode res;
    std::string readBuffer;
-
-   curl = curl_easy_init();
-   if( curl )
-   {
-
-      curl_easy_setopt( curl, CURLOPT_URL, aszRequest.c_str() );
-
-      //curl_easy_setopt( curl, CURLOPT_URL, "https://api.scryfall.com/cards/named?exact=lightning+bolt" );
-
-      curl_easy_setopt( curl, CURLOPT_SSL_VERIFYPEER, 0L );
-      curl_easy_setopt( curl, CURLOPT_SSL_VERIFYHOST, 0L );
-
-      curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, WriteCallback );
-      curl_easy_setopt( curl, CURLOPT_WRITEDATA, &readBuffer );
-      res = curl_easy_perform( curl );
-      curl_easy_cleanup( curl );
-   }
    return readBuffer;
 }
 

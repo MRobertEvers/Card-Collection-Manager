@@ -58,7 +58,7 @@ vcCollectionsMenuList::OnAddCollection( wxCommandEvent& awxEvt )
                          "New Collection", 
                          "MyDeck" );
 
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    auto szID = ptSF->CreateNewCollection( szNewCollection.ToStdString(), "" );
    if( szID != "" )// TODO: Does this return NF?
    {

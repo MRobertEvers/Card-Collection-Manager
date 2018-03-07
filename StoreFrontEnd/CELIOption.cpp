@@ -6,7 +6,7 @@ using namespace std;
 vector<CELIOption> 
 CELIOption::ParseCollectionItemsList( const vector<string>& avecItems )
 {
-   StoreFront* ptSF = StoreFrontEnd::Instance();
+   StoreFront* ptSF = StoreFrontEnd::Server();
    StringInterface parser;
 
    vector<CELIOption> vecRetVal;

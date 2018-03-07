@@ -35,7 +35,7 @@ GroupItemData::GetNumber() const
 wxString 
 GroupItemData::GetHash() const
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    return ptSF->GetMetaTagHash(m_szName.ToStdString(), GetFirstUID().ToStdString());
 }
 
@@ -61,7 +61,7 @@ GroupItemData::GetName( ) const
 wxString 
 GroupItemData::GetManaCost( ) const
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    auto szManaCost = ptSF->GetCommonAttribute( m_szName.ToStdString(), "manaCost" );
    szManaCost.erase(std::remove( szManaCost.begin(), szManaCost.end(), '{'),
                       szManaCost.end());
@@ -73,28 +73,28 @@ GroupItemData::GetManaCost( ) const
 wxString 
 GroupItemData::GetCardType( ) const
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    return ptSF->GetCommonAttribute( m_szName.ToStdString(), "type" );
 }
 
 wxString 
 GroupItemData::GetSet( ) const
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    return ptSF->GetIdentifyingAttribute( m_szName.ToStdString(), GetFirstUID().ToStdString(), "set" );
 }
 
 wxString 
 GroupItemData::GetMetaTag(const wxString& aszKey, const wxString& aszUID) const
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    return ptSF->GetMetaTag( m_szName.ToStdString(), aszUID.ToStdString(), aszKey.ToStdString() );
 }
 
 wxString 
 GroupItemData::GetAttribute(const wxString& aszKey) const
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    return ptSF->GetCommonAttribute( m_szName.ToStdString(), aszKey.ToStdString() );
 }
 

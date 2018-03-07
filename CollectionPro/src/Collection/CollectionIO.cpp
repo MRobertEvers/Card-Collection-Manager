@@ -531,8 +531,7 @@ string CollectionIO::GetCollectionFile( string aszCollectionName )
 string CollectionIO::GetMetaFile( string aszCollectionName )
 {
    Config* config = Config::Instance();
-   return config->GetCollectionsDirectory() + "\\" +
-      config->GetMetaFolderName() + "\\" +
+   return config->GetCollectionsMetaDirectory() + "\\" +
       StringHelper::Str_Replace( aszCollectionName, ' ', '_' ) + "." +
       string( Config::MetaFileExtension ) + ".txt";
 }
@@ -540,8 +539,7 @@ string CollectionIO::GetMetaFile( string aszCollectionName )
 string CollectionIO::GetHistoryFile( string aszCollectionName )
 {
    Config* config = Config::Instance();
-   return config->GetCollectionsDirectory() + "\\" +
-      config->GetHistoryFolderName() + "\\" +
+   return config->GetCollectionsHistoryDirectory() + "\\" +
       StringHelper::Str_Replace( aszCollectionName, ' ', '_' ) + "." +
       string( Config::HistoryFileExtension ) + ".txt";
 }
@@ -550,8 +548,7 @@ std::string
 CollectionIO::GetOverheadFile( std::string aszCollectionName )
 {
    Config* config = Config::Instance();
-   return config->GetCollectionsDirectory() + "\\" +
-      config->GetHistoryFolderName() + "\\" +
+   return config->GetCollectionsOverheadDirectory() + "\\" +
       StringHelper::Str_Replace( aszCollectionName, ' ', '_' ) + "." +
       string( Config::OverheadFileExtension ) + ".txt";
 }

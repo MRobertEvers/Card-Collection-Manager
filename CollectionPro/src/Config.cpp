@@ -56,20 +56,32 @@ Config::~Config()
 {
 }
 
-string Config::GetSourceFile()
+string Config::GetSourceFilePath()
 {
-   return ".\\Config\\" + m_szSourceFolder + "\\" + m_szSourceFile;
+   return GetSourceDirectory() + "\\" + GetSourceFileName();
 }
 
 string 
-Config::GetSourceFolder()
+Config::GetSourceFileName()
+{
+   return m_szSourceFile;
+}
+
+string 
+Config::GetSourceDirectory()
 {
    return ".\\Config\\" + m_szSourceFolder;
 }
 
-string Config::GetImportSourceFile()
+string Config::GetImportSourceFilePath()
 {
-   return ".\\Config\\" + m_szSourceFolder + "\\" + m_szImportSource;
+   return GetSourceDirectory() + "\\" + GetImportSourceFileName();
+}
+
+string 
+Config::GetImportSourceFileName()
+{
+   return m_szImportSource;
 }
 
 string 
@@ -89,7 +101,7 @@ string Config::GetMetaFolderName()
    return m_szMetaFolder;
 }
 
-string Config::GetImagesFolder()
+string Config::GetImagesDirectory()
 {
    return ".\\Config\\" + m_szImagesFolder;
 }
@@ -102,6 +114,24 @@ string Config::GetCollectionsDirectory()
 string Config::GetCollectionsFolderName()
 {
    return m_szCollectionsFolder;
+}
+
+string 
+Config::GetCollectionsMetaDirectory()
+{
+   return GetCollectionsDirectory() + "\\" + GetMetaFolderName();
+}
+
+string 
+Config::GetCollectionsHistoryDirectory()
+{
+   return GetCollectionsDirectory() + "\\" + GetHistoryFolderName();
+}
+
+string 
+Config::GetCollectionsOverheadDirectory()
+{
+   return GetCollectionsDirectory() + "\\" + GetOverheadFolerName();
 }
 
 // Returns a numerical key code

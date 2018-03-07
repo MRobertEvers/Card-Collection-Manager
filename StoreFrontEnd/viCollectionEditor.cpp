@@ -107,7 +107,7 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
    m_bHandleTextEvent = false;
    if( awxEvt.GetInt() == Selectors::Add )
    {
-      StoreFront* ptSF = StoreFrontEnd::Instance();
+      StoreFront* ptSF = StoreFrontEnd::Server();
       Query query;
       query.SearchFor(szEventDets.ToStdString());
       query.UIDs();
@@ -126,7 +126,7 @@ viCollectionEditor::onComboBoxTextChanged(wxCommandEvent& awxEvt)
    }
    else if( awxEvt.GetInt() == Selectors::Remove )
    {
-      StoreFront* ptSF = StoreFrontEnd::Instance();
+      StoreFront* ptSF = StoreFrontEnd::Server();
 
       // TODO: Optimize this search.
       // Cache the collection first time, then restrict that list by string.
@@ -249,7 +249,7 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
       vecCmds.push_back(szCmd);
    }
 
-   StoreFrontEnd::Instance()->
+   StoreFrontEnd::Server()->
       SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
    m_vListView->ClearList();
    m_vAddSelector->ResetOption();

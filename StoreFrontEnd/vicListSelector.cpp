@@ -101,7 +101,7 @@ vicListSelector::GetBestSelection()
 {
    if( m_oSelection.Display == "" )
    {
-      auto ptSF = StoreFrontEnd::Instance();
+      auto ptSF = StoreFrontEnd::Server();
       Query query;
       query.SearchFor( m_wxComboBox->GetValue().ToStdString( ) );
       query.UIDs();

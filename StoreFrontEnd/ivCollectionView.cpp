@@ -46,7 +46,7 @@ ivCollectionView::onEditorDecline( wxCommandEvent& awxEvt )
 void
 ivCollectionView::onCardChanged( wxCommandEvent& awxEvt )
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    wxString szHash = ptSF->GetMetaTagHash( m_viCardEditor->GetDisplayingCard().ToStdString(),
                                            awxEvt.GetString().ToStdString() );
    notifyCardEditor( szHash );

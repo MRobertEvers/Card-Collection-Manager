@@ -61,6 +61,9 @@
     <Filter Include="Libraries\cURL">
       <UniqueIdentifier>{8f669614-fbfb-4eeb-a9df-6d00b3505e58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Libraries\Zip">
+      <UniqueIdentifier>{b8367648-76b4-4c59-a813-045b1dfc7f2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -164,6 +167,12 @@
     </ClCompile>
     <ClCompile Include="ivCollectionView.cpp">
       <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceDownloader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CURLAPI.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +307,15 @@
     </ClInclude>
     <ClInclude Include="ivCollectionView.h">
       <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceDownloader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CURLAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Zip\unzip.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

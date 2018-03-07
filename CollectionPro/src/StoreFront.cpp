@@ -17,7 +17,7 @@ StoreFront::StoreFront()
    //SelfTest();
    // No Server for now
    m_ColSource = new CollectionSource();
-   m_ColSource->LoadLib(Config::Instance()->GetSourceFile());
+   m_ColSource->LoadLib(Config::Instance()->GetSourceFilePath());
 
    m_ColFactory = new CollectionFactory(m_ColSource);
 }
@@ -318,21 +318,63 @@ StoreFront::GetPairedAttributes()
 }
 
 string 
-StoreFront::GetImagesPath()
+StoreFront::GetImagesDirectory()
 {
-   return Config::Instance()->GetImagesFolder();
+   return Config::Instance()->GetImagesDirectory();
+}
+
+string 
+StoreFront::GetCollectionsDirectory()
+{
+   return Config::Instance()->GetCollectionsDirectory();
+}
+
+string 
+StoreFront::GetCollectionsMetaDirectory()
+{
+   return Config::Instance()->GetCollectionsMetaDirectory();
+}
+
+string 
+StoreFront::GetCollectionsHistoryDirectory()
+{
+   return Config::Instance()->GetCollectionsHistoryDirectory();
+}
+
+string 
+StoreFront::GetCollectionsOverheadDirectory()
+{
+   return Config::Instance()->GetCollectionsOverheadDirectory();
+}
+
+string 
+StoreFront::GetImportSourceFileName()
+{
+   return Config::Instance()->GetImportSourceFileName();
+}
+
+string 
+StoreFront::GetSourcePath()
+{
+   return Config::Instance()->GetSourceDirectory();
+}
+
+string 
+StoreFront::GetSourceFileName()
+{
+   return Config::Instance()->GetSourceFilePath();
 }
 
 string 
 StoreFront::GetSourceFilePath()
 {
-   return Config::Instance()->GetSourceFile();
+   return Config::Instance()->GetSourceFilePath();
 }
 
 string 
 StoreFront::GetImportSourceFilePath()
 {
-   return Config::Instance()->GetImportSourceFile();
+   return Config::Instance()->GetImportSourceFilePath();
 }
 
 string 
@@ -357,6 +399,6 @@ void
 StoreFront::ImportCollectionSource()
 {
    JSONImporter JI;
-   JI.ImportJSON(Config::Instance()->GetImportSourceFile());
+   JI.ImportJSON(Config::Instance()->GetImportSourceFilePath());
    //m_ColSource->HotSwapLib(Config::Instance()->GetSourceFile());
 }

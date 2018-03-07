@@ -43,7 +43,7 @@ vCollectionsOverview::buildCollectionSelector()
 void 
 vCollectionsOverview::getLoadedCollections()
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    auto vecCols = ptSF->GetLoadedCollections();
    for( auto& szColID : vecCols )
    {
@@ -72,7 +72,7 @@ vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
       return;
    }
 
-   StoreFront* ptSF = StoreFrontEnd::Instance();
+   StoreFront* ptSF = StoreFrontEnd::Server();
    auto szPath = openFileDialog.GetPath().ToStdString();
 
    // Load collection returns the Col ID.

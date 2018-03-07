@@ -18,16 +18,21 @@ public:
    Config();
    ~Config();
 
-   std::string GetImportSourceFile();
-   std::string GetSourceFile();
-   std::string GetSourceFolder();
+   std::string GetImportSourceFilePath();
+   std::string GetImportSourceFileName();
+   std::string GetSourceFilePath();
+   std::string GetSourceFileName();
+   std::string GetSourceDirectory();
    std::string GetOverheadFolerName();
    std::string GetHistoryFolderName();
    std::string GetMetaFolderName();
-   std::string GetImagesFolder();
+   std::string GetImagesDirectory();
    
    std::string GetCollectionsDirectory();
    std::string GetCollectionsFolderName();
+   std::string GetCollectionsMetaDirectory();
+   std::string GetCollectionsHistoryDirectory();
+   std::string GetCollectionsOverheadDirectory();
 
    char GetKeyCode(std::string aszFullKey);
    std::string GetFullKey(char aiKeyCode);

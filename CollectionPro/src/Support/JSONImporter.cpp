@@ -118,7 +118,7 @@ JSONImporter::buildXMLDoc( const map<string, CardDetails*, sortFunc>& mapDetails
    }
 
    // Save to file
-   std::ofstream file_stored(config->GetSourceFile());
+   std::ofstream file_stored(config->GetSourceFilePath());
    file_stored << *xmlCardDoc;
    file_stored.close();
    xmlCardDoc->clear();

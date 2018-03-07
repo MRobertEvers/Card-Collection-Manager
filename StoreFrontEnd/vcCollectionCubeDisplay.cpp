@@ -64,7 +64,7 @@ vcCollectionCubeDisplay::~vcCollectionCubeDisplay()
 void 
 vcCollectionCubeDisplay::RefreshList()
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    Query query;
    query.AnyMeta();
    auto lstCol = ptSF->GetAllCardsStartingWith( m_szColID.ToStdString(), query );

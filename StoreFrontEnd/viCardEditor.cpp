@@ -93,8 +93,8 @@ viCardEditor::GetDisplayingCard()
 void 
 viCardEditor::fetchImage()
 {
-   StoreFront* ptSF = StoreFrontEnd::Instance();
-   StoreFrontEnd SFE;
+   StoreFront* ptSF = StoreFrontEnd::Server();
+   StoreFrontEnd* ptSFE = StoreFrontEnd::Client();
 
    wxString szMUD = "";
    wxString szSet = "";
@@ -110,7 +110,7 @@ viCardEditor::fetchImage()
       }
    }
 
-   wxString szImagePaths = ptSF->GetImagesPath();
+   wxString szImagePaths = ptSF->GetImagesDirectory();
    szImagePaths += "\\_";
    szImagePaths += szSet;
 
@@ -128,8 +128,8 @@ viCardEditor::fetchImage()
       // Prepare a callback if the image isnt downloaded.
       auto callBack = std::shared_ptr<ImageFetcherCallback>( new viCardEditorImageCallBack( this, m_mutex ) );
       m_vecImageCallbacks.push_back( callBack );
-      SFE.DownloadCardImage( szFullPath, m_szCardName, szSet, szMUD,
-                             std::shared_ptr<ImageFetcherCallback>( callBack ) );
+      ptSFE->DownloadCardImage( szFullPath, m_szCardName, szSet, szMUD,
+                                std::shared_ptr<ImageFetcherCallback>( callBack ) );
    }
    else
    {
@@ -175,7 +175,7 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
    m_vecUIDs.clear();
    m_szColID = aszColID;
 
-   StoreFront* ptSF = StoreFrontEnd::Instance();
+   StoreFront* ptSF = StoreFrontEnd::Server();
    StringInterface parser;
    std::vector<std::string> vecItems;
    Query query;
@@ -319,7 +319,7 @@ viCardEditor::submitChangesToServer()
    std::vector<std::string> vecRetVal;
 
    StringInterface stringEditor;
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
 
    auto mapEditedTraits = m_wxTraitList->GetCurrentSelections();
    std::vector<std::pair<std::string, std::string>> vecStringCmds;

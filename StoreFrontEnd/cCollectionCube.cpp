@@ -6,7 +6,7 @@
 cCollectionCube::cCollectionCube( MainFrame* aParent, const wxString& aszColName )
    : IMenuEventHandler( aParent ), m_ColID( aszColName )
 {
-   auto ptSF = StoreFrontEnd::Instance();
+   auto ptSF = StoreFrontEnd::Server();
    m_wxCube = new vCollectionCube( aParent, 9, m_ColID );
 
    registerSendMenuEvents();
@@ -41,7 +41,7 @@ cCollectionCube::handleEvent( unsigned int aiEvent )
    }
    else if( aiEvent == Menu_Save )
    {
-      auto ptSF = StoreFrontEnd::Instance();
+      auto ptSF = StoreFrontEnd::Server();
       ptSF->SaveCollection( m_ColID.ToStdString() );
    }
    else if( aiEvent == cCollectionCube::Menu_View_As_Deck )

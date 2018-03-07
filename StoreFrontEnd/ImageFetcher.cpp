@@ -1,5 +1,7 @@
 #include "ImageFetcher.h"
 #include "wx/wxprec.h"
+#include "StoreFrontEnd.h"
+
 #include <Windows.h>
 #include <wx/thread.h>
 #include <wx/url.h>
@@ -8,7 +10,7 @@
 #include <wx/wfstream.h>
 #include <wx/utils.h> 
 #include <wx/mstream.h>
-#include "StoreFrontEnd.h"
+
 
 ImageFetcherCallback::ImageFetcherCallback()
    : m_bDoCall(true)
@@ -217,8 +219,8 @@ ImageFetcher::tryDownload( const wxString& aszFilePath,
 bool
 ImageFetcher::PrepareImagesFolder()
 {
-   StoreFront* ptSF = StoreFrontEnd::Instance();
-   wxString szImagePaths = ptSF->GetImagesPath();
+   StoreFront* ptSF = StoreFrontEnd::Server();
+   wxString szImagePaths = ptSF->GetImagesDirectory();
 
    CreateDirectory(szImagePaths.ToStdWstring().c_str(), NULL);
    return true;
@@ -227,8 +229,8 @@ ImageFetcher::PrepareImagesFolder()
 bool
 ImageFetcher::PrepareImageSetFolder(const wxString& aszSet)
 {
-   StoreFront* ptSF = StoreFrontEnd::Instance();
-   wxString szImagePaths = ptSF->GetImagesPath();
+   StoreFront* ptSF = StoreFrontEnd::Server();
+   wxString szImagePaths = ptSF->GetImagesDirectory();
    CreateDirectory(szImagePaths.ToStdWstring().c_str(), NULL);
    szImagePaths += "\\_" + aszSet;
    CreateDirectory(szImagePaths.ToStdWstring().c_str(), NULL);
