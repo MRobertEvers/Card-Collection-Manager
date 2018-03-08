@@ -160,9 +160,10 @@ ImageFetcher::tryDownload( const wxString& aszFilePath,
       szUrl = "http://gatherer.wizards.com/Handlers/Image.ashx?name=" + aszCardName + "&type=card";
    }
 
-
-   FileWriterFunctor dler( aszFilePath.ToStdString() );
-   CURLAPI::Easy_HTTP( szUrl.ToStdString(), &dler );
+   {
+      FileWriterFunctor dler( aszFilePath.ToStdString() );
+      CURLAPI::Easy_HTTP( szUrl.ToStdString(), &dler );
+   }
 
    // Check if the download works
    bool bGood = false;

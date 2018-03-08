@@ -209,7 +209,7 @@ Collection::changeItem( const string& aszName,
    auto cItem = item->FindCopy( aszUID );
    if( cItem.Good() ) 
    { 
-      //item->SetIdentifyingTrait
+      item->SetIdentifyingTraits( *cItem.Value(), alstChanges, alstMetaChanges );
       InvalidateState();
       return true;
    }

@@ -310,6 +310,31 @@ CollectionObject::MatchIdentifyingTrait( const std::string& aszValue,
 }
 
 bool 
+CollectionObject::SetIdentifyingTraits( shared_ptr<CopyItem> aptCopy, 
+                                        const vector<Tag>& avecTraits,
+                                        const vector<Tag>& avecMeta,
+                                        bool bSession ) const
+{
+   vector<string> vecTraits;
+   for( auto& tagTrait : avecTraits )
+   {
+      vecTraits.push_back( tagTrait.first );
+   }
+
+   for( auto& tagTrait : avecTraits )
+   {
+      SetIdentifyingTrait( aptCopy, tagTrait.first, tagTrait.second, vecTraits, bSession );
+   }
+
+   for( auto& tagMeta : avecMeta )
+   {
+      aptCopy->SetMetaTag( tagMeta.first, tagMeta.second, Public, bSession );
+   }
+
+   return true;
+}
+
+bool 
 CollectionObject::SetIdentifyingTrait( shared_ptr<CopyItem> aptCopy,
                                        const string& aszTraitKey,
                                        const string& aszTraitValue,

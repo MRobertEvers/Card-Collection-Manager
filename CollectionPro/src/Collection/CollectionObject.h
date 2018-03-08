@@ -101,6 +101,11 @@ public:
    bool MatchIdentifyingTrait( const string& aszValue,
                                string& rszKey );
 
+   bool SetIdentifyingTraits( shared_ptr<CopyItem> aptCopy,
+                              const vector<Tag>& avecTraits,
+                              const vector<Tag>& avecMeta,
+                              bool bSession = true  ) const;
+
    // Attempts to set an identifying trait on a copy item.
    // Returns true if the value is valid.
    bool SetIdentifyingTrait( shared_ptr<CopyItem> aptCopy,

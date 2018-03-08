@@ -281,12 +281,12 @@ viCardEditor::buildSubmitResetButtons()
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    wxTopPanel->SetSizer(boxSizer);
 
-   wxButton* acceptButton = new wxButton(wxTopPanel,
-      Changes_Submit,
-      "Submit");
-   wxButton* declineButton = new wxButton(wxTopPanel,
-      Changes_Reset,
-      "Cancel");
+   wxButton* acceptButton = new wxButton( wxTopPanel,
+                                          Changes_Submit,
+                                          "Submit" );
+   wxButton* declineButton = new wxButton( wxTopPanel,
+                                           Changes_Reset,
+                                           "Cancel" );
 
    wxTopPanel->GetSizer()->Add(acceptButton, wxSizerFlags(1).Center().Shaped());
    wxTopPanel->GetSizer()->Add(declineButton, wxSizerFlags(1).Center().Shaped());
