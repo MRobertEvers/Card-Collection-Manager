@@ -1,55 +1,9 @@
 #include "SourceDownloader.h"
 #include "wx/wxprec.h"
-#include "curl/curl.h"
 #include "StoreFrontEnd.h"
-
+#include "CURLAPI.h"
 #include "Zip\unzip.h"
 #include "iowin32.h"
-
-SourceDownloader::
-SourceDownloaderFunctor::SourceDownloaderFunctor()
-   : m_ptOfStream(new std::ofstream )
-{
-   StoreFront* ptSF = StoreFrontEnd::Server();
-   m_ptOfStream->open( ptSF->GetImportSourceFilePath() + ".zip", ofstream::binary );
-}
-
-SourceDownloader::
-SourceDownloaderFunctor::~SourceDownloaderFunctor()
-{
-   m_ptOfStream->close();
-}
-
-size_t 
-SourceDownloader::
-SourceDownloaderFunctor::Append( void *contents, size_t size, size_t nmemb )
-{
-   m_ptOfStream->write( (char*)contents, size * nmemb );
-   return size * nmemb;
-}
-
-
-SourceDownloader::
-SourceDecompressorFunctor::SourceDecompressorFunctor()
-   : m_ptOfStream( new std::ofstream )
-{
-   StoreFront* ptSF = StoreFrontEnd::Server();
-   m_ptOfStream->open( ptSF->GetImportSourceFilePath(), ofstream::binary );
-}
-
-SourceDownloader::
-SourceDecompressorFunctor::~SourceDecompressorFunctor()
-{
-   m_ptOfStream->close();
-}
-
-size_t
-SourceDownloader::
-SourceDecompressorFunctor::Append( const void* pBuf, int len )
-{
-   m_ptOfStream->write( (char*)pBuf, len );
-   return len;
-}
 
 const char* SourceDownloader::API_URL_BASE = "http://mtgjson.com/json/AllSets.json.zip";
 
@@ -79,7 +33,7 @@ SourceDownloader::FetchMTGJson()
       imageFile.close();
    }
 
-   SourceDownloaderFunctor dler;
+   FileWriterFunctor dler(ptSF->GetImportSourceFilePath() + ".zip");
    CURLAPI::Easy_HTTP( API_URL_BASE, &dler );
 }
 
@@ -133,7 +87,8 @@ SourceDownloader::UnzipMTGJson()
          }
 
          // Open a file to write out the data.
-         SourceDecompressorFunctor fileWriter;
+         StoreFront* ptSF = StoreFrontEnd::Server();
+         FileWriterFunctor fileWriter( ptSF->GetImportSourceFilePath() );
 
          // >0 means readsize, <0 error, =0 done.
          int iReadSizeOrErr = 0;
@@ -150,7 +105,7 @@ SourceDownloader::UnzipMTGJson()
             // Write data to file.
             if( iReadSizeOrErr > 0 )
             {
-               fileWriter.Append( read_buffer, iReadSizeOrErr );
+               fileWriter.Append( read_buffer, iReadSizeOrErr, 1 );
             }
          } while( iReadSizeOrErr > 0 );
 

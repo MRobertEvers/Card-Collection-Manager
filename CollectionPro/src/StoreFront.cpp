@@ -153,7 +153,7 @@ StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
       auto copy = item->FindCopy(aszUID);
       if( copy.Good() )
       {
-         item->SetIdentifyingTrait(copy.Value()->get(), aszKey, aszVal);
+         item->SetIdentifyingTrait(*copy.Value(), aszKey, aszVal);
       }
    }
 }
@@ -267,7 +267,7 @@ StoreFront::GetCardString(const string& aszCardname, const string& aszUID)
       auto copy = item->FindCopy(aszUID);
       if( copy.Good() )
       {
-         return item->CopyToString(copy->get(), Any);
+         return item->CopyToString(*copy.Value(), Any);
       }
    }
 

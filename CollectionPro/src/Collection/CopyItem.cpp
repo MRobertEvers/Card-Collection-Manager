@@ -11,7 +11,7 @@
 using namespace std;
 
 CopyItem::CopyItem( const Identifier& aAddrParentIdentifier,
-                    CollectionObject* aptClass )
+                    const CollectionObject* aptClass )
    : m_ptCollectionObject( aptClass )
 {
    Addresser addr;
@@ -36,7 +36,7 @@ CopyItem::~CopyItem()
 
 CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, 
                     const std::vector<Tag>& alstMetaTags,
-                    CollectionObject* aptClass )
+                    const CollectionObject* aptClass )
    : CopyItem(aAddrParentIdentifier, aptClass)
 {
    for ( auto attr : alstMetaTags )
@@ -244,7 +244,7 @@ bool CopyItem::IsReferencedBy(const Location& aAddrTest) const
 
 
 shared_ptr<CopyItem>
-CopyItem::CreateCopyItem( CollectionObject* aoConstructor,
+CopyItem::CreateCopyItem( const CollectionObject* aoConstructor,
                           const Identifier& aAddrParentIdentifier,
                           const std::vector<Tag>& alstIDAttrs,
                           const std::vector<Tag>& alstMetaTags )

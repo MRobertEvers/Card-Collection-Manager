@@ -1,5 +1,7 @@
 #pragma once
-#include<string>
+#include <string>
+#include <memory>
+#include <fstream>
 
 class cURLFunctor
 {
@@ -9,8 +11,18 @@ public:
    virtual size_t Append( void *contents, size_t size, size_t nmemb ) = 0;
 };
 
+class FileWriterFunctor : public cURLFunctor
+{
+public:
+   FileWriterFunctor( const std::string& aszFilePath );
+   ~FileWriterFunctor();
+   size_t Append( void *contents, size_t size, size_t nmemb );
 
-static class CURLAPI
+private:
+   std::unique_ptr<std::ofstream> m_ptOfStream;
+};
+
+class CURLAPI
 {
 public:
    static void Easy_HTTP( const std::string& aszRequest, cURLFunctor* aptBuffer );

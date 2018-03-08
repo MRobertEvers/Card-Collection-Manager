@@ -1,14 +1,10 @@
 #include "ImageFetcher.h"
 #include "wx/wxprec.h"
 #include "StoreFrontEnd.h"
+#include "CURLAPI.h"
 
-#include <wx/thread.h>
-#include <wx/url.h>
 #include <wx/sstream.h>
 #include <wx/imagjpeg.h>
-#include <wx/wfstream.h>
-#include <wx/utils.h> 
-#include <wx/mstream.h>
 
 
 ImageFetcherCallback::ImageFetcherCallback()
@@ -154,29 +150,19 @@ ImageFetcher::tryDownload( const wxString& aszFilePath,
 {
    // I don't know why the downloads fail sometimes.
    // But they are. So just try a couple times.
-   wxURL url;
+   wxString szUrl;
    if( !wxString( aszMUD ).Trim().IsEmpty() )
    {
-      url = (wxT( "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + aszMUD + "&type=card" ));
+      szUrl = "http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=" + aszMUD + "&type=card";
    }
    else
    {
-      url = (wxT( "http://gatherer.wizards.com/Handlers/Image.ashx?name=" + aszCardName + "&type=card" ));
+      szUrl = "http://gatherer.wizards.com/Handlers/Image.ashx?name=" + aszCardName + "&type=card";
    }
 
-   if( url.GetError() == wxURL_NOERR )
-   {
-      wxString htmldata;
-      wxInputStream *in = url.GetInputStream();
-      int iTries = 20;
-      if( in && in->IsOk() )
-      {
-         wxFileOutputStream ofStreamFile( aszFilePath );
-         in->Read( ofStreamFile );
-         ofStreamFile.Close();
-      }
-      delete in;
-   }
+
+   FileWriterFunctor dler( aszFilePath.ToStdString() );
+   CURLAPI::Easy_HTTP( szUrl.ToStdString(), &dler );
 
    // Check if the download works
    bool bGood = false;
@@ -209,7 +195,6 @@ ImageFetcher::Instance()
    ms_mutexInstance.lock();
    if( ms_ptInstance == nullptr )
    {
-      wxSocketBase::Initialize();
       ms_ptInstance = new ImageFetcher();
    }
    ms_mutexInstance.unlock();

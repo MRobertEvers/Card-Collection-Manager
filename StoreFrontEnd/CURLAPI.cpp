@@ -1,6 +1,24 @@
 #include "CURLAPI.h"
 #include "curl/curl.h"
 
+FileWriterFunctor::FileWriterFunctor( const std::string& aszFilePath )
+   : m_ptOfStream( new std::ofstream )
+{
+   m_ptOfStream->open( aszFilePath, std::ofstream::binary );
+}
+
+FileWriterFunctor::~FileWriterFunctor()
+{
+   m_ptOfStream->close();
+}
+
+size_t 
+FileWriterFunctor::Append( void *contents, size_t size, size_t nmemb )
+{
+   m_ptOfStream->write( (char*)contents, size * nmemb );
+   return size * nmemb;
+}
+
 void
 CURLAPI::Easy_HTTP( const std::string& aszRequest, cURLFunctor* aptBuffer )
 {

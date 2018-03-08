@@ -1,4 +1,6 @@
 #pragma once
+#include "CURLAPI.h"
+
 #include <string>
 #include <memory>
 #include <fstream>

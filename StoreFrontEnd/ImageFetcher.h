@@ -1,8 +1,10 @@
 #pragma once
+#include "CURLAPI.h"
+
+#include <wx/wxprec.h>
+#include <wx/thread.h>
 #include <set>
 #include <mutex>
-
-class wxString;
 
 class ImageFetcherCallback
 {
