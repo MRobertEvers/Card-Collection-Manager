@@ -54,9 +54,9 @@ public:
                      const vector<TraitItem>& alstRestrictions );
    ~CollectionObject();
 
-   std::shared_ptr<CopyItem> CreateCopy( const Identifier& aAddrColID,
-                                         const vector<Tag>& alstAttrs = vector<Tag>(),
-                                         const vector<Tag>& alstMetaTags = vector<Tag>() ) const;
+   shared_ptr<CopyItem> CreateCopy( const Identifier& aAddrColID,
+                                    const vector<Tag>& alstAttrs = vector<Tag>(),
+                                    const vector<Tag>& alstMetaTags = vector<Tag>() ) const;
 
    // Adds an item to the list of copies.
    shared_ptr<CopyItem> AddCopy( const Location& aAddrColID,
@@ -115,7 +115,7 @@ public:
                              bool bSession = true ) const;
    void SetIdentifyingTraitDefaults(CopyItem* aptItem) const;
 
-   void DeleteCopy(CopyItem* aptItem);
+   void DeleteCopy( shared_ptr<CopyItem> aptCopy );
    string CopyToString( CopyItem const* aptItem,
                              const MetaTagType& aAccessType = MetaTagType::Public,
                              const Identifier& aAddrCompareID = Location() ) const;

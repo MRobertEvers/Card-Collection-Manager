@@ -76,7 +76,7 @@ CollectionObject::AddCopy( const shared_ptr<CopyItem>& aCopy )
 
 bool 
 CollectionObject::RemoveCopy( const Location& aAddrColID,
-                            const string aszUniqueID )
+                              const string aszUniqueID )
 {
    shared_ptr<CopyItem> ptCopy;
    auto nCopy = FindCopy( aszUniqueID );
@@ -88,7 +88,7 @@ CollectionObject::RemoveCopy( const Location& aAddrColID,
 
       if( iRefCnt == 0 )
       {
-         DeleteCopy( ptCopy.get() );
+         DeleteCopy( ptCopy );
       }
       return true;
    }
@@ -110,16 +110,16 @@ CollectionObject::DeleteCopy( const string& aszUniqueHash )
    auto copy = FindCopy( aszUniqueHash );
    if( copy.Good() )
    {
-      DeleteCopy( copy.Value()->get() );
+      DeleteCopy( *copy.Value() );
    }
 }
 
 void 
-CollectionObject::DeleteCopy(CopyItem* ociRemove)
+CollectionObject::DeleteCopy( shared_ptr<CopyItem> aptCopy )
 {
    auto iter_found = find( m_lstCopies.begin(), 
                            m_lstCopies.end(), 
-                           shared_ptr<CopyItem>(ociRemove) );
+                           aptCopy );
 
    if ( iter_found != m_lstCopies.end() )
    {

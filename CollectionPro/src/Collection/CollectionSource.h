@@ -33,6 +33,7 @@ public:
    // Parses the objects into Objects that are stored by this class.
    // aszFilePath: The full path the file with the form defined above.
    void LoadLib(string aszFilePath);
+   void HotSwapLib( string aszFilePath );
 
    // LoadCard
    //  Return the cache location if aszCardName is found in the database, 

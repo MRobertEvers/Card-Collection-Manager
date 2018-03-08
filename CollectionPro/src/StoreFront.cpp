@@ -400,5 +400,5 @@ StoreFront::ImportCollectionSource()
 {
    JSONImporter JI;
    JI.ImportJSON(Config::Instance()->GetImportSourceFilePath());
-   //m_ColSource->HotSwapLib(Config::Instance()->GetSourceFile());
+   m_ColSource->HotSwapLib(Config::Instance()->GetSourceFilePath());
 }

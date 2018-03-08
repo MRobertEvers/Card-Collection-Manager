@@ -183,13 +183,13 @@ CopyItem::RemoveResident( const Identifier& aAddrAddress,
 
    m_Address.ExtractIdentifier(removeAddress);
 
-   // TODO: Iterate while erase!!!
    for( int i = 0; i < m_lstResidentIn.size(); i++ )
    {
       if( m_lstResidentIn.at(i).ExtractIdentifier( removeAddress ) )
       {
          if( m_lstResidentIn.at(i).IsEmpty() )
          {
+            // This is OK because we stop after this.
             m_lstResidentIn.erase( m_lstResidentIn.begin() + i );
          }
          break;

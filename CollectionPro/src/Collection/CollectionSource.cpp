@@ -70,6 +70,23 @@ CollectionSource::LoadLib( string aszFilePath )
    m_bIsLoaded = true;
 }
 
+void 
+CollectionSource::HotSwapLib( string aszFileName )
+{
+   vector<string> vecHoldCards;
+   for( auto& card : m_vecCardCache )
+   {
+      vecHoldCards.push_back( card.GetName() );
+   }
+
+   resetBuffer();
+   LoadLib( aszFileName );
+
+   for( auto card : vecHoldCards )
+   {
+      LoadCard( card );
+   }
+}
 
 int
 CollectionSource::LoadCard( string aszCardName )
