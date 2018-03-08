@@ -181,18 +181,25 @@ Collection::addItem( const string& aszName,
    InvalidateState();
 }
 
-void
+bool
 Collection::removeItem( const string& aszName,
                         const string& aszUID )
 {
-
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
+   if( !item.Good() )
+   {
+      return false;
+   }
 
-   item->RemoveCopy( GetIdentifier(), aszUID );
-   InvalidateState();
+   bool bSuccess = item->RemoveCopy( GetIdentifier(), aszUID );
+   if( bSuccess )
+   {
+      InvalidateState();
+   }
+   return bSuccess;
 }
 
-void
+bool
 Collection::changeItem( const string& aszName,
                         const string& aszUID,
                         const vector<Tag>& alstChanges,
@@ -202,13 +209,16 @@ Collection::changeItem( const string& aszName,
    auto cItem = item->FindCopy( aszUID );
    if( cItem.Good() ) 
    { 
-      modifyItem( cItem.Value()->get(), alstChanges, alstMetaChanges );
+      //item->SetIdentifyingTrait
       InvalidateState();
+      return true;
    }
+
+   return false;
 }
 
 
-void
+bool
 Collection::replaceItem( const string& aszName,
                          const string& aszUID,
                          const string& aszNewName,
@@ -217,30 +227,15 @@ Collection::replaceItem( const string& aszName,
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    auto newItem = m_ptrCollectionSource->GetCardPrototype( aszNewName );
-   auto cItem = item->FindCopy( aszUID );
-   if( cItem.Good() ) 
-   { 
-      removeItem( item->GetName(), aszUID );
+
+   if( removeItem( item->GetName(), aszUID ) )
+   {
       addItem( newItem->GetName(), alstIdChanges, alstMetaChanges );
       InvalidateState();
-   }
-}
-
-void
-Collection::modifyItem( CopyItem* aptCopy,
-                        const vector<Tag>& alstChanges,
-                        const vector<Tag>& alstMetaChanges )
-{
-   for( size_t i = 0; i < alstChanges.size(); i++ )
-   {
-      aptCopy->SetIdentifyingAttribute( alstChanges[i].first, alstChanges[i].second );
+      return true;
    }
 
-   for( size_t i = 0; i < alstMetaChanges.size(); i++ )
-   {
-      MetaTagType mTagType = CopyItem::DetermineMetaTagType( alstMetaChanges[i].first );
-      aptCopy->SetMetaTag( alstMetaChanges[i].first, alstMetaChanges[i].second, mTagType );
-   }
+   return false;
 }
 
 // May return null depending on input

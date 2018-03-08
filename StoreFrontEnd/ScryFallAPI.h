@@ -1,9 +1,22 @@
 #pragma once
 #include <string>
+#include <memory>
+#include <fstream>
 
 class ScryFallAPI
 {
 public:
+   class ScryFallFunctor : public cURLFunctor
+   {
+   public:
+      ScryFallFunctor( std::string* aptBuffer );
+      ~ScryFallFunctor();
+      size_t Append( void *contents, size_t size, size_t nmemb );
+
+   private:
+      std::string* m_ptBuffer;
+   };
+
    ScryFallAPI();
    ~ScryFallAPI();
 

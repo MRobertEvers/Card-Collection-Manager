@@ -1,15 +1,18 @@
 #include "../stdafx.h"
 #include "CopyItem.h"
+#include "CollectionObject.h"
+#include "../Config.h"
+#include "../Addressing/Addresser.h"
+
 #include <time.h>
 #include <sstream>
 #include <cstdlib>
-#include "../Config.h"
-#include "../Addressing/Addresser.h"
-#include "CollectionObject.h"
 
 using namespace std;
 
-CopyItem::CopyItem( const Identifier& aAddrParentIdentifier )
+CopyItem::CopyItem( const Identifier& aAddrParentIdentifier,
+                    CollectionObject* aptClass )
+   : m_ptCollectionObject( aptClass )
 {
    Addresser addr;
    Config* config = Config::Instance();
@@ -32,8 +35,9 @@ CopyItem::~CopyItem()
 }
 
 CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, 
-                    const std::vector<Tag>& alstMetaTags )
-   : CopyItem(aAddrParentIdentifier)
+                    const std::vector<Tag>& alstMetaTags,
+                    CollectionObject* aptClass )
+   : CopyItem(aAddrParentIdentifier, aptClass)
 {
    for ( auto attr : alstMetaTags )
    {
@@ -239,12 +243,13 @@ bool CopyItem::IsReferencedBy(const Location& aAddrTest) const
 }
 
 
-CopyItem* CopyItem::CreateCopyItem( CollectionObject const* aoConstructor,
-                                    const Identifier& aAddrParentIdentifier,
-                                    const std::vector<Tag>& alstIDAttrs,
-                                    const std::vector<Tag>& alstMetaTags )
+shared_ptr<CopyItem>
+CopyItem::CreateCopyItem( CollectionObject* aoConstructor,
+                          const Identifier& aAddrParentIdentifier,
+                          const std::vector<Tag>& alstIDAttrs,
+                          const std::vector<Tag>& alstMetaTags )
 {
-   CopyItem* newCopy = new CopyItem( aAddrParentIdentifier, alstMetaTags );
+   auto newCopy = shared_ptr<CopyItem>(new CopyItem( aAddrParentIdentifier, alstMetaTags, aoConstructor ));
 
    aoConstructor->SetIdentifyingTraitDefaults(newCopy);
 

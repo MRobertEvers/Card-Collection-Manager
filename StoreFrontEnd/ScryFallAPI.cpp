@@ -1,7 +1,27 @@
 #include "ScryFallAPI.h"
 #include "wx/wxprec.h"
-
 #include "json\json.hpp"
+#include "CURLAPI.h"
+
+ScryFallAPI::
+ScryFallFunctor::ScryFallFunctor( std::string* aptBuffer )
+   : m_ptBuffer( aptBuffer )
+{
+}
+
+ScryFallAPI::
+ScryFallFunctor::~ScryFallFunctor()
+{
+}
+
+size_t
+ScryFallAPI::
+ScryFallFunctor::Append( void *contents, size_t size, size_t nmemb )
+{
+   m_ptBuffer->append( (char*)contents, size * nmemb );
+   return size * nmemb;
+}
+
 
 const char* ScryFallAPI::API_URL_BASE = "https://api.scryfall.com/";
 
@@ -33,6 +53,8 @@ std::string
 ScryFallAPI::curlRequest( const std::string& aszRequest )
 {
    std::string readBuffer;
+   ScryFallFunctor jsonCallBack( &readBuffer );
+   CURLAPI::Easy_HTTPS( aszRequest, &jsonCallBack );
    return readBuffer;
 }
 

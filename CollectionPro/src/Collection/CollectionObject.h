@@ -81,8 +81,8 @@ public:
                                               const vector<shared_ptr<CopyItem>>& avecCopies ) const;
    vector<shared_ptr<CopyItem>> FindCopies( const Identifier& aCollection,
                                             CollectionObjectType aSearchType ) const;
-   vector<shared_ptr<CopyItem>> FindCopies(const Location& aCollection,
-      CollectionObjectType aSearchType) const;
+   vector<shared_ptr<CopyItem>> FindCopies( const Location& aCollection,
+                                            CollectionObjectType aSearchType ) const;
    string GetName() const;
    string GetProtoType() const;
    string GetCommonTrait(const string& aszTrait) const;
@@ -103,27 +103,28 @@ public:
 
    // Attempts to set an identifying trait on a copy item.
    // Returns true if the value is valid.
-   bool SetIdentifyingTrait( CopyItem* aptItem,
+   bool SetIdentifyingTrait( shared_ptr<CopyItem> aptCopy,
                              const string& aszTraitKey,
                              const string& aszTraitValue,
                              bool bSession = true ) const;
 
-   bool SetIdentifyingTrait( CopyItem* aptItem,
+   bool SetIdentifyingTrait( shared_ptr<CopyItem> aptCopy,
                              const string& aszTraitKey,
                              const string& aszTraitValue,
                              const vector<string> avecUpComingTraits,
                              bool bSession = true ) const;
-   void SetIdentifyingTraitDefaults(CopyItem* aptItem) const;
+
+   void SetIdentifyingTraitDefaults( shared_ptr<CopyItem> aptCopy ) const;
 
    void DeleteCopy( shared_ptr<CopyItem> aptCopy );
-   string CopyToString( CopyItem const* aptItem,
-                             const MetaTagType& aAccessType = MetaTagType::Public,
-                             const Identifier& aAddrCompareID = Location() ) const;
+   string CopyToString( shared_ptr<CopyItem> aptItem,
+                        const MetaTagType& aAccessType = MetaTagType::Public,
+                        const Identifier& aAddrCompareID = Location() ) const;
 
 
 private:
-   void setCopyPairAttrs(CopyItem* aptItem, const string& aszKey, int iVal) const;
-   void setCopyPairAttrs( CopyItem* aptItem, const string& aszKey, int iVal,
+   void setCopyPairAttrs( shared_ptr<CopyItem> aptItem, const string& aszKey, int iVal ) const;
+   void setCopyPairAttrs( shared_ptr<CopyItem> aptItem, const string& aszKey, int iVal,
                           vector<string> avecSkipAttrs ) const;
 
 public:

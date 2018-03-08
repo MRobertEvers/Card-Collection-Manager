@@ -79,8 +79,8 @@ SourceDownloader::FetchMTGJson()
       imageFile.close();
    }
 
-   auto ptFunctor = unique_ptr<SourceDownloaderFunctor>( new SourceDownloaderFunctor() );
-   CURLAPI::Easy_HTTP( API_URL_BASE, ptFunctor.get() );
+   SourceDownloaderFunctor dler;
+   CURLAPI::Easy_HTTP( API_URL_BASE, &dler );
 }
 
 #define dir_delimter '/'
@@ -133,7 +133,7 @@ SourceDownloader::UnzipMTGJson()
          }
 
          // Open a file to write out the data.
-         auto fileWriter = unique_ptr<SourceDecompressorFunctor>( new SourceDecompressorFunctor() );
+         SourceDecompressorFunctor fileWriter;
 
          // >0 means readsize, <0 error, =0 done.
          int iReadSizeOrErr = 0;
@@ -150,7 +150,7 @@ SourceDownloader::UnzipMTGJson()
             // Write data to file.
             if( iReadSizeOrErr > 0 )
             {
-               fileWriter->Append( read_buffer, iReadSizeOrErr );
+               fileWriter.Append( read_buffer, iReadSizeOrErr );
             }
          } while( iReadSizeOrErr > 0 );
 

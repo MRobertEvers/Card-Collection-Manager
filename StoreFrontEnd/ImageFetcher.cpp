@@ -2,7 +2,6 @@
 #include "wx/wxprec.h"
 #include "StoreFrontEnd.h"
 
-#include <Windows.h>
 #include <wx/thread.h>
 #include <wx/url.h>
 #include <wx/sstream.h>
@@ -36,32 +35,8 @@ ImageFetcherCallback::GetDoCall()
 }
 
 
-class FetcherThread : public wxThread
-{
-public:
-   FetcherThread( const wxString& aszFilePath,
-                  const wxString& aszCardName,
-                  const wxString& aszSet,
-                  const wxString& aszMUD,
-                  std::shared_ptr<ImageFetcherCallback> aptCallBack = nullptr ) 
-      : wxThread(wxTHREAD_DETACHED), m_szFilePath(aszFilePath),
-        m_szCardName(aszCardName), m_szSet(aszSet), m_szMUD(aszMUD),
-        m_ptCallback(aptCallBack)
-   {};
-   ~FetcherThread() {};
-protected:
-   virtual ExitCode Entry();
-
-private:
-   wxString m_szFilePath;
-   wxString m_szCardName;
-   wxString m_szSet;
-   wxString m_szMUD;
-   std::shared_ptr<ImageFetcherCallback> m_ptCallback;
-};
-
-
-wxThread::ExitCode FetcherThread::Entry()
+wxThread::ExitCode 
+FetcherThread::Entry()
 {
    ImageFetcher::Instance()->DownloadCardImage( m_szFilePath, m_szCardName, 
                                                 m_szSet, m_szMUD, m_ptCallback );
@@ -217,23 +192,14 @@ ImageFetcher::tryDownload( const wxString& aszFilePath,
 }
 
 bool
-ImageFetcher::PrepareImagesFolder()
-{
-   StoreFront* ptSF = StoreFrontEnd::Server();
-   wxString szImagePaths = ptSF->GetImagesDirectory();
-
-   CreateDirectory(szImagePaths.ToStdWstring().c_str(), NULL);
-   return true;
-}
-
-bool
 ImageFetcher::PrepareImageSetFolder(const wxString& aszSet)
 {
    StoreFront* ptSF = StoreFrontEnd::Server();
+
    wxString szImagePaths = ptSF->GetImagesDirectory();
-   CreateDirectory(szImagePaths.ToStdWstring().c_str(), NULL);
    szImagePaths += "\\_" + aszSet;
-   CreateDirectory(szImagePaths.ToStdWstring().c_str(), NULL);
+
+   StoreFrontEnd::Client()->EstablishFolder( szImagePaths );
    return true;
 }
 

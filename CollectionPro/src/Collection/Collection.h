@@ -76,23 +76,19 @@ private:
                  const vector<Tag>& alstAttrs,
                  const vector<Tag>& alstMetaTags);
 
-   void removeItem( const string& aszName,
+   bool removeItem( const string& aszName,
                     const string& aszUID );
 
-   void changeItem( const string& aszName,
+   bool changeItem( const string& aszName,
                     const string& aszUID,
                     const vector<Tag>& alstChanges,
                     const vector<Tag>& alstMetaChanges );
 
-   void replaceItem( const string& aszName,
+   bool replaceItem( const string& aszName,
                      const string& aszUID,
                      const string& aszNewName,
                      const vector<Tag>& alstChanges,
                      const vector<Tag>& alstMetaChanges );
-
-   void modifyItem( CopyItem* aptCopy,
-                    const vector<Tag>& alstChanges,
-                    const vector<Tag>& alstMetaChanges );
 
    void loadInterfaceLine(const string& aszLine);
 

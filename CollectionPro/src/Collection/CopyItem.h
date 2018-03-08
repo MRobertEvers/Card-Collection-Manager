@@ -32,9 +32,10 @@ public:
 
 private:
    // Use static constructor to build this class.
-   CopyItem( const Identifier& aAddrParentIdentifier );
+   CopyItem( const Identifier& aAddrParentIdentifier, CollectionObject* aptClass );
    CopyItem( const Identifier& aAddrParentIdentifier, 
-             const std::vector<Tag>& alstMetaTags );
+             const std::vector<Tag>& alstMetaTags,
+             CollectionObject* aptClass);
 
 public:
    ~CopyItem();
@@ -74,6 +75,9 @@ public:
 private:
    bool m_bNeedHash;
 
+   // I didn't want to do this. But here I am.
+   CollectionObject* m_ptCollectionObject;
+
    // Includes <Address>-<SubAddress1>,<SubAddress2>...
    // SubAddressX's smallest prime factor is the xth prime.
    Address m_Address;
@@ -92,10 +96,10 @@ private:
    std::map<std::string, MetaTag> m_lstMetaTags;
    std::map<std::string, std::string> m_lstIdentifyingTags;
 public:
-   static CopyItem* CreateCopyItem( CollectionObject const* aoConstructor,
-                                    const Identifier& aAddrParentIdentifier,
-                                    const std::vector<Tag>& alstIDAttrs,
-                                    const std::vector<Tag>& alstMetaTags );
+   static shared_ptr<CopyItem> CreateCopyItem( CollectionObject* aoConstructor,
+                                               const Identifier& aAddrParentIdentifier,
+                                               const std::vector<Tag>& alstIDAttrs,
+                                               const std::vector<Tag>& alstMetaTags );
 
    static MetaTagType DetermineMetaTagType(std::string aszTagKey);
 

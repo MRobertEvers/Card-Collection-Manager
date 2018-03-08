@@ -18,6 +18,31 @@ private:
    bool m_bDoCall;
 };
 
+
+class FetcherThread : public wxThread
+{
+public:
+   FetcherThread( const wxString& aszFilePath,
+                  const wxString& aszCardName,
+                  const wxString& aszSet,
+                  const wxString& aszMUD,
+                  std::shared_ptr<ImageFetcherCallback> aptCallBack = nullptr ) 
+      : wxThread(wxTHREAD_DETACHED), m_szFilePath(aszFilePath),
+        m_szCardName(aszCardName), m_szSet(aszSet), m_szMUD(aszMUD),
+        m_ptCallback(aptCallBack)
+   {};
+   ~FetcherThread() {};
+protected:
+   virtual ExitCode Entry();
+
+private:
+   wxString m_szFilePath;
+   wxString m_szCardName;
+   wxString m_szSet;
+   wxString m_szMUD;
+   std::shared_ptr<ImageFetcherCallback> m_ptCallback;
+};
+
 class ImageFetcher
 {
 public:
@@ -40,7 +65,6 @@ public:
                            const wxString& aszMUD,
                            std::shared_ptr<ImageFetcherCallback> aptCallback );
 
-   bool PrepareImagesFolder();
    bool PrepareImageSetFolder(const wxString& aszSet);
 
 private:

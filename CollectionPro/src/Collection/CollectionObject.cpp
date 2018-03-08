@@ -128,7 +128,7 @@ CollectionObject::DeleteCopy( shared_ptr<CopyItem> aptCopy )
 }
 
 string 
-CollectionObject::CopyToString( CopyItem const* aptItem,
+CollectionObject::CopyToString( shared_ptr<CopyItem> aptItem,
                                 const MetaTagType& aAccessType,
                                 const Identifier& aAddrCompareID ) const
 {
@@ -310,22 +310,22 @@ CollectionObject::MatchIdentifyingTrait( const std::string& aszValue,
 }
 
 bool 
-CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
-                                     const string& aszTraitKey,
-                                     const string& aszTraitValue,
-                                     bool bSession ) const
+CollectionObject::SetIdentifyingTrait( shared_ptr<CopyItem> aptCopy,
+                                       const string& aszTraitKey,
+                                       const string& aszTraitValue,
+                                       bool bSession ) const
 {
-   return SetIdentifyingTrait( aptItem, aszTraitKey, aszTraitValue, vector<string>(), bSession );
+   return SetIdentifyingTrait( aptCopy, aszTraitKey, aszTraitValue, vector<string>(), bSession );
 }
 
 bool 
-CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
+CollectionObject::SetIdentifyingTrait( shared_ptr<CopyItem> aptCopy,
                                        const string& aszTraitKey,
                                        const string& aszTraitValue,
                                        const vector<string> avecUpComingTraits,
                                        bool bSession ) const
 {
-      auto iter_found = m_lstIdentifyingTraits.find(aszTraitKey);
+   auto iter_found = m_lstIdentifyingTraits.find(aszTraitKey);
    if( iter_found == m_lstIdentifyingTraits.end() ) {
       Debug::Log("CollectionObject", "Treid to set non-existant trait");
       return false; 
@@ -342,8 +342,8 @@ CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
    }
 
    // Set the trait
-   aptItem->SetIdentifyingAttribute( aszTraitKey, aszTraitValue, bSession );
-   setCopyPairAttrs( aptItem, aszTraitKey,
+   aptCopy->SetIdentifyingAttribute( aszTraitKey, aszTraitValue, bSession );
+   setCopyPairAttrs( aptCopy, aszTraitKey,
                      distance(vecAllowVals.begin(), iter_found_val),
                      avecUpComingTraits );
 
@@ -352,7 +352,7 @@ CollectionObject::SetIdentifyingTrait( CopyItem* aptItem,
 
 // Sets all the ident traits to their defaults.
 void 
-CollectionObject::SetIdentifyingTraitDefaults( CopyItem* aptItem ) const
+CollectionObject::SetIdentifyingTraitDefaults( shared_ptr<CopyItem> aptItem ) const
 {
    // Include default values for IDAttrs NOT specified.
    for( auto IDAttrsPair : m_lstIdentifyingTraits )
@@ -365,13 +365,13 @@ CollectionObject::SetIdentifyingTraitDefaults( CopyItem* aptItem ) const
 
 // Does not update session.
 void 
-CollectionObject::setCopyPairAttrs( CopyItem* aptItem, const string& aszKey, int iVal ) const
+CollectionObject::setCopyPairAttrs( shared_ptr<CopyItem> aptItem, const string& aszKey, int iVal ) const
 {
    setCopyPairAttrs( aptItem, aszKey, iVal, vector<string>() );
 }
 
 void 
-CollectionObject::setCopyPairAttrs( CopyItem* aptItem, 
+CollectionObject::setCopyPairAttrs( shared_ptr<CopyItem> aptItem,
                                     const string& aszKey, int iVal,
                                     vector<string> avecSkipAttrs ) const
 {
