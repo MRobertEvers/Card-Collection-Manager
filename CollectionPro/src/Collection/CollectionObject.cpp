@@ -23,8 +23,8 @@ PseudoIdentifier::PseudoIdentifier( unsigned int aiCount,
    DetailString = aszDetails;
    MetaString = aszMeta;
 
-   CollectionObject::ParseTagString(aszDetails, Identifiers);
-   CollectionObject::ParseTagString(aszMeta, MetaTags);
+   StringInterface::ParseTagString(aszDetails, Identifiers);
+   StringInterface::ParseTagString(aszMeta, MetaTags);
 }
 
 CollectionObject::
@@ -423,12 +423,11 @@ bool
 CollectionObject::ParseCardLine( const string& aszLine,
                                  PseudoIdentifier& rPIdentifier )
 {
-   StringInterface parser;
    string szName, szDetails, szMeta;
    unsigned int iCount;
 
-   bool bGoodParse = parser.ParseCardLine( aszLine, iCount, szName,
-                                           szDetails, szMeta );
+   bool bGoodParse = StringInterface::ParseCardLine( aszLine, iCount, szName,
+                                                     szDetails, szMeta );
    if( bGoodParse )
    {
       // Output the details
@@ -440,12 +439,6 @@ CollectionObject::ParseCardLine( const string& aszLine,
    }
 
    return true;
-}
-
-bool CollectionObject::ParseTagString( const string& aszDetails,
-                                       vector<Tag>& rlstTags) {
-   StringInterface parser;
-   return parser.ParseTagString(aszDetails, rlstTags);
 }
 
 // This function is agnostic of the card object. It assumes that the 

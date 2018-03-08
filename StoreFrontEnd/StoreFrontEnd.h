@@ -20,7 +20,7 @@ public:
 
    void EstablishFolderStructure();
 
-   void establishFolder( const wxString& aszPath );
+   void EstablishFolder( const wxString& aszPath );
 
 private:
    StoreFrontEnd();

@@ -91,98 +91,83 @@ int
 SourceDownloader::UnzipMTGJson()
 {
    StoreFront* ptSF = StoreFrontEnd::Server();
-   auto relSourcePath = ptSF->GetImportSourceFilePath();
+   auto szRelSourceFilePath = ptSF->GetImportSourceFilePath();
 
    // Get the zip file full path.
-   wxString sourcePath = string( relSourcePath + ".zip" );
+   wxString szRelZipFilePath = string( szRelSourceFilePath + ".zip" );
    wchar_t fullFilename[MAX_PATH];
-   GetFullPathName( sourcePath.c_str(), MAX_PATH, fullFilename, nullptr );
-   auto cStr = wxString( fullFilename ).ToStdString();
+   GetFullPathName( szRelZipFilePath.c_str(), MAX_PATH, fullFilename, nullptr );
+   auto szFullZipFilePath = wxString( fullFilename ).ToStdString();
  
    zlib_filefunc64_def ffunc;
    fill_win32_filefunc64A( &ffunc );
-   auto uf = unzOpen2_64( cStr.c_str(), &ffunc );
+   auto zipFile = unzOpen2_64( szFullZipFilePath.c_str(), &ffunc );
 
    unz_global_info64 global_info;
-   int err;
    char read_buffer[READ_SIZE];
-   err = unzGetGlobalInfo64( uf, &global_info );
+   int iError = unzGetGlobalInfo64( zipFile, &global_info );
    for( int i = 0; i<global_info.number_entry; i++ )
    {
-      char filename_inzip[256];
+      char szFilenameInZip[256];
       unz_file_info64 file_info;
-      uLong ratio = 0;
-      const char *string_method;
-      char charCrypt = ' ';
 
-
-      err = unzGetCurrentFileInfo64( uf, &file_info, filename_inzip, sizeof( filename_inzip ), NULL, 0, NULL, 0 );
-      if( err != UNZ_OK )
+      iError = unzGetCurrentFileInfo64( zipFile, &file_info, szFilenameInZip, 
+                                       sizeof( szFilenameInZip ), NULL, 0, NULL, 0 );
+      if( iError != UNZ_OK )
       {
-         printf( "error %d with zipfile in unzGetCurrentFileInfo\n", err );
-         break;
+         // TODO: Error.
       }
       
-      const size_t filename_length = strlen( filename_inzip );
-      if( filename_inzip[filename_length - 1] == dir_delimter )
+      const size_t filename_length = strlen( szFilenameInZip );
+      if( szFilenameInZip[filename_length - 1] != dir_delimter )
       {
-         // Removed.
-      }
-      else
-      {
-         // Entry is a file, so extract it.
-         err = unzOpenCurrentFile( uf );
-         if( err != UNZ_OK )
+         // Entry is a file, so extract it. If this case isn't true,
+         // then it would be a folder.
+
+         iError = unzOpenCurrentFile( zipFile );
+         if( iError != UNZ_OK )
          {
-            printf( "could not open file\n" );
-            unzClose( uf );
+            // TODO: Error.
+            unzClose( zipFile );
             return -1;
          }
 
          // Open a file to write out the data.
-         auto dler = unique_ptr<SourceDecompressorFunctor>( new SourceDecompressorFunctor() );
+         auto fileWriter = unique_ptr<SourceDecompressorFunctor>( new SourceDecompressorFunctor() );
+
+         // >0 means readsize, <0 error, =0 done.
+         int iReadSizeOrErr = 0;
          do
          {
-            // There is a bug in unzReadCurrentFile where
-            // we cant read more than ~255(or around there) bytes at a time
-            // not sure why.
-            err = unzReadCurrentFile( uf, read_buffer, 255 );
-            if( err < 0 )
+            iReadSizeOrErr = unzReadCurrentFile( zipFile, read_buffer, READ_SIZE );
+            if( iReadSizeOrErr < 0 )
             {
-               printf( "error %d\n", err );
-               unzCloseCurrentFile( uf );
-               unzClose( uf );
+               unzCloseCurrentFile( zipFile );
+               unzClose( zipFile );
                return -1;
             }
 
             // Write data to file.
-            if( err > 0 )
+            if( iReadSizeOrErr > 0 )
             {
-               dler->Append( read_buffer, err );
+               fileWriter->Append( read_buffer, iReadSizeOrErr );
             }
-         } while( err > 0 );
+         } while( iReadSizeOrErr > 0 );
 
       }
 
-      unzCloseCurrentFile( uf );
+      unzCloseCurrentFile( zipFile );
 
       // Go the the next entry listed in the zip file.
       if( (i + 1) < global_info.number_entry )
       {
-         if( unzGoToNextFile( uf ) != UNZ_OK )
+         if( unzGoToNextFile( zipFile ) != UNZ_OK )
          {
-            printf( "cound not read next file\n" );
-            unzClose( uf );
+            unzClose( zipFile );
             return -1;
          }
       }
    }
-   unzClose( uf );
+   unzClose( zipFile );
    return 0;
-}
-
-int 
-SourceDownloader::DecompressionCallback( const void* pBuf, int len, void *pUser )
-{
-   return ((SourceDecompressorFunctor*)pUser)->Append( pBuf, len );
 }

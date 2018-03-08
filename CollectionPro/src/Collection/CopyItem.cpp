@@ -183,7 +183,7 @@ CopyItem::RemoveResident( const Identifier& aAddrAddress,
 
    m_Address.ExtractIdentifier(removeAddress);
 
-   vector<int> lstRemoveAddrs;
+   // TODO: Iterate while erase!!!
    for( int i = 0; i < m_lstResidentIn.size(); i++ )
    {
       if( m_lstResidentIn.at(i).ExtractIdentifier( removeAddress ) )
@@ -399,19 +399,6 @@ vector<Tag> CopyItem::GetIdentifyingAttributes() const
    return vector<Tag>(m_lstIdentifyingTags.begin(), m_lstIdentifyingTags.end());
 }
 
-function<string(const MetaTag&)> CopyItem::GetMetaTagValueViewer(MetaTagType atagType)
-{
-   const static function<string(const MetaTag& )> fnValView = 
-      [atagType](const MetaTag& atag )->string { return atag.GetVal( atagType ); };
-   return fnValView;
-}
-
-function<string(const MetaTag&)> CopyItem::GetMetaTagKeyViewer()
-{
-   const static function<string( const MetaTag& )> fnKeyView = 
-      []( const MetaTag& atag )->string { return atag.GetKey(); };
-   return fnKeyView;
-}
 
 void CopyItem::itemChanged()
 {

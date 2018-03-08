@@ -1,13 +1,12 @@
 #pragma once
+#include "MetaTag.h"
+#include "TraitItem.h"
+#include "../Addressing/Addresser.h"
+
 #include <string>
 #include <set>
 #include <vector>
 #include <map>
-#include <functional>
-
-#include "MetaTag.h"
-#include "TraitItem.h"
-#include "../Addressing/Addresser.h"
 
 class CollectionObject;
 
@@ -106,8 +105,5 @@ public:
    static std::string GetAddressKey();
    static std::string MakeIgnoredTag(const std::string aszTag);
    static std::string MakeTrackingTag(const std::string aszTag);
-
-   static std::function<std::string(const MetaTag&)> GetMetaTagValueViewer(MetaTagType atagType);
-   static std::function<std::string(const MetaTag&)> GetMetaTagKeyViewer();
 };
 

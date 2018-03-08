@@ -23,7 +23,7 @@ StringInterface::ParseCardLine( const string& aszLine,
                                 unsigned int& riCount,
                                 string& rszName,
                                 string& rszDetails,
-                                string& rszMeta ) const
+                                string& rszMeta )
 {
    string szLine, szMeta, szDetails, szName;
    
@@ -168,7 +168,7 @@ StringInterface::ParseCardLine( const string& aszLine,
                                 unsigned int& riCount,
                                 string& rszName,
                                 vector<Tag>& rszDetails,
-                                vector<Tag>& rszMeta ) const
+                                vector<Tag>& rszMeta )
 {
    string szDets, szMeta;
    
@@ -184,7 +184,7 @@ StringInterface::ParseCardLine( const string& aszLine,
 
 bool
 StringInterface::ParseTagString( const string& aszDetails,
-                                 vector<Tag>& rlstTags ) const
+                                 vector<Tag>& rlstTags )
 {
    vector<Tag> lstKeyVals;
    vector<string> lstPairs, lstVal;
@@ -205,12 +205,6 @@ StringInterface::ParseTagString( const string& aszDetails,
         iter_attrs != lstDetails.end(); 
         ++iter_attrs)
    {
-      //lstPairs = StringHelper::Str_Split( *iter_attrs, "=" );
-      //if( lstPairs.size() > 1 )
-      //{
-      //   string szVal = StringHelper::Str_Trim( lstPairs[1], '\"' );
-      //   lstKeyVals.push_back( make_pair( lstPairs[0], szVal ) );
-      //}
       if( iter_attrs->find_last_of( '=' ) == iter_attrs->size()-1 )
       {
          szKey = iter_attrs->substr(0, iter_attrs->size()-1);

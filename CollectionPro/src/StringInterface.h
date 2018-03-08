@@ -13,20 +13,20 @@ public:
    StringInterface();
    ~StringInterface();
 
-   bool ParseCardLine( const string& aszLine,
-                       unsigned int& riCount,
-                       string& rszName,
-                       string& rszDetails,
-                       string& rszMeta ) const;
+   static bool ParseCardLine( const string& aszLine,
+                              unsigned int& riCount,
+                              string& rszName,
+                              string& rszDetails,
+                              string& rszMeta );
 
-   bool ParseCardLine( const string& aszLine,
-                       unsigned int& riCount,
-                       string& rszName,
-                       vector<Tag>& rszDetails,
-                       vector<Tag>& rszMeta ) const;
+   static bool ParseCardLine( const string& aszLine,
+                              unsigned int& riCount,
+                              string& rszName,
+                              vector<Tag>& rszDetails,
+                              vector<Tag>& rszMeta );
 
-   bool ParseTagString( const string& aszDetails,
-                        vector<Tag>& rlstTags ) const;
+   static bool ParseTagString( const string& aszDetails,
+                               vector<Tag>& rlstTags );
 
    bool ParseListDelimString( const string& aszDelimStr,
                               vector<string>& rlstStrings,

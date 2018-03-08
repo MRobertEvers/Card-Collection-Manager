@@ -17,7 +17,7 @@ CollectionQueryHelper::~CollectionQueryHelper()
 vector<string>
 CollectionQueryHelper::QueryCollection(Query aiQueryParms)
 {
-   if( aiQueryParms.GetIsHashSearch() && aiQueryParms.GetCollapsed() && aiQueryParms.GetUIDs() )
+   if( aiQueryParms.GetIsHashSearch() )
    {
       // Fast Search
       return queryMemoList( aiQueryParms );
@@ -97,7 +97,6 @@ CollectionQueryHelper::memoizeHashToCollapsedItemMap()
    m_mapFastSearchCache.clear();
 
    Query qAllItems(true);
-   qAllItems.UIDs();
    auto multiMap = createHashToItemMap( qAllItems );
    m_mapFastSearchCache.insert( multiMap.begin(), multiMap.end() );
 }

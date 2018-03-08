@@ -129,8 +129,6 @@ private:
 public:
    static bool ParseCardLine(const string& aszLine, PseudoIdentifier& rPIdentifier);
 
-   static bool ParseTagString(const string& aszDetails, vector<Tag>& rlstTags);
-
    static string ToCardLine( const Identifier& aAddrParentID,
                              const string& aszName,
                              const vector<Tag>& alstAttrs = vector<Tag>(),

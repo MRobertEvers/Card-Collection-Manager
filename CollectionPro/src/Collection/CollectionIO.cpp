@@ -508,7 +508,9 @@ bool CollectionIO::CollectionFileExists( string aszFileName )
 {
    string szFullFileName = GetCollectionFile( aszFileName );
    ifstream f( szFullFileName.c_str() );
-   return f.good();
+   bool bRetVal = f.good();
+   f.close();
+   return bRetVal;
 }
 
 std::string

@@ -48,7 +48,7 @@ StoreFrontEnd::DownloadCardImage( const wxString& aszFilePath,
                                   const wxString& aszCardName,
                                   const wxString& aszSet,
                                   const wxString& aszMUD,
-                                  std::shared_ptr<ImageFetcherCallback> aptCallback)
+                                  std::shared_ptr<ImageFetcherCallback> aptCallback )
 {
    ImageFetcher::Instance()->PDownloadImage(aszFilePath, aszCardName, aszSet, aszMUD, aptCallback);
 
@@ -60,6 +60,8 @@ StoreFrontEnd::DownloadImportSourceFile()
 {
    SourceDownloader SD;
    SD.FetchMTGJson();
+   SD.UnzipMTGJson();
+   return true;
 }
 
 void 
@@ -67,25 +69,34 @@ StoreFrontEnd::EstablishFolderStructure()
 {
    // /Config/Source folder
    auto szSourceFolder = Server()->GetSourceFilePath();
-   establishFolder( szSourceFolder );
+   EstablishFolder( szSourceFolder );
 
    // /Config/Images folder
    auto szImagesFolder = Server()->GetImagesDirectory();
-   establishFolder( szImagesFolder );
+   EstablishFolder( szImagesFolder );
 
    // Collections/<Data>
    auto szDataFolder = Server()->GetCollectionsHistoryDirectory();
-   establishFolder( szDataFolder );
+   EstablishFolder( szDataFolder );
 
    szDataFolder = Server()->GetCollectionsMetaDirectory();
-   establishFolder( szDataFolder );
+   EstablishFolder( szDataFolder );
 
    szDataFolder = Server()->GetCollectionsOverheadDirectory();
-   establishFolder( szDataFolder );
+   EstablishFolder( szDataFolder );
 }
 
 void 
-StoreFrontEnd::establishFolder( const wxString& aszPath )
+StoreFrontEnd::EstablishFolder( const wxString& aszRelOrAbsPath )
 {
-   SHCreateDirectoryEx( NULL, aszPath.ToStdWstring().c_str(), NULL );
+   // Make it readable by windows api.
+   auto szPath = aszRelOrAbsPath;
+   szPath.Replace( "\\", "\\\\" );
+
+   // Get the full filename
+   wchar_t fullFilename[MAX_PATH];
+   GetFullPathName( szPath.c_str(), MAX_PATH, fullFilename, nullptr );
+   szPath = wxString( fullFilename );
+
+   SHCreateDirectoryEx( NULL, szPath.ToStdWstring().c_str(), NULL );
 }

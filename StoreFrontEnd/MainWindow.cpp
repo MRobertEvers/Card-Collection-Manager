@@ -5,7 +5,6 @@
 #include "cCollectionCube.h"
 #include "vCollectionsOverview.h"
 #include "cCollectionsOverview.h"
-#include "SourceDownloader.h"
 #include <wx/defs.h> 
 
 // Events can be tied at run-time. This is compile time.
@@ -23,10 +22,7 @@ MainFrame::MainFrame(const wxString& title)
 {
    StoreFrontEnd::Server();
    wxInitAllImageHandlers();
-   
-   SourceDownloader oP;
-   oP.FetchMTGJson();
-   oP.UnzipMTGJson();
+ 
 
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);
@@ -86,6 +82,7 @@ MainFrame::OnViewCollectionOverview(wxCommandEvent& awxEvt)
 void 
 MainFrame::OnImportSource(wxCommandEvent& awxEvt)
 {
+   StoreFrontEnd::Client()->DownloadImportSourceFile();
    StoreFrontEnd::Server()->ImportCollectionSource();
 }
 

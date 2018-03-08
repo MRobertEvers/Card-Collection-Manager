@@ -28,6 +28,8 @@ private:
 
    class SourceDecompressorFunctor
    {
+      // Originally made for a different decompressor API
+      // but I used it for the new API also.
    public:
       SourceDecompressorFunctor();
       ~SourceDecompressorFunctor();
@@ -38,6 +40,5 @@ private:
    };
 private:
    static const char* API_URL_BASE;
-   static int DecompressionCallback( const void* pBuf, int len, void *pUser );
 };
 
