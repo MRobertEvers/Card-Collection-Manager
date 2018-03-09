@@ -228,7 +228,7 @@ bool
 StringInterface::ParseListDelimString( const string& aszDelimStr,
                                        vector<string>& rlstStrings,
                                        const string& aszIndicatorString,
-                                       const string& aszDelim ) const
+                                       const string& aszDelim )
 {
    if( aszIndicatorString != aszDelimStr.substr( 0, aszIndicatorString.size() ) )
    {
@@ -264,6 +264,44 @@ StringInterface::ToCardLine( const string& aszName,
    }
 
    return szLine;
+}
+
+StringInterface::InterfaceLineType
+StringInterface::ParseInterfaceLine( string& rszLine )
+{
+   if( rszLine.size() <= 2 )
+   { 
+      return Corrupt;
+   }
+
+   rszLine = StringHelper::Str_Trim( rszLine, ' ' );
+
+   string szLoadDirective = rszLine.substr( 0, 1 );
+   if( szLoadDirective == "-" ) // REMOVE
+   {
+      // Of the form ([] meaning optional)
+      // Sylvan Card Name [{ set="val" color="val2" } ][: { metatag1="val" metatag2="val2" }]
+      rszLine = rszLine.substr( 1 );
+      return RemoveLine;
+   }
+   else if( szLoadDirective == "%" ) // CHANGE
+   {
+      // Of the form
+      // Sylvan Card Name [{ set="val" color="val2" } ][: { metatag1="val" metatag2="val2" }] ->
+      //   Another Card Name [{ set="val" color="val2" } ][: { metatag1="val" metatag2="val2" }]
+      rszLine = rszLine.substr( 1 );
+      return ChangeLine;
+   }
+   else // ADD
+   {
+      if( szLoadDirective == "+" )
+      {
+         rszLine = rszLine.substr( 1 );
+      }
+      // Of the form
+      // Sylvan Card Name [{ set="val" color="val2" } ][: { metatag1="val" metatag2="val2" }]
+      return AddLine;
+   }
 }
 
 string

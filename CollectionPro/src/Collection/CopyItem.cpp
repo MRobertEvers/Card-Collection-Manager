@@ -39,7 +39,7 @@ CopyItem::CopyItem( const Identifier& aAddrParentIdentifier,
                     const CollectionObject* aptClass )
    : CopyItem(aAddrParentIdentifier, aptClass)
 {
-   for ( auto attr : alstMetaTags )
+   for ( auto& attr : alstMetaTags )
    {
       SetMetaTag( attr.first, attr.second, 
                   DetermineMetaTagType(attr.first), 

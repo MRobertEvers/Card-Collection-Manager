@@ -143,10 +143,9 @@ Collection::LoadCollection( const string& aszFileName,
 void
 Collection::LoadChanges( vector<string> lstLines )
 {
-   vector<string>::iterator iter_Lines = lstLines.begin();
-   for( ; iter_Lines != lstLines.end(); ++iter_Lines )
+   for( auto& szLine : lstLines )
    {
-      loadInterfaceLine( *iter_Lines );
+      loadInterfaceLine( szLine );
    }
 }
 
@@ -238,40 +237,23 @@ Collection::replaceItem( const string& aszName,
    return false;
 }
 
-// May return null depending on input
 void
 Collection::loadInterfaceLine( const string& aszLine )
 {
-   if( aszLine.size() <= 2 ) { return; }
+   string szLine = aszLine;
+   auto iLineType = StringInterface::ParseInterfaceLine( szLine );
 
-   string szTrimmedLine = StringHelper::Str_Trim( aszLine, ' ' );
-
-   string szLoadDirective = szTrimmedLine.substr( 0, 1 );
-
-   if( szLoadDirective == "-" ) // REMOVE
+   if( iLineType == StringInterface::AddLine )
    {
-      szTrimmedLine = szTrimmedLine.substr( 1 );
-      // Of the form ([] meaning optional)
-      // Sylvan Card Name [{ set="val" color="val2" } ][: { metatag1="val" metatag2="val2" }]
-      loadRemoveLine( szTrimmedLine );
+      loadAdditionLine( szLine );
    }
-   else if( szLoadDirective == "%" ) // CHANGE
+   else if( iLineType == StringInterface::RemoveLine )
    {
-      szTrimmedLine = szTrimmedLine.substr( 1 );
-      // Of the form
-      // Sylvan Card Name [{ set="val" color="val2" } ][: { metatag1="val" metatag2="val2" }] ->
-      //   Another Card Name [{ set="val" color="val2" } ][: { metatag1="val" metatag2="val2" }]
-      loadDeltaLine( szTrimmedLine );
+      loadRemoveLine( szLine );
    }
-   else // ADD
+   else if( iLineType == StringInterface::ChangeLine )
    {
-      if( szLoadDirective == "+" )
-      {
-         szTrimmedLine = szTrimmedLine.substr( 1 );
-      }
-      // Of the form
-      // Sylvan Card Name [{ set="val" color="val2" } ][: { metatag1="val" metatag2="val2" }]
-      loadAdditionLine( szTrimmedLine );
+      loadDeltaLine( szLine );
    }
 }
 
