@@ -20,10 +20,10 @@ JSONImporter::~JSONImporter()
 
 
 void 
-JSONImporter::ImportJSON( const std::string& aszFileName )
+JSONImporter::ImportJSON( const string& aszFileName )
 {
    // Verify the file is good before really beginning the function.
-   std::ifstream file(aszFileName);
+   ifstream file(aszFileName);
    if (!file.good())
    {
       return;
@@ -34,7 +34,7 @@ JSONImporter::ImportJSON( const std::string& aszFileName )
 
 
 void 
-JSONImporter::importJSON( std::ifstream& aifstream ) 
+JSONImporter::importJSON( ifstream& aifstream ) 
 {
    nlohmann::json j;
    aifstream >> j;
@@ -62,7 +62,6 @@ JSONImporter::importJSON( const nlohmann::json& ajson )
 
    buildXMLDoc(*mapCardDetails);
 
-   
    for( auto& card : *mapCardDetails )
    {
       delete card.second;
@@ -118,7 +117,7 @@ JSONImporter::buildXMLDoc( const map<string, CardDetails*, sortFunc>& mapDetails
    }
 
    // Save to file
-   std::ofstream file_stored(config->GetSourceFilePath());
+   ofstream file_stored(config->GetSourceFilePath());
    file_stored << *xmlCardDoc;
    file_stored.close();
    xmlCardDoc->clear();
@@ -127,7 +126,7 @@ JSONImporter::buildXMLDoc( const map<string, CardDetails*, sortFunc>& mapDetails
 
 bool 
 JSONImporter::processSet( nlohmann::json& ajsonSet,
-                             std::map<std::string, CardDetails*, sortFunc>* rmapResult )
+                          map<string, CardDetails*, sortFunc>* rmapResult )
 {
    bool bRetval = true;
 
@@ -173,6 +172,7 @@ JSONImporter::processSet( nlohmann::json& ajsonSet,
          CardDetails* Card;
          if( processCard( json_card, szSetName, Card ) )
          {
+            szCardName = StringHelper::Str_Clean( szCardName );
             rmapResult->insert(make_pair(szCardName, Card));
          }
       }
@@ -347,8 +347,8 @@ JSONImporter::updateAttr( const vector<string>& avecKeys,
 // Modifies the delimd string to contain the new val.
 // This makes '-' and illigal character for an Identifying trait.
 bool 
-JSONImporter::ensureUniqueAttr( std::string& rszDelimd,
-                                   const std::string& aszNewVal )
+JSONImporter::ensureUniqueAttr( string& rszDelimd,
+                                   const string& aszNewVal )
 {
    auto vecExistingVals = StringHelper::Str_Split(rszDelimd, "::");
    

@@ -7,8 +7,9 @@
 #include "CollectionObject.h"
 #include "Query.h"
 
-#include<string>
-#include<vector>
+#include <string>
+#include <vector>
+#include <map>
 
 using namespace std;
 
@@ -63,6 +64,17 @@ public:
    //  to a more compact unique representation.
    void CollapseCardLine(string& rszCard, bool abIncludeCount = true);
    void ExpandAdditionLine( string& rszLine );
+
+private:
+   class SourceMapFunctor
+   {
+   public:
+      SourceMapFunctor( char* aiSearchBuffer );
+      ~SourceMapFunctor();
+      bool operator()( const SourceObject& agrpLeft, const SourceObject& agrpRight ) const;
+   private:
+      char* m_charBuffer;
+   };
 
 private:
    bool m_bIsLoaded;

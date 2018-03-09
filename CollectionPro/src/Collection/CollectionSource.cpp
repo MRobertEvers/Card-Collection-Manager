@@ -494,7 +494,7 @@ CollectionSource::loadCard( rapidxml::xml_node<char> * xmlNode_Card )
       if( keyCode != -1 )
       {
          m_iAllCharBuffSize += sO->AddAttribute( szCardKey, xmlNode_CardAttribute->value(),
-            m_AllCharBuff, ms_iMaxBufferSize );
+                                                 m_AllCharBuff, ms_iMaxBufferSize );
       }
 
       xmlNode_CardAttribute = xmlNode_CardAttribute->next_sibling();
@@ -520,13 +520,13 @@ CollectionSource::loadCardToCache( unsigned int iDataBuffInd )
    for( ; iter_Traits != lstAttrRestrictions.end(); ++iter_Traits )
    {
       TraitItem newTrait( iter_Traits->first,
-         iter_Traits->second,
-         config->GetPairedKeysList() );
+                          iter_Traits->second,
+                          config->GetPairedKeysList() );
       lstIdentifyingTraits.push_back( newTrait );
    }
 
    CollectionObject oCard( szCardName, lstStaticAttrs,
-      lstIdentifyingTraits );
+                           lstIdentifyingTraits );
 
    // Store the location of the CollectionObject in the cache
    oSource->SetCacheIndex( m_vecCardCache.size() );
@@ -619,3 +619,22 @@ CollectionSource::finalizeBuffer()
    m_AllCharBuff = newBufferSize;
 }
 
+CollectionSource::
+SourceMapFunctor::SourceMapFunctor(char* aiBuffer)
+   : m_charBuffer(aiBuffer)
+{
+
+}
+
+CollectionSource::
+SourceMapFunctor::~SourceMapFunctor()
+{
+
+}
+
+bool
+CollectionSource::
+SourceMapFunctor::operator()( const SourceObject& agrpLeft, const SourceObject& agrpRight ) const
+{
+   return agrpLeft.GetName( m_charBuffer ) < agrpRight.GetName( m_charBuffer );
+}

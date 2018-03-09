@@ -12,6 +12,7 @@ wxBEGIN_EVENT_TABLE( vCollectionCube, wxPanel )
 EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
 EVT_BUTTON( viCardEditor::Image_Changed, vCollectionCube::onNewItemSelectView )
 EVT_GRID_CELL_LEFT_CLICK( vCollectionCube::onNewItemSelected )
+EVT_BUTTON( viCollectionEditor::Changes_Accept, vCollectionCube::onEditorAccept )
 EVT_BUTTON( viCollectionEditor::Changes_Decline, vCollectionCube::onEditorDecline )
 wxEND_EVENT_TABLE()
 
@@ -48,6 +49,13 @@ vCollectionCube::onNewItemSelected( wxGridEvent& awxEvt )
 {
    notifyCardEditor( awxEvt.GetString() );
    awxEvt.Skip();
+}
+
+void
+vCollectionCube::onEditorAccept( wxCommandEvent& awxEvt )
+{
+   m_vcItemList->RefreshList();
+   this->ivCollectionView::onEditorAccept( awxEvt );
 }
 
 void

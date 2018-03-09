@@ -345,38 +345,36 @@ void Collection::loadDeltaLine( const string& aszLine )
    CollectionObject::PseudoIdentifier sudoNewItem;
    CollectionObject::ParseCardLine( lstOldNew[1], sudoNewItem );
 
-   int iCache;
-   string szUID  = stringIFace.FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );;
-   if( (szUID != "") &&
-       ((iCache = m_ptrCollectionSource->LoadCard( sudoOldItem.Name )) != -1) )
+   auto oldItem = m_ptrCollectionSource->GetCardPrototype( sudoOldItem.Name );
+   if( oldItem.Good() )
    {
-      TryGet<CollectionObject> itemOld; CopyItem* cItem;
-
-      itemOld = m_ptrCollectionSource->GetCardPrototype( iCache );
-      cItem = itemOld->FindCopy( szUID )->get();
-
-      for( size_t i = 0; i < sudoOldItem.Count; i++ )
+      string szUID  = stringIFace.FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );
+      auto cItem = oldItem->FindCopy( szUID );
+      if( cItem.Good() )
       {
-         int iNewCache;
-         if( sudoOldItem.Name == sudoNewItem.Name )
+         for( size_t i = 0; i < sudoOldItem.Count; i++ )
          {
-            ChangeItem( sudoOldItem.Name,
-                        szUID,
-                        sudoNewItem.Identifiers,
-                        sudoNewItem.MetaTags );
-         }
-         else if( (iNewCache = m_ptrCollectionSource->LoadCard( sudoNewItem.Name )) != -1 )
-         {
-            TryGet<CollectionObject> itemNew = m_ptrCollectionSource->
-                                                GetCardPrototype( iNewCache );
-            ReplaceItem( sudoOldItem.Name,
-                         szUID,
-                         sudoNewItem.Name,
-                         sudoNewItem.Identifiers,
-                         sudoNewItem.MetaTags );
+            if( sudoOldItem.Name == sudoNewItem.Name )
+            {
+               ChangeItem( sudoOldItem.Name,
+                           szUID,
+                           sudoNewItem.Identifiers,
+                           sudoNewItem.MetaTags );
+            }
+            else
+            {
+               auto newItem = m_ptrCollectionSource->GetCardPrototype( sudoNewItem.Name );
+               if( newItem.Good() )
+               {
+                  ReplaceItem( sudoOldItem.Name,
+                               szUID,
+                               sudoNewItem.Name,
+                               sudoNewItem.Identifiers,
+                               sudoNewItem.MetaTags );
+               }
+            }
          }
       }
-
    }
 }
 

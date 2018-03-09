@@ -19,6 +19,7 @@ private:
    vcCollectionDeckBoxItemList* m_vcItemList;
 
    void onNewItemSelected(wxListEvent& awxEvt);
+   void onEditorAccept( wxCommandEvent& awxEvt ) override;
    void onCardChanged( wxCommandEvent& awxEvt ) override;
    void buildItemList();
 };

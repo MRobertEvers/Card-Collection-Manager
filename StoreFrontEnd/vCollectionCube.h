@@ -19,6 +19,7 @@ private:
    vcCollectionCubeDisplay* m_vcItemList;
 
    void onNewItemSelected( wxGridEvent& awxEvt );
+   void onEditorAccept( wxCommandEvent& awxEvt ) override;
    void onCardChanged( wxCommandEvent& awxEvt ) override;
    void buildGroupPanel();
 };
