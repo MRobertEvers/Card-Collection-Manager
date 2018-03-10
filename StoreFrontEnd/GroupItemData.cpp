@@ -101,13 +101,12 @@ GroupItemData::GetAttribute(const wxString& aszKey) const
 void 
 GroupItemData::parseLongName(const wxString& aszName)
 {
-   StringInterface parser;
    vector<pair<string, string>> vecIDs;
    vector<pair<string, string>> vecMeta;
    unsigned int Count;
    string Name;
 
-   parser.ParseCardLine( aszName.ToStdString(), Count, Name,
+   StringInterface::ParseCardLine( aszName.ToStdString(), Count, Name,
                          vecIDs, vecMeta );
 
    m_iNumber = Count;
@@ -115,10 +114,9 @@ GroupItemData::parseLongName(const wxString& aszName)
 
    if( vecMeta.size() > 0 )
    {
-      StringInterface szIface;
       for( auto& szMeta : vecMeta )
       {
-         if( szMeta.first == szIface.GetUIDKey() )
+         if( szMeta.first == StringInterface::GetUIDKey() )
          {
             m_vecUIDs.push_back( szMeta.second );
          }

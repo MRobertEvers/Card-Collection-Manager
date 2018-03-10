@@ -7,15 +7,6 @@
 
 using namespace std;
 
-StringInterface::StringInterface()
-{
-}
-
-
-StringInterface::~StringInterface()
-{
-}
-
 // This can handle forms of
 // [[x]<#>] <name> [{<Dets>}] [: {<Meta>}]
 bool 

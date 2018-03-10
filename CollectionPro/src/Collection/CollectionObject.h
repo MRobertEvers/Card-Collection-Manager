@@ -1,11 +1,12 @@
 #pragma once
-#include<string>
-#include<memory>
 #include "../Support/TryGet.h"
 #include "../Support/TypeDefs.h"
 #include "../Addressing/Addresser.h"
 #include "TraitItem.h"
 #include "CopyItem.h"
+
+#include <string>
+#include <memory>
 
 using namespace std;
 

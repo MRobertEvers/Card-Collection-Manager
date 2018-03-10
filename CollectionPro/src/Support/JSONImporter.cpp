@@ -390,9 +390,8 @@ JSONImporter::ensureUniqueAttr( string& rszDelimd,
       vecExistingVals.push_back(aszNewVal);
    }
 
-   StringInterface stringHelper;
-   stringHelper.ListToDelimStr( vecExistingVals.cbegin(),
-                                vecExistingVals.cend(),
-                                rszDelimd, "", "::" );
+   StringInterface::ListToDelimStr( vecExistingVals.cbegin(),
+                                    vecExistingVals.cend(),
+                                    rszDelimd, "", "::" );
    return true;
 }

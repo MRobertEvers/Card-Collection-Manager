@@ -257,7 +257,7 @@ CollectionFactory::getNextChildName(string aszParentID) const
    unsigned int iHighPrime, iHighPrimeIndex, iCurrentSA;
 
    Location currentName(aszParentID);
-   iCurrentSA = currentName.GetAddress();
+   iCurrentSA = currentName.GetSubAddress();
    iHighPrimeIndex = addresser.GetHighPrimeIndex(iCurrentSA);
 
    string szSubAddress;

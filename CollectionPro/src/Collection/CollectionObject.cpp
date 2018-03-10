@@ -1,11 +1,11 @@
 #include "../stdafx.h"
-#include <algorithm>
 #include "CollectionObject.h"
 #include "CopyItem.h"
-
 #include "../Config.h"
 #include "../StringInterface.h"
 
+
+#include <algorithm>
 
 using namespace std;
 
@@ -233,7 +233,6 @@ CollectionObject::GetName() const
 string 
 CollectionObject::GetProtoType() const
 {
-   StringInterface strIface;
    string szResult;
    
    // Start with static common traits
@@ -245,7 +244,7 @@ CollectionObject::GetProtoType() const
    for( auto trait : m_lstIdentifyingTraits )
    {
       auto vals = trait.second.GetAllowedValues();
-      strIface.ListToDelimStr(vals.cbegin(), vals.cend(), szResult);
+      StringInterface::ListToDelimStr(vals.cbegin(), vals.cend(), szResult);
       
       lstAllCommonTraits.push_back(make_pair(trait.second.GetKeyName(), szResult));
    }
@@ -477,7 +476,6 @@ CollectionObject::ToCardLine( const Identifier& aAddrParentID,
                               const Identifier& aAddrCompareID,
                               const unsigned int aiCount)
 {
-   StringInterface parser;
    Config* config = Config::Instance();
    string szAddressKey = CopyItem::GetAddressKey();
    multimap<string, string> mapMetaTags(alstMetaTags.begin(), alstMetaTags.end());
@@ -515,8 +513,8 @@ CollectionObject::ToCardLine( const Identifier& aAddrParentID,
       szRetVal += "x" + to_string(aiCount) + " ";
    }
 
-   szRetVal += parser.ToCardLine( aszName, alstAttrs,
-                                  vector<Tag>(mapMetaTags.begin(), mapMetaTags.end()) );
+   szRetVal += StringInterface::ToCardLine( aszName, alstAttrs,
+                                            vector<Tag>(mapMetaTags.begin(), mapMetaTags.end()) );
 
    return szRetVal;
 }

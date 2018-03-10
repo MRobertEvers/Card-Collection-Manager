@@ -71,6 +71,30 @@ Addresser::GetHighPrime( unsigned int aiComposite ) const
 {
    return Primes[GetHighPrimeIndex(aiComposite)];
 }
+
+vector<unsigned int> 
+Addresser::GetFactors( unsigned int aiGet ) const
+{
+   vector<unsigned int> vecRetVal;
+   vecRetVal.push_back( 1 );
+   for( size_t i = 1; i < Addresser::Primes.size(); i++ )
+   {
+      unsigned int iFactor = Addresser::Primes[i];
+      while( aiGet % Addresser::Primes[i] == 0 )
+      {
+         aiGet = aiGet / Addresser::Primes[i];
+         vecRetVal.push_back( iFactor );
+         iFactor = iFactor * iFactor;
+      }
+
+      if( Addresser::Primes[i] > aiGet )
+      {
+         break;
+      }
+   }
+
+   return vecRetVal;
+}
    
 int 
 Addresser::GetRandom()
@@ -102,9 +126,20 @@ Identifier::IsEmpty() const
 }
 
 vector<unsigned int> 
-Identifier::GetAddresses() const
+Identifier::GetSubAddresses() const
 {
    return m_veciSubAddresses;
+}
+
+vector<Location> 
+Identifier::GetLocations() const
+{
+   vector<Location> vecRetVal;
+   for( auto iSub : m_veciSubAddresses )
+   {
+      vecRetVal.push_back( Location( m_szMain, iSub ) );
+   }
+   return vecRetVal;
 }
 
 string 
@@ -129,10 +164,10 @@ Identifier::GetFullAddress() const
    return szFullString;
 }
 
-Address 
+Location
 Identifier::GetBase() const
 {
-   return Address(GetMain());
+   return Location(GetMain());
 }
 
 Address 
@@ -357,10 +392,11 @@ Address::~Address()
 }
 
 vector<unsigned int> 
-Address::GetAddresses() const
+Address::GetSubAddresses() const
 {
    return m_veciSubAddresses;
 }
+
 
 // Returns true if ANY of the subaddresses of this address
 // is a superset of the location.
@@ -373,7 +409,7 @@ Address::ContainsLocation( const Location& aLoc ) const
    bool bContains = false;
    for( auto iSub : m_veciSubAddresses )
    {
-      if( isSuperSet( iSub, aLoc.GetAddress() ) )
+      if( isSuperSet( iSub, aLoc.GetSubAddress() ) )
       {
          bContains = true;
       }
@@ -385,7 +421,7 @@ Address::ContainsLocation( const Location& aLoc ) const
 bool 
 Address::AddSubAddress( unsigned int aiSub )
 {
-   return addSubAddress(m_veciSubAddresses, aiSub) != 0;
+   return addSubAddress(m_veciSubAddresses, aiSub) > 0;
 }
 
 // TODO: This will completely remove all matchin addresses
@@ -397,7 +433,7 @@ Address::RemoveSubAddress( unsigned int aiSub )
    int iResult = 0;
    int iSetVal = aiSub == 1 ? 0 : aiSub/addresser.GetHighPrime(aiSub);
 
-   for( auto iSub : GetAddresses() )
+   for( auto iSub : GetSubAddresses() )
    {
       if( isSuperSet( aiSub, iSub ) )
       {
@@ -472,28 +508,34 @@ Address::MergeIdentifier( const Identifier& aID )
 {
    if( GetMain() != aID.GetMain() ){ return false; }
 
-   for( auto iSub : aID.GetAddresses() )
+   for( auto iSub : aID.GetSubAddresses() )
    {
-      AddSubAddress(iSub);
+      return AddSubAddress(iSub);
    }
 
    return true;
 }
 
-bool 
+std::vector<Location>
 Address::ExtractIdentifier( const Identifier& aID )
 {
-   if( GetMain() != aID.GetMain() ){ return false; }
+   std::vector<Location> vecRetVal;
+   if( GetMain() != aID.GetMain() ){ return vecRetVal; }
 
    bool bResult = false;
    // This tries to remove all the addresses,
    // regardless of whether they are present or not.
-   for( auto iSub : aID.GetAddresses() )
+   for( auto iSub : aID.GetSubAddresses() )
    {
-      bResult |= RemoveSubAddress(iSub) != 0;
+      bool bSub = RemoveSubAddress( iSub ) != 0;
+      bResult |= bSub;
+      if( bSub )
+      {
+         vecRetVal.push_back( Location( GetMain(), iSub ) );
+      }
    }
 
-   return bResult;
+   return vecRetVal;
 }
 
 Location::Location()
@@ -537,10 +579,10 @@ Location::IsSpecifiedBy( const Address& aAddress ) const
    if (aAddress.GetMain() != GetMain()) { return false; }
 
    bool bFoundSubAddressMatch = false;
-   auto vecSAs = aAddress.GetAddresses();
+   auto vecSAs = aAddress.GetSubAddresses();
    for( auto iSub : vecSAs )
    {
-      bool bIsSuper = isSuperSet(GetAddress(), iSub);
+      bool bIsSuper = isSuperSet(GetSubAddress(), iSub);
       if( bIsSuper ) 
       {
          //rAddrIn.AddSubAddress(iSub);
@@ -552,13 +594,28 @@ Location::IsSpecifiedBy( const Address& aAddress ) const
 }
 
 vector<unsigned int> 
-Location::GetAddresses() const
+Location::GetSubAddresses() const
 {
    return vector<unsigned int>(1, m_iAddress);
 }
 
+vector<Location> 
+Location::GetLocationsSpecified() const
+{
+   vector<Location> vecRetVal;
+   Addresser addr;
+   auto vecLocId = addr.GetFactors( m_iAddress );
+   for( auto& locAddr : vecLocId )
+   {
+      Location loc = Location( m_szMain, locAddr );
+      vecRetVal.push_back( loc );
+   }
+
+   return vecRetVal;
+}
+
 unsigned int 
-Location::GetAddress() const
+Location::GetSubAddress() const
 {
    return m_iAddress;
 }

@@ -263,7 +263,6 @@ void Collection::loadAdditionLine( const string& aszLine )
    string szLine = aszLine;
    Address aParentAddress;
    CollectionObject::PseudoIdentifier sudoItem;
-   StringInterface stringIFace;
    bool bThisIsParent = true;
 
    // Convert the line to the official form if needed.
@@ -271,11 +270,11 @@ void Collection::loadAdditionLine( const string& aszLine )
 
    CollectionObject::ParseCardLine( szLine, sudoItem );
 
-   auto szAddr = stringIFace.FindTagInList( sudoItem.MetaTags, CopyItem::GetAddressKey() );
+   auto szAddr = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetAddressKey() );
    if( szAddr != "" )
    {
       aParentAddress = Address( szAddr );
-      szID = stringIFace.FindTagInList( sudoItem.MetaTags, CopyItem::GetHashKey() );
+      szID = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetHashKey() );
       bThisIsParent = !(aParentAddress == GetIdentifier());
    }
 
@@ -302,13 +301,12 @@ void Collection::loadAdditionLine( const string& aszLine )
 // This needs "Card Name : { __hash="hashval" }" All other values are irrelevant.
 void Collection::loadRemoveLine( const string& aszLine )
 {
-   StringInterface stringIFace;
    CollectionObject::PseudoIdentifier sudoItem;
    CollectionObject::ParseCardLine( aszLine, sudoItem );
 
    for( size_t i = 0; i < sudoItem.Count; i++ )
    {
-      string szUID = stringIFace.FindTagInList( sudoItem.MetaTags, CopyItem::GetUIDKey() );;
+      string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetUIDKey() );;
       if( szUID != "" )
       {
          RemoveItem( sudoItem.Name, szUID );
@@ -318,7 +316,6 @@ void Collection::loadRemoveLine( const string& aszLine )
 }
 void Collection::loadDeltaLine( const string& aszLine )
 {
-   StringInterface stringIFace;
    vector<string> lstOldNew = StringHelper::Str_Split( aszLine, "->" );
 
    CollectionObject::PseudoIdentifier sudoOldItem;
@@ -330,7 +327,7 @@ void Collection::loadDeltaLine( const string& aszLine )
    auto oldItem = m_ptrCollectionSource->GetCardPrototype( sudoOldItem.Name );
    if( oldItem.Good() )
    {
-      string szUID  = stringIFace.FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );
+      string szUID  = StringInterface::FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );
       auto cItem = oldItem->FindCopy( szUID );
       if( cItem.Good() )
       {

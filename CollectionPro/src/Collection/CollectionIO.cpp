@@ -282,8 +282,6 @@ bool
 CollectionIO::loadOverheadFile()
 {
    // Requres the collection file name.
-
-   StringInterface stringIFace;
    vector<string> vecCollectionPropertyLines;
 
    // Get the overhead file name.
@@ -297,7 +295,7 @@ CollectionIO::loadOverheadFile()
    // b. Store off the processing (like post-load actions) lines in the ovh file.
    for( auto& szLine : vecCollectionPropertyLines )
    {
-      if( stringIFace.IsCollectionOverheadPropertyLine( szLine ) )
+      if( StringInterface::IsCollectionOverheadPropertyLine( szLine ) )
       {
          m_ptLoadToken->OverheadPropertyLines.push_back( szLine );
          storeOverheadProperyLineValue( szLine );

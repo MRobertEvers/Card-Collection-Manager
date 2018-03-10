@@ -13,7 +13,8 @@ public:
    int GetLowPrime(unsigned int aiComposite) const;
    int GetHighPrimeIndex(unsigned int aiComposite) const;
    int GetHighPrime(unsigned int aiComposite) const;
-   
+   std::vector<unsigned int> GetFactors( unsigned int ) const;
+
    int GetRandom();
 private:
    static const std::vector<int> Primes;
@@ -21,6 +22,7 @@ private:
 };
 
 class Address;
+class Location;
 class Identifier
 {
 public:
@@ -29,13 +31,14 @@ public:
    ~Identifier();
 
    virtual bool IsEmpty() const;
-   virtual std::vector<unsigned int> GetAddresses() const = 0;
+   virtual std::vector<unsigned int> GetSubAddresses() const;
+   virtual std::vector<Location> GetLocations() const;
 
    std::string GetMain() const;
    std::string GetFullAddress() const;
-   Address GetBase() const;
+   Location GetBase() const;
 
-   Address ToAddress() const;
+   virtual Address ToAddress() const;
    
    bool operator==(const Identifier& rhs) const;
    bool operator!=(const Identifier& rhs) const;
@@ -63,14 +66,14 @@ public:
    Address(const std::string& aszId);
    ~Address();
 
-   std::vector<unsigned int> GetAddresses() const override;
+   std::vector<unsigned int> GetSubAddresses() const override;
 
    bool ContainsLocation(const Location& aLoc) const;
    bool AddSubAddress(unsigned int aiSub);
    int RemoveSubAddress(unsigned int aiSub);
    int SetSubAddress(unsigned int aiAlreadySub, unsigned int aiSub);
    bool MergeIdentifier(const Identifier& aID);
-   bool ExtractIdentifier(const Identifier& aID);
+   std::vector<Location> ExtractIdentifier(const Identifier& aID);
 private:
 
 };
@@ -84,8 +87,9 @@ public:
    ~Location();
 
    bool IsSpecifiedBy(const Address& aAddr) const;
-   std::vector<unsigned int> GetAddresses() const override;
-   unsigned int GetAddress() const;
+   std::vector<unsigned int> GetSubAddresses() const override;
+   std::vector<Location> GetLocationsSpecified() const;
+   unsigned int GetSubAddress() const;
 
    Address ToAddress() const;
 

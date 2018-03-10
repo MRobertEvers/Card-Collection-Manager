@@ -137,6 +137,15 @@
     <ClInclude Include="src\Config.h">
       <Filter>StoreFront</Filter>
     </ClInclude>
+    <ClInclude Include="src\Collection\AddressBook.h">
+      <Filter>Collection\DataHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\CollectionLedger.h">
+      <Filter>Collection\DataHelpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\Ledger.h">
+      <Filter>Collection\DataHelpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp">
@@ -219,6 +228,15 @@
     </ClCompile>
     <ClCompile Include="src\Config.cpp">
       <Filter>StoreFront</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\AddressBook.cpp">
+      <Filter>Collection\DataHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\CollectionLedger.cpp">
+      <Filter>Collection\DataHelpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\Ledger.cpp">
+      <Filter>Collection\DataHelpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

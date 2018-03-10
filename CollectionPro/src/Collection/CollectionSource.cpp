@@ -361,13 +361,12 @@ CollectionSource::CollapseCardLine( string& rszCard, bool abIncludeCount )
       // A list of each key needed to identify a card.
       // Use the first of a pair for paired keys.
       vector<string> vecImportantValues;
-      StringInterface stringIFace;
       auto oCard = GetCardPrototype( oParser.Name );
       if( oCard.Good() )
       {
          for( auto keepKey : vecIdentifyingKeys )
          {
-            string szFoundValue = stringIFace.FindTagInList( oParser.Identifiers, keepKey );
+            string szFoundValue = StringInterface::FindTagInList( oParser.Identifiers, keepKey );
 
             if( szFoundValue != "" )
             {

@@ -7,7 +7,6 @@ vector<CELIOption>
 CELIOption::ParseCollectionItemsList( const vector<string>& avecItems )
 {
    StoreFront* ptSF = StoreFrontEnd::Server();
-   StringInterface parser;
 
    vector<CELIOption> vecRetVal;
    for( auto& id : avecItems )
@@ -17,7 +16,7 @@ CELIOption::ParseCollectionItemsList( const vector<string>& avecItems )
       vector<pair<string, string>> Identifiers;
       vector<pair<string, string>> MetaTags;
 
-      parser.ParseCardLine( id, Count, Name, Identifiers, MetaTags );
+      StringInterface::ParseCardLine( id, Count, Name, Identifiers, MetaTags );
 
       CELIOption option;
       option.Display = ptSF->CollapseCardLine( id, false );

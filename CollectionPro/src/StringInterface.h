@@ -19,9 +19,6 @@ public:
    };
 
 public:
-   StringInterface();
-   ~StringInterface();
-
    static bool ParseCardLine( const string& aszLine,
                               unsigned int& riCount,
                               string& rszName,
@@ -65,14 +62,14 @@ public:
    static string GetHashKey();
    static string GetAddressKey();
 
-   bool IsCollectionOverheadPropertyLine( const string& aszLine );
+   static bool IsCollectionOverheadPropertyLine( const string& aszLine );
 public:
    template<class Iter> static
    bool ListToDelimStr( const Iter aptBegin,
                         const Iter aptEnd,
                         string& rszResult,
                         const string& aszIndicatorString = "*",
-                        const string& aszDelim = "::" ) const
+                        const string& aszDelim = "::" )
    {
       string szResult = aszIndicatorString;
       Iter iter = aptBegin;
@@ -88,7 +85,7 @@ public:
    template<class Iter> static
    bool PairListToTagStr( const Iter aptBegin,
                           const Iter aptEnd,
-                          string& rszResult ) const
+                          string& rszResult )
    {
       string szResult = "{ ";
       Iter iter = aptBegin;

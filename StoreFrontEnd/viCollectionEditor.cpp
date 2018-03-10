@@ -215,7 +215,6 @@ viCollectionEditor::onDropDownDelay(wxTimerEvent& event)
 void 
 viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
 {
-   StringInterface parser;
    std::vector<std::string> vecCmds;
    // Go through each of the list items. Construct the command, then
    // Send it to the server.
@@ -226,26 +225,26 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
       {
          // Its an addition.
          szCmd =
-            parser.CmdCreateAddition( deltaItem.DisplayOne.ToStdString(),
-                                      deltaItem.SelectionOne.ToStdString());
+            StringInterface::CmdCreateAddition( deltaItem.DisplayOne.ToStdString(),
+                                                deltaItem.SelectionOne.ToStdString());
       }
       else if(deltaItem.DisplayTwo == "")
       {
          // Its a remove
          szCmd =
-            parser.CmdCreateRemove( deltaItem.DisplayOne.ToStdString(),
-                                    deltaItem.SelectionOne.ToStdString());
+            StringInterface::CmdCreateRemove( deltaItem.DisplayOne.ToStdString(),
+                                              deltaItem.SelectionOne.ToStdString());
       }
       else
       {
          // Its a replace.
          szCmd =
-            parser.CmdCreateReplace(deltaItem.DisplayOne.ToStdString(),
-                                    deltaItem.SelectionOne.ToStdString(),
-                                    deltaItem.DisplayTwo.ToStdString(),
-                                    deltaItem.SelectionTwo.ToStdString());
+            StringInterface::CmdCreateReplace( deltaItem.DisplayOne.ToStdString(),
+                                               deltaItem.SelectionOne.ToStdString(),
+                                               deltaItem.DisplayTwo.ToStdString(),
+                                               deltaItem.SelectionTwo.ToStdString() );
       }
-      szCmd = parser.CmdAppendCount(szCmd, deltaItem.Count);
+      szCmd = StringInterface::CmdAppendCount(szCmd, deltaItem.Count);
       vecCmds.push_back(szCmd);
    }
 

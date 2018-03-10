@@ -176,7 +176,6 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
    m_szColID = aszColID;
 
    StoreFront* ptSF = StoreFrontEnd::Server();
-   StringInterface parser;
    std::vector<std::string> vecItems;
    Query query;
    query.FindHash( aszCardHash.ToStdString() );
@@ -193,7 +192,7 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
       vector<pair<string, string>> Identifiers;
       vector<pair<string, string>> MetaTags;
 
-      parser.ParseCardLine( item, Count, Name, Identifiers, MetaTags );
+      StringInterface::ParseCardLine( item, Count, Name, Identifiers, MetaTags );
       m_szCardName = Name;
 
       auto mapOptions = ptSF->GetIdentifyingAttributeOptions( Name );
@@ -318,7 +317,6 @@ viCardEditor::submitChangesToServer()
    // Returns a list of modified UIDs.
    std::vector<std::string> vecRetVal;
 
-   StringInterface stringEditor;
    auto ptSF = StoreFrontEnd::Server();
 
    auto mapEditedTraits = m_wxTraitList->GetCurrentSelections();
@@ -338,9 +336,9 @@ viCardEditor::submitChangesToServer()
       if( item.second )
       {
          iChanged++;
-         std::string szChangeCmd = stringEditor.CmdCreateModify( m_szCardName.ToStdString(),
-                                                                 item.first.ToStdString(),
-                                                                 vecStringCmds );
+         std::string szChangeCmd = StringInterface::CmdCreateModify( m_szCardName.ToStdString(),
+                                                                     item.first.ToStdString(),
+                                                                     vecStringCmds );
          vecBulkChanges.push_back( szChangeCmd );
          vecRetVal.push_back( item.first.ToStdString() );
       }

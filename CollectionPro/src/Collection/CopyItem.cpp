@@ -10,14 +10,11 @@
 
 using namespace std;
 
-CopyItem::CopyItem( const Identifier& aAddrParentIdentifier,
-                    const CollectionObject* aptClass )
+CopyItem::CopyItem( const CollectionObject* aptClass )
    : m_ptCollectionObject( aptClass )
 {
    Addresser addr;
    Config* config = Config::Instance();
-
-   SetParent(aAddrParentIdentifier);
 
    // Set the chain ID and session here. 
    // If one is set later, it will just overwrite this...
@@ -34,10 +31,9 @@ CopyItem::~CopyItem()
    m_lstMetaTags.clear();
 }
 
-CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, 
-                    const std::vector<Tag>& alstMetaTags,
+CopyItem::CopyItem( const std::vector<Tag>& alstMetaTags,
                     const CollectionObject* aptClass )
-   : CopyItem(aAddrParentIdentifier, aptClass)
+   : CopyItem(aptClass)
 {
    for ( auto& attr : alstMetaTags )
    {
@@ -56,7 +52,7 @@ string CopyItem::GetHash(HashType aiHashType)
         ( m_bNeedHash ) || 
         ( aiHashType != HashType::Default ) )
    {
-      string szHashString = m_Address.GetFullAddress();
+      string szHashString = m_ptAddressBook->GetParent();
       if( ( aiHashType & HashType::Ids ) == Ids )
       {
          auto iter_Tags = m_lstIdentifyingTags.begin();
@@ -110,17 +106,19 @@ std::string CopyItem::GetUID() const
 bool 
 CopyItem::IsVirtual() const
 {
-   return m_Address.GetFullAddress() == "";
+   return m_ptAddressBook->IsVirtual();
 }
 
-string CopyItem::GetParent() const
+string 
+CopyItem::GetParent() const
 {
-   return m_Address.GetFullAddress();
+   return m_ptAddressBook->GetParent();
 }
 
-Address CopyItem::GetAddress() const
+Address 
+CopyItem::GetAddress() const
 {
-   return m_Address;
+   return m_ptAddressBook->GetAddress();
 }
 
 // Returns true if the location is specifically within the address of this copy.
@@ -131,26 +129,17 @@ bool CopyItem::IsParent(const Location& aAddrParent) const
    // in this result.
    // If the location is designated by this copies address,
    // this copies lies within that location.
-   return aAddrParent.IsSpecifiedBy(m_Address);
+   return m_ptAddressBook->IsParent( aAddrParent );
 }
 
 // Sets the parent address AND adds it to residents
 void CopyItem::SetParent( const Identifier& aAddrTestAddress )
 {
    string szParent = aAddrTestAddress.GetFullAddress();
-   setParent( szParent );
-   setMetaTag( GetAddressKey(), szParent, Public, false );
    
-   int iFamily = findFamilyMember(aAddrTestAddress);
-   if( iFamily != -1 )
-   {
-      m_lstResidentIn[iFamily] = aAddrTestAddress.ToAddress();
-   }
-   else
-   {
-      AddResident(aAddrTestAddress);
-   }
+   m_ptAddressBook->SetParent( aAddrTestAddress );
 
+   setMetaTag( GetAddressKey(), szParent, Public, false );
    itemChanged();
 }
 
@@ -158,88 +147,37 @@ void CopyItem::SetParent( const Identifier& aAddrTestAddress )
 // if so, it will adjust the parent address.
 void CopyItem::AddResident(const Identifier& aAddrAddress)
 {
-   m_Address.MergeIdentifier(aAddrAddress);
-
-   bool AddedToRef = false;
-   for( int i = 0; i < m_lstResidentIn.size(); i++ )
-   {
-      auto address = &m_lstResidentIn[i];
-      AddedToRef |= address->MergeIdentifier( aAddrAddress );
-   }
-
-   if( !AddedToRef )
-   {
-      m_lstResidentIn.push_back(aAddrAddress.ToAddress());
-   }
+   return m_ptAddressBook->AddResident( aAddrAddress );
 }
 
 // Returns the number of collection chains this copy is referenced in.
 // Main collection counts as one.
 int 
 CopyItem::RemoveResident( const Identifier& aAddrAddress,
-                          RemoveAddressType aiRemoveType )
+                          unsigned int aiRemoveType )
 {
-   Address removeAddress(aAddrAddress.GetFullAddress());
-   if( aiRemoveType == Family )
-   {
-      removeAddress = aAddrAddress.GetBase();
-   }
 
-   m_Address.ExtractIdentifier(removeAddress);
-
-   for( int i = 0; i < m_lstResidentIn.size(); i++ )
-   {
-      if( m_lstResidentIn.at(i).ExtractIdentifier( removeAddress ) )
-      {
-         if( m_lstResidentIn.at(i).IsEmpty() )
-         {
-            // This is OK because we stop after this.
-            m_lstResidentIn.erase( m_lstResidentIn.begin() + i );
-         }
-         break;
-      }
-   }
-
-   // If there are no residents left, this copy item becomes virtual.
-   if( m_Address.IsEmpty() )
-   {
-      m_Address = Address();
-   }
- 
-   return ( m_Address.IsEmpty() ? 0 : 1 ) + m_lstResidentIn.size();
 }
 
-std::vector<Address> CopyItem::GetResidentIn() const
+std::vector<Address> 
+CopyItem::GetResidentIn() const
 {
-   return m_lstResidentIn;
+   return m_ptAddressBook->GetResidentIn();
 }
 
 // Returns true if this card is located in aAddrTest or if
 // it is referenced in aAddrTest.
-bool CopyItem::IsResidentIn(const Location& aAddrTest) const
+bool 
+CopyItem::IsResidentIn(const Location& aAddrTest) const
 {
-   bool isResident = aAddrTest.IsSpecifiedBy(m_Address);
-
-   if( !isResident )
-   {
-      isResident |= IsReferencedBy(aAddrTest);
-   }
-
-   return isResident;
+   return m_ptAddressBook->IsResidentIn( aAddrTest );
 }
 
 // Returns true if any resident references the input location.
-bool CopyItem::IsReferencedBy(const Location& aAddrTest) const
+bool 
+CopyItem::IsReferencedBy(const Location& aAddrTest) const
 {
-   bool isResident = false;
-
-   for( auto resident : m_lstResidentIn )
-   {
-      isResident |= aAddrTest.IsSpecifiedBy(resident);
-      if( isResident ){ break; }
-   }
-
-   return isResident;
+   return m_ptAddressBook->IsReferencedBy( aAddrTest );
 }
 
 
@@ -249,7 +187,9 @@ CopyItem::CreateCopyItem( const CollectionObject* aoConstructor,
                           const std::vector<Tag>& alstIDAttrs,
                           const std::vector<Tag>& alstMetaTags )
 {
-   auto newCopy = shared_ptr<CopyItem>(new CopyItem( aAddrParentIdentifier, alstMetaTags, aoConstructor ));
+   auto newCopy = shared_ptr<CopyItem>(new CopyItem( alstMetaTags, aoConstructor ));
+
+   newCopy->SetAddressBook( new AddressBook( aAddrParentIdentifier, newCopy ) );
 
    aoConstructor->SetIdentifyingTraitDefaults(newCopy);
 
@@ -328,7 +268,7 @@ CopyItem::SetMetaTag( const std::string& aszKey,
 {
    if( aszKey == GetAddressKey() )
    {
-      setParent( aszVal );
+      m_ptAddressBook->SetParent( Address(aszVal) );
    }
    else
    {
@@ -404,8 +344,16 @@ vector<Tag> CopyItem::GetIdentifyingAttributes() const
    return vector<Tag>(m_lstIdentifyingTags.begin(), m_lstIdentifyingTags.end());
 }
 
+void 
+CopyItem::SetAddressBook( AddressBook* aptAddressBook )
+{
+   // TAKES OWNERSHIP!
+   m_ptAddressBook = std::unique_ptr<AddressBook>(aptAddressBook);
+}
 
-void CopyItem::itemChanged()
+
+void 
+CopyItem::itemChanged()
 {
    long lChangeTime = time(nullptr);
    stringstream ss;
@@ -417,14 +365,6 @@ void CopyItem::itemChanged()
 void CopyItem::setUID(string aszNewID)
 {
    SetMetaTag(GetUIDKey(), aszNewID, MetaTagType::Tracking, false);
-}
-
-// Does not update session
-void CopyItem::setParent(string aszNewParent)
-{
-   Address newAddress( aszNewParent );
-
-   m_Address = newAddress;
 }
 
 void 
@@ -455,19 +395,4 @@ CopyItem::setMetaTag( const std::string& aszKey,
       }
    }
    m_bNeedHash = true;
-}
-
-int
-CopyItem::findFamilyMember( const Identifier& aId ) const
-{
-   for( int i = 0; i < 0; i++ )
-   {
-      auto address = m_lstResidentIn.at(i);
-      if( address.GetMain() == aId.GetMain() )
-      {
-         return i;
-      }
-   }
-
-   return -1;
 }

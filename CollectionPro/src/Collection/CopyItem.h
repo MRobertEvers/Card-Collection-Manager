@@ -1,6 +1,7 @@
 #pragma once
 #include "MetaTag.h"
 #include "TraitItem.h"
+#include "AddressBook.h"
 #include "../Addressing/Addresser.h"
 
 #include <string>
@@ -18,12 +19,6 @@ class CollectionObject;
 class CopyItem
 {
 public:
-   enum RemoveAddressType : int
-   {
-      Individual = 0x0,
-      Family = 0x1
-   };
-
    enum HashType : int
    {
       Ids = 0x2,
@@ -33,10 +28,8 @@ public:
 
 private:
    // Use static constructor to build this class.
-   CopyItem( const Identifier& aAddrParentIdentifier, 
-             const CollectionObject* aptClass );
-   CopyItem( const Identifier& aAddrParentIdentifier, 
-             const std::vector<Tag>& alstMetaTags,
+   CopyItem( const CollectionObject* aptClass );
+   CopyItem( const std::vector<Tag>& alstMetaTags,
              const CollectionObject* aptClass);
 
 public:
@@ -53,9 +46,10 @@ public:
    bool IsParent( const Location& aAddrTestAddress ) const;
    std::string GetParent() const;
 
-   void AddResident(const Identifier& aAddrAddress);
+   void AddResident( const Identifier& aAddrAddress );
    int RemoveResident( const Identifier& aAddrAddress,
-                       RemoveAddressType aiRemoveType = Individual );
+                       unsigned int aiRemoveType = 0 );
+
    bool IsResidentIn( const Location& aAddrAddress ) const;
    bool IsReferencedBy( const Location& aAddrAddress ) const;
    std::vector<Address> GetResidentIn() const;
@@ -72,28 +66,26 @@ public:
    bool SetIdentifyingAttribute( const std::string& aszKey,
                                  const std::string& aszValue,
                                  bool bTimeChange = true );
+
    std::string GetIdentifyingAttribute(std::string aszKey);
    std::vector<Tag> GetIdentifyingAttributes() const;
+
+   void SetAddressBook( AddressBook* aptAddressBook );
+
 private:
    bool m_bNeedHash;
 
    // I didn't want to do this. But here I am.
    const CollectionObject* m_ptCollectionObject;
 
-   // Includes <Address>-<SubAddress1>,<SubAddress2>...
-   // SubAddressX's smallest prime factor is the xth prime.
-   Address m_Address;
-   std::vector<Address> m_lstResidentIn;
+   std::unique_ptr<AddressBook> m_ptAddressBook;
 
    void itemChanged();
    void setUID(std::string aszNewID);
-   void setParent(std::string aszNewParent);
    void setMetaTag( const std::string& aszKey,
                     const std::string& aszVal,
                     MetaTagType atagType,
                     bool bTimeChange = true );
-
-   int findFamilyMember(const Identifier& aId) const;
 
    std::map<std::string, MetaTag> m_lstMetaTags;
    std::map<std::string, std::string> m_lstIdentifyingTags;

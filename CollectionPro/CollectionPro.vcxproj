@@ -129,15 +129,18 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Addressing\Addresser.h" />
+    <ClInclude Include="src\Collection\AddressBook.h" />
     <ClInclude Include="src\Collection\Collection.h" />
     <ClInclude Include="src\Collection\CollectionDetails.h" />
     <ClInclude Include="src\Collection\CollectionFactory.h" />
     <ClInclude Include="src\Collection\CollectionIO.h" />
+    <ClInclude Include="src\Collection\CollectionLedger.h" />
     <ClInclude Include="src\Collection\CollectionObject.h" />
     <ClInclude Include="src\Collection\CollectionQueryHelper.h" />
     <ClInclude Include="src\Collection\CollectionSource.h" />
     <ClInclude Include="src\Collection\CollectionTracker.h" />
     <ClInclude Include="src\Collection\CopyItem.h" />
+    <ClInclude Include="src\Collection\Ledger.h" />
     <ClInclude Include="src\Collection\MetaTag.h" />
     <ClInclude Include="src\Collection\Query.h" />
     <ClInclude Include="src\Collection\SourceObject.h" />
@@ -164,15 +167,18 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Addressing\Addresser.cpp" />
+    <ClCompile Include="src\Collection\AddressBook.cpp" />
     <ClCompile Include="src\Collection\Collection.cpp" />
     <ClCompile Include="src\Collection\CollectionDetails.cpp" />
     <ClCompile Include="src\Collection\CollectionFactory.cpp" />
     <ClCompile Include="src\Collection\CollectionIO.cpp" />
+    <ClCompile Include="src\Collection\CollectionLedger.cpp" />
     <ClCompile Include="src\Collection\CollectionObject.cpp" />
     <ClCompile Include="src\Collection\CollectionQueryHelper.cpp" />
     <ClCompile Include="src\Collection\CollectionSource.cpp" />
     <ClCompile Include="src\Collection\CollectionTracker.cpp" />
     <ClCompile Include="src\Collection\CopyItem.cpp" />
+    <ClCompile Include="src\Collection\Ledger.cpp" />
     <ClCompile Include="src\Collection\MetaTag.cpp" />
     <ClCompile Include="src\Collection\SourceObject.cpp" />
     <ClCompile Include="src\Collection\TraitItem.cpp" />
