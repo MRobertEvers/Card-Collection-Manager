@@ -13,7 +13,7 @@ public:
    int GetLowPrime(unsigned int aiComposite) const;
    int GetHighPrimeIndex(unsigned int aiComposite) const;
    int GetHighPrime(unsigned int aiComposite) const;
-   std::vector<unsigned int> GetFactors( unsigned int ) const;
+   unsigned int PopFactor( unsigned int ) const;
 
    int GetRandom();
 private:
@@ -73,7 +73,7 @@ public:
    int RemoveSubAddress(unsigned int aiSub);
    int SetSubAddress(unsigned int aiAlreadySub, unsigned int aiSub);
    bool MergeIdentifier(const Identifier& aID);
-   std::vector<Location> ExtractIdentifier(const Identifier& aID);
+   bool ExtractIdentifier(const Identifier& aID);
 private:
 
 };

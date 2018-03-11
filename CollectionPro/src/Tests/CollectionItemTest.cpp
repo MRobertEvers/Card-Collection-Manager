@@ -124,7 +124,7 @@ CollectionItemTest::FindCopies_Virtual_Test()
    int iVirtualCopies = testItem.FindCopies(copyParent, Virtual).size();
 
    // Make the copy virtual.
-   copy->RemoveResident(copyParent, CopyItem::Family);
+   //copy->RemoveResident(copyParent, CopyItem::Family);
 
    // Need to add this back. This will not change the parent from ""
    copy->AddResident(copyParent);

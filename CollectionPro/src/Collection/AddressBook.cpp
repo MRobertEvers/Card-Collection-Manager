@@ -1,16 +1,17 @@
 #include "AddressBook.h"
 #include "CollectionLedger.h"
+#include "CopyItem.h"
 
 AddressBook::AddressBook( const Identifier& aAddrParentIdentifier,
-                          std::shared_ptr<CopyItem> aptOwner )
+                          CopyItem* aptOwner )
+   : m_ptOwner(aptOwner)
 {
-
-
+   SetParent( aAddrParentIdentifier );
 }
 
 AddressBook::~AddressBook()
 {
-
+   RemoveResident( GetAddress(), RemoveAddressType::Family );
 }
 
 // Sets the parent address AND adds it to residents
@@ -55,18 +56,28 @@ AddressBook::GetParent() const
 void 
 AddressBook::AddResident( const Identifier& aAddrAddress )
 {
-   m_Address.MergeIdentifier( aAddrAddress );
+   if( m_Address.MergeIdentifier( aAddrAddress ) )
+   {
+      ledgerOwned( m_Address );
+   }
 
    bool AddedToRef = false;
    for( int i = 0; i < m_vecResidentIn.size(); i++ )
    {
       auto address = &m_vecResidentIn[i];
-      AddedToRef |= address->MergeIdentifier( aAddrAddress );
+      bool bRefAdd = address->MergeIdentifier( aAddrAddress );
+      if( bRefAdd )
+      {
+         ledgerPresent( *address );
+      }
+
+      AddedToRef |= bRefAdd;
    }
 
    if( !AddedToRef )
    {
       m_vecResidentIn.push_back( aAddrAddress.ToAddress() );
+
    }
 }
 
@@ -80,12 +91,16 @@ AddressBook::RemoveResident( const Identifier& aAddrAddress,
       removeAddress = aAddrAddress.GetBase();
    }
 
-   m_Address.ExtractIdentifier( removeAddress );
+   if( m_Address.ExtractIdentifier( removeAddress ) )
+   {
+      unledgerOwned( removeAddress );
+   }
 
    for( int i = 0; i < m_vecResidentIn.size(); i++ )
    {
-      if( m_vecResidentIn.at( i ).ExtractIdentifier( removeAddress ).size() > 0 )
+      if( m_vecResidentIn.at( i ).ExtractIdentifier( removeAddress ) )
       {
+         unledgerPresent( removeAddress );
          if( m_vecResidentIn.at( i ).IsEmpty() )
          {
             // This is OK because we stop after this.
@@ -143,26 +158,72 @@ AddressBook::GetResidentIn() const
 void 
 AddressBook::ledgerOwned( const Identifier& aOwned )
 {
+   if( m_ptOwner == nullptr )
+   {
+      return;
+   }
+
    for( auto& loc : aOwned.GetLocations() )
    {
-      auto findLedger = CollectionLedger::Lookup( loc );
-      if( findLedger.Good() )
+      auto node = CollectionLedger::GetFamilyNode( loc );
+      if( node.Good() )
       {
-         auto ledger = *findLedger.Value();
-         ledger->AddOwned( m_ptOwner );
+         auto colNode = *node.Value();
+         while( colNode != nullptr )
+         {
+            if( !colNode->IsVirtual() )
+            {
+               auto ledger = colNode->GetLedger();
+               if( !ledger->AddOwned( m_ptOwner ) )
+               {
+                  // Break here because all parents will have it.
+                  break;
+               }
+            }
+
+            colNode = colNode->GetParent();
+         }
       }
    }
 }
+
+void 
+AddressBook::ledgerOwned( const Address& aOwned )
+{
+   for( auto& locs : aOwned.GetLocations() )
+   {
+      ledgerOwned( locs );
+   }
+}
+
 void 
 AddressBook::ledgerPresent( const Identifier& aOwned )
 {
+   if( m_ptOwner == nullptr )  
+   {
+      return;
+   }
+
    for( auto& loc : aOwned.GetLocations() )
    {
-      auto findLedger = CollectionLedger::Lookup( loc );
-      if( findLedger.Good() )
+      auto node = CollectionLedger::GetFamilyNode( loc );
+      if( node.Good() )
       {
-         auto ledger = *findLedger.Value();
-         ledger->AddPresent( m_ptOwner );
+         auto colNode = *node.Value();
+         while( colNode != nullptr )
+         {
+            if( !colNode->IsVirtual() )
+            {
+               auto ledger = colNode->GetLedger();
+               if( !ledger->AddPresent( m_ptOwner ) )
+               {
+                  // Break here because all parents will have it.
+                  break;
+               }
+            }
+
+            colNode = colNode->GetParent();
+         }
       }
    }
 }
@@ -170,14 +231,41 @@ AddressBook::ledgerPresent( const Identifier& aOwned )
 void 
 AddressBook::unledgerOwned( const Identifier& aOwned )
 {
+   if( m_ptOwner == nullptr )
+   {
+      return;
+   }
+
    for( auto& loc : aOwned.GetLocations() )
    {
-      auto findLedger = CollectionLedger::Lookup( loc );
-      if( findLedger.Good() )
+      auto node = CollectionLedger::GetFamilyNode( loc );
+      if( node.Good() )
       {
-         auto ledger = *findLedger.Value();
+         auto colNode = *node.Value();
+         unledger( colNode, false );
+      }
+   }
+}
+
+void 
+AddressBook::unledger( CollectionTree::CollectionNode* node, bool pres )
+{
+   if( !node->IsVirtual() )
+   {
+      auto ledger = node->GetLedger();
+      if( pres )
+      {
+         ledger->RemovePresent( m_ptOwner );
+      }
+      else
+      {
          ledger->RemoveOwned( m_ptOwner );
       }
+   }
+
+   for( auto childNode : node->GetChildren() )
+   {
+      unledger( childNode );
    }
 }
 
@@ -186,11 +274,11 @@ AddressBook::unledgerPresent( const Identifier& aOwned )
 {
    for( auto& loc : aOwned.GetLocations() )
    {
-      auto findLedger = CollectionLedger::Lookup( loc );
-      if( findLedger.Good() )
+      auto node = CollectionLedger::GetFamilyNode( loc );
+      if( node.Good() )
       {
-         auto ledger = *findLedger.Value();
-         ledger->RemovePresent( m_ptOwner );
+         auto colNode = *node.Value();
+         unledger( colNode, true );
       }
    }
 }

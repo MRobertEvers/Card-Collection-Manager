@@ -1,5 +1,6 @@
 #pragma once
 #include "Ledger.h"
+#include "CollectionTree.h"
 #include "..\Support\TryGet.h"
 
 #include <map>
@@ -13,21 +14,25 @@ class CopyItem;
 class CollectionLedger : public Ledger
 {
 public:
-   CollectionLedger();
+   CollectionLedger( const Location& alocParent );
    ~CollectionLedger();
 
-   std::vector<std::weak_ptr<const CopyItem>> ViewOwned();
-   std::vector<std::weak_ptr<const CopyItem>> ViewPresent();
+   std::set<const CopyItem*> ViewOwned();
+   std::set<const CopyItem*> ViewPresent();
+   Location GetLocation();
 
 private:
    friend class AddressBook;
 
-   std::vector<std::weak_ptr<const CopyItem>> m_vecOwned;
-   std::vector<std::weak_ptr<const CopyItem>> m_vecPresent;
+   Location m_locParent;
+
+   void buildTree();
 
 public:
-   static TryGetCopy<std::shared_ptr<CollectionLedger>> Lookup( const Location& aszBaseAddress );
+   static TryGetCopy<CollectionLedger*> Lookup( const Location& aszBaseAddress );
+   static TryGetCopy<CollectionTree::CollectionNode*> GetFamilyNode( const Location& aszLocation );
 
 private:
-   static std::map<Location, std::shared_ptr<CollectionLedger>> ms_LedgerLookup;
+   static std::map<Location, CollectionLedger*> ms_LedgerLookup;
+   static std::map<std::string, CollectionTree*> ms_FamilyTrees;
 };

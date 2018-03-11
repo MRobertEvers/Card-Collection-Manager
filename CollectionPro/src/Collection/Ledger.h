@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <set>
 #include <memory>
 
 class CopyItem;
@@ -10,13 +10,13 @@ public:
    Ledger();
    ~Ledger();
 
-   void AddOwned( std::weak_ptr<CopyItem> aptOwned );
-   void RemoveOwned( std::weak_ptr<CopyItem> aptRemove );
-   void AddPresent( std::weak_ptr<CopyItem> aptPresent );
-   void RemovePresent( std::weak_ptr<CopyItem> aptRemove );
+   bool AddOwned( CopyItem* aptOwned );
+   void RemoveOwned( CopyItem* aptRemove );
+   bool AddPresent( CopyItem* aptPresent );
+   void RemovePresent( CopyItem* aptRemove );
 
-private:
-   std::vector<std::weak_ptr<CopyItem>> m_vecOwned;
-   std::vector<std::weak_ptr<CopyItem>> m_vecPresent;
+protected:
+   std::set<const CopyItem*> m_vecOwned;
+   std::set<const CopyItem*> m_vecPresent;
 };
 

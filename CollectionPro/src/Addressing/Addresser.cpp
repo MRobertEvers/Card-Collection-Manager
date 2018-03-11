@@ -72,28 +72,12 @@ Addresser::GetHighPrime( unsigned int aiComposite ) const
    return Primes[GetHighPrimeIndex(aiComposite)];
 }
 
-vector<unsigned int> 
-Addresser::GetFactors( unsigned int aiGet ) const
+unsigned int
+Addresser::PopFactor( unsigned int aiComp ) const
 {
-   vector<unsigned int> vecRetVal;
-   vecRetVal.push_back( 1 );
-   for( size_t i = 1; i < Addresser::Primes.size(); i++ )
-   {
-      unsigned int iFactor = Addresser::Primes[i];
-      while( aiGet % Addresser::Primes[i] == 0 )
-      {
-         aiGet = aiGet / Addresser::Primes[i];
-         vecRetVal.push_back( iFactor );
-         iFactor = iFactor * iFactor;
-      }
+   unsigned int iHigh = GetHighPrime( aiComp );
 
-      if( Addresser::Primes[i] > aiGet )
-      {
-         break;
-      }
-   }
-
-   return vecRetVal;
+   return aiComp / iHigh;
 }
    
 int 
@@ -412,6 +396,7 @@ Address::ContainsLocation( const Location& aLoc ) const
       if( isSuperSet( iSub, aLoc.GetSubAddress() ) )
       {
          bContains = true;
+         break;
       }
    }
 
@@ -516,26 +501,22 @@ Address::MergeIdentifier( const Identifier& aID )
    return true;
 }
 
-std::vector<Location>
+bool
 Address::ExtractIdentifier( const Identifier& aID )
 {
-   std::vector<Location> vecRetVal;
-   if( GetMain() != aID.GetMain() ){ return vecRetVal; }
+   if( GetMain() != aID.GetMain() ){ return false; }
 
    bool bResult = false;
+
    // This tries to remove all the addresses,
    // regardless of whether they are present or not.
    for( auto iSub : aID.GetSubAddresses() )
    {
       bool bSub = RemoveSubAddress( iSub ) != 0;
       bResult |= bSub;
-      if( bSub )
-      {
-         vecRetVal.push_back( Location( GetMain(), iSub ) );
-      }
    }
 
-   return vecRetVal;
+   return bResult;
 }
 
 Location::Location()
@@ -604,12 +585,15 @@ Location::GetLocationsSpecified() const
 {
    vector<Location> vecRetVal;
    Addresser addr;
-   auto vecLocId = addr.GetFactors( m_iAddress );
-   for( auto& locAddr : vecLocId )
+   vecRetVal.push_back( *this );
+   unsigned int iComp = m_iAddress;
+   iComp = addr.PopFactor( iComp );
+   while( iComp > 1 )
    {
-      Location loc = Location( m_szMain, locAddr );
-      vecRetVal.push_back( loc );
+      vecRetVal.push_back( Location(m_szMain, iComp) );
+      iComp = addr.PopFactor( iComp );
    }
+   vecRetVal.push_back( Location( m_szMain, 1 ) );
 
    return vecRetVal;
 }

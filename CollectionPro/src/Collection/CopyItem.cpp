@@ -10,11 +10,13 @@
 
 using namespace std;
 
-CopyItem::CopyItem( const CollectionObject* aptClass )
+CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, const CollectionObject* aptClass )
    : m_ptCollectionObject( aptClass )
 {
    Addresser addr;
    Config* config = Config::Instance();
+
+   m_ptAddressBook = std::shared_ptr<AddressBook>( new AddressBook(aAddrParentIdentifier, this) );
 
    // Set the chain ID and session here. 
    // If one is set later, it will just overwrite this...
@@ -31,9 +33,10 @@ CopyItem::~CopyItem()
    m_lstMetaTags.clear();
 }
 
-CopyItem::CopyItem( const std::vector<Tag>& alstMetaTags,
+CopyItem::CopyItem( const Identifier& aAddrParentIdentifier,
+                    const std::vector<Tag>& alstMetaTags,
                     const CollectionObject* aptClass )
-   : CopyItem(aptClass)
+   : CopyItem( aAddrParentIdentifier, aptClass)
 {
    for ( auto& attr : alstMetaTags )
    {
@@ -43,8 +46,20 @@ CopyItem::CopyItem( const std::vector<Tag>& alstMetaTags,
    }
 }
 
+CopyItem::CopyItem( const CopyItem& aCopy )
+{
+   this->m_lstIdentifyingTags = aCopy.m_lstIdentifyingTags;
+   this->m_lstMetaTags = aCopy.m_lstMetaTags;
+   this->m_ptCollectionObject = aCopy.m_ptCollectionObject;
+   this->m_bNeedHash = aCopy.m_bNeedHash;
+
+   AddressBook* addrBook = new AddressBook(aCopy.m_ptAddressBook->GetAddress(), nullptr);
+   this->m_ptAddressBook = std::unique_ptr<AddressBook>( addrBook );
+}
+
 // Returns the hash. Hashes on parent, PUBLIC (so not the parent TAG) metatags, and the idattrs.
-string CopyItem::GetHash(HashType aiHashType)
+string 
+CopyItem::GetHash(HashType aiHashType)
 {
    auto oMetaHash = m_lstMetaTags.find(Config::HashKey);
 
@@ -156,7 +171,7 @@ int
 CopyItem::RemoveResident( const Identifier& aAddrAddress,
                           unsigned int aiRemoveType )
 {
-
+   return m_ptAddressBook->RemoveResident( aAddrAddress, (AddressBook::RemoveAddressType)aiRemoveType );
 }
 
 std::vector<Address> 
@@ -187,9 +202,7 @@ CopyItem::CreateCopyItem( const CollectionObject* aoConstructor,
                           const std::vector<Tag>& alstIDAttrs,
                           const std::vector<Tag>& alstMetaTags )
 {
-   auto newCopy = shared_ptr<CopyItem>(new CopyItem( alstMetaTags, aoConstructor ));
-
-   newCopy->SetAddressBook( new AddressBook( aAddrParentIdentifier, newCopy ) );
+   auto newCopy = shared_ptr<CopyItem>(new CopyItem( aAddrParentIdentifier, alstMetaTags, aoConstructor ));
 
    aoConstructor->SetIdentifyingTraitDefaults(newCopy);
 
@@ -342,13 +355,6 @@ string CopyItem::GetIdentifyingAttribute(string aszKey)
 vector<Tag> CopyItem::GetIdentifyingAttributes() const
 {
    return vector<Tag>(m_lstIdentifyingTags.begin(), m_lstIdentifyingTags.end());
-}
-
-void 
-CopyItem::SetAddressBook( AddressBook* aptAddressBook )
-{
-   // TAKES OWNERSHIP!
-   m_ptAddressBook = std::unique_ptr<AddressBook>(aptAddressBook);
 }
 
 

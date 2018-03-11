@@ -12,28 +12,27 @@ Ledger::~Ledger()
 }
 
 
-
-void 
-Ledger::AddOwned( std::weak_ptr<CopyItem> aptOwned )
+bool 
+Ledger::AddOwned( CopyItem* aptOwned )
 {
-   m_vecOwned.push_back( aptOwned );
-   AddPresent( aptOwned );
+   m_vecOwned.insert( aptOwned );
+   return AddPresent( aptOwned );
 }
 
 void 
-Ledger::RemoveOwned( std::weak_ptr<CopyItem> aptRemove )
+Ledger::RemoveOwned( CopyItem* aptRemove )
 {
+   m_vecOwned.erase( aptRemove );
+}
 
+bool 
+Ledger::AddPresent( CopyItem* aptPresent )
+{
+   return m_vecPresent.insert( aptPresent ).second;
 }
 
 void 
-Ledger::AddPresent( std::weak_ptr<CopyItem> aptPresent )
+Ledger::RemovePresent( CopyItem* aptRemove )
 {
-   m_vecPresent.push_back( aptPresent );
-}
-
-void 
-Ledger::RemovePresent( std::weak_ptr<CopyItem> aptRemove )
-{
-
+   m_vecPresent.erase( aptRemove );
 }

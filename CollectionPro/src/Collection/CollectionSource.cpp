@@ -22,6 +22,10 @@ CollectionSource::CollectionSource()
 
 CollectionSource::~CollectionSource()
 {
+   for( auto& ptCard : m_vecCardCache )
+   {
+      delete ptCard;
+   }
    m_vecCardCache.clear();
    m_vecCardDataBuffer.clear();
 
@@ -76,7 +80,7 @@ CollectionSource::HotSwapLib( string aszFileName )
    vector<string> vecHoldCards;
    for( auto& card : m_vecCardCache )
    {
-      vecHoldCards.push_back( card.GetName() );
+      vecHoldCards.push_back( card->GetName() );
    }
 
    resetBuffer();
@@ -117,7 +121,7 @@ CollectionSource::GetCardPrototype( int aiCacheIndex )
    TryGet<CollectionObject> ColRetVal;
    if( aiCacheIndex < m_vecCardCache.size() )
    {
-      ColRetVal.Set( &m_vecCardCache.at( aiCacheIndex ) );
+      ColRetVal.Set( m_vecCardCache.at( aiCacheIndex ) );
    }
 
    return ColRetVal;
@@ -138,7 +142,7 @@ CollectionSource::GetCollectionCache( Location aAddrColID,
 
    for( size_t i = 0; i < m_vecCardCache.size(); i++ )
    {
-      if( m_vecCardCache[i].FindCopies( aAddrColID, aColItemType ).size() > 0 )
+      if( m_vecCardCache[i]->FindCopies( aAddrColID, aColItemType ).size() > 0 )
       {
          lstRetVal.push_back( i );
       }
@@ -155,7 +159,7 @@ CollectionSource::GetCollection( Location aAddrColID,
 
    for( auto& item : m_vecCardCache )
    {
-      auto lstCopies = item.FindCopies( aAddrColID, aColItemType );
+      auto lstCopies = item->FindCopies( aAddrColID, aColItemType );
 
       auto iter_Copy = lstCopies.begin();
       for( ; iter_Copy != lstCopies.end(); ++iter_Copy )
@@ -524,8 +528,8 @@ CollectionSource::loadCardToCache( unsigned int iDataBuffInd )
       lstIdentifyingTraits.push_back( newTrait );
    }
 
-   CollectionObject oCard( szCardName, lstStaticAttrs,
-                           lstIdentifyingTraits );
+   auto oCard = new CollectionObject( szCardName, lstStaticAttrs,
+                                      lstIdentifyingTraits );
 
    // Store the location of the CollectionObject in the cache
    oSource->SetCacheIndex( m_vecCardCache.size() );
@@ -589,7 +593,7 @@ CollectionSource::findInCache( const string& aszName )
    int index = 0;
    for( ; iter_ColObj != m_vecCardCache.end(); ++iter_ColObj )
    {
-      if( iter_ColObj->GetName() == aszName )
+      if( (*iter_ColObj)->GetName() == aszName )
       {
          return index;
       }
@@ -601,6 +605,10 @@ CollectionSource::findInCache( const string& aszName )
 void
 CollectionSource::resetBuffer()
 {
+   for( auto& ptCard : m_vecCardCache )
+   {
+      delete ptCard;
+   }
    m_vecCardCache.clear();
    m_vecCardDataBuffer.clear();
 

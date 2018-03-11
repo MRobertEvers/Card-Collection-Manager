@@ -1,16 +1,18 @@
 #pragma once
 
 #include "..\Addressing\Addresser.h"
+#include "CollectionTree.h"
 #include <memory>
 #include <vector>
 #include <string>
 
 class CopyItem;
 
+// This class handles all address manipulations as well as ledger updating.
 class AddressBook
 {
 public:
-   enum RemoveAddressType : int
+   enum RemoveAddressType : unsigned int
    {
       Individual = 0x0,
       Family = 0x1
@@ -18,7 +20,7 @@ public:
 
 public:
    AddressBook( const Identifier& aAddrParentIdentifier,
-                std::shared_ptr<CopyItem> aptOwner );
+                CopyItem* aptOwner );
    ~AddressBook();
 
    void SetParent( const Identifier& aAddrTestAddress );
@@ -41,11 +43,13 @@ private:
    // SubAddressX's smallest prime factor is the xth prime.
    Address m_Address;
    std::vector<Address> m_vecResidentIn;
-   std::weak_ptr<CopyItem> m_ptOwner;
+   CopyItem* m_ptOwner;
 
    void ledgerOwned(const Identifier& aOwned);
+   void ledgerOwned( const Address& aOwned );
    void ledgerPresent( const Identifier& aOwned );
    void unledgerOwned( const Identifier& aOwned );
+   void unledger( CollectionTree::CollectionNode* node, bool pres = false );
    void unledgerPresent( const Identifier& aOwned );
 
    void setParent( std::string aszNewParent );

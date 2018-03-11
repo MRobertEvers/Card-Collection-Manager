@@ -6,6 +6,7 @@
 
 using namespace std;
 
+class CollectionLedger;
 class CollectionFactory;
 class CollectionItem;
 
@@ -65,6 +66,7 @@ private:
    friend class CollectionQueryHelper;
    friend class CollectionTracker;
 
+   CollectionLedger* m_ptrLedger;
    CollectionDetails* m_ptrCollectionDetails;
    CollectionSource* m_ptrCollectionSource;
    CollectionTracker* m_ptrCollectionTracker;

@@ -1,6 +1,7 @@
 #include "CollectionIO.h"
 #include "Collection.h"
 #include "CollectionFactory.h"
+#include "CollectionLedger.h"
 #include "../StringInterface.h"
 #include "../Addressing/Addresser.h"
 
@@ -336,6 +337,12 @@ CollectionIO::loadOverheadLine(const std::string& aszLine)
    else if( szKey == "ID" )
    {
       ptDetails->AssignAddress( szValue );
+
+      if( m_ptCollection->m_ptrLedger->GetLocation() != *ptDetails->GetAddress() )
+      {
+         delete m_ptCollection->m_ptrLedger;
+         m_ptCollection->m_ptrLedger = new CollectionLedger( *ptDetails->GetAddress() );
+      }
    }
    else if( szKey == "CC" )
    {
@@ -349,6 +356,8 @@ CollectionIO::loadOverheadLine(const std::string& aszLine)
       time_t time = mktime( &tm );
       ptDetails->SetTimeStamp( time );
    }
+   
+   return true;
 }
 
 bool 

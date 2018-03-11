@@ -79,7 +79,7 @@ private:
 private:
    bool m_bIsLoaded;
    vector<SourceObject> m_vecCardDataBuffer;
-   vector<CollectionObject> m_vecCardCache;
+   vector<CollectionObject*> m_vecCardCache;
 
    char* m_AllCharBuff;
    unsigned int m_iAllCharBuffSize;

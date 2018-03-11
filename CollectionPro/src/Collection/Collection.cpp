@@ -1,14 +1,14 @@
 #include "Collection.h"
-
-#include <iomanip>
-#include <ctime>
-#include <algorithm>
-
 #include "../Support/StringHelper.h"
 #include "../Addressing/Addresser.h"
 #include "../Config.h"
 #include "CollectionIO.h"
 #include "../StringInterface.h"
+#include "CollectionLedger.h"
+
+#include <iomanip>
+#include <ctime>
+#include <algorithm>
 
 using namespace std;
 
@@ -25,6 +25,8 @@ Collection::Collection( string aszName,
    m_ptrCollectionDetails->SetFileName( aszName, true );
    m_ptrCollectionDetails->SetChildrenCount( 0 );
    m_ptrCollectionDetails->AssignAddress( aszID );
+
+   m_ptrLedger = new CollectionLedger(this->GetIdentifier());
 
    m_ptrCollectionSource = aoSource;
 

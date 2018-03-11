@@ -36,6 +36,9 @@
     <Filter Include="Support\XML">
       <UniqueIdentifier>{892c6ca2-ce05-48be-8b24-aeea355aa21f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Collection\DataHelpers\Ledger">
+      <UniqueIdentifier>{d4a95749-dd25-4654-88f6-17ce12dc5703}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Collection\Collection.h">
@@ -138,13 +141,16 @@
       <Filter>StoreFront</Filter>
     </ClInclude>
     <ClInclude Include="src\Collection\AddressBook.h">
-      <Filter>Collection\DataHelpers</Filter>
+      <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClInclude>
     <ClInclude Include="src\Collection\CollectionLedger.h">
-      <Filter>Collection\DataHelpers</Filter>
+      <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClInclude>
     <ClInclude Include="src\Collection\Ledger.h">
-      <Filter>Collection\DataHelpers</Filter>
+      <Filter>Collection\DataHelpers\Ledger</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collection\CollectionTree.h">
+      <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -230,13 +236,16 @@
       <Filter>StoreFront</Filter>
     </ClCompile>
     <ClCompile Include="src\Collection\AddressBook.cpp">
-      <Filter>Collection\DataHelpers</Filter>
+      <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClCompile>
     <ClCompile Include="src\Collection\CollectionLedger.cpp">
-      <Filter>Collection\DataHelpers</Filter>
+      <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClCompile>
     <ClCompile Include="src\Collection\Ledger.cpp">
-      <Filter>Collection\DataHelpers</Filter>
+      <Filter>Collection\DataHelpers\Ledger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\CollectionTree.cpp">
+      <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

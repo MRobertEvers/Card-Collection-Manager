@@ -171,7 +171,7 @@ CollectionObject::FindCopies( const Identifier& aCollection,
                               CollectionObjectType aSearchType ) const
 {
    vector<shared_ptr<CopyItem>> copies;
-   for( auto iSub : aCollection.GetAddresses() )
+   for( auto iSub : aCollection.GetSubAddresses() )
    {
       Location location = Location(aCollection.GetMain(), iSub);
 
