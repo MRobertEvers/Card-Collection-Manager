@@ -2,13 +2,10 @@
 #include "../Support/StringHelper.h"
 #include "../Addressing/Addresser.h"
 #include "../Config.h"
-#include "CollectionIO.h"
 #include "../StringInterface.h"
+#include "CollectionIO.h"
 #include "CollectionLedger.h"
 
-#include <iomanip>
-#include <ctime>
-#include <algorithm>
 
 using namespace std;
 
@@ -106,15 +103,8 @@ Collection::ReplaceItem( string aszName,
 void
 Collection::SaveCollection()
 {
-   m_ptrCollectionDetails->SetTimeStamp();
-
-   saveOverhead();
-
-   saveHistory();
-
-   saveMeta();
-
-   saveCollection();
+   CollectionIO IO( this );
+   IO.SaveCollection();
 }
 
 bool
@@ -307,9 +297,9 @@ void Collection::loadRemoveLine( const string& aszLine )
    CollectionObject::PseudoIdentifier sudoItem;
    CollectionObject::ParseCardLine( aszLine, sudoItem );
 
+   string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetUIDKey() );;
    for( size_t i = 0; i < sudoItem.Count; i++ )
    {
-      string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetUIDKey() );;
       if( szUID != "" )
       {
          RemoveItem( sudoItem.Name, szUID );
@@ -317,7 +307,8 @@ void Collection::loadRemoveLine( const string& aszLine )
       else { break; }
    }
 }
-void Collection::loadDeltaLine( const string& aszLine )
+void 
+Collection::loadDeltaLine( const string& aszLine )
 {
    vector<string> lstOldNew = StringHelper::Str_Split( aszLine, "->" );
 
@@ -328,159 +319,40 @@ void Collection::loadDeltaLine( const string& aszLine )
    CollectionObject::ParseCardLine( lstOldNew[1], sudoNewItem );
 
    auto oldItem = m_ptrCollectionSource->GetCardPrototype( sudoOldItem.Name );
-   if( oldItem.Good() )
+   if( !oldItem.Good() )
    {
-      string szUID  = StringInterface::FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );
-      auto cItem = oldItem->FindCopy( szUID );
-      if( cItem.Good() )
+      // TODO: Log this.
+      return;
+   }
+   
+   string szUID  = StringInterface::FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );
+   auto cItem = oldItem->FindCopy( szUID );
+   if( cItem.Good() )
+   {
+      // TODO: Error.
+      return;
+   }
+
+   for( size_t i = 0; i < sudoOldItem.Count; i++ )
+   {
+      if( sudoOldItem.Name == sudoNewItem.Name )
       {
-         for( size_t i = 0; i < sudoOldItem.Count; i++ )
+         ChangeItem( sudoOldItem.Name,
+                     szUID,
+                     sudoNewItem.Identifiers,
+                     sudoNewItem.MetaTags );
+      }
+      else
+      {
+         auto newItem = m_ptrCollectionSource->GetCardPrototype( sudoNewItem.Name );
+         if( newItem.Good() )
          {
-            if( sudoOldItem.Name == sudoNewItem.Name )
-            {
-               ChangeItem( sudoOldItem.Name,
+            ReplaceItem( sudoOldItem.Name,
                            szUID,
+                           sudoNewItem.Name,
                            sudoNewItem.Identifiers,
                            sudoNewItem.MetaTags );
-            }
-            else
-            {
-               auto newItem = m_ptrCollectionSource->GetCardPrototype( sudoNewItem.Name );
-               if( newItem.Good() )
-               {
-                  ReplaceItem( sudoOldItem.Name,
-                               szUID,
-                               sudoNewItem.Name,
-                               sudoNewItem.Identifiers,
-                               sudoNewItem.MetaTags );
-               }
-            }
          }
       }
    }
-}
-
-void
-Collection::saveHistory()
-{
-   m_ptrCollectionTracker->Track();
-   CollectionDeltaClass cdc = m_ptrCollectionTracker->CalculateChanges();
-
-   vector<string> lstHistoryLines;
-   for( size_t i = 0; i < cdc.Additions.size(); i++ )
-   {
-      lstHistoryLines.push_back( cdc.Additions[i] );
-   }
-
-   for( size_t i = 0; i < cdc.Removals.size(); i++ )
-   {
-      lstHistoryLines.push_back( cdc.Removals[i] );
-   }
-
-   for( size_t i = 0; i < cdc.Changes.size(); i++ )
-   {
-      lstHistoryLines.push_back( cdc.Changes[i] );
-   }
-
-   if( lstHistoryLines.size() > 0 )
-   {
-      string szTimeString = "";
-      time_t now = time( 0 );
-      struct tm timeinfo;
-      localtime_s( &timeinfo, &now );
-      char str[26];
-      asctime_s( str, sizeof str, &timeinfo );
-      str[strlen( str ) - 1] = 0;
-
-      ofstream oHistFile;
-      string szHistFile = CollectionIO::GetHistoryFile( m_ptrCollectionDetails->GetFileName() );
-      oHistFile.open( szHistFile, ios_base::app );
-
-      oHistFile << "[" << str << "] " << endl;
-
-      vector<string>::iterator iter_histLines = lstHistoryLines.begin();
-      for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
-      {
-         oHistFile << *iter_histLines << endl;
-      }
-
-      oHistFile.close();
-   }
-}
-
-void Collection::saveMeta()
-{
-   ofstream oMetaFile;
-   Query listQuery(true);
-   listQuery.IncludeMetaType( Persistent );
-   vector<string> lstMetaLines = QueryCollection( listQuery );
-
-   oMetaFile.open( CollectionIO::GetMetaFile( m_ptrCollectionDetails->GetFileName() ) );
-
-   vector<string>::iterator iter_MetaLine = lstMetaLines.begin();
-   for( ; iter_MetaLine != lstMetaLines.end(); ++iter_MetaLine )
-   {
-      if( iter_MetaLine->find_first_of( ':' ) != string::npos )
-      {
-         oMetaFile << *iter_MetaLine << endl;
-      }
-   }
-
-   oMetaFile.close();
-}
-
-void
-Collection::saveOverhead()
-{
-   ofstream oColFile;
-   oColFile.open( CollectionIO::GetOverheadFile( m_ptrCollectionDetails->GetFileName() ) );
-
-   tm otm;
-   time_t time = m_ptrCollectionDetails->GetTimeStamp();
-   localtime_s( &otm, &time );
-
-   oColFile << Config::CollectionDefinitionKey
-      << " ID=\"" << GetIdentifier().GetFullAddress() << "\"" << endl;
-
-   oColFile << Config::CollectionDefinitionKey
-      << " CC=\"" << m_ptrCollectionDetails->GetChildrenCount() << "\"" << endl;
-
-   oColFile << Config::CollectionDefinitionKey
-      << " Session=\"" << put_time( &otm, "%F_%T" ) << "\"" << endl;
-
-   for( auto szLine : m_ptrCollectionDetails->GetProcessLines() )
-   {
-      oColFile << szLine << endl;
-   }
-
-   oColFile.close();
-}
-
-void Collection::saveCollection()
-{
-   // Group lists only by id. When loading, these lists are only
-   // used to create a template card. We only need the base details.
-   Query listQuery(true);
-   listQuery.IncludeMetaType( None );
-   listQuery.HashType( CopyItem::HashType::Ids );
-   vector<string> lstLines = QueryCollection( listQuery );
-
-   // Convert the lines to shorthand
-   for( auto& szLine : lstLines )
-   {
-      m_ptrCollectionSource->CollapseCardLine( szLine );
-   }
-
-   ofstream oColFile;
-   oColFile.open( m_ptrCollectionDetails->GetFile() );
-
-   oColFile << "\"" << m_ptrCollectionDetails->GetName() << "\"" << endl;
-
-   vector<string>::iterator iter_Line = lstLines.begin();
-   for( ; iter_Line != lstLines.end(); ++iter_Line )
-   {
-      oColFile << *iter_Line << endl;
-   }
-
-   oColFile.close();
 }

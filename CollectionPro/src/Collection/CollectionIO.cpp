@@ -45,6 +45,12 @@ CollectionIO::LoadCollection( const string& aszFileName, CollectionFactory* aoFa
    return true;
 }
 
+void 
+CollectionIO::SaveCollection()
+{
+
+}
+
 bool 
 CollectionIO::PrepareCollectionInitialization( const string& aszFileName )
 {
@@ -243,6 +249,7 @@ CollectionIO::ConsolodateItems()
          item->AddCopy( confirmedCopy );
       }
 
+      // Handle transfer from newly loaded copies to pre-loaded copies.
       for( auto& pairTransferTo : loadedItem.NewerExistingItems )
       {
          auto copyNeedingTransfer = pairTransferTo.first;
@@ -349,6 +356,8 @@ CollectionIO::loadOverheadLine(const std::string& aszLine)
    {
       ptDetails->AssignAddress( szValue );
 
+      // TODO: This might be weird. Maybe 'details' should be allowed to interact with
+      // multiple systems.
       if( m_ptCollection->m_ptrCollectionLedger->GetLocation() != *ptDetails->GetAddress() )
       {
          delete m_ptCollection->m_ptrCollectionLedger;
@@ -522,7 +531,146 @@ CollectionIO::transferCopyFirstToSecond( const std::shared_ptr<CopyItem>& aA,
 }
 
 
-bool CollectionIO::CollectionFileExists( string aszFileName )
+void
+CollectionIO::saveHistory()
+{
+   auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
+   auto ptCollectionTracker = m_ptCollection->m_ptrCollectionTracker;
+
+   ptCollectionTracker->Track();
+   CollectionDeltaClass cdc = ptCollectionTracker->CalculateChanges();
+
+   vector<string> lstHistoryLines;
+   for( size_t i = 0; i < cdc.Additions.size(); i++ )
+   {
+      lstHistoryLines.push_back( cdc.Additions[i] );
+   }
+
+   for( size_t i = 0; i < cdc.Removals.size(); i++ )
+   {
+      lstHistoryLines.push_back( cdc.Removals[i] );
+   }
+
+   for( size_t i = 0; i < cdc.Changes.size(); i++ )
+   {
+      lstHistoryLines.push_back( cdc.Changes[i] );
+   }
+
+   if( lstHistoryLines.size() > 0 )
+   {
+      string szTimeString = "";
+      time_t now = time( 0 );
+      struct tm timeinfo;
+      localtime_s( &timeinfo, &now );
+      char str[26];
+      asctime_s( str, sizeof str, &timeinfo );
+      str[strlen( str ) - 1] = 0;
+
+      ofstream oHistFile;
+      string szHistFile = CollectionIO::GetHistoryFile( ptCollectionDetails->GetFileName() );
+      oHistFile.open( szHistFile, ios_base::app );
+
+      oHistFile << "[" << str << "] " << endl;
+
+      vector<string>::iterator iter_histLines = lstHistoryLines.begin();
+      for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
+      {
+         oHistFile << *iter_histLines << endl;
+      }
+
+      oHistFile.close();
+   }
+}
+
+void 
+CollectionIO::saveMeta()
+{
+   auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
+
+   ofstream oMetaFile;
+   Query listQuery( true );
+   listQuery.IncludeMetaType( Persistent );
+   vector<string> lstMetaLines = m_ptCollection->QueryCollection( listQuery );
+
+   oMetaFile.open( CollectionIO::GetMetaFile( ptCollectionDetails->GetFileName() ) );
+
+   vector<string>::iterator iter_MetaLine = lstMetaLines.begin();
+   for( ; iter_MetaLine != lstMetaLines.end(); ++iter_MetaLine )
+   {
+      if( iter_MetaLine->find_first_of( ':' ) != string::npos )
+      {
+         oMetaFile << *iter_MetaLine << endl;
+      }
+   }
+
+   oMetaFile.close();
+}
+
+void
+CollectionIO::saveOverhead()
+{
+   auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
+
+   ofstream oColFile;
+   oColFile.open( CollectionIO::GetOverheadFile( ptCollectionDetails->GetFileName() ) );
+
+   tm otm;
+   ptCollectionDetails->SetTimeStamp();
+   time_t time = ptCollectionDetails->GetTimeStamp();
+   localtime_s( &otm, &time );
+
+   oColFile << Config::CollectionDefinitionKey
+      << " ID=\"" << m_ptCollection->GetIdentifier().GetFullAddress() << "\"" << endl;
+
+   oColFile << Config::CollectionDefinitionKey
+      << " CC=\"" << ptCollectionDetails->GetChildrenCount() << "\"" << endl;
+
+   oColFile << Config::CollectionDefinitionKey
+      << " Session=\"" << put_time( &otm, "%F_%T" ) << "\"" << endl;
+
+   for( auto szLine : ptCollectionDetails->GetProcessLines() )
+   {
+      oColFile << szLine << endl;
+   }
+
+   oColFile.close();
+}
+
+void 
+CollectionIO::saveCollection()
+{
+   auto ptSource = m_ptCollection->m_ptrCollectionSource;
+   auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
+
+   // Group lists only by id. When loading, these lists are only
+   // used to create a template card. We only need the base details.
+   Query listQuery( true );
+   listQuery.IncludeMetaType( None );
+   listQuery.HashType( CopyItem::HashType::Ids );
+   vector<string> lstLines = m_ptCollection->QueryCollection( listQuery );
+
+   // Convert the lines to shorthand
+   for( auto& szLine : lstLines )
+   {
+      ptSource->CollapseCardLine( szLine );
+   }
+
+   ofstream oColFile;
+   oColFile.open( ptCollectionDetails->GetFile() );
+
+   oColFile << "\"" << ptCollectionDetails->GetName() << "\"" << endl;
+
+   for( auto& szLine : lstLines )
+   {
+      oColFile << szLine << endl;
+   }
+
+   oColFile.close();
+}
+
+
+bool 
+CollectionIO::CollectionFileExists( string aszFileName )
 {
    string szFullFileName = GetCollectionFile( aszFileName );
    ifstream f( szFullFileName.c_str() );
@@ -531,8 +679,8 @@ bool CollectionIO::CollectionFileExists( string aszFileName )
    return bRetVal;
 }
 
-std::string
-CollectionIO::StripFileName( std::string aszFilePath )
+string
+CollectionIO::StripFileName( string aszFilePath )
 {
    auto lstSplitFile = StringHelper::Str_Split( aszFilePath, "\\" );
    auto szFile = lstSplitFile[lstSplitFile.size() - 1];
@@ -542,13 +690,15 @@ CollectionIO::StripFileName( std::string aszFilePath )
    return szFile;
 }
 
-string CollectionIO::GetCollectionFile( string aszCollectionName )
+string 
+CollectionIO::GetCollectionFile( string aszCollectionName )
 {
    return Config::Instance()->GetCollectionsDirectory() + "\\" +
       StringHelper::Str_Replace( aszCollectionName, ' ', '_' ) + ".txt";
 }
 
-string CollectionIO::GetMetaFile( string aszCollectionName )
+string 
+CollectionIO::GetMetaFile( string aszCollectionName )
 {
    Config* config = Config::Instance();
    return config->GetCollectionsMetaDirectory() + "\\" +
@@ -556,7 +706,8 @@ string CollectionIO::GetMetaFile( string aszCollectionName )
       string( Config::MetaFileExtension ) + ".txt";
 }
 
-string CollectionIO::GetHistoryFile( string aszCollectionName )
+string 
+CollectionIO::GetHistoryFile( string aszCollectionName )
 {
    Config* config = Config::Instance();
    return config->GetCollectionsHistoryDirectory() + "\\" +
@@ -564,7 +715,7 @@ string CollectionIO::GetHistoryFile( string aszCollectionName )
       string( Config::HistoryFileExtension ) + ".txt";
 }
 
-std::string
+string
 CollectionIO::GetOverheadFile( std::string aszCollectionName )
 {
    Config* config = Config::Instance();

@@ -29,6 +29,8 @@ public:
    bool InitializeCollection( const std::string& aszFileName );
 
    bool LoadCollection( const std::string& aszFileName, CollectionFactory* aoFactory );
+   
+   void SaveCollection();
 
 private:
    struct ItemLoadToken
@@ -85,6 +87,11 @@ private:
    bool isAOlderThanB( const std::shared_ptr<CopyItem>& aA, const std::shared_ptr<CopyItem>& aB );
    bool isAOlderThanB( const std::string& aA, const std::string& aB );
    bool transferCopyFirstToSecond( const std::shared_ptr<CopyItem>& aA, const std::shared_ptr<CopyItem>& aB );
+
+   void saveHistory();
+   void saveMeta();
+   void saveOverhead();
+   void saveCollection();
 
 public:
    static bool CollectionFileExists( std::string aszFileName );

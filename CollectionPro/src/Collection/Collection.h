@@ -98,12 +98,6 @@ private:
    void loadAdditionLine(const string& aszLine);
    void loadRemoveLine(const string& aszLine);
    void loadDeltaLine(const string& aszLine);
-
-private:
-   void saveHistory();
-   void saveMeta();
-   void saveOverhead();
-   void saveCollection();
 };
 
 
