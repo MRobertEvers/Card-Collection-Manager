@@ -250,7 +250,8 @@ Collection::loadInterfaceLine( const string& aszLine )
    }
 }
 
-void Collection::loadAdditionLine( const string& aszLine )
+void 
+Collection::loadAdditionLine( const string& aszLine )
 {
    string szID = "";
    string szLine = aszLine;
@@ -292,7 +293,8 @@ void Collection::loadAdditionLine( const string& aszLine )
 }
 
 // This needs "Card Name : { __hash="hashval" }" All other values are irrelevant.
-void Collection::loadRemoveLine( const string& aszLine )
+void 
+Collection::loadRemoveLine( const string& aszLine )
 {
    CollectionObject::PseudoIdentifier sudoItem;
    CollectionObject::ParseCardLine( aszLine, sudoItem );
@@ -327,7 +329,7 @@ Collection::loadDeltaLine( const string& aszLine )
    
    string szUID  = StringInterface::FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );
    auto cItem = oldItem->FindCopy( szUID );
-   if( cItem.Good() )
+   if( !cItem.Good() )
    {
       // TODO: Error.
       return;

@@ -65,7 +65,7 @@ public:
 
    bool Good() const
    {
-      return m_FoundValue != NULL;
+      return m_FoundValue != 0;
    }
 
    T* Value()
