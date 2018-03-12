@@ -3,7 +3,7 @@
 #include "CopyItem.h"
 #include "../Config.h"
 #include "../StringInterface.h"
-
+#include "LedgerBook.h"
 
 #include <algorithm>
 
@@ -53,9 +53,9 @@ CollectionObject::~CollectionObject()
 std::shared_ptr<CopyItem>
 CollectionObject::CreateCopy( const Identifier& aAddrColID,
                               const vector<Tag>& alstAttrs,
-                              const vector<Tag>& alstMetaTags ) const
+                              const vector<Tag>& alstMetaTags )
 {
-   return std::shared_ptr<CopyItem>(CopyItem::CreateCopyItem( this, aAddrColID, alstAttrs, alstMetaTags ));
+   return CopyItem::CreateCopyItem( this, aAddrColID, alstAttrs, alstMetaTags );
 }
 
 shared_ptr<CopyItem>
@@ -71,6 +71,7 @@ shared_ptr<CopyItem>
 CollectionObject::AddCopy( const shared_ptr<CopyItem>& aCopy )
 {
    m_lstCopies.push_back( aCopy );
+   ledgerCopy( aCopy );
    return aCopy;
 }
 
@@ -98,7 +99,7 @@ CollectionObject::RemoveCopy( const Location& aAddrColID,
 string 
 CollectionObject::GenerateHash( const Identifier& aAddrIdentifier,
                               const vector<Tag>& alstAttrs,
-                              const vector<Tag>& alstMetaTags ) const
+                              const vector<Tag>& alstMetaTags )
 {
    auto hashCopy = CreateCopy( aAddrIdentifier, alstAttrs, alstMetaTags );
    return hashCopy->GetHash();
@@ -255,20 +256,6 @@ CollectionObject::GetProtoType() const
 string 
 CollectionObject::GetCommonTrait(const string& aszTrait) const
 {
-   /*
-   // I want this to be case insensitive so just search through all
-   string szSearch = aszTrait;
-   transform(szSearch.begin(), szSearch.end(), szSearch.begin(), ::tolower);
-   for( auto Trait : m_lstCommonTraits )
-   {
-      string szTrait = Trait.first;
-      transform(szTrait.begin(), szTrait.end(), szTrait.begin(), ::tolower);
-      if( szTrait == aszTrait )
-      {
-         return Trait.second;
-      }
-   }*/
-   
    auto iter_trait = m_lstCommonTraits.find(aszTrait);
    if( iter_trait != m_lstCommonTraits.end() )
    {
@@ -278,7 +265,17 @@ CollectionObject::GetCommonTrait(const string& aszTrait) const
    {
       return "";
    }
-   
+}
+
+void 
+CollectionObject::ledgerCopy( shared_ptr<CopyItem> aptCopy )
+{
+   auto ptLedger = shared_ptr<LedgerBook>( 
+      new LedgerBook( aptCopy->GetAddress(),
+                      aptCopy ) 
+      );
+
+   aptCopy->SetAddressBook( ptLedger );
 }
 
 std::map<string, TraitItem>

@@ -1,9 +1,6 @@
 #include "CollectionLedger.h"
 #include "../Addressing/Addresser.h"
 
-std::map<Location, CollectionLedger*>
-CollectionLedger::ms_LedgerLookup;
-
 std::map<std::string,  CollectionTree*> 
 CollectionLedger::ms_FamilyTrees;
 
@@ -23,16 +20,22 @@ CollectionLedger::~CollectionLedger()
    }
 }
 
-std::set<const CopyItem*>
+std::set<std::shared_ptr<CopyItem>>
 CollectionLedger::ViewOwned()
 {
    return m_vecOwned;
 }
 
-std::set<const CopyItem*>
+std::set<std::shared_ptr<CopyItem>>
 CollectionLedger::ViewPresent()
 {
    return m_vecPresent;
+}
+
+std::map<CollectionObject*, std::set<std::shared_ptr<CopyItem>>>
+CollectionLedger::ViewSortedPresent()
+{
+   return m_mapPresent;
 }
 
 Location 
@@ -74,21 +77,6 @@ CollectionLedger::buildTree()
       iter_FamilyFind->second->AddCollectionNode( m_locParent, this );
    }
 }
-
-TryGetCopy<CollectionLedger*>
-CollectionLedger::Lookup( const Location& aID )
-{
-   TryGetCopy<CollectionLedger*> ptRetVal;
-
-   auto iter_find = ms_LedgerLookup.find( aID );
-   if( iter_find != ms_LedgerLookup.end() )
-   {
-      ptRetVal.Set( iter_find->second );
-   }
-
-   return ptRetVal;
-}
-
 
 TryGetCopy<CollectionTree::CollectionNode*>
 CollectionLedger::GetFamilyNode( const Location& aszLocation )

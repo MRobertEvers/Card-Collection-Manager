@@ -26,7 +26,7 @@ Collection::Collection( string aszName,
    m_ptrCollectionDetails->SetChildrenCount( 0 );
    m_ptrCollectionDetails->AssignAddress( aszID );
 
-   m_ptrLedger = new CollectionLedger(this->GetIdentifier());
+   m_ptrCollectionLedger = new CollectionLedger(this->GetIdentifier());
 
    m_ptrCollectionSource = aoSource;
 
@@ -157,10 +157,11 @@ Collection::QueryCollection( Query aiQueryParms )
    return m_ptrCollectionQueryHelper->QueryCollection( aiQueryParms );
 }
 
-vector<int> 
+map<CollectionObject*, set<shared_ptr<CopyItem>>>
 Collection::GetCollectionItems()
 {
-   return m_ptrCollectionSource->GetCollectionCache( GetIdentifier(), All );
+   return m_ptrCollectionLedger->ViewSortedPresent();
+   //return m_ptrCollectionSource->GetCollectionCache( GetIdentifier(), All );
 }
 
 void 

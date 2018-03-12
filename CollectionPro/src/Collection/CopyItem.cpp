@@ -10,13 +10,11 @@
 
 using namespace std;
 
-CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, const CollectionObject* aptClass )
+CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, CollectionObject* aptClass )
    : m_ptCollectionObject( aptClass )
 {
    Addresser addr;
    Config* config = Config::Instance();
-
-   m_ptAddressBook = std::shared_ptr<AddressBook>( new AddressBook(aAddrParentIdentifier, this) );
 
    // Set the chain ID and session here. 
    // If one is set later, it will just overwrite this...
@@ -35,7 +33,7 @@ CopyItem::~CopyItem()
 
 CopyItem::CopyItem( const Identifier& aAddrParentIdentifier,
                     const std::vector<Tag>& alstMetaTags,
-                    const CollectionObject* aptClass )
+                    CollectionObject* aptClass )
    : CopyItem( aAddrParentIdentifier, aptClass)
 {
    for ( auto& attr : alstMetaTags )
@@ -53,8 +51,8 @@ CopyItem::CopyItem( const CopyItem& aCopy )
    this->m_ptCollectionObject = aCopy.m_ptCollectionObject;
    this->m_bNeedHash = aCopy.m_bNeedHash;
 
-   AddressBook* addrBook = new AddressBook(aCopy.m_ptAddressBook->GetAddress(), nullptr);
-   this->m_ptAddressBook = std::unique_ptr<AddressBook>( addrBook );
+   AddressBook* addrBook = new AddressBook(aCopy.m_ptAddressBook->GetAddress());
+   this->m_ptAddressBook = std::shared_ptr<AddressBook>( addrBook );
 }
 
 // Returns the hash. Hashes on parent, PUBLIC (so not the parent TAG) metatags, and the idattrs.
@@ -116,6 +114,12 @@ std::string CopyItem::GetSession() const
 std::string CopyItem::GetUID() const
 {
    return GetMetaTag( GetUIDKey(), Tracking );
+}
+
+CollectionObject* 
+CopyItem::GetObject() const
+{
+   return m_ptCollectionObject;
 }
 
 bool 
@@ -197,7 +201,7 @@ CopyItem::IsReferencedBy(const Location& aAddrTest) const
 
 
 shared_ptr<CopyItem>
-CopyItem::CreateCopyItem( const CollectionObject* aoConstructor,
+CopyItem::CreateCopyItem( CollectionObject* aoConstructor,
                           const Identifier& aAddrParentIdentifier,
                           const std::vector<Tag>& alstIDAttrs,
                           const std::vector<Tag>& alstMetaTags )
@@ -205,6 +209,10 @@ CopyItem::CreateCopyItem( const CollectionObject* aoConstructor,
    auto newCopy = shared_ptr<CopyItem>(new CopyItem( aAddrParentIdentifier, alstMetaTags, aoConstructor ));
 
    aoConstructor->SetIdentifyingTraitDefaults(newCopy);
+
+   newCopy->SetAddressBook( std::shared_ptr<AddressBook>( 
+      new AddressBook( aAddrParentIdentifier ) )
+   );
 
    // Create a list of all the traits that are being set.
    // This is used so that if "Paired" traits are being set
@@ -352,11 +360,17 @@ string CopyItem::GetIdentifyingAttribute(string aszKey)
    }
 }
 
-vector<Tag> CopyItem::GetIdentifyingAttributes() const
+vector<Tag>
+CopyItem::GetIdentifyingAttributes() const
 {
    return vector<Tag>(m_lstIdentifyingTags.begin(), m_lstIdentifyingTags.end());
 }
 
+void 
+CopyItem::SetAddressBook( std::shared_ptr<AddressBook> aptBook )
+{
+   m_ptAddressBook = aptBook;
+}
 
 void 
 CopyItem::itemChanged()

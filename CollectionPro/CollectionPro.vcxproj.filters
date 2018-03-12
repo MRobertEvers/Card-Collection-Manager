@@ -152,6 +152,9 @@
     <ClInclude Include="src\Collection\CollectionTree.h">
       <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClInclude>
+    <ClInclude Include="src\Collection\LedgerBook.h">
+      <Filter>Collection\DataHelpers\Ledger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Collection\Collection.cpp">
@@ -245,6 +248,9 @@
       <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClCompile>
     <ClCompile Include="src\Collection\CollectionTree.cpp">
+      <Filter>Collection\DataHelpers\Ledger</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collection\LedgerBook.cpp">
       <Filter>Collection\DataHelpers\Ledger</Filter>
     </ClCompile>
   </ItemGroup>

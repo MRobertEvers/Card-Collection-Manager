@@ -5,6 +5,7 @@
 
 class Collection;
 class CopyItem;
+class CollectionObject;
 
 typedef std::pair<std::shared_ptr<CopyItem>, CopyItem> SnapShot;
 typedef std::vector<SnapShot> CopyList;
@@ -35,7 +36,7 @@ public:
 private:
    Collection* m_ptrTrackedCollection;
 
-   std::map<unsigned int, CopyList> m_mapOld;
-   std::map<unsigned int, CopyList> m_mapNew;
+   std::map<CollectionObject*, CopyList> m_mapOld;
+   std::map<CollectionObject*, CopyList> m_mapNew;
 };
 

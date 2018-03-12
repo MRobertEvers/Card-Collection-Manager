@@ -29,10 +29,10 @@ public:
 private:
    // Use static constructor to build this class.
    CopyItem( const Identifier& aAddrParentIdentifier,
-             const CollectionObject* aptClass );
+             CollectionObject* aptClass );
    CopyItem( const Identifier& aAddrParentIdentifier,
              const std::vector<Tag>& alstMetaTags,
-             const CollectionObject* aptClass);
+             CollectionObject* aptClass);
 
 public:
    CopyItem( const CopyItem& aCopy );
@@ -42,6 +42,7 @@ public:
    std::string GetSession() const;
    Address GetAddress() const;
    std::string GetUID() const;
+   CollectionObject* GetObject() const;
 
    bool IsVirtual() const;
 
@@ -73,11 +74,13 @@ public:
    std::string GetIdentifyingAttribute(std::string aszKey);
    std::vector<Tag> GetIdentifyingAttributes() const;
 
+   void SetAddressBook( std::shared_ptr<AddressBook> aptBook );
+
 private:
    bool m_bNeedHash;
 
    // I didn't want to do this. But here I am.
-   const CollectionObject* m_ptCollectionObject;
+   CollectionObject* m_ptCollectionObject;
 
    std::shared_ptr<AddressBook> m_ptAddressBook;
 
@@ -91,7 +94,7 @@ private:
    std::map<std::string, MetaTag> m_lstMetaTags;
    std::map<std::string, std::string> m_lstIdentifyingTags;
 public:
-   static std::shared_ptr<CopyItem> CreateCopyItem( const CollectionObject* aoConstructor,
+   static std::shared_ptr<CopyItem> CreateCopyItem( CollectionObject* aoConstructor,
                                                     const Identifier& aAddrParentIdentifier,
                                                     const std::vector<Tag>& alstIDAttrs,
                                                     const std::vector<Tag>& alstMetaTags );

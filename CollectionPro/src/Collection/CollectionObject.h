@@ -57,7 +57,7 @@ public:
 
    shared_ptr<CopyItem> CreateCopy( const Identifier& aAddrColID,
                                     const vector<Tag>& alstAttrs = vector<Tag>(),
-                                    const vector<Tag>& alstMetaTags = vector<Tag>() ) const;
+                                    const vector<Tag>& alstMetaTags = vector<Tag>() );
 
    // Adds an item to the list of copies.
    shared_ptr<CopyItem> AddCopy( const Location& aAddrColID,
@@ -70,7 +70,7 @@ public:
 
    string GenerateHash( const Identifier& aAddrIdentifier,
                         const vector<Tag>& alstAttrs,
-                        const vector<Tag>& alstMetaTags ) const;
+                        const vector<Tag>& alstMetaTags );
 
    // Deletes an item from the list of copies.
    void DeleteCopy(const string& aszUniqueHash);
@@ -94,6 +94,8 @@ private:
    map<string, TraitItem> m_lstIdentifyingTraits;
 
    vector<shared_ptr<CopyItem>> m_lstCopies;
+
+   void ledgerCopy( shared_ptr<CopyItem> aptCopy );
 
    // Copy Item Interface
    //

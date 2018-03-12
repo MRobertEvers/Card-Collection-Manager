@@ -19,17 +19,16 @@ public:
    };
 
 public:
-   AddressBook( const Identifier& aAddrParentIdentifier,
-                CopyItem* aptOwner );
-   ~AddressBook();
+   AddressBook( const Identifier& aAddrParentIdentifier );
+   virtual ~AddressBook();
 
-   void SetParent( const Identifier& aAddrTestAddress );
+   virtual void SetParent( const Identifier& aAddrTestAddress );
    bool IsParent( const Location& aAddrTestAddress ) const;
    std::string GetParent() const;
 
-   void AddResident( const Identifier& aAddrAddress );
-   int RemoveResident( const Identifier& aAddrAddress,
-                       RemoveAddressType aiRemoveType = Individual );
+   virtual void AddResident( const Identifier& aAddrAddress );
+   virtual int RemoveResident( const Identifier& aAddrAddress,
+                               RemoveAddressType aiRemoveType = Individual );
 
    bool IsResidentIn( const Location& aAddrAddress ) const;
    bool IsReferencedBy( const Location& aAddrAddress ) const;
@@ -38,19 +37,11 @@ public:
    bool IsVirtual() const;
    Address GetAddress() const;
 
-private:
+protected:
    // Includes <Address>-<SubAddress1>,<SubAddress2>...
    // SubAddressX's smallest prime factor is the xth prime.
    Address m_Address;
    std::vector<Address> m_vecResidentIn;
-   CopyItem* m_ptOwner;
-
-   void ledgerOwned(const Identifier& aOwned);
-   void ledgerOwned( const Address& aOwned );
-   void ledgerPresent( const Identifier& aOwned );
-   void unledgerOwned( const Identifier& aOwned );
-   void unledger( CollectionTree::CollectionNode* node, bool pres = false );
-   void unledgerPresent( const Identifier& aOwned );
 
    void setParent( std::string aszNewParent );
    int findFamilyMember( const Identifier& aId ) const;

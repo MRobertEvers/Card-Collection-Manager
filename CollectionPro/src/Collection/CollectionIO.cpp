@@ -338,10 +338,10 @@ CollectionIO::loadOverheadLine(const std::string& aszLine)
    {
       ptDetails->AssignAddress( szValue );
 
-      if( m_ptCollection->m_ptrLedger->GetLocation() != *ptDetails->GetAddress() )
+      if( m_ptCollection->m_ptrCollectionLedger->GetLocation() != *ptDetails->GetAddress() )
       {
-         delete m_ptCollection->m_ptrLedger;
-         m_ptCollection->m_ptrLedger = new CollectionLedger( *ptDetails->GetAddress() );
+         delete m_ptCollection->m_ptrCollectionLedger;
+         m_ptCollection->m_ptrCollectionLedger = new CollectionLedger( *ptDetails->GetAddress() );
       }
    }
    else if( szKey == "CC" )

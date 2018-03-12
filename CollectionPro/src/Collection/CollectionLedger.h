@@ -17,8 +17,9 @@ public:
    CollectionLedger( const Location& alocParent );
    ~CollectionLedger();
 
-   std::set<const CopyItem*> ViewOwned();
-   std::set<const CopyItem*> ViewPresent();
+   std::set<std::shared_ptr<CopyItem>> ViewOwned();
+   std::set<std::shared_ptr<CopyItem>> ViewPresent();
+   std::map<CollectionObject*, std::set<std::shared_ptr<CopyItem>>>  ViewSortedPresent();
    Location GetLocation();
 
 private:
@@ -29,10 +30,8 @@ private:
    void buildTree();
 
 public:
-   static TryGetCopy<CollectionLedger*> Lookup( const Location& aszBaseAddress );
    static TryGetCopy<CollectionTree::CollectionNode*> GetFamilyNode( const Location& aszLocation );
 
 private:
-   static std::map<Location, CollectionLedger*> ms_LedgerLookup;
    static std::map<std::string, CollectionTree*> ms_FamilyTrees;
 };

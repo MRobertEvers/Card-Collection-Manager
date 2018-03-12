@@ -142,6 +142,7 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClInclude Include="src\Collection\CollectionTree.h" />
     <ClInclude Include="src\Collection\CopyItem.h" />
     <ClInclude Include="src\Collection\Ledger.h" />
+    <ClInclude Include="src\Collection\LedgerBook.h" />
     <ClInclude Include="src\Collection\MetaTag.h" />
     <ClInclude Include="src\Collection\Query.h" />
     <ClInclude Include="src\Collection\SourceObject.h" />
@@ -181,6 +182,7 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClCompile Include="src\Collection\CollectionTree.cpp" />
     <ClCompile Include="src\Collection\CopyItem.cpp" />
     <ClCompile Include="src\Collection\Ledger.cpp" />
+    <ClCompile Include="src\Collection\LedgerBook.cpp" />
     <ClCompile Include="src\Collection\MetaTag.cpp" />
     <ClCompile Include="src\Collection\SourceObject.cpp" />
     <ClCompile Include="src\Collection\TraitItem.cpp" />

@@ -3,12 +3,13 @@
 #include "CollectionDetails.h"
 #include "CollectionTracker.h"
 #include "CollectionQueryHelper.h"
+#include <memory>
 
 using namespace std;
 
 class CollectionLedger;
 class CollectionFactory;
-class CollectionItem;
+class CollectionObject;
 
 // Collection
 //  Maintains a list of Collection Objects.
@@ -57,7 +58,7 @@ public:
 
    vector<string> QueryCollection( Query aiQueryParms );
 
-   vector<int> GetCollectionItems();
+   map<CollectionObject*, set<shared_ptr<CopyItem>>>  GetCollectionItems();
 
    void InvalidateState();
 
@@ -66,7 +67,7 @@ private:
    friend class CollectionQueryHelper;
    friend class CollectionTracker;
 
-   CollectionLedger* m_ptrLedger;
+   CollectionLedger* m_ptrCollectionLedger;
    CollectionDetails* m_ptrCollectionDetails;
    CollectionSource* m_ptrCollectionSource;
    CollectionTracker* m_ptrCollectionTracker;

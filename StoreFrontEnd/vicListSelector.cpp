@@ -99,7 +99,7 @@ vicListSelector::IsFocussed()
 CELIOption 
 vicListSelector::GetBestSelection()
 {
-   if( m_oSelection.Display == "" )
+   if( m_oSelection.Display == "" && m_wxComboBox->GetValue().size() >= 3 )
    {
       auto ptSF = StoreFrontEnd::Server();
       Query query;

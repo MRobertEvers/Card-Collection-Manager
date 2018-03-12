@@ -36,7 +36,7 @@ private:
       unsigned int Count = 1;
       bool Front = true;
       CollectionObject* Item;
-      CopyItem* Copy;
+      shared_ptr<CopyItem> Copy;
       set<string> Groups;
    };
 

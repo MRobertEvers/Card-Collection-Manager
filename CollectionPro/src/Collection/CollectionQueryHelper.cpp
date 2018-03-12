@@ -44,10 +44,10 @@ CollectionQueryHelper::createHashToItemMap(const Query& aiQueryParms)
    multimap<string, ItemData> mapCardHashes;
    for( auto iItem : m_ptCollection->GetCollectionItems() )
    {
-      auto item = ptColSource->GetCardPrototype(iItem);
+      auto item = iItem.first;
       ItemData cardData;
       cardData.Name = item->GetName();
-      cardData.Item = item.Value();
+      cardData.Item = item;
 
       // 1. If we are only looking for certain card names, restrict here
       // so we can save time by skipping this iteration.
@@ -59,9 +59,10 @@ CollectionQueryHelper::createHashToItemMap(const Query& aiQueryParms)
       // 1. Count each occurence of an identical hash within a card if collapsing,
       // otherwise add it.
       mapCardHashes.clear();
-      auto lstCopies = item->FindCopies(m_ptCollection->GetIdentifier(), All);
-      for( auto copy : lstCopies )
+      auto lstCopies = iItem.second;
+      for( auto copyW : lstCopies )
       {
+         auto copy = copyW;
          // Look for copies that match.
          cardData.Hash = copy->GetHash(aiQueryParms.GetHashType());
 
@@ -76,7 +77,7 @@ CollectionQueryHelper::createHashToItemMap(const Query& aiQueryParms)
          else
          {
             // Add the card as an additional entry.
-            cardData.Copy = copy.get();
+            cardData.Copy = copy;
             cardData.Groups.clear();
             cardData.Count = 1;
             cardData.Groups.insert(copy->GetUID());
