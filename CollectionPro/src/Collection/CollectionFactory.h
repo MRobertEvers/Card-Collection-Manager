@@ -15,10 +15,12 @@ public:
    CollectionFactory(CollectionSource* aoColSource);
    ~CollectionFactory();
 
-   bool CollectionExists(std::string aszCollectionID);
-   bool CollectionExists(const Location& aAddrColID);
+   bool CollectionExists(std::string aszCollectionID) const;
+   bool CollectionExists(const Location& aAddrColID) const;
+   bool CollectionFamilyExists( const Address& aAddrColID ) const;
    TryGet<Collection> GetCollection(std::string aszCollectionID) const;
    TryGet<Collection> GetCollection(const Location& aAddrColID) const;
+   std::vector<Collection*> GetCollectionFamily( const Address& aAddrColID ) const;
    std::string GetCollectionID(const std::string& aszCollectionName);
 
    void SaveCollection(std::string aszCollectionID) const;

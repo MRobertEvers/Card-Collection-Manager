@@ -132,129 +132,140 @@ bool
 CollectionIO::ConsolodateItems()
 {
    auto ptSource = m_ptCollection->m_ptrCollectionSource;
-   Location colAddr( m_ptLoadToken->CollectionAddress );
+   Location newColAddr( m_ptLoadToken->CollectionAddress );
 
-   // a. Consolodate local items.
-   // Look for local items that may have already been loaded by other collections.
-   for( auto& itemGroup : m_ptLoadToken->CardItems )
+   size_t uiTokenIndex = 0;
+   m_ptLoadToken->ItemLoadTokens.resize( m_ptLoadToken->CardItems.size() );
+
+   for( auto& item_copy_pair : m_ptLoadToken->CardItems )
    {
       // Get all the local items already loaded
       // Items should be good at this point.
-      auto item = ptSource->GetCardPrototype( itemGroup.first ).Value();
+      auto item = ptSource->GetCardPrototype( item_copy_pair.first ).Value();
 
-      auto& vecNewCopies = itemGroup.second;
+      // This token will be used to store all the items that fall into the cases below.
+      auto& itemLoadToken = m_ptLoadToken->ItemLoadTokens.at( uiTokenIndex++ );
+      itemLoadToken.Item = item;
 
-      // Look for already existing items that match a newly loaded copy's UID.
-      auto vecAlreadyLoadedCopies = item->FindCopies( colAddr, CollectionObjectType::Local );
-      for( auto& alreadyCopy : vecAlreadyLoadedCopies )
+      auto& vecNewCopies = item_copy_pair.second;
+
+      // Handle All Copies that were specified in the collection file.
+      // aka pt_newly_loaded_copy
+      for( auto& ptNewCopy : vecNewCopies )
       {
-         auto newItem = item->FindCopy( alreadyCopy->GetUID(), FindType::UID, vecNewCopies );
-         if( newItem.Good() )
+         // See if another collection loaded this item already.
+         auto tgExistingCopy = item->FindCopy( ptNewCopy->GetUID() );
+         if( tgExistingCopy.Good() )
          {
-            auto newCopy = *newItem.Value();
-            // We found a matching copy.
-            if( isAOlderThanB( newCopy, alreadyCopy ) )
+            auto ptExistingCopy = *tgExistingCopy.Value();
+
+            // Some other collection loaded this item already.
+            // See if the already loaded item was changed more
+            // recently than the newly loaded item.
+            if( isAOlderThanB( ptNewCopy, ptExistingCopy ) )
             {
                // The newcopy is from an older session, use the already item.
-               transferCopyFirstToSecond( newCopy, alreadyCopy );
-            }
-            else
-            {
-               transferCopyFirstToSecond( alreadyCopy, newCopy );
-               alreadyCopy = newCopy;
-            }
 
-            // Erase-remove idiom
-            vecNewCopies.erase( remove( vecNewCopies.begin(), vecNewCopies.end(), newCopy ),
-                                vecNewCopies.end() );
-         }
-         else
-         {
-            if( isAOlderThanB( m_ptLoadToken->CollectionSessionTime, alreadyCopy->GetSession() ) )
-            {
-               // Remove the old copy because this new collection is newer
-               // TODO: REALLY I SHOULD MAKE THE COPY VIRTUAL.
-               item->RemoveCopy( colAddr, alreadyCopy->GetUID() );
+               // Prepare the existing copy to take the details of the newly loaded copy.
+               itemLoadToken.NewerExistingItems.insert( make_pair (ptNewCopy, ptExistingCopy ));
             }
             else
             {
-               // Add this collection to its residence since this card has been added since
-               // this col was last edited.
-               alreadyCopy->AddResident( colAddr );
+               // Prepare the new copy to replace the already loaded one.
+               transferCopyFirstToSecond( ptExistingCopy, ptNewCopy );
+
+               // Add to outdated items for removal.
+               itemLoadToken.ReplacedByNewlyLoadedItems.push_back( ptExistingCopy );
+               itemLoadToken.ConfirmedCopyItems.push_back( ptNewCopy );
             }
          }
-      }
-   }
-
-   // b. Consolodate borrowed items.
-   for( auto& itemGroup : m_ptLoadToken->CardItems )
-   {
-      // Get all the local items already loaded
-      // Items should be good at this point.
-      auto item = ptSource->GetCardPrototype( itemGroup.first ).Value();
-
-      auto& vecNewCopies = itemGroup.second;
-
-      auto vecAlreadyBorrowedCopies = item->FindCopies( colAddr, CollectionObjectType::Borrowed );
-      // Any copies in vecMatchedCopies will not be added at the end.
-      vector<shared_ptr<CopyItem>> vecMatchedNewCopies;
-      for( auto& newCopy : vecNewCopies )
-      {
-         auto alreadyItem = item->FindCopy( newCopy->GetUID(), FindType::UID );
-         if( alreadyItem.Good() )
+         else if( !ptNewCopy->IsParent(newColAddr) )
          {
-            auto alreadyCopy = *alreadyItem.Value();
-            if( isAOlderThanB( newCopy, alreadyCopy ) )
+            // Special case if its a borrowed copy not already loaded.
+            // Check if its parent is loaded.
+            // Check if any of those collections are more recently edited than 
+            // this collection.
+            // If not, this item was added while those collections were not loaded.
+            // If any of the other collections that this item claims to be in are newer
+            // than this copy, but dont have this copy, then this copy was deleted.
+            bool bDoes_Not_Exist_In_More_Recently_Editted_Collection = false;
+            auto vecPossibleParents = m_ptFactory->GetCollectionFamily( ptNewCopy->GetAddress() );
+            for( auto& colParent : vecPossibleParents )
             {
-               // The newcopy is from an older session, use the already item.
-               transferCopyFirstToSecond( newCopy, alreadyCopy );
-            }
-            else
-            {
-               transferCopyFirstToSecond( alreadyCopy, newCopy );
-               alreadyCopy = newCopy;
+               string szOtherColSession = to_string( colParent->m_ptrCollectionDetails->GetTimeStamp() );
+               if( isAOlderThanB( ptNewCopy->GetSession(), szOtherColSession ) )
+               {
+                  bDoes_Not_Exist_In_More_Recently_Editted_Collection = true;
+                  break;
+               }
             }
 
-            vecMatchedNewCopies.push_back( newCopy );
-         }
-         else if( m_ptFactory->CollectionExists( newCopy->GetParent() ) )
-         {
-            auto otherCol = m_ptFactory->GetCollection( newCopy->GetParent() ).Value();
-            string szOtherColSession = to_string(otherCol->m_ptrCollectionDetails->GetTimeStamp());
-            if( isAOlderThanB( szOtherColSession, newCopy->GetSession() ) )
+            if( !bDoes_Not_Exist_In_More_Recently_Editted_Collection )
             {
-               // Keep this copy.
-            }
-            else
-            {
-               vecMatchedNewCopies.push_back( newCopy );
+               // Use this item.
+               itemLoadToken.ConfirmedCopyItems.push_back( ptNewCopy );
             }
          }
          else
          {
-            // Always use this copy.
+            // Use this item.
+            itemLoadToken.ConfirmedCopyItems.push_back( ptNewCopy );
          }
       }
 
-      for( auto& handledCopy : vecMatchedNewCopies )
+      // Handle all copies that were not specified in the collection file
+      // but say there are in this collection.
+      auto vecCopiesReferencingThisCol = item->FindCopies( newColAddr, CollectionObjectType::Local );
+      for( auto& ptAlreadyLoadedCopy : vecCopiesReferencingThisCol )
       {
-         // Erase-remove idiom
-         vecNewCopies.erase( remove( vecNewCopies.begin(), vecNewCopies.end(), handledCopy ),
-                             vecNewCopies.end() );
+         // Only keep these copies if they are more recently editted than this collection
+         if( isAOlderThanB( m_ptLoadToken->CollectionSessionTime,
+                            ptAlreadyLoadedCopy->GetSession() )    )
+         {
+            itemLoadToken.ItemsLikelyAddedWhileUnloaded.push_back( ptAlreadyLoadedCopy );
+         }
+         else
+         {
+            itemLoadToken.OutDatedRemovedItems.push_back( ptAlreadyLoadedCopy );
+         }
       }
    }
 
-   // c. If there are unhandled copies. They are good. Add them.
-   for( auto& itemGroup : m_ptLoadToken->CardItems )
+   // Handle each of the cases.
+   // This officially loads all of the collection items.
+   for( auto& loadedItem : m_ptLoadToken->ItemLoadTokens )
    {
-      // Get all the local items already loaded
-      // Items should be good at this point.
-      auto item = ptSource->GetCardPrototype( itemGroup.first ).Value();
-      auto& vecNewCopies = itemGroup.second;
+      auto& item = loadedItem.Item;
 
-      for( auto& newCopy : vecNewCopies )
+      // Handle newly loaded copies.
+      for( auto& confirmedCopy : loadedItem.ConfirmedCopyItems )
       {
-         item->AddCopy( newCopy );
+         item->AddCopy( confirmedCopy );
+      }
+
+      for( auto& pairTransferTo : loadedItem.NewerExistingItems )
+      {
+         auto copyNeedingTransfer = pairTransferTo.first;
+         auto targetCopy = pairTransferTo.second;
+         transferCopyFirstToSecond( copyNeedingTransfer, targetCopy );
+      }
+
+      // Handle pre-loaded copies.
+      for( auto& outDatedCopy : loadedItem.ReplacedByNewlyLoadedItems )
+      {
+         // Outdated items are
+         item->DeleteCopy( outDatedCopy );
+      }
+      
+      for( auto& outDatedRemovedCopy : loadedItem.OutDatedRemovedItems )
+      {
+         // TODO: JUST MAKE IT VIRTUAL.
+         item->DeleteCopy( outDatedRemovedCopy );
+      }
+
+      for( auto& likelyNewCopy : loadedItem.ItemsLikelyAddedWhileUnloaded )
+      {
+         likelyNewCopy->AddResident( newColAddr );
       }
    }
 

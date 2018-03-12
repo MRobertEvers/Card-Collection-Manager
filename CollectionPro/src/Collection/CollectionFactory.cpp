@@ -137,15 +137,31 @@ CollectionFactory::GetLoadedCollections()
 }
 
 bool 
-CollectionFactory::CollectionExists(string aszCollectionID)
+CollectionFactory::CollectionExists(string aszCollectionID) const
 {
    return CollectionExists(Location(aszCollectionID));
 }
 
 bool 
-CollectionFactory::CollectionExists(const Location& aAddrColID)
+CollectionFactory::CollectionExists(const Location& aAddrColID) const
 {
    return GetCollection(aAddrColID).Good();
+}
+
+bool 
+CollectionFactory::CollectionFamilyExists( const Address& aAddrColID ) const
+{
+   bool bExists = false;
+   for( auto& loc : aAddrColID.GetLocations() )
+   {
+      bExists |= CollectionExists( loc );
+      if( bExists )
+      {
+         break;   
+      }
+   }
+
+   return bExists;
 }
 
 TryGet<Collection> 
@@ -173,6 +189,24 @@ CollectionFactory::GetCollection(const Location& aAddrColID) const
    }
 
    return oRetVal;
+}
+
+vector<Collection*> 
+CollectionFactory::GetCollectionFamily( const Address& aAddrColID ) const
+{
+   vector<Collection*> vecRetVal;
+
+   bool bExists = false;
+   for( auto& loc : aAddrColID.GetLocations() )
+   {
+      bExists = CollectionExists( loc );
+      if( bExists )
+      {
+         vecRetVal.push_back(GetCollection(loc).Value());
+      }
+   }
+
+   return vecRetVal;
 }
 
 string 

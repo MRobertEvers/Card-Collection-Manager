@@ -18,6 +18,7 @@
 
 class CollectionFactory;
 class Collection;
+class CollectionObject;
 
 class CollectionIO
 {
@@ -30,6 +31,17 @@ public:
    bool LoadCollection( const std::string& aszFileName, CollectionFactory* aoFactory );
 
 private:
+   struct ItemLoadToken
+   {
+   public:
+      CollectionObject* Item;
+      std::vector<std::shared_ptr<CopyItem>> ConfirmedCopyItems;
+      std::vector<std::shared_ptr<CopyItem>> ReplacedByNewlyLoadedItems;
+      std::vector<std::shared_ptr<CopyItem>> OutDatedRemovedItems;
+      std::vector<std::shared_ptr<CopyItem>> ItemsLikelyAddedWhileUnloaded;
+      std::map<std::shared_ptr<CopyItem>, std::shared_ptr<CopyItem>> NewerExistingItems;
+   };
+
    // Used to store data that must persist between steps.
    struct LoadToken
    {
@@ -44,6 +56,7 @@ private:
       std::vector<std::string> OverheadProcessLines;
       std::vector<std::string> CardLines;
       std::map<std::string,std::vector<std::shared_ptr<CopyItem>>> CardItems;
+      std::vector<ItemLoadToken> ItemLoadTokens;
    };
 private:
    Collection* m_ptCollection;
