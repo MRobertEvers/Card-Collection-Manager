@@ -143,6 +143,12 @@ StoreFront::GetAllCardsStartingWith( const string& aszColID,
    return vector<string>();
 }
 
+vector<pair<string, string>> 
+StoreFront::GetPeekValues( const string& aszColID )
+{
+   return m_ColFactory->PeekCollection( aszColID );
+}
+
 void
 StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
                           const string& aszKey, const string& aszVal )
@@ -256,6 +262,22 @@ StoreFront::GetIdentifyingAttributeOptions(const string& aszCardName)
       }
    }
    return mapRetVal;
+}
+
+string 
+StoreFront::GetDefaultIdentifyingAttributeValue( const string& aszCardName, const string aszKey )
+{
+   auto card = m_ColSource->GetCardPrototype( aszCardName );
+   if( card.Good() )
+   {
+      auto vecAttrID = card->GetIdentifyingTraits();
+      auto iter_keyTrait = vecAttrID.find( aszKey );
+      if( iter_keyTrait != vecAttrID.end() )
+      {
+         return iter_keyTrait->second.GetDefaultValue();
+      }
+   }
+   return "";
 }
 
 string
@@ -375,6 +397,12 @@ string
 StoreFront::GetImportSourceFilePath()
 {
    return Config::Instance()->GetImportSourceFilePath();
+}
+
+string 
+StoreFront::GetImageFilePath( const string& aszCardName, const string& aszSet )
+{
+   return Config::Instance()->GetImageFilePath( aszCardName, aszSet );
 }
 
 string 

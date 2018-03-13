@@ -1,6 +1,7 @@
 #pragma once
-#include <string>
 #include "../Addressing/Addresser.h"
+#include <string>
+#include <map>
 
 class CollectionDetails
 {
@@ -38,6 +39,8 @@ public:
    void AssignAddress(std::string aszStringAddress);
    Location* GetAddress();
 
+   void AddPeekValue( const std::string& aszKey, const std::string& aszValue );
+   std::vector<std::pair<std::string, std::string>> GetPeekValues();
 private:
    bool m_bInitialized;
    bool m_bIsLoaded;
@@ -47,6 +50,7 @@ private:
    unsigned long m_ulTimeStamp;
    unsigned int m_iChildrenCount;
    std::vector<std::string> m_vecProcessLines;
+   std::map<std::string, std::string> m_mapPeekValues;
 
    // The address of a collection is always a location. ie. only has 1 subaddr.
    Location* m_ptrAddress;

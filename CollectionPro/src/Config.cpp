@@ -134,6 +134,13 @@ Config::GetCollectionsOverheadDirectory()
    return GetCollectionsDirectory() + "\\" + GetOverheadFolerName();
 }
 
+string
+Config::GetImageFilePath( const string& aszCardName,
+                          const string& aszSet )
+{
+   return GetImagesDirectory() + "\\_" + aszSet + "\\" + aszCardName + ".jpg";
+}
+
 // Returns a numerical key code
 // -1 if not found.
 char

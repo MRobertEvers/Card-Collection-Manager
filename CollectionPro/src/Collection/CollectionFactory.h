@@ -1,13 +1,14 @@
 #pragma once
+#include "Collection.h"
+#include "../Support/StringHelper.h"
+#include "CollectionSource.h"
+#include "../Support/TryGet.h"
+
 #include <vector>
 #include <string>
 #include <memory>
 #include <unordered_set>
 
-#include "Collection.h"
-#include "../Support/StringHelper.h"
-#include "CollectionSource.h"
-#include "../Support/TryGet.h"
 
 class CollectionFactory
 {
@@ -22,9 +23,11 @@ public:
    TryGet<Collection> GetCollection(const Location& aAddrColID) const;
    std::vector<Collection*> GetCollectionFamily( const Address& aAddrColID ) const;
    std::string GetCollectionID(const std::string& aszCollectionName);
+   std::vector<Tag> PeekCollection( const std::string& aszColFile ) const;
 
    void SaveCollection(std::string aszCollectionID) const;
    std::string LoadCollectionFromFile(std::string aszColFile);
+
    std::string CreateNewCollection(std::string aszColName, std::string aszParentID = "");
 
    std::vector<std::string> GetLoadedCollections();

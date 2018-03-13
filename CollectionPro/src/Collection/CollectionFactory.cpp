@@ -38,9 +38,6 @@ string
 CollectionFactory::LoadCollectionFromFile(string aszFileName)
 {
    string szRetVal = Config::NotFoundString;
-   vector<string> lstSplitFile;
-   vector<string> lstSplitExt;
-   vector<string> lstActionLines;
    Collection* oCol;
    bool bInitialized;
    bool bKeepCol = false;
@@ -225,6 +222,16 @@ CollectionFactory::GetCollectionID(const std::string& aszCollectionName)
    }
 
    return Config::NotFoundString;
+}
+
+std::vector<Tag> 
+CollectionFactory::PeekCollection( const std::string& aszColFile ) const
+{
+   string szFullpath = Config::Instance()->GetCollectionsDirectory() + "\\" + aszColFile;
+   auto ptCol = std::shared_ptr<Collection>(new Collection( Config::NotFoundString, m_ColSource ));
+   ptCol->InitializeCollection( szFullpath );
+
+   return ptCol->GetPeekValues();
 }
 
 // Returns true if the action was performed.

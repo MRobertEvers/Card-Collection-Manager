@@ -26,6 +26,7 @@ public:
    unsigned int GetChildCount();
    void ChildAdded();
    bool IsLoaded();
+   vector<Tag> GetPeekValues();
 
    void AddItem( string aszName,
                  vector<Tag> alstAttrs,

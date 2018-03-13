@@ -3,6 +3,7 @@
 #include "../CollectionPro/src/StringInterface.h"
 #include "../CollectionPro/src/Config.h"
 #include <memory>
+#include <vector>
 
 class wxString;
 class ImageFetcherCallback;
@@ -21,6 +22,8 @@ public:
    void EstablishFolderStructure();
 
    void EstablishFolder( const wxString& aszPath );
+
+   std::vector<wxString> GetTextFilesInDirectory( const wxString& aszDir );
 
 private:
    StoreFrontEnd();

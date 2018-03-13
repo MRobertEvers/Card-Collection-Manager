@@ -33,6 +33,7 @@ Collection::Collection( string aszName,
 
 Collection::~Collection()
 {
+   delete m_ptrCollectionLedger;
    delete m_ptrCollectionTracker;
    delete m_ptrCollectionDetails;
    delete m_ptrCollectionQueryHelper;
@@ -64,6 +65,12 @@ bool
 Collection::IsLoaded()
 {
    return m_ptrCollectionDetails->IsLoaded();
+}
+
+vector<Tag> 
+Collection::GetPeekValues()
+{
+   return m_ptrCollectionDetails->GetPeekValues();
 }
 
 void

@@ -5,6 +5,8 @@
 #include "StoreFrontEnd.h"
 #include "vcCollectionsMenuList.h"
 
+#include "viCollectionSelector.h"
+
 
 wxBEGIN_EVENT_TABLE(vCollectionsOverview, wxPanel)
 EVT_BUTTON(vCollectionsOverview::Load_Collection, vCollectionsOverview::OnLoadCollection)
@@ -56,6 +58,7 @@ vCollectionsOverview::getLoadedCollections()
 void
 vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
 {
+/*
    wxFileDialog openFileDialog( this, _("Open Collection file"), "", "",
                                 "text files (*.txt)|*.txt",
                                 wxFD_OPEN | wxFD_FILE_MUST_EXIST );
@@ -82,4 +85,7 @@ vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
 
    // This event is handled.
    awxEvt.StopPropagation();
+*/
+   auto sel = new viCollectionSelector( this, 4 );
+   sel->Show();
 }

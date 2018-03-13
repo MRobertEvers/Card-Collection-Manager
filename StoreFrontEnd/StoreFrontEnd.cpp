@@ -100,3 +100,23 @@ StoreFrontEnd::EstablishFolder( const wxString& aszRelOrAbsPath )
 
    SHCreateDirectoryEx( NULL, szPath.ToStdWstring().c_str(), NULL );
 }
+
+std::vector<wxString>
+StoreFrontEnd::GetTextFilesInDirectory( const wxString& aszDir )
+{
+   std::vector<wxString> vecRetVal;
+   HANDLE hFind;
+   WIN32_FIND_DATA data;
+   wxString dirWithSpecifier = aszDir + "\\*.txt";
+   hFind = FindFirstFile( dirWithSpecifier.ToStdWstring().c_str(), &data );
+   if( hFind != INVALID_HANDLE_VALUE )
+   {
+      do
+      {
+         vecRetVal.push_back( data.cFileName );
+      } while( FindNextFile( hFind, &data ) );
+      FindClose( hFind );
+   }
+
+   return vecRetVal;
+}

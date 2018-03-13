@@ -28,6 +28,8 @@ public:
 
    bool InitializeCollection( const std::string& aszFileName );
 
+   bool PeekCollection( const std::string& aszFileName );
+
    bool LoadCollection( const std::string& aszFileName, CollectionFactory* aoFactory );
    
    void SaveCollection();
@@ -77,7 +79,8 @@ private:
    bool FinalizeLoad();
 
    bool loadOverheadFile();
-   bool loadOverheadLine( const std::string& aszLine );
+   bool loadOverheadProcessLine( const std::string& aszLine );
+   bool loadOverheadPropertyLine( const std::string& aszLine );
    bool storeOverheadProperyLineValue( const std::string& aszLine );
    bool loadPotentialItem( const string& aszName,
                            const vector<Tag>& alstAttrs,

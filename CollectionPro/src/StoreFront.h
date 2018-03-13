@@ -33,6 +33,7 @@ public:
    string GetCollectionName(const string& aszCollectionID);
    string GetCollectionID(const string& aszCollectionName);
    vector<string> GetAllCardsStartingWith(const string& aszColID, const Query& aszSearch);
+   vector<pair<string, string>> GetPeekValues( const string& aszColID );
 
    // Card Accessors
    //
@@ -43,6 +44,7 @@ public:
    string GetIdentifyingAttribute( const string& aszCardName, const string& aszUID, const string& aszTrait );
    vector<pair<string, string>> GetIdentifyingAttributes(const string& aszCardName, const string& aszUID);
    map<string, vector<string>> GetIdentifyingAttributeOptions(const string& aszCardName);
+   string GetDefaultIdentifyingAttributeValue( const string& aszCardname, const string aszKey );
    string GetCardString(const string& aszCardname, const string& aszUID);
    string GetMetaTagHash( const string& aszCardName, const string& aszUID );
 
@@ -65,6 +67,7 @@ public:
    string GetSourceFileName();
    string GetSourceFilePath();
    string GetImportSourceFilePath();
+   string GetImageFilePath( const string& aszCardName, const string& aszSet );
 
    // String Interface
    string CollapseCardLine(const string& aszCard, bool abIncludeCount);

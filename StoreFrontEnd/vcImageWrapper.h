@@ -10,7 +10,7 @@ public:
                   wxWindowID aiID);
    ~vcImageWrapper();
 
-   void SetImage(const wxString& aszImagePath);
+   bool SetImage(const wxString& aszImagePath);
 
 private:
    wxImagePanel* m_jpgPanel;

@@ -64,6 +64,12 @@
     <Filter Include="Libraries\Zip">
       <UniqueIdentifier>{b8367648-76b4-4c59-a813-045b1dfc7f2d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Interfaces\CollectionSelector">
+      <UniqueIdentifier>{14aabd1a-412c-4311-b71a-71988c4b122f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\ImageViewer">
+      <UniqueIdentifier>{235fdba2-5b54-4a10-b56d-bc0474300924}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -129,9 +135,6 @@
     <ClCompile Include="vcEditableTraitListItem.cpp">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClCompile>
-    <ClCompile Include="vcImageWrapper.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClCompile>
     <ClCompile Include="vcItemNameCheckBox.cpp">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClCompile>
@@ -173,6 +176,21 @@
     </ClCompile>
     <ClCompile Include="CURLAPI.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vicCollectionSelectorSelection.cpp">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="viCollectionSelector.cpp">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="CEOption.cpp">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageViewer.cpp">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="vcImageWrapper.cpp">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,9 +263,6 @@
     <ClInclude Include="vcEditableTraitListItem.h">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
-    <ClInclude Include="vcImageWrapper.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
     <ClInclude Include="vcItemNameCheckBox.h">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
@@ -317,5 +332,28 @@
     <ClInclude Include="Zip\unzip.h">
       <Filter>Libraries\Zip</Filter>
     </ClInclude>
+    <ClInclude Include="viCollectionSelector.h">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClInclude>
+    <ClInclude Include="vicCollectionSelectorSelection.h">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClInclude>
+    <ClInclude Include="CEOption.h">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageViewer.h">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="vcImageWrapper.h">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="StoreFrontEnd.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

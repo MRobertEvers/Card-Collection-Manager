@@ -34,6 +34,7 @@ public:
       std::shared_ptr<std::mutex> m_mutex;
    };
 
+public:
    viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
                  wxString aszColID, wxString aszCardHash );
    ~viCardEditor();

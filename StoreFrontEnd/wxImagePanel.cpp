@@ -56,6 +56,11 @@ wxImagePanel::wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format)
          imageFile.close();
       }
    }
+   else
+   {
+      auto imageSize = image.GetSize();
+      SetSizeHints( imageSize );
+   }
    w = -1;
    h = -1;
 }

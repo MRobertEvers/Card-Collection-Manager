@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -164,8 +164,10 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClInclude Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
     <ClCompile Include="CELIOption.cpp" />
+    <ClCompile Include="CEOption.cpp" />
     <ClCompile Include="CURLAPI.cpp" />
     <ClCompile Include="Group.cpp" />
+    <ClCompile Include="ImageViewer.cpp" />
     <ClCompile Include="ivCollectionView.cpp" />
     <ClCompile Include="json\jsoncpp.cpp" />
     <ClCompile Include="ScryFallAPI.cpp" />
@@ -192,9 +194,16 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClCompile Include="vicCollectionEditorList.cpp" />
     <ClCompile Include="vicCollectionEditorListItem.cpp" />
     <ClCompile Include="vicCollectionEditorListItemPlusMinusCounter.cpp" />
+    <ClCompile Include="vicCollectionSelectorSelection.cpp" />
     <ClCompile Include="vicListSelector.cpp" />
     <ClCompile Include="viCollectionEditor.cpp" />
+    <ClCompile Include="viCollectionSelector.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
+    <ClInclude Include="CEOption.h" />
+    <ClInclude Include="ImageViewer.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="vicCollectionSelectorSelection.h" />
+    <ClInclude Include="viCollectionSelector.h" />
     <ClInclude Include="Zip\unzip.h" />
   </ItemGroup>
   <ItemGroup>
@@ -248,6 +257,9 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ProjectReference Include="..\CollectionPro\CollectionPro.vcxproj">
       <Project>{d9f68704-4aeb-4348-a0f5-bcb536eba2de}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="StoreFrontEnd.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

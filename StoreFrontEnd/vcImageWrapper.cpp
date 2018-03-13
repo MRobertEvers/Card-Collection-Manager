@@ -17,7 +17,7 @@ vcImageWrapper::~vcImageWrapper()
 
 }
 
-void 
+bool 
 vcImageWrapper::SetImage(const wxString& aszImagePath)
 {
    freeImage();
@@ -25,10 +25,14 @@ vcImageWrapper::SetImage(const wxString& aszImagePath)
    if( m_jpgPanel->IsOk )
    {
       this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
+      auto imageSize = m_jpgPanel->GetBestSize();
+      this->SetSizeHints( imageSize );
+      return true;
    }
    else
    {
       m_jpgPanel->Destroy();
+      return false;
    }
 }
 

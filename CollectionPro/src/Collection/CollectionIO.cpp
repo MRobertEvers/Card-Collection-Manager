@@ -31,6 +31,7 @@ CollectionIO::InitializeCollection( const std::string& aszFileName )
    return true;
 }
 
+
 bool 
 CollectionIO::LoadCollection( const string& aszFileName, CollectionFactory* aoFactory )
 {
@@ -128,7 +129,12 @@ CollectionIO::PopulateCollectionFields()
 
    for( auto& szPropertLine : m_ptLoadToken->OverheadPropertyLines )
    {
-      loadOverheadLine( szPropertLine );
+      loadOverheadPropertyLine( szPropertLine );
+   }
+
+   for( auto& szOverheadLine : m_ptLoadToken->OverheadProcessLines )
+   {
+      loadOverheadProcessLine( szOverheadLine );
    }
 
    return true;
@@ -329,7 +335,60 @@ CollectionIO::loadOverheadFile()
 }
 
 bool 
-CollectionIO::loadOverheadLine(const std::string& aszLine)
+CollectionIO::loadOverheadProcessLine( const std::string& aszLine )
+{
+   auto ptDetails = m_ptCollection->m_ptrCollectionDetails;
+
+   string szBaseLine = aszLine;
+   vector<string> lstSplitLine = StringHelper::Str_Split( szBaseLine, " " );
+
+   size_t iWords = lstSplitLine.size();
+   if( iWords < 1 ) { return false; }
+
+   for( auto& szLine : lstSplitLine )
+   {
+      szLine = StringHelper::Str_Trim( szLine, ' ' );
+   }
+
+   // TODO: This should not be literall.
+   if( iWords > 2 && lstSplitLine[0] == "Peek" )
+   {
+      int indOfValueStart = 0;
+      for( size_t i = 1; i < iWords; i++ )
+      {
+         auto szWord = lstSplitLine[i];
+         if( szWord.size() > 0 && szWord[0] == '\"' )
+         {
+            indOfValueStart = i;
+            break;
+         }
+      }
+
+      string szKey = "";
+      for( size_t i = 1; i < indOfValueStart; i++ )
+      {
+         auto szWord = lstSplitLine[i];
+         szKey += " "+szWord;
+      }
+      szKey = StringHelper::Str_Trim( szKey, ' ' );
+
+      string szValue = "";
+      for( size_t i = indOfValueStart; i < iWords; i++ )
+      {
+         auto szWord = lstSplitLine[i];
+         szValue += " "+szWord;
+      }
+      szValue = StringHelper::Str_Trim( szValue, ' ' );
+      szValue = StringHelper::Str_Trim( szValue, '\"' );
+
+      ptDetails->AddPeekValue( szKey, szValue );
+   }
+
+   return true;
+}
+
+bool 
+CollectionIO::loadOverheadPropertyLine(const std::string& aszLine)
 {
    auto ptDetails = m_ptCollection->m_ptrCollectionDetails;
 
@@ -338,10 +397,9 @@ CollectionIO::loadOverheadLine(const std::string& aszLine)
 
    if( lstSplitLine.size() != 2 ) { return false; }
 
-   vector<string>::iterator iter_Lines = lstSplitLine.begin();
-   for( ; iter_Lines != lstSplitLine.end(); ++iter_Lines )
+   for( auto& szLine : lstSplitLine )
    {
-      *iter_Lines = StringHelper::Str_Trim( *iter_Lines, ' ' );
+      szLine = StringHelper::Str_Trim( szLine, ' ' );
    }
 
    string szKey = lstSplitLine.at( 0 );

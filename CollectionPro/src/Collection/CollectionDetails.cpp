@@ -162,3 +162,19 @@ CollectionDetails::GetAddress()
 {
    return m_ptrAddress;
 }
+
+
+void 
+CollectionDetails::AddPeekValue( const std::string& aszKey, 
+                                 const std::string& aszValue )
+{
+   m_mapPeekValues.insert( std::make_pair( aszKey, aszValue ) );
+}
+
+std::vector<std::pair<std::string, std::string>> 
+CollectionDetails::GetPeekValues()
+{
+   auto vecRetVal = std::vector<std::pair<std::string, std::string>>( m_mapPeekValues.begin(), m_mapPeekValues.end() );
+   vecRetVal.push_back( std::make_pair("Name",m_szName) );
+   return vecRetVal;
+}

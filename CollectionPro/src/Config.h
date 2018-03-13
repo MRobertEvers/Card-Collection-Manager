@@ -34,6 +34,9 @@ public:
    std::string GetCollectionsHistoryDirectory();
    std::string GetCollectionsOverheadDirectory();
 
+   std::string GetImageFilePath( const std::string& aszCardName, 
+                                 const std::string& aszSet = "" );
+
    char GetKeyCode(std::string aszFullKey);
    std::string GetFullKey(char aiKeyCode);
 
