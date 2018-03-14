@@ -37,7 +37,6 @@ ImageViewer::ImageViewer( wxWindow* aptParent, wxWindowID aiWID )
    wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
    this->SetSizer( boxSizer );
    boxSizer->Add( m_ptImageWrapper, wxSizerFlags( 1 ).Shaped() );
-   this->SetBackgroundStyle( wxBackgroundStyle::wxBG_STYLE_TRANSPARENT );
 }
 
 

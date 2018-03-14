@@ -5,11 +5,12 @@
 #include "StoreFrontEnd.h"
 #include "vcCollectionsMenuList.h"
 
-//#include "viCollectionSelector.h"
+#include "viCollectionSelector.h"
 
 
 wxBEGIN_EVENT_TABLE(vCollectionsOverview, wxPanel)
 EVT_BUTTON(vCollectionsOverview::Load_Collection, vCollectionsOverview::OnLoadCollection)
+EVT_BUTTON( viCollectionSelector::Load_Button, vCollectionsOverview::onLoadCollection )
 wxEND_EVENT_TABLE()
 
 vCollectionsOverview::vCollectionsOverview( wxWindow* aptParent,
@@ -27,6 +28,21 @@ vCollectionsOverview::vCollectionsOverview( wxWindow* aptParent,
 vCollectionsOverview::~vCollectionsOverview()
 {
    delete m_vcCollectionsPanel;
+}
+
+void 
+vCollectionsOverview::onLoadCollection( wxCommandEvent& awxEvt )
+{
+   StoreFront* ptSF = StoreFrontEnd::Server();
+   auto szPath = awxEvt.GetString();
+
+   // Load collection returns the Col ID.
+   auto szColID = ptSF->LoadCollection( szPath.ToStdString() );
+   auto szColName = ptSF->GetCollectionName( szColID );
+   m_vcCollectionsPanel->AddCollectionOption( szColName );
+
+   // This event is handled.
+   awxEvt.StopPropagation();
 }
 
 void 
@@ -86,6 +102,6 @@ vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
    // This event is handled.
    awxEvt.StopPropagation();
 */
-   //auto sel = new viCollectionSelector( this, 4 );
-   //sel->Show();
+   auto sel = new viCollectionSelector( this, 4 );
+   sel->Show();
 }

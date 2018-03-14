@@ -24,6 +24,7 @@ private:
 
    vcCollectionsMenuList* m_vcCollectionsPanel;
 
+   void onLoadCollection( wxCommandEvent& awxEvt );
    void buildCollectionsPreview();
    void buildCollectionSelector();
    void getLoadedCollections();

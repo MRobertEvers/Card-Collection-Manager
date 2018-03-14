@@ -10,7 +10,6 @@ vcImageWrapper::vcImageWrapper(wxWindow* aptParent,
    this->SetSize(wxSize(223, 311));
    this->SetSizeHints(this->GetSize());
    this->SetMinSize(this->GetSize());
-   this->SetBackgroundStyle( wxBG_STYLE_TRANSPARENT );
 }
 
 vcImageWrapper::~vcImageWrapper()

@@ -6,7 +6,6 @@
 cCollectionCube::cCollectionCube( MainFrame* aParent, const wxString& aszColName )
    : IMenuEventHandler( aParent ), m_ColID( aszColName )
 {
-   auto ptSF = StoreFrontEnd::Server();
    m_wxCube = new vCollectionCube( aParent, 9, m_ColID );
 
    registerSendMenuEvents();

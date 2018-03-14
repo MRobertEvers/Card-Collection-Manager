@@ -117,7 +117,7 @@ vcCollectionCubeDisplay::GetFirstInt()
 bool 
 vcCollectionCubeDisplay::IsEmpty()
 {
-   return false;
+   return m_vecDataItems.size() == 0;
 }
 
 void 
