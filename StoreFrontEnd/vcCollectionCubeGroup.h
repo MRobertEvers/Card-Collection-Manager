@@ -19,7 +19,7 @@ public:
                           int aiColumnIndex );
    ~vcCollectionCubeGroup();
 
-   void PopulateList( std::vector<GroupItemData*> avecItemData, Group aGrp );
+   void PopulateList( std::vector<CardInterface*> avecItemData, Group aGrp );
    int GetColumnIndex();
    void DeselectAll();
    int GetSelection();
@@ -49,11 +49,11 @@ private:
    void onScroll( wxScrollWinEvent& awxEvt );
 
    void resizeColumn();
-   void performDisplay( std::map<wxString, std::vector<GroupItemData*>, Group::Sorting> amapGrps,
+   void performDisplay( std::map<wxString, std::vector<CardInterface*>, Group::Sorting> amapGrps,
                         const Group& agrp );
-   void performDisplayWithSubGrouping( std::map<wxString, std::vector<GroupItemData*>, Group::Sorting> amapGrps,
+   void performDisplayWithSubGrouping( std::map<wxString, std::vector<CardInterface*>, Group::Sorting> amapGrps,
       const Group& agrp );
-   void displayNormal( GroupItemData* itemData );
+   void displayNormal( CardInterface* itemData );
    void displayNormal( const wxString& buf, const wxString& aszHash );
    void displayNormal( const wxString& buf, const wxString& aszHash, const wxFont& awxFont, 
                        bool abAlignCenter, const wxColour& awxColor, const wxColour& awxFontColor,

@@ -71,7 +71,7 @@ public:
 
 private:
    ImageFetcher();
-   void downloadImage( const wxString& aszFilePath,
+   bool downloadImage( const wxString& aszFilePath,
                        const wxString& aszCardName,
                        const wxString& aszSet,
                        const wxString& aszMUD );

@@ -42,6 +42,7 @@ ImageViewer::ImageViewer( wxWindow* aptParent, wxWindowID aiWID )
 
 ImageViewer::~ImageViewer()
 {
+   stopCallbacks();
    m_vecImageCallbacks.clear();
 }
 

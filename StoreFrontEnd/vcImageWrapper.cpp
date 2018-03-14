@@ -39,7 +39,7 @@ vcImageWrapper::SetImage(const wxString& aszImagePath)
 void
 vcImageWrapper::freeImage()
 {
-   if( m_jpgPanel )
+   if( m_jpgPanel != nullptr )
    {
       this->GetSizer()->Detach(m_jpgPanel);
       m_jpgPanel->Destroy();

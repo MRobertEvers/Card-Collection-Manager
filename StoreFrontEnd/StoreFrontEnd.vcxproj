@@ -159,11 +159,14 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="CardInterface.cpp" />
     <ClCompile Include="cCollectionCube.cpp" />
     <ClCompile Include="cCollectionDeckBox.cpp" />
+    <ClInclude Include="CardInterface.h" />
     <ClInclude Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
     <ClCompile Include="CELIOption.cpp" />
+    <ClCompile Include="CollectionInterface.cpp" />
     <ClCompile Include="CURLAPI.cpp" />
     <ClCompile Include="Group.cpp" />
     <ClCompile Include="ImageViewer.cpp" />
@@ -198,6 +201,7 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClCompile Include="viCollectionEditor.cpp" />
     <ClCompile Include="viCollectionSelector.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
+    <ClInclude Include="CollectionInterface.h" />
     <ClInclude Include="ImageViewer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="vicCollectionPeeker.h" />

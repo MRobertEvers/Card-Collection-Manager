@@ -13,6 +13,8 @@ public:
    vCollectionCube( MainFrame* aptParent, wxWindowID aiWID, const wxString& aszColID );
    ~vCollectionCube();
 
+   void PrepareInterface();
+
 private:
    wxDECLARE_EVENT_TABLE();
 

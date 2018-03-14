@@ -25,8 +25,8 @@ private:
 class CURLAPI
 {
 public:
-   static void Easy_HTTP( const std::string& aszRequest, cURLFunctor* aptBuffer );
-   static void Easy_HTTPS( const std::string& aszRequest, cURLFunctor* aptBuffer );
+   static bool Easy_HTTP( const std::string& aszRequest, cURLFunctor* aptBuffer );
+   static bool Easy_HTTPS( const std::string& aszRequest, cURLFunctor* aptBuffer );
 
    static size_t WriteCallback( void *contents, size_t size, size_t nmemb, void *userp );
 };

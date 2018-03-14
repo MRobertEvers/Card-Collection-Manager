@@ -13,6 +13,8 @@ public:
    vCollectionDeckBox(MainFrame* aptParent, wxWindowID aiWID, const wxString& aszColID);
    ~vCollectionDeckBox();
 
+   void PrepareInterface(  );
+
 private:
    wxDECLARE_EVENT_TABLE();
 

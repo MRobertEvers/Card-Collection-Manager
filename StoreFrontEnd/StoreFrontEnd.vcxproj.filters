@@ -189,6 +189,12 @@
     <ClCompile Include="vicCollectionPeeker.cpp">
       <Filter>Views\Interfaces\CollectionSelector</Filter>
     </ClCompile>
+    <ClCompile Include="CollectionInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CardInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -343,6 +349,12 @@
     </ClInclude>
     <ClInclude Include="vicCollectionPeeker.h">
       <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClInclude>
+    <ClInclude Include="CollectionInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CardInterface.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

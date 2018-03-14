@@ -3,6 +3,8 @@
 #include "MainWindow.h"
 #include "StoreFrontEnd.h"
 #include "Group.h"
+#include "CardInterface.h"
+#include "CollectionInterface.h"
 #include <algorithm>
 #include <wx/gdicmn.h>
 
@@ -47,8 +49,9 @@ CubeDisplayItemSorter::operator()( const wxString& agrpLeft, const wxString& agr
 wxBEGIN_EVENT_TABLE( vcCollectionCubeDisplay, wxPanel )
 wxEND_EVENT_TABLE()
 
-vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID aiWID, const wxString& aszColID )
-   : wxScrolledWindow( aptParent, aiWID, wxDefaultPosition, wxDefaultSize, wxLB_ALWAYS_SB ), m_szColID(aszColID)
+vcCollectionCubeDisplay::vcCollectionCubeDisplay( wxPanel* aptParent, wxWindowID aiWID, 
+                                                  std::shared_ptr<CollectionInterface> aptInt )
+   : wxScrolledWindow( aptParent, aiWID, wxDefaultPosition, wxDefaultSize, wxLB_ALWAYS_SB ), m_ptColInt( aptInt )
 {
    wxBoxSizer* boxSizer = new wxBoxSizer( wxHORIZONTAL );
    this->SetSizer( boxSizer );
@@ -64,20 +67,10 @@ vcCollectionCubeDisplay::~vcCollectionCubeDisplay()
 void 
 vcCollectionCubeDisplay::RefreshList()
 {
-   auto ptSF = StoreFrontEnd::Server();
-   Query query;
-   query.AnyMeta();
-   auto lstCol = ptSF->GetAllCardsStartingWith( m_szColID.ToStdString(), query );
-
-   m_vecDataItems.clear();
-   for( auto& szItem : lstCol )
-   {
-      GroupItemData data( szItem, GroupItemData::LONG_NAME );
-      m_vecDataItems.push_back( data );
-   }
+   m_ptColInt->Refresh();
 
    auto defGroup = defaultGroup();
-   auto mapGroups = performGrouping( m_vecDataItems, defGroup );
+   auto mapGroups = performGrouping( m_ptColInt->GetItemInterfaces(), defGroup );
    this->Freeze();
    clearDisplay();
    int index = 0;
@@ -96,16 +89,23 @@ vcCollectionCubeDisplay::RefreshList()
    this->Thaw();
 }
 
-GroupItemData 
+CardInterface 
 vcCollectionCubeDisplay::GetItemByListIndex( int Ind )
 {
-   return m_vecDataItems[Ind];
+   return m_ptColInt->GetItemInterfaces()[Ind];
 }
 
-GroupItemData 
+CardInterface
 vcCollectionCubeDisplay::GetFirst()
 {
-   return m_vecDataItems[0];
+   if( m_ptColInt->GetItemInterfaces().size() > 0 )
+   {
+      return *m_ptColInt->GetItemInterfaces().begin();
+   }
+   else
+   {
+      return CardInterface();
+   }
 }
 
 int 
@@ -117,7 +117,7 @@ vcCollectionCubeDisplay::GetFirstInt()
 bool 
 vcCollectionCubeDisplay::IsEmpty()
 {
-   return m_vecDataItems.size() == 0;
+   return m_ptColInt->GetItemInterfaces().size() == 0;
 }
 
 void 
@@ -252,10 +252,10 @@ vcCollectionCubeDisplay::getGroupFontColor( const wxString& aszGroup )
    return wxColour();
 }
 
-std::map<wxString, std::vector<GroupItemData*>, Group::Sorting>
-vcCollectionCubeDisplay::performGrouping( std::vector<GroupItemData>& avecItems, const Group& aGrp )
+std::map<wxString, std::vector<CardInterface*>, Group::Sorting>
+vcCollectionCubeDisplay::performGrouping( std::vector<CardInterface>& avecItems, const Group& aGrp )
 {
-   map<wxString, vector<GroupItemData*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
+   map<wxString, vector<CardInterface*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
 
    // So you assign each item in your collection to a GroupItemData,
    // then the do something like below to extract the group that they should belong.

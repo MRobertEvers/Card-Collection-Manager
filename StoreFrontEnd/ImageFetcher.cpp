@@ -94,9 +94,9 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
 {
    PrepareImageSetFolder(aszSet);
 
-   downloadImage(aszFilePath, aszCardName, aszSet, aszMUD);
+   bool bSuccess = downloadImage(aszFilePath, aszCardName, aszSet, aszMUD);
 
-   if( aptCallback != nullptr )
+   if( aptCallback != nullptr && bSuccess )
    {
       aptCallback->CallBack();
    }
@@ -113,7 +113,7 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
 }
 
 
-void 
+bool 
 ImageFetcher::downloadImage( const wxString& aszFilePath,
                              const wxString& aszCardName,
                              const wxString& aszSet,
@@ -123,7 +123,7 @@ ImageFetcher::downloadImage( const wxString& aszFilePath,
    {
       if( tryDownload( aszFilePath, aszCardName, aszSet, aszMUD ) )
       {
-         break;
+         return true;
       }
       else
       {
@@ -140,6 +140,8 @@ ImageFetcher::downloadImage( const wxString& aszFilePath,
          }
       }
    }
+
+   return false;
 }
 
 bool 

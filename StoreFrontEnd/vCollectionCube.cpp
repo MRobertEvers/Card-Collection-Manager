@@ -7,6 +7,7 @@
 #include "MainWindow.h"
 #include "viCardEditor.h"
 #include "vcCollectionCubeDisplay.h"
+#include "CollectionInterface.h"
 
 wxBEGIN_EVENT_TABLE( vCollectionCube, wxPanel )
 EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
@@ -21,6 +22,7 @@ vCollectionCube::vCollectionCube( MainFrame* aptParent,
                                   const wxString& aszColID )
    : ivCollectionView( aptParent, aiWID, aszColID )
 {
+   PrepareInterface();
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer( 1, 3, 0, 0 );
 
    boxSizer->AddGrowableCol( 0 );
@@ -42,6 +44,14 @@ vCollectionCube::vCollectionCube( MainFrame* aptParent,
 vCollectionCube::~vCollectionCube()
 {
 
+}
+
+void 
+vCollectionCube::PrepareInterface()
+{
+   Query query;
+   query.AnyMeta();
+   m_ptCollectionInterface->PrepareInterface( query );
 }
 
 void
@@ -68,7 +78,7 @@ vCollectionCube::onCardChanged( wxCommandEvent& awxEvt )
 void
 vCollectionCube::buildGroupPanel()
 {
-   m_vcItemList = new vcCollectionCubeDisplay( this, 0, m_wxszColID );
+   m_vcItemList = new vcCollectionCubeDisplay( this, 0, m_ptCollectionInterface );
    this->GetSizer()->Add( m_vcItemList, wxSizerFlags( 1 ).Expand() );
 }
 

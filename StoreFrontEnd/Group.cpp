@@ -1,5 +1,6 @@
 #include "Group.h"
 #include "GroupItemData.h"
+#include "CardInterface.h"
 
 Group::ItemSorting::ItemSorting()
 {
@@ -16,7 +17,7 @@ Group::ItemSorting::ItemSorting( SortingOperator* aptSorting )
 }
 
 bool
-Group::ItemSorting::operator()( const GroupItemData* agrpLeft, const GroupItemData* agrpRight ) const
+Group::ItemSorting::operator()( const CardInterface* agrpLeft, const CardInterface* agrpRight ) const
 {
    return (*m_ptSorter)(agrpLeft->GetName(), agrpRight->GetName());
 }
@@ -123,7 +124,7 @@ Group::SetItemSortingFunctor( SortingOperator* aptFunctor )
 
 wxString
 Group::
-GetGroup( const GroupItemData& aData ) const
+GetGroup( const CardInterface& aData ) const
 {
    wxString szGroup;
    // If the item has the override field, then that field is what is used.
@@ -141,11 +142,11 @@ GetGroup( const GroupItemData& aData ) const
    {
       if( MetaKey )
       {
-         szGroup = aData.GetMetaTag( Key );
+         szGroup = aData.GetMetaTag( Key.ToStdString() );
       }
       else
       {
-         szGroup = aData.GetAttribute( Key );
+         szGroup = aData.GetAttribute( Key.ToStdString() );
       }
 
       for( auto& broadGroup : BroadenedValues )
