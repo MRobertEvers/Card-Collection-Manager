@@ -5,7 +5,7 @@
 #include "StoreFrontEnd.h"
 #include "vcCollectionsMenuList.h"
 
-#include "viCollectionSelector.h"
+//#include "viCollectionSelector.h"
 
 
 wxBEGIN_EVENT_TABLE(vCollectionsOverview, wxPanel)
@@ -86,6 +86,6 @@ vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
    // This event is handled.
    awxEvt.StopPropagation();
 */
-   auto sel = new viCollectionSelector( this, 4 );
-   sel->Show();
+   //auto sel = new viCollectionSelector( this, 4 );
+   //sel->Show();
 }

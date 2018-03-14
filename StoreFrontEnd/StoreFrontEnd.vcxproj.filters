@@ -177,13 +177,7 @@
     <ClCompile Include="CURLAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vicCollectionSelectorSelection.cpp">
-      <Filter>Views\Interfaces\CollectionSelector</Filter>
-    </ClCompile>
     <ClCompile Include="viCollectionSelector.cpp">
-      <Filter>Views\Interfaces\CollectionSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="CEOption.cpp">
       <Filter>Views\Interfaces\CollectionSelector</Filter>
     </ClCompile>
     <ClCompile Include="ImageViewer.cpp">
@@ -191,6 +185,9 @@
     </ClCompile>
     <ClCompile Include="vcImageWrapper.cpp">
       <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="vicCollectionPeeker.cpp">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -335,12 +332,6 @@
     <ClInclude Include="viCollectionSelector.h">
       <Filter>Views\Interfaces\CollectionSelector</Filter>
     </ClInclude>
-    <ClInclude Include="vicCollectionSelectorSelection.h">
-      <Filter>Views\Interfaces\CollectionSelector</Filter>
-    </ClInclude>
-    <ClInclude Include="CEOption.h">
-      <Filter>Views\Interfaces\CollectionSelector</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -350,10 +341,8 @@
     <ClInclude Include="vcImageWrapper.h">
       <Filter>Views\Interfaces\ImageViewer</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="StoreFrontEnd.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <ClInclude Include="vicCollectionPeeker.h">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

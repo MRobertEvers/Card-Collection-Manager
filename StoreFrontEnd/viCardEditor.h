@@ -11,7 +11,7 @@
 
 class vcEditableTraitList;
 class vcEditableItemList;
-class vcImageWrapper;
+class ImageViewer;
 
 class viCardEditor : public wxPanel
 {
@@ -45,20 +45,18 @@ public:
 private:
    wxDECLARE_EVENT_TABLE();
 
-   vcImageWrapper* m_jpgPanel;
+   ImageViewer* m_jpgPanel;
    vcEditableTraitList* m_wxTraitList;
    vcEditableItemList* m_wxEditableItemList;
    wxString m_szCardName;
+   wxString m_szDisplaySet;
+   wxString m_szDisplayMUD;
    wxString m_szColID;
    wxString m_szDisplayingHash;
    std::vector<CETraitOption> m_vecAttrs;
    std::vector<wxString> m_vecUIDs;
    std::vector<std::shared_ptr<ImageFetcherCallback>> m_vecImageCallbacks;
    std::shared_ptr<std::mutex> m_mutex;
-
-   void fetchImage();
-   void setImage(const wxString& aszImagePath);
-   void stopCallbacks( bool abBlock = true );
 
    bool parseNew(wxString aszColID, wxString aszCardHash );
    void refreshDisplay();

@@ -2,7 +2,7 @@
 #include "StoreFrontEnd.h"
 #include "vcEditableTraitList.h"
 #include "vcEditableItemList.h"
-#include "vcImageWrapper.h"
+#include "ImageViewer.h"
 #include <string>
 #include <wx/url.h>
 #include <wx/sstream.h>
@@ -67,7 +67,7 @@ viCardEditor::viCardEditor( wxWindow* aptParent, wxWindowID aiWID,
 
 viCardEditor::~viCardEditor()
 {
-   stopCallbacks();
+
 }
 
 void 
@@ -88,77 +88,6 @@ wxString
 viCardEditor::GetDisplayingCard()
 {
    return m_szCardName;
-}
-
-void 
-viCardEditor::fetchImage()
-{
-   StoreFront* ptSF = StoreFrontEnd::Server();
-   StoreFrontEnd* ptSFE = StoreFrontEnd::Client();
-
-   wxString szMUD = "";
-   wxString szSet = "";
-   for( auto& trait : m_vecAttrs )
-   {
-      if( trait.Key == "multiverseid" )
-      {
-         szMUD = trait.Selection;
-      }
-      else if( trait.Key == "set" )
-      {
-         szSet = trait.Selection;
-      }
-   }
-
-   wxString szImagePaths = ptSF->GetImagesDirectory();
-   szImagePaths += "\\_";
-   szImagePaths += szSet;
-
-   wxString szFullPath = szImagePaths + "\\" + m_szCardName + ".jpg";
-
-   ifstream imageFile(szFullPath.ToStdString().c_str());
-   if( !imageFile.good() )
-   {
-      imageFile.close();
-
-      // Delete the other callbacks.
-      stopCallbacks();
-      m_vecImageCallbacks.clear();
-
-      // Prepare a callback if the image isnt downloaded.
-      auto callBack = std::shared_ptr<ImageFetcherCallback>( new viCardEditorImageCallBack( this, m_mutex ) );
-      m_vecImageCallbacks.push_back( callBack );
-      ptSFE->DownloadCardImage( szFullPath, m_szCardName, szSet, szMUD,
-                                std::shared_ptr<ImageFetcherCallback>( callBack ) );
-   }
-   else
-   {
-      imageFile.close();
-      setImage(szFullPath);
-   }
-}
-
-void 
-viCardEditor::setImage(const wxString& aszImagePath)
-{
-   this->Freeze();
-   wxLog::EnableLogging( false );
-   m_jpgPanel->SetImage(aszImagePath);
-   wxLog::EnableLogging( true );
-   this->Thaw();
-}
-
-void 
-viCardEditor::stopCallbacks(bool abBlock)
-{
-   if( abBlock ){ m_mutex->lock(); }
-   
-   for( auto& ptCallback : m_vecImageCallbacks )
-   {
-      if( !ptCallback ) { continue; }
-      ptCallback->SetDoCall( false );
-   }
-   if( abBlock ) { m_mutex->unlock(); }
 }
 
 bool 
@@ -213,6 +142,18 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
       {
          m_vecUIDs.push_back( pairUID.second );
       }
+
+      for( auto& trait : m_vecAttrs )
+      {
+         if( trait.Key == "multiverseid" )
+         {
+            m_szDisplayMUD = trait.Selection;
+         }
+         else if( trait.Key == "set" )
+         {
+            m_szDisplaySet = trait.Selection;
+         }
+      }
    }
 
    return true;
@@ -223,11 +164,11 @@ viCardEditor::refreshDisplay()
 {
    if( m_jpgPanel == NULL )
    {
-      m_jpgPanel = new vcImageWrapper(this, 1);
+      m_jpgPanel = new ImageViewer(this, 1);
       this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
    }
 
-   fetchImage();
+   m_jpgPanel->DisplayImage( m_szCardName, m_szDisplayMUD, m_szDisplaySet );
 }
 
 void 
