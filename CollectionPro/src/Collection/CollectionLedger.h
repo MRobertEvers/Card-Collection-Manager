@@ -17,6 +17,7 @@ public:
    CollectionLedger( const Location& alocParent );
    ~CollectionLedger();
 
+   unsigned int GetSize();
    std::set<std::shared_ptr<CopyItem>> ViewOwned();
    std::set<std::shared_ptr<CopyItem>> ViewPresent();
    std::map<CollectionObject*, std::set<std::shared_ptr<CopyItem>>>  ViewSortedPresent();

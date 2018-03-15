@@ -2,6 +2,7 @@
 #include "Collection.h"
 #include "CollectionFactory.h"
 #include "CollectionLedger.h"
+#include "CopyItem.h"
 #include "../StringInterface.h"
 #include "../Addressing/Addresser.h"
 
@@ -49,7 +50,13 @@ CollectionIO::LoadCollection( const string& aszFileName, CollectionFactory* aoFa
 void 
 CollectionIO::SaveCollection()
 {
+   saveCollection();
 
+   saveMeta();
+
+   saveHistory();
+
+   saveOverhead();
 }
 
 bool 
@@ -691,7 +698,41 @@ CollectionIO::saveOverhead()
       oColFile << szLine << endl;
    }
 
+   saveRequiredPeekValues(oColFile);
+
    oColFile.close();
+}
+
+void 
+CollectionIO::saveRequiredPeekValues( ofstream& aFile )
+{
+   auto ptDetails = m_ptCollection->m_ptrCollectionDetails;
+   auto ptLedger = m_ptCollection->m_ptrCollectionLedger;
+
+   auto vecPeek = ptDetails->GetPeekValues();
+   map<string, string> mapPeek( vecPeek.begin(), vecPeek.end() );
+   
+   auto iter_find = mapPeek.find( "Count" );
+   if( iter_find == mapPeek.end() )
+   {
+      aFile << "Peek " << "Count \"" << ptLedger->GetSize() << "\"" << endl;
+   }
+
+   iter_find = mapPeek.find( "Id" );
+   if( iter_find == mapPeek.end() )
+   {
+      aFile << "Peek " << "Id \"" << ptDetails->GetAddress()->GetFullAddress() << "\"" << endl;
+   }
+
+   iter_find = mapPeek.find( "Icon" );
+   if( iter_find == mapPeek.end() )
+   {
+      auto colItems = ptLedger->ViewPresent();
+      if( colItems.size() > 0 )
+      {
+         aFile << "Peek " << "Icon \"" << (*colItems.begin())->GetObject()->GetName() << "\"" << endl;
+      }
+   }
 }
 
 void 

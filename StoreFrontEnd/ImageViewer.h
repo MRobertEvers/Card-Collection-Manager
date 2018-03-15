@@ -14,13 +14,13 @@ public:
    class ImageViewerCallback : public ImageFetcherCallback
    {
    public:
-      ImageViewerCallback( ImageViewer* aptCE, std::shared_ptr<std::mutex> amutex, const wxString& aszFilePath );
+      ImageViewerCallback( ImageViewer* aptCE, std::shared_ptr<std::recursive_mutex> amutex, const wxString& aszFilePath );
 
       virtual void CallBack() override;
 
    private:
       ImageViewer* m_ptViewer;
-      std::shared_ptr<std::mutex> m_mutex;
+      std::shared_ptr<std::recursive_mutex> m_mutex;
       wxString m_szFilePath;
    };
 
@@ -43,7 +43,7 @@ private:
    wxDECLARE_EVENT_TABLE();
 
    std::vector<std::shared_ptr<ImageFetcherCallback>> m_vecImageCallbacks;
-   std::shared_ptr<std::mutex> m_mutex;
+   std::shared_ptr<std::recursive_mutex> m_mutex;
    vcImageWrapper* m_ptImageWrapper;
 
    void fetchImage( const wxString& aszCardName,

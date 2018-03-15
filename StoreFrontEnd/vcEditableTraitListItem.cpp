@@ -6,7 +6,7 @@ wxEND_EVENT_TABLE()
 
 vcEditableTraitListItem::vcEditableTraitListItem( wxWindow* aptParent,
                                                   wxWindowID aiID,
-                                                  wxString aszTraitName,
+                                                  const wxString& aszTraitName,
                                                   std::vector<std::string> avecOptions )
    : wxPanel(aptParent, aiID), m_vecOptions(avecOptions), m_szName(aszTraitName)
 {

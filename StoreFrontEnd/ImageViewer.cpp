@@ -3,7 +3,7 @@
 
 ImageViewer::
 ImageViewerCallback::
-ImageViewerCallback( ImageViewer* aptCE, std::shared_ptr<std::mutex> amutex, const wxString& aszFilePath )
+ImageViewerCallback( ImageViewer* aptCE, std::shared_ptr<std::recursive_mutex> amutex, const wxString& aszFilePath )
    : ImageFetcherCallback(), m_ptViewer( aptCE ), m_mutex( amutex ), m_szFilePath(aszFilePath)
 {
 
@@ -32,7 +32,7 @@ wxEND_EVENT_TABLE()
 ImageViewer::ImageViewer( wxWindow* aptParent, wxWindowID aiWID )
    : wxPanel( aptParent, aiWID ), m_ptImageWrapper( new vcImageWrapper( this, 3 ) )
 {
-   m_mutex = std::shared_ptr<std::mutex>( new std::mutex() );
+   m_mutex = std::shared_ptr<std::recursive_mutex>( new std::recursive_mutex() );
 
    wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
    this->SetSizer( boxSizer );
@@ -72,9 +72,11 @@ ImageViewer::DisplayImage( const wxString& aszCardName,
 bool
 ImageViewer::DisplayImage( const wxString& aszFilePath )
 {
+   m_mutex->lock();
    wxLog::EnableLogging( false );
    bool bRetVal = m_ptImageWrapper->SetImage( aszFilePath );
    wxLog::EnableLogging( true );
+   m_mutex->unlock();
    return bRetVal;
 }
 

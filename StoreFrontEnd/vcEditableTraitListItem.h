@@ -9,7 +9,7 @@ class vcEditableTraitListItem : public wxPanel
 public:
    vcEditableTraitListItem( wxWindow* aptParent,
                             wxWindowID aiID,
-                            wxString aszTraitName,
+                            const wxString& aszTraitName,
                             std::vector<std::string> avecOptions );
    ~vcEditableTraitListItem();
 

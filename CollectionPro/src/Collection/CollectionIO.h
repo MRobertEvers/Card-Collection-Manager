@@ -1,12 +1,4 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <list>
-#include <fstream>
-#include <sstream>
-#include <memory>
-#include <map>
-
 #include "../Config.h"
 #include "../Support/StringHelper.h"
 #include "../Support/TypeDefs.h"
@@ -15,6 +7,14 @@
 #include "Collection.h"
 #include "CollectionFactory.h"
 #include "CollectionSource.h"
+
+#include <vector>
+#include <string>
+#include <list>
+#include <fstream>
+#include <sstream>
+#include <memory>
+#include <map>
 
 class CollectionFactory;
 class Collection;
@@ -27,8 +27,6 @@ public:
    ~CollectionIO();
 
    bool InitializeCollection( const std::string& aszFileName );
-
-   bool PeekCollection( const std::string& aszFileName );
 
    bool LoadCollection( const std::string& aszFileName, CollectionFactory* aoFactory );
    
@@ -94,6 +92,7 @@ private:
    void saveHistory();
    void saveMeta();
    void saveOverhead();
+   void saveRequiredPeekValues( ofstream& aFile );
    void saveCollection();
 
 public:

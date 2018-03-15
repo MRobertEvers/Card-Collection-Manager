@@ -41,7 +41,7 @@ FetcherThread::Entry()
 
 
 ImageFetcher* ImageFetcher::ms_ptInstance = nullptr;
-std::mutex ImageFetcher::ms_mutexInstance;
+std::recursive_mutex ImageFetcher::ms_mutexInstance;
 
 ImageFetcher::ImageFetcher()
 {
