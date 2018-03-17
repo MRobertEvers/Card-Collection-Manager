@@ -200,12 +200,17 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClCompile Include="vicListSelector.cpp" />
     <ClCompile Include="viCollectionEditor.cpp" />
     <ClCompile Include="viCollectionSelector.cpp" />
+    <ClCompile Include="vicStatsViewRow.cpp" />
+    <ClCompile Include="vimCountModule.cpp" />
+    <ClCompile Include="vStatsViewer.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
     <ClInclude Include="CollectionInterface.h" />
     <ClInclude Include="ImageViewer.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="vicCollectionPeeker.h" />
     <ClInclude Include="viCollectionSelector.h" />
+    <ClInclude Include="vicStatsViewRow.h" />
+    <ClInclude Include="vimCountModule.h" />
+    <ClInclude Include="vStatsViewer.h" />
     <ClInclude Include="Zip\unzip.h" />
   </ItemGroup>
   <ItemGroup>

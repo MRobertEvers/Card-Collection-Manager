@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{a9a8439f-85c3-4309-ba5a-1858a1499278}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\cURL">
+      <UniqueIdentifier>{8f669614-fbfb-4eeb-a9df-6d00b3505e58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\Zip">
+      <UniqueIdentifier>{b8367648-76b4-4c59-a813-045b1dfc7f2d}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Views">
       <UniqueIdentifier>{0e663d4e-02a6-4035-9ea6-51471ebf9067}</UniqueIdentifier>
     </Filter>
@@ -28,6 +37,9 @@
     <Filter Include="Views\Deckbox\Components">
       <UniqueIdentifier>{a3566811-f2d1-45a5-b14f-3f28a82b0af9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Deckbox\ComponentHelpers">
+      <UniqueIdentifier>{4963d8e0-6851-4db2-a3f9-1ed7888d8ffd}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Views\Interfaces">
       <UniqueIdentifier>{de6c1d01-12f1-405e-bafd-e6d6fd204c6a}</UniqueIdentifier>
     </Filter>
@@ -37,17 +49,20 @@
     <Filter Include="Views\Interfaces\CollectionEditor\Components">
       <UniqueIdentifier>{0b709aad-aee9-4d6f-9839-47270f0228ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Views\Template">
-      <UniqueIdentifier>{921bdce0-b8b2-4984-abc0-1dc54c078048}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Views\Deckbox\ComponentHelpers">
-      <UniqueIdentifier>{4963d8e0-6851-4db2-a3f9-1ed7888d8ffd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Views\Interfaces\CardEditor">
       <UniqueIdentifier>{f5826536-5ce6-427d-ac26-1a59c6f44800}</UniqueIdentifier>
     </Filter>
     <Filter Include="Views\Interfaces\CardEditor\Components">
       <UniqueIdentifier>{0cf2b4cb-8083-4995-9df1-c93bcfea3e94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\CollectionSelector">
+      <UniqueIdentifier>{14aabd1a-412c-4311-b71a-71988c4b122f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\ImageViewer">
+      <UniqueIdentifier>{235fdba2-5b54-4a10-b56d-bc0474300924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Template">
+      <UniqueIdentifier>{921bdce0-b8b2-4984-abc0-1dc54c078048}</UniqueIdentifier>
     </Filter>
     <Filter Include="Views\Cube">
       <UniqueIdentifier>{84c8dacd-fdf8-43de-9057-a5148544ff2f}</UniqueIdentifier>
@@ -55,20 +70,14 @@
     <Filter Include="Views\Cube\Components">
       <UniqueIdentifier>{4a01723e-c28a-433a-a4d3-970b99701fda}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Libraries">
-      <UniqueIdentifier>{a9a8439f-85c3-4309-ba5a-1858a1499278}</UniqueIdentifier>
+    <Filter Include="Views\Interfaces\StatsViewer">
+      <UniqueIdentifier>{8f564d03-09b7-49e7-b975-c60609cf543b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Libraries\cURL">
-      <UniqueIdentifier>{8f669614-fbfb-4eeb-a9df-6d00b3505e58}</UniqueIdentifier>
+    <Filter Include="Views\Interfaces\StatsViewer\Components">
+      <UniqueIdentifier>{42283d38-a96e-49a8-a1b2-cc58a91e7dc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Libraries\Zip">
-      <UniqueIdentifier>{b8367648-76b4-4c59-a813-045b1dfc7f2d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Views\Interfaces\CollectionSelector">
-      <UniqueIdentifier>{14aabd1a-412c-4311-b71a-71988c4b122f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Views\Interfaces\ImageViewer">
-      <UniqueIdentifier>{235fdba2-5b54-4a10-b56d-bc0474300924}</UniqueIdentifier>
+    <Filter Include="Views\Interfaces\StatsViewer\Modules">
+      <UniqueIdentifier>{fc80ad81-6283-4b69-b7a1-4e440d6f47cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +203,15 @@
     </ClCompile>
     <ClCompile Include="CardInterface.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vStatsViewer.cpp">
+      <Filter>Views\Interfaces\StatsViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="vicStatsViewRow.cpp">
+      <Filter>Views\Interfaces\StatsViewer\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="vimCountModule.cpp">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -338,9 +356,6 @@
     <ClInclude Include="viCollectionSelector.h">
       <Filter>Views\Interfaces\CollectionSelector</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ImageViewer.h">
       <Filter>Views\Interfaces\ImageViewer</Filter>
     </ClInclude>
@@ -355,6 +370,15 @@
     </ClInclude>
     <ClInclude Include="CardInterface.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vStatsViewer.h">
+      <Filter>Views\Interfaces\StatsViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="vicStatsViewRow.h">
+      <Filter>Views\Interfaces\StatsViewer\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vimCountModule.h">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

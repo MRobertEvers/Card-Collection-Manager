@@ -16,6 +16,7 @@ public:
    virtual void ShowCollectionEditor();
    virtual void CloseCollectionEditor();
    virtual void PrepareInterface(  ) = 0;
+   virtual void ShowStats();
 
 protected:
    viCollectionEditor* m_viColEditor;

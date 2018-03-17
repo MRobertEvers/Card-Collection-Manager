@@ -11,6 +11,7 @@ public:
    ~CollectionInterface();
 
    std::vector<CardInterface>& GetItemInterfaces();
+   unsigned int GetItemCount();
    void PrepareInterface( Query aquery );
    void Refresh();
 

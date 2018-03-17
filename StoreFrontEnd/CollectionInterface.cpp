@@ -18,6 +18,17 @@ CollectionInterface::GetItemInterfaces()
    return m_vecCopies;
 }
 
+unsigned int 
+CollectionInterface::GetItemCount()
+{
+   unsigned int uiCount = 0;
+   for( auto& item : m_vecCopies )
+   {
+      uiCount += item.GetNumber();
+   }
+   return uiCount;
+}
+
 void 
 CollectionInterface::PrepareInterface( Query aquery )
 {
