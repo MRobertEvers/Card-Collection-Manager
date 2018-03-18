@@ -83,14 +83,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;C:\wxWidgets-3.1.0\lib\vc_lib;C:\wxWidgets-3.1.0\include\msvc;C:\wxWidgets-3.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;$(WXWIN)\wxFreeChart-master\include;$(WXWIN)\lib\vc_lib;$(WXWIN)\include\msvc;$(WXWIN)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib;C:\wxWidgets-3.1.0\wxFreeChart-master\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxFreeChart17ud.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -122,15 +122,15 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;$(WXWIN)\include;$(WXWIN)\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;$(WXWIN)\wxFreeChart-master\include;$(WXWIN)\include;$(WXWIN)\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxmsw31u_core.lib;wxbase31u.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib;C:\wxWidgets-3.1.0\wxFreeChart-master\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;wxFreeChart17u.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxmsw31u_core.lib;wxbase31u.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -201,6 +201,7 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClCompile Include="viCollectionEditor.cpp" />
     <ClCompile Include="viCollectionSelector.cpp" />
     <ClCompile Include="vicStatsViewRow.cpp" />
+    <ClCompile Include="vimCMCModule.cpp" />
     <ClCompile Include="vimCountModule.cpp" />
     <ClCompile Include="vStatsViewer.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
@@ -209,6 +210,7 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClInclude Include="vicCollectionPeeker.h" />
     <ClInclude Include="viCollectionSelector.h" />
     <ClInclude Include="vicStatsViewRow.h" />
+    <ClInclude Include="vimCMCModule.h" />
     <ClInclude Include="vimCountModule.h" />
     <ClInclude Include="vStatsViewer.h" />
     <ClInclude Include="Zip\unzip.h" />

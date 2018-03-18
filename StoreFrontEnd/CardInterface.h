@@ -14,6 +14,7 @@ public:
    std::string GetFirstUID() const;
    std::string GetName() const;
    std::string GetManaCost() const;
+   std::string GetCMC() const;
    std::string GetCardType() const;
    std::string GetSet() const;
    std::string GetMetaTag( const std::string& aszKey, const std::string& aszUID = "" ) const;

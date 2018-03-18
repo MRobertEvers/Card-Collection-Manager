@@ -204,14 +204,17 @@
     <ClCompile Include="CardInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vStatsViewer.cpp">
-      <Filter>Views\Interfaces\StatsViewer</Filter>
-    </ClCompile>
     <ClCompile Include="vicStatsViewRow.cpp">
       <Filter>Views\Interfaces\StatsViewer\Components</Filter>
     </ClCompile>
     <ClCompile Include="vimCountModule.cpp">
       <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="vimCMCModule.cpp">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="vStatsViewer.cpp">
+      <Filter>Views\Interfaces\StatsViewer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -378,6 +381,9 @@
       <Filter>Views\Interfaces\StatsViewer\Components</Filter>
     </ClInclude>
     <ClInclude Include="vimCountModule.h">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="vimCMCModule.h">
       <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
     </ClInclude>
   </ItemGroup>

@@ -81,6 +81,13 @@ CardInterface::GetManaCost() const
    return szManaCost;
 }
 
+string 
+CardInterface::GetCMC() const
+{
+   auto ptSF = StoreFrontEnd::Server();
+   return ptSF->GetCommonAttribute( m_szName, "cmc" );
+}
+
 string
 CardInterface::GetCardType() const
 {
