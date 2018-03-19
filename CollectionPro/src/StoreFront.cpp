@@ -143,6 +143,18 @@ StoreFront::GetAllCardsStartingWith( const string& aszColID,
    return vector<string>();
 }
 
+vector<string> 
+StoreFront::GetHistoryLines( const string& aszColID, unsigned int aiStart )
+{
+   return vector<string>();
+}
+
+vector<string> 
+StoreFront::GetHistoryLines( const string& aszColID, unsigned int aiStart, unsigned int aiEnd )
+{
+   return vector<string>();
+}
+
 vector<pair<string, string>> 
 StoreFront::GetPeekValues( const string& aszColID )
 {

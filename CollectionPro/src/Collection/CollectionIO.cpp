@@ -59,6 +59,77 @@ CollectionIO::SaveCollection()
    saveOverhead();
 }
 
+map<unsigned long, vector<string>> 
+CollectionIO::GetHistoryTransactions( unsigned int aiStart, unsigned int aiEnd )
+{
+   auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
+
+   map<unsigned long, vector<string>> mapRetVal;
+
+   string szHistFile = GetHistoryFile( ptCollectionDetails->GetFileName() );
+
+   ifstream oHistFile( szHistFile, std::ios::in );
+   unsigned int iLookingAtTrans = 0;
+
+   // Find the first
+   bool bIsDateline = false;
+   map<unsigned long, vector<string>>::iterator iter_current = mapRetVal.end();
+   while( iLookingAtTrans < aiEnd )
+   {
+      bIsDateline = false;
+
+      string szLine;
+      if( !std::getline( oHistFile, szLine ) )
+      {
+         break;
+      }
+
+      size_t iOpenDate = szLine.find_first_of( '[' );
+      size_t iCloseDate = szLine.find_first_of( ']' );
+      if( iOpenDate >= 0 && iCloseDate > iOpenDate )
+      {
+         iLookingAtTrans++;
+         bIsDateline = true;
+      }
+
+      if( iLookingAtTrans >= aiStart )
+      {
+         if( bIsDateline )
+         {
+            struct std::tm tm;
+            string szTimeParse = szLine.substr( iOpenDate+1, iCloseDate - iOpenDate-1 );
+            std::istringstream ss( szTimeParse );
+            // %a day of week abbrev or full
+            // %b month abbrev or full
+            // %d day of month
+            // %Y 4 digit year
+            ss >> std::get_time( &tm, "%a %b %d %H:%M:%S %Y" );
+            std::time_t time = mktime( &tm );
+
+            auto iter_mapIns = mapRetVal.insert( make_pair( time, vector<string>() ) );
+            if( iter_mapIns.second )
+            {
+               iter_current = iter_mapIns.first;
+            }
+            else
+            {
+               break;
+            }
+         }
+         else if( iter_current != mapRetVal.end() )
+         {
+            string szTrimLine = StringHelper::Str_Trim( szLine, ' ' );
+            if( szTrimLine != "" )
+            {
+               iter_current->second.push_back( szTrimLine );
+            }
+         }
+      }
+   }
+
+   return mapRetVal;
+}
+
 bool 
 CollectionIO::PrepareCollectionInitialization( const string& aszFileName )
 {
@@ -623,7 +694,6 @@ CollectionIO::saveHistory()
 
    if( lstHistoryLines.size() > 0 )
    {
-      string szTimeString = "";
       time_t now = time( 0 );
       struct tm timeinfo;
       localtime_s( &timeinfo, &now );
@@ -631,19 +701,35 @@ CollectionIO::saveHistory()
       asctime_s( str, sizeof str, &timeinfo );
       str[strlen( str ) - 1] = 0;
 
-      ofstream oHistFile;
-      string szHistFile = CollectionIO::GetHistoryFile( ptCollectionDetails->GetFileName() );
-      oHistFile.open( szHistFile, ios_base::app );
+      string szHistFile = GetHistoryFile( ptCollectionDetails->GetFileName() );
 
-      oHistFile << "[" << str << "] " << endl;
+      string szHistFileTmp = (szHistFile + ".tmp");
+      std::rename( szHistFile.c_str(), szHistFileTmp.c_str() );
 
-      vector<string>::iterator iter_histLines = lstHistoryLines.begin();
-      for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
+      ifstream oHistFileOld( szHistFileTmp, std::ios::in );
+      if( oHistFileOld.good() )
       {
-         oHistFile << *iter_histLines << endl;
-      }
+         ofstream oHistFile( szHistFile, std::ios::out );
+         if( oHistFile.good() )
+         {
+            // Add the new entry at the top.
+            oHistFile << "[" << str << "] " << endl;
 
-      oHistFile.close();
+            vector<string>::iterator iter_histLines = lstHistoryLines.begin();
+            for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
+            {
+               oHistFile << *iter_histLines << endl;
+            }
+
+            // Append the old.
+            oHistFile << oHistFileOld.rdbuf();
+         }
+         oHistFile.close();
+      }
+      oHistFileOld.close();
+
+      // Delete the tmp.
+      std::remove( szHistFileTmp.c_str() );
    }
 }
 
@@ -657,7 +743,7 @@ CollectionIO::saveMeta()
    listQuery.IncludeMetaType( Persistent );
    vector<string> lstMetaLines = m_ptCollection->QueryCollection( listQuery );
 
-   oMetaFile.open( CollectionIO::GetMetaFile( ptCollectionDetails->GetFileName() ) );
+   oMetaFile.open( GetMetaFile( ptCollectionDetails->GetFileName() ) );
 
    vector<string>::iterator iter_MetaLine = lstMetaLines.begin();
    for( ; iter_MetaLine != lstMetaLines.end(); ++iter_MetaLine )
@@ -677,7 +763,7 @@ CollectionIO::saveOverhead()
    auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
 
    ofstream oColFile;
-   oColFile.open( CollectionIO::GetOverheadFile( ptCollectionDetails->GetFileName() ) );
+   oColFile.open( GetOverheadFile( ptCollectionDetails->GetFileName() ) );
 
    tm otm;
    ptCollectionDetails->SetTimeStamp();

@@ -32,6 +32,8 @@ public:
    
    void SaveCollection();
 
+   std::map<unsigned long, std::vector<std::string>> GetHistoryTransactions( unsigned int aiStart, unsigned int aiEnd );
+
 private:
    struct ItemLoadToken
    {

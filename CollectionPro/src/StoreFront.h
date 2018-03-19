@@ -33,6 +33,8 @@ public:
    string GetCollectionName(const string& aszCollectionID);
    string GetCollectionID(const string& aszCollectionName);
    vector<string> GetAllCardsStartingWith(const string& aszColID, const Query& aszSearch);
+   vector<string> GetHistoryLines( const string& aszColID, unsigned int aiStart );
+   vector<string> GetHistoryLines( const string& aszColID, unsigned int aiStart, unsigned int aiEnd );
    vector<pair<string, string>> GetPeekValues( const string& aszColID );
 
    // Card Accessors

@@ -73,6 +73,12 @@ Collection::GetPeekValues()
    return m_ptrCollectionDetails->GetPeekValues();
 }
 
+vector<string> 
+Collection::GetHistoryLines( unsigned int aiStart, unsigned int aiEnd )
+{
+   return vector<string>();
+}
+
 void
 Collection::AddItem( string aszName,
                      vector<Tag> alstAttrs,

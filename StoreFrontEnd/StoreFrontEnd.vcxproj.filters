@@ -79,6 +79,9 @@
     <Filter Include="Views\Interfaces\StatsViewer\Modules">
       <UniqueIdentifier>{fc80ad81-6283-4b69-b7a1-4e440d6f47cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Interfaces\HistoryViewer">
+      <UniqueIdentifier>{2bd4a5fb-7943-4c5e-bb52-a8466d81b96a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -218,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="vimTypeBreakDown.cpp">
       <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="viHistoryViewer.cpp">
+      <Filter>Views\Interfaces\HistoryViewer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -391,6 +397,9 @@
     </ClInclude>
     <ClInclude Include="vimTypeBreakDown.h">
       <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="viHistoryViewer.h">
+      <Filter>Views\Interfaces\HistoryViewer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
