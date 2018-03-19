@@ -216,6 +216,9 @@
     <ClCompile Include="vStatsViewer.cpp">
       <Filter>Views\Interfaces\StatsViewer</Filter>
     </ClCompile>
+    <ClCompile Include="vimTypeBreakDown.cpp">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -384,6 +387,9 @@
       <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
     </ClInclude>
     <ClInclude Include="vimCMCModule.h">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="vimTypeBreakDown.h">
       <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #include "vStatsViewer.h"
 #include "vicStatsViewRow.h"
 #include "vimCMCModule.h"
+#include "vimTypeBreakDown.h"
 
 vStatsViewer::vStatsViewer( wxWindow* aptParent,
                             wxWindowID aiID,
@@ -12,10 +13,15 @@ vStatsViewer::vStatsViewer( wxWindow* aptParent,
    this->SetSizer( sizer );
 
    vicStatsViewRow* row = new vicStatsViewRow( this, 1 );
-   sizer->Add( row, wxSizerFlags( 1 ) );
+   sizer->Add( row, wxSizerFlags( 1 ).Expand() );
 
    vimCMCModule* mod = new vimCMCModule( this, 1, m_ptInterface );
    row->AddModule( mod );
+
+   vimTypeBreakDown* mod2 = new vimTypeBreakDown( this, 1, m_ptInterface );
+   row->AddModule( mod2 );
+
+   this->SetSize( wxSize( 720, 360 ) );
 }
 
 

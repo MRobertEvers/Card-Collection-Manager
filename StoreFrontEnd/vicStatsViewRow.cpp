@@ -4,7 +4,7 @@ vicStatsViewRow::vicStatsViewRow( wxWindow* aptParent,
                                   wxWindowID aiID )
    : wxPanel(aptParent, aiID), m_iModules(0)
 {
-   wxGridSizer* sizer = new wxGridSizer( 3, 2, 2 );
+   wxBoxSizer* sizer = new wxBoxSizer( wxHORIZONTAL );
    this->SetSizer( sizer );
 }
 

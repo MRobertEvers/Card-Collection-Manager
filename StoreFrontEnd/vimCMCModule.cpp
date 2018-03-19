@@ -1,12 +1,10 @@
 #include "vimCMCModule.h"
+
 #include <map>
 #include <wx/bars/barplot.h>
-
 #include <wx/axis/numberaxis.h>
 #include <wx/axis/categoryaxis.h>
-
 #include <wx/xy/xyhistorenderer.h>
-
 #include <wx/category/categorysimpledataset.h>
 
 vimCMCModule::vimCMCModule( wxWindow* aptParent,
@@ -144,7 +142,7 @@ vimCMCModule::vimCMCModule( wxWindow* aptParent,
    // and finally construct and return chart
 
 
-   wxChartPanel* wxChart = new wxChartPanel( this, 1, new Chart( plot, GetName() ) );
+   wxChartPanel* wxChart = new wxChartPanel( this, 1, new Chart( plot, "Mana Curve" ) );
    sizer->Add( wxChart, wxSizerFlags(1 ).Expand() );
 }
 
