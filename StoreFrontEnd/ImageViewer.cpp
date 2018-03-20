@@ -29,8 +29,8 @@ wxBEGIN_EVENT_TABLE( ImageViewer, wxPanel )
 EVT_BUTTON( Image_Ready, ImageViewer::onImageReady )
 wxEND_EVENT_TABLE()
 
-ImageViewer::ImageViewer( wxWindow* aptParent, wxWindowID aiWID )
-   : wxPanel( aptParent, aiWID ), m_ptImageWrapper( new vcImageWrapper( this, 3 ) )
+ImageViewer::ImageViewer( wxWindow* aptParent, wxWindowID aiWID, bool abDoScale )
+   : wxPanel( aptParent, aiWID ), m_ptImageWrapper( new vcImageWrapper( this, 3, abDoScale ) ), m_bDoScale(abDoScale)
 {
    m_mutex = std::shared_ptr<std::recursive_mutex>( new std::recursive_mutex() );
 
@@ -75,6 +75,7 @@ ImageViewer::DisplayImage( const wxString& aszFilePath )
    m_mutex->lock();
    wxLog::EnableLogging( false );
    bool bRetVal = m_ptImageWrapper->SetImage( aszFilePath );
+   this->SetSize( m_ptImageWrapper->GetSize() );
    wxLog::EnableLogging( true );
    m_mutex->unlock();
    return bRetVal;

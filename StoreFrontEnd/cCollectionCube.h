@@ -14,7 +14,8 @@ public:
       Menu_DeckEditor = 0x4001,
       Menu_Save = 0x4501,
       Menu_Stats = 0x5321,
-      Menu_View_As_Deck = 0x4502
+      Menu_View_As_Deck = 0x4502,
+      Menu_ViewHist = 0x5353
    };
 
    cCollectionCube( MainFrame* aParent, const wxString& aszColName );

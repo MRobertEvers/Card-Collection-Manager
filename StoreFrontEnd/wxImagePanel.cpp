@@ -34,12 +34,12 @@ void wxImagePanel::keyPressed(wxKeyEvent& event) {}
 void wxImagePanel::keyReleased(wxKeyEvent& event) {}
 */
 
-wxImagePanel::wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format) :
-   wxPanel(parent), IsOk(false)
+wxImagePanel::wxImagePanel(wxWindow* parent, wxString file,
+                           wxBitmapType format, bool abDoScale) 
+   : wxPanel(parent), IsOk(false), DoScale(abDoScale)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    this->SetSizer(boxSizer);
-   this->SetSize(wxSize(223, 311));
    // load the file... ideally add a check to see if loading was successful
    IsOk = image.LoadFile(file, format);
    if( !IsOk )
@@ -61,8 +61,19 @@ wxImagePanel::wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format)
       auto imageSize = image.GetSize();
       SetSizeHints( imageSize );
    }
-   w = -1;
-   h = -1;
+   if( DoScale )
+   {
+      w = -1;
+      h = -1;
+   }
+   else
+   {
+      auto imageSize = image.GetSize();
+      w = imageSize.GetWidth();
+      h = imageSize.GetHeight();
+      resized = wxBitmap( image.Scale( w, h /*, wxIMAGE_QUALITY_HIGH*/ ) );
+   }
+
 }
 
 /*
@@ -112,7 +123,7 @@ void wxImagePanel::render(wxDC&  dc)
    int neww, newh;
    dc.GetSize(&neww, &newh);
 
-   if( (neww != w || newh != h) && ( neww != 0 && newh != 0 ))
+   if( (neww != w || newh != h) && ( neww != 0 && newh != 0 ) && (DoScale) )
    {
       resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
       w = neww;

@@ -3,6 +3,7 @@
 #include "StoreFrontEnd.h"
 #include <string>
 #include <vector>
+#include <map>
 
 class CollectionInterface
 {
@@ -11,7 +12,9 @@ public:
    ~CollectionInterface();
 
    std::vector<CardInterface>& GetItemInterfaces();
+   std::map<unsigned long, std::vector<std::string>> GetHistoryGroups();
    unsigned int GetItemCount();
+   std::string GetColId();
    void PrepareInterface( Query aquery );
    void Refresh();
 

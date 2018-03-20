@@ -28,6 +28,7 @@ cCollectionCube::BindEventHandler()
    prepareMenuItem( "Edit", Menu_DeckEditor );
    prepareMenuItem( "Save", Menu_Save );
    prepareMenuItem( "Stats", Menu_Stats );
+   prepareMenuItem( "History", Menu_ViewHist );
    prepareMenuItem( "View As Deck", Menu_View_As_Deck );
    registerMenu( "Collection" );
 }
@@ -55,5 +56,9 @@ cCollectionCube::handleEvent( unsigned int aiEvent )
       updateEvt.SetString( m_ColID );
       updateEvt.SetInt( MainFrame::Menu_View_As_Deck );
       ::wxPostEvent( m_wxCube, updateEvt );
+   }
+   else if( aiEvent == cCollectionCube::Menu_ViewHist )
+   {
+      m_wxCube->ShowHistory();
    }
 }

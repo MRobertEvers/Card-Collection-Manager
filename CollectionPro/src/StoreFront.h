@@ -33,8 +33,8 @@ public:
    string GetCollectionName(const string& aszCollectionID);
    string GetCollectionID(const string& aszCollectionName);
    vector<string> GetAllCardsStartingWith(const string& aszColID, const Query& aszSearch);
-   vector<string> GetHistoryLines( const string& aszColID, unsigned int aiStart );
-   vector<string> GetHistoryLines( const string& aszColID, unsigned int aiStart, unsigned int aiEnd );
+   map<unsigned long, vector<string>> GetHistoryLines( const string& aszColID, unsigned int aiStart );
+   map<unsigned long, vector<string>> GetHistoryLines( const string& aszColID, unsigned int aiStart, unsigned int aiEnd );
    vector<pair<string, string>> GetPeekValues( const string& aszColID );
 
    // Card Accessors
@@ -69,6 +69,7 @@ public:
    string GetSourceFileName();
    string GetSourceFilePath();
    string GetImportSourceFilePath();
+   string GetConfigDirectory();
    string GetImageFilePath( const string& aszCardName, const string& aszSet );
 
    // String Interface

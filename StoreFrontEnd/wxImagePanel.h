@@ -10,7 +10,7 @@ class wxImagePanel : public wxPanel
    int w, h;
 
 public:
-   wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format);
+   wxImagePanel(wxWindow* parent, wxString file, wxBitmapType format, bool abDoScale);
 
    void paintEvent(wxPaintEvent & evt);
    void paintNow();
@@ -18,6 +18,7 @@ public:
    void render(wxDC& dc);
 
    bool IsOk;
+   bool DoScale;
 
    DECLARE_EVENT_TABLE()
 };

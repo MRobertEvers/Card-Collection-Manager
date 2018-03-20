@@ -6,6 +6,7 @@
 #include "viCardEditor.h"
 #include "CollectionInterface.h"
 #include "vStatsViewer.h"
+#include "viHistoryViewer.h"
 
 ivCollectionView::ivCollectionView( MainFrame* aptParent, wxWindowID aiWID, const wxString& aszColID )
    : wxPanel( aptParent, aiWID ), m_wxszColID(aszColID), m_viColEditor(0)
@@ -38,6 +39,13 @@ void
 ivCollectionView::ShowStats()
 {
    auto view = new vStatsViewer( this, 1, m_ptCollectionInterface );
+   view->Show();
+}
+
+void 
+ivCollectionView::ShowHistory()
+{
+   auto view = new viHistoryViewer( this, 1, m_ptCollectionInterface );
    view->Show();
 }
 

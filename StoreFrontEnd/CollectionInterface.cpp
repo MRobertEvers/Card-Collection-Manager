@@ -18,6 +18,13 @@ CollectionInterface::GetItemInterfaces()
    return m_vecCopies;
 }
 
+std::map<unsigned long, std::vector<std::string>>
+CollectionInterface::GetHistoryGroups()
+{
+   auto ptSF = StoreFrontEnd::Server();
+   return ptSF->GetHistoryLines( GetColId(), 0 );
+}
+
 unsigned int 
 CollectionInterface::GetItemCount()
 {
@@ -27,6 +34,12 @@ CollectionInterface::GetItemCount()
       uiCount += item.GetNumber();
    }
    return uiCount;
+}
+
+std::string 
+CollectionInterface::GetColId()
+{
+   return m_szColId;
 }
 
 void 

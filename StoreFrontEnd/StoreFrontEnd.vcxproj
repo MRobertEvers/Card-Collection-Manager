@@ -192,6 +192,7 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="vcCollectionsMenuList.cpp" />
     <ClCompile Include="viCardEditor.cpp" />
+    <ClCompile Include="vicBlogItem.cpp" />
     <ClCompile Include="vicCollectionEditListItemOption.cpp" />
     <ClCompile Include="vicCollectionEditorList.cpp" />
     <ClCompile Include="vicCollectionEditorListItem.cpp" />
@@ -209,6 +210,7 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClCompile Include="wxImagePanel.cpp" />
     <ClInclude Include="CollectionInterface.h" />
     <ClInclude Include="ImageViewer.h" />
+    <ClInclude Include="vicBlogItem.h" />
     <ClInclude Include="vicCollectionPeeker.h" />
     <ClInclude Include="viCollectionSelector.h" />
     <ClInclude Include="vicStatsViewRow.h" />
@@ -270,6 +272,9 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ProjectReference Include="..\CollectionPro\CollectionPro.vcxproj">
       <Project>{d9f68704-4aeb-4348-a0f5-bcb536eba2de}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\AddSymb.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

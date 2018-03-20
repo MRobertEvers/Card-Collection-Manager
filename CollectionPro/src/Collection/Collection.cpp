@@ -73,10 +73,11 @@ Collection::GetPeekValues()
    return m_ptrCollectionDetails->GetPeekValues();
 }
 
-vector<string> 
+map<unsigned long, vector<string>>
 Collection::GetHistoryLines( unsigned int aiStart, unsigned int aiEnd )
 {
-   return vector<string>();
+   CollectionIO io( this );
+   return io.GetHistoryTransactions(aiStart, aiEnd);
 }
 
 void

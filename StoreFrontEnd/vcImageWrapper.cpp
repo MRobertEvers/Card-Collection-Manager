@@ -2,8 +2,9 @@
 #include "wxImagePanel.h"
 
 vcImageWrapper::vcImageWrapper(wxWindow* aptParent,
-                               wxWindowID aiID)
-   : wxPanel(aptParent, aiID)
+                               wxWindowID aiID,
+                               bool abDoScale)
+   : wxPanel(aptParent, aiID), m_bDoScale(abDoScale)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxVERTICAL);
    this->SetSizer(boxSizer);
@@ -21,12 +22,13 @@ bool
 vcImageWrapper::SetImage(const wxString& aszImagePath)
 {
    freeImage();
-   m_jpgPanel = new wxImagePanel(this, aszImagePath, wxBitmapType::wxBITMAP_TYPE_ANY);
+   m_jpgPanel = new wxImagePanel(this, aszImagePath, wxBitmapType::wxBITMAP_TYPE_ANY, m_bDoScale);
    if( m_jpgPanel->IsOk )
    {
       this->GetSizer()->Add(m_jpgPanel, wxSizerFlags(1).Expand());
       auto imageSize = m_jpgPanel->GetBestSize();
       this->SetSizeHints( imageSize );
+      this->SetSize( imageSize );
       return true;
    }
    else

@@ -70,7 +70,7 @@ Config::GetSourceFileName()
 string 
 Config::GetSourceDirectory()
 {
-   return ".\\Config\\" + m_szSourceFolder;
+   return GetConfigDirectory() + m_szSourceFolder;
 }
 
 string Config::GetImportSourceFilePath()
@@ -96,22 +96,32 @@ Config::GetHistoryFolderName()
    return m_szHistoryFolder;
 }
 
-string Config::GetMetaFolderName()
+string 
+Config::GetMetaFolderName()
 {
    return m_szMetaFolder;
 }
 
-string Config::GetImagesDirectory()
+string
+Config::GetImagesDirectory()
 {
-   return ".\\Config\\" + m_szImagesFolder;
+   return GetConfigDirectory() + m_szImagesFolder;
 }
 
-string Config::GetCollectionsDirectory()
+string 
+Config::GetConfigDirectory()
+{
+   return ".\\Config\\";
+}
+
+string 
+Config::GetCollectionsDirectory()
 {
    return ".\\" + GetCollectionsFolderName();
 }
 
-string Config::GetCollectionsFolderName()
+string 
+Config::GetCollectionsFolderName()
 {
    return m_szCollectionsFolder;
 }

@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <iomanip>
+#include <cstdio>
 #include <ctime>
 
 using namespace std;
@@ -703,7 +704,7 @@ CollectionIO::saveHistory()
 
       string szHistFile = GetHistoryFile( ptCollectionDetails->GetFileName() );
 
-      string szHistFileTmp = (szHistFile + ".tmp");
+      string szHistFileTmp = szHistFile + ".tmp";
       std::rename( szHistFile.c_str(), szHistFileTmp.c_str() );
 
       ifstream oHistFileOld( szHistFileTmp, std::ios::in );

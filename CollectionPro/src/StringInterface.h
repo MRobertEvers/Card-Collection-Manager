@@ -31,6 +31,17 @@ public:
                               vector<Tag>& rszDetails,
                               vector<Tag>& rszMeta );
 
+   static bool ParseInterfaceLine( const string& aszLine,
+                                   unsigned int& riCount,
+                                   string& rszName,
+                                   vector<Tag>& rszDetails,
+                                   vector<Tag>& rszMeta,
+                                   unsigned int& riCount2,
+                                   string& rszName2,
+                                   vector<Tag>& rszDetails2,
+                                   vector<Tag>& rszMeta2,
+                                   StringInterface::InterfaceLineType& riType );
+
    static bool ParseTagString( const string& aszDetails,
                                vector<Tag>& rlstTags );
 

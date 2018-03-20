@@ -29,7 +29,7 @@ public:
       Image_Ready = 0x91
    };
 public:
-   ImageViewer( wxWindow* aptParent, wxWindowID aiWID );
+   ImageViewer( wxWindow* aptParent, wxWindowID aiWID, bool abDoScale = true );
    ~ImageViewer();
 
    bool DisplayImage( const wxString& aszCardName, 
@@ -45,6 +45,7 @@ private:
    std::vector<std::shared_ptr<ImageFetcherCallback>> m_vecImageCallbacks;
    std::shared_ptr<std::recursive_mutex> m_mutex;
    vcImageWrapper* m_ptImageWrapper;
+   bool m_bDoScale;
 
    void fetchImage( const wxString& aszCardName,
                     const wxString& aszMultiVerseID = "",

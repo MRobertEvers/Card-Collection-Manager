@@ -173,6 +173,53 @@ StringInterface::ParseCardLine( const string& aszLine,
    return bGoodParse;
 }
 
+
+bool 
+StringInterface::ParseInterfaceLine( const string& aszLine,
+                                     unsigned int& riCount,
+                                     string& rszName,
+                                     vector<Tag>& rszDetails,
+                                     vector<Tag>& rszMeta,
+                                     unsigned int& riCount2,
+                                     string& rszName2,
+                                     vector<Tag>& rszDetails2,
+                                     vector<Tag>& rszMeta2,
+                                     StringInterface::InterfaceLineType& riType )
+{
+   string szFixedLine = StringHelper::Str_Trim( aszLine, ' ' );
+   if( szFixedLine.size() < 1 )
+   {
+      return false;
+   }
+
+   riType = ParseInterfaceLine( szFixedLine );
+
+   if( riType == InterfaceLineType::ChangeLine )
+   {
+      auto vecPair = StringHelper::Str_Split( szFixedLine, "->" );
+      if( vecPair.size() < 2 )
+      {
+         return false;
+      }
+
+      for( auto& pairItem : vecPair )
+      {
+         pairItem == StringHelper::Str_Trim( pairItem, ' ' );
+      }
+
+      if( ParseCardLine( vecPair[0], riCount, rszName, rszDetails, rszMeta ) )
+      {
+         return ParseCardLine( vecPair[1], riCount2, rszName2, rszDetails2, rszMeta2 );
+      }
+   }
+   else
+   {
+      return ParseCardLine( szFixedLine, riCount, rszName, rszDetails, rszMeta );
+   }
+
+   return false;
+}
+
 bool
 StringInterface::ParseTagString( const string& aszDetails,
                                  vector<Tag>& rlstTags )
