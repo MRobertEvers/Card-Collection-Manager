@@ -60,7 +60,9 @@ wxImagePanel::wxImagePanel(wxWindow* parent, wxString file,
    {
       auto imageSize = image.GetSize();
       SetSizeHints( imageSize );
+      SetSize( imageSize );
    }
+
    if( DoScale )
    {
       w = -1;

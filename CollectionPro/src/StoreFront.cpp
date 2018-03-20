@@ -410,7 +410,7 @@ StoreFront::GetSourcePath()
 string 
 StoreFront::GetSourceFileName()
 {
-   return Config::Instance()->GetSourceFilePath();
+   return Config::Instance()->GetSourceFileName();
 }
 
 string 

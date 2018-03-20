@@ -212,7 +212,7 @@ CollectionTracker::CalculateChanges()
       CopyList* lstOldSnapshots = &mapChangedPrevState.at( iter_Items->first );
 
       auto item = iter_Items->first;
-      for( int i = 0; i < lstSnapshots->size(); i++ )
+      for( size_t i = 0; i < lstSnapshots->size(); i++ )
       {
          CopyItem* currentSnapshot = &lstSnapshots->at(i).second;
          CopyItem* oldSnapshot = &lstOldSnapshots->at(i).second;

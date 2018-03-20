@@ -99,6 +99,7 @@
       <Command>xcopy /y /d  "$(ProjectDir)Libs\OpenSSL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
+xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
 
 
 </Command>
@@ -137,6 +138,7 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
       <Command>xcopy /y /d  "$(ProjectDir)Libs\OpenSSL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
+xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
 
 
 </Command>
@@ -274,7 +276,15 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Images\AddSymb.jpg" />
+    <Image Include="Images\AddSymb.jpg">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Images\RemSymb.jpg">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Images\SwapSymb.jpg">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

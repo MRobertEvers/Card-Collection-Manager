@@ -240,7 +240,7 @@ bool
 CollectionFactory::processAction( const string& aszAction,
                                   bool abPreload )
 {
-   short iCmdSize = aszAction.find_first_of(' ');
+   size_t iCmdSize = aszAction.find_first_of(' ');
    if( iCmdSize < 4 )
    {
       return false;

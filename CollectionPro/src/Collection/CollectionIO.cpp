@@ -137,6 +137,7 @@ CollectionIO::PrepareCollectionInitialization( const string& aszFileName )
    bool bRetVal = true;
 
    // a. Save the file name.
+   m_ptLoadToken->CollectionFilePath = aszFileName;
    m_ptLoadToken->CollectionFileName = StripFileName(aszFileName);
 
    // b. Get lines in quotes and card lines from file.
@@ -202,7 +203,10 @@ CollectionIO::PopulateCollectionFields()
 {
    m_ptCollection->m_ptrCollectionDetails->SetName( m_ptLoadToken->CollectionName );
    m_ptCollection->m_ptrCollectionDetails->SetProcessLines( m_ptLoadToken->OverheadProcessLines );
-   m_ptCollection->m_ptrCollectionDetails->SetFileName( m_ptLoadToken->CollectionFileName );
+   m_ptCollection->m_ptrCollectionDetails->SetFilePath( m_ptLoadToken->CollectionFilePath );
+
+   // setting the filepath sets this.
+   //m_ptCollection->m_ptrCollectionDetails->SetFileName( m_ptLoadToken->CollectionFileName );
 
    m_ptCollection->m_ptrCollectionDetails->SetInitialized( true );
 
@@ -432,7 +436,7 @@ CollectionIO::loadOverheadProcessLine( const std::string& aszLine )
    // TODO: This should not be literall.
    if( iWords > 2 && lstSplitLine[0] == "Peek" )
    {
-      int indOfValueStart = 0;
+      size_t indOfValueStart = 0;
       for( size_t i = 1; i < iWords; i++ )
       {
          auto szWord = lstSplitLine[i];
@@ -704,29 +708,31 @@ CollectionIO::saveHistory()
 
       string szHistFile = GetHistoryFile( ptCollectionDetails->GetFileName() );
 
+      // If a history file already exists, rename it.
       string szHistFileTmp = szHistFile + ".tmp";
       std::rename( szHistFile.c_str(), szHistFileTmp.c_str() );
 
+      ofstream oHistFile( szHistFile, std::ios::out );
+      if( oHistFile.good() )
+      {
+         // Add the new entry at the top.
+         oHistFile << "[" << str << "] " << endl;
+
+         vector<string>::iterator iter_histLines = lstHistoryLines.begin();
+         for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
+         {
+            oHistFile << *iter_histLines << endl;
+         }
+      }
+
+      // Append the old.
       ifstream oHistFileOld( szHistFileTmp, std::ios::in );
       if( oHistFileOld.good() )
       {
-         ofstream oHistFile( szHistFile, std::ios::out );
-         if( oHistFile.good() )
-         {
-            // Add the new entry at the top.
-            oHistFile << "[" << str << "] " << endl;
-
-            vector<string>::iterator iter_histLines = lstHistoryLines.begin();
-            for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
-            {
-               oHistFile << *iter_histLines << endl;
-            }
-
-            // Append the old.
-            oHistFile << oHistFileOld.rdbuf();
-         }
-         oHistFile.close();
+         oHistFile << oHistFileOld.rdbuf();
       }
+
+      oHistFile.close();
       oHistFileOld.close();
 
       // Delete the tmp.
@@ -842,7 +848,7 @@ CollectionIO::saveCollection()
    }
 
    ofstream oColFile;
-   oColFile.open( ptCollectionDetails->GetFile() );
+   oColFile.open( ptCollectionDetails->GetFilePath() );
 
    oColFile << "\"" << ptCollectionDetails->GetName() << "\"" << endl;
 

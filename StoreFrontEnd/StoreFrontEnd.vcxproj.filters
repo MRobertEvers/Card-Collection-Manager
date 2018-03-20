@@ -415,5 +415,11 @@
     <Image Include="Images\AddSymb.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Images\RemSymb.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Images\SwapSymb.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -74,7 +74,7 @@ vcCollectionDeckBoxItemList::GetFirst()
 {
    if( m_vecDataItemsDisplayOrder.size() > 0 )
    {
-      int i = 0;
+      size_t i = 0;
       while( i < m_vecDataItemsDisplayOrder.size()  &&
              m_vecDataItemsDisplayOrder[i] == NULL )
       {
@@ -93,7 +93,7 @@ vcCollectionDeckBoxItemList::GetFirstInt()
 {
    if( m_vecDataItemsDisplayOrder.size() > 0 )
    {
-      int i = 0;
+      size_t i = 0;
       while( i < m_vecDataItemsDisplayOrder.size() &&
          m_vecDataItemsDisplayOrder[i] == NULL )
       {

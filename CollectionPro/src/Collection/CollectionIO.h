@@ -52,6 +52,7 @@ private:
    public:
       std::string CollectionName;
       std::string CollectionFileName;
+      std::string CollectionFilePath;
       std::string CollectionAddress;
       std::string CollectionChildCount;
       std::string CollectionSessionTime;

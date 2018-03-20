@@ -120,7 +120,7 @@ void
 MainFrame::ReleaseMenuEventHandler()
 {
    auto iMenus = m_wxMenuBar->GetMenuCount();
-   for( int i = 2; i < iMenus; i++ )
+   for( size_t i = 2; i < iMenus; i++ )
    {
       m_wxMenuBar->Remove(i);
    }

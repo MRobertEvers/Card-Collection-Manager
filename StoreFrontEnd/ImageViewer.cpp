@@ -36,7 +36,7 @@ ImageViewer::ImageViewer( wxWindow* aptParent, wxWindowID aiWID, bool abDoScale 
 
    wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
    this->SetSizer( boxSizer );
-   boxSizer->Add( m_ptImageWrapper, wxSizerFlags( 1 ).Shaped() );
+   boxSizer->Add( m_ptImageWrapper, wxSizerFlags( 1 ).Expand() );
 }
 
 
@@ -76,6 +76,7 @@ ImageViewer::DisplayImage( const wxString& aszFilePath )
    wxLog::EnableLogging( false );
    bool bRetVal = m_ptImageWrapper->SetImage( aszFilePath );
    this->SetSize( m_ptImageWrapper->GetSize() );
+   this->SetSizeHints( m_ptImageWrapper->GetSize() );
    wxLog::EnableLogging( true );
    m_mutex->unlock();
    return bRetVal;

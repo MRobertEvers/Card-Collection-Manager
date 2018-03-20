@@ -25,6 +25,13 @@ public:
 
    std::vector<wxString> GetTextFilesInDirectory( const wxString& aszDir );
 
+   // Resources
+   wxString GetAddSymbolFilePath();
+   wxString GetRemSymbolFilePath();
+   wxString GetSwapSymbolFilePath();
+   wxString GetResourcesDirectory();
+   wxString GetSpritesDirectory();
+
 private:
    StoreFrontEnd();
    ~StoreFrontEnd();

@@ -5,13 +5,13 @@
 vicBlogItem::vicBlogItem( wxWindow* aptParent,
                           const wxString& aszTitle, 
                           const std::vector<std::string>& avecHistory )
- : wxPanel( aptParent, 2 )
+ : wxPanel( aptParent, 2, wxDefaultPosition, wxDefaultSize, wxBORDER )
 {
    auto ptSF = StoreFrontEnd::Server();
+   auto ptSFE = StoreFrontEnd::Client();
 
    wxBoxSizer* sizer = new wxBoxSizer( wxVERTICAL );
    this->SetSizer( sizer );
-
 
    for( auto& szHistLine : avecHistory )
    {
@@ -31,35 +31,45 @@ vicBlogItem::vicBlogItem( wxWindow* aptParent,
 
       if( FirstItem.Name != "" )
       {
-         wxPanel* actionPanel = new wxPanel( this );
-         wxFlexGridSizer* subsizer = new wxFlexGridSizer( 2 );
-         subsizer->AddGrowableCol( 1 );
-         subsizer->SetFlexibleDirection( wxHORIZONTAL );
-         subsizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_NONE );
-         actionPanel->SetSizer( subsizer );
-
+         wxString szImgFilePath;
+         wxString szLineText;
          if( Type == StringInterface::AddLine )
          {
-            wxString szAddFileImg = ptSF->GetConfigDirectory() + "View\\AddSymb.jpg";
-            ImageViewer* imgTest = new ImageViewer( actionPanel, 1, false );
-            imgTest->DisplayImage( szAddFileImg );
-            auto test = imgTest->GetSize();
-            subsizer->Add( imgTest, wxSizerFlags( 1 ).CenterVertical() );
-
-            wxStaticText* txt = new wxStaticText( actionPanel, 1, FirstItem.Name );
-            subsizer->Add( txt, wxSizerFlags( 1 ).Expand() );
+            szImgFilePath = ptSFE->GetAddSymbolFilePath();
+            szLineText = FirstItem.Name;
          }
          else if( Type == StringInterface::RemoveLine )
          {
+            szImgFilePath = ptSFE->GetRemSymbolFilePath();
+            szLineText = FirstItem.Name;
 
          }
          else if( ( Type == StringInterface::ChangeLine ) &&
                   ( SecondItem.Name != "" ) )
          {
-
+            szImgFilePath = ptSFE->GetSwapSymbolFilePath();
+            szLineText = FirstItem.Name + " > " + SecondItem.Name;
          }
 
-         sizer->Add( actionPanel, wxSizerFlags( 1 ).Expand() );
+         if( szImgFilePath != "" && szLineText != "" )
+         {
+            wxPanel* actionPanel = new wxPanel( this );
+            wxFlexGridSizer* subsizer = new wxFlexGridSizer( 2 );
+            subsizer->AddGrowableCol( 1 );
+            subsizer->SetFlexibleDirection( wxHORIZONTAL );
+            subsizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_NONE );
+            actionPanel->SetSizer( subsizer );
+
+            ImageViewer* imgTest = new ImageViewer( actionPanel, 1, false );
+            imgTest->DisplayImage( szImgFilePath );
+            subsizer->Add( imgTest, wxSizerFlags( 1 ).CenterVertical() );
+
+            wxStaticText* txt = new wxStaticText( actionPanel, 1, szLineText );
+            subsizer->Add( txt, wxSizerFlags( 1 ).Expand() );
+            subsizer->Layout();
+
+            sizer->Add( actionPanel, wxSizerFlags( 1 ).Expand() );
+         }
       }
    }
 }
