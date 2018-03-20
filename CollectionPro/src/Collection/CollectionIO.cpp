@@ -7,9 +7,6 @@
 #include "../Addressing/Addresser.h"
 
 #include <algorithm>
-#include <iomanip>
-#include <cstdio>
-#include <ctime>
 
 using namespace std;
 
@@ -97,15 +94,8 @@ CollectionIO::GetHistoryTransactions( unsigned int aiStart, unsigned int aiEnd )
       {
          if( bIsDateline )
          {
-            struct std::tm tm;
-            string szTimeParse = szLine.substr( iOpenDate+1, iCloseDate - iOpenDate-1 );
-            std::istringstream ss( szTimeParse );
-            // %a day of week abbrev or full
-            // %b month abbrev or full
-            // %d day of month
-            // %Y 4 digit year
-            ss >> std::get_time( &tm, "%a %b %d %H:%M:%S %Y" );
-            std::time_t time = mktime( &tm );
+            string szTimeParse = szLine.substr( iOpenDate + 1, iCloseDate - iOpenDate - 1 );
+            auto time = StringInterface::ToTimeValue( szTimeParse, "%a %b %d %H:%M:%S %Y" );
 
             auto iter_mapIns = mapRetVal.insert( make_pair( time, vector<string>() ) );
             if( iter_mapIns.second )
@@ -511,10 +501,7 @@ CollectionIO::loadOverheadPropertyLine(const std::string& aszLine)
    }
    else if( szKey == "Session" )
    {
-      tm tm{};
-      istringstream str_stream( szValue );
-      str_stream >> get_time( &tm, "%Y-%m-%d_%T" );
-      time_t time = mktime( &tm );
+      auto time = StringInterface::ToTimeValue( szValue, "%Y-%m-%d_%T" );
       ptDetails->SetTimeStamp( time );
    }
    
@@ -699,12 +686,7 @@ CollectionIO::saveHistory()
 
    if( lstHistoryLines.size() > 0 )
    {
-      time_t now = time( 0 );
-      struct tm timeinfo;
-      localtime_s( &timeinfo, &now );
-      char str[26];
-      asctime_s( str, sizeof str, &timeinfo );
-      str[strlen( str ) - 1] = 0;
+      string szTime = StringInterface::ToTimeString( StringInterface::GetCurrentTimeCount() );
 
       string szHistFile = GetHistoryFile( ptCollectionDetails->GetFileName() );
 
@@ -716,7 +698,7 @@ CollectionIO::saveHistory()
       if( oHistFile.good() )
       {
          // Add the new entry at the top.
-         oHistFile << "[" << str << "] " << endl;
+         oHistFile << "[" << szTime << "] " << endl;
 
          vector<string>::iterator iter_histLines = lstHistoryLines.begin();
          for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
@@ -772,10 +754,11 @@ CollectionIO::saveOverhead()
    ofstream oColFile;
    oColFile.open( GetOverheadFile( ptCollectionDetails->GetFileName() ) );
 
-   tm otm;
+   // Populate the timestampe with the current time.
    ptCollectionDetails->SetTimeStamp();
-   time_t time = ptCollectionDetails->GetTimeStamp();
-   localtime_s( &otm, &time );
+
+   // Get the time in string format.
+   string szTime = StringInterface::ToTimeString( ptCollectionDetails->GetTimeStamp(), "%F_%T" );
 
    oColFile << Config::CollectionDefinitionKey
       << " ID=\"" << m_ptCollection->GetIdentifier().GetFullAddress() << "\"" << endl;
@@ -784,7 +767,7 @@ CollectionIO::saveOverhead()
       << " CC=\"" << ptCollectionDetails->GetChildrenCount() << "\"" << endl;
 
    oColFile << Config::CollectionDefinitionKey
-      << " Session=\"" << put_time( &otm, "%F_%T" ) << "\"" << endl;
+      << " Session=\"" << szTime << "\"" << endl;
 
    for( auto szLine : ptCollectionDetails->GetProcessLines() )
    {

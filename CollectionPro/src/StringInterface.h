@@ -54,6 +54,11 @@ public:
                              const vector<Tag>& alstAttrs    = vector<Tag>(),
                              const vector<Tag>& alstMetaTags = vector<Tag>() );
 
+   static unsigned long GetCurrentTimeCount();
+   static unsigned long ToTimeValue( const string& aszTime, const string& aszParse );
+   static string ToTimeString( unsigned long aulTime );
+   static string ToTimeString( unsigned long aulTime, const string& aszFormat );
+
    static InterfaceLineType ParseInterfaceLine( string& rszLine );
 
    static string CmdCreateAddition(const string& aszName, const string& aszSet);

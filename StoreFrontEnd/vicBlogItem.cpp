@@ -13,6 +13,9 @@ vicBlogItem::vicBlogItem( wxWindow* aptParent,
    wxBoxSizer* sizer = new wxBoxSizer( wxVERTICAL );
    this->SetSizer( sizer );
 
+   // Add the header
+
+
    for( auto& szHistLine : avecHistory )
    {
       InterfaceLineParser FirstItem;
