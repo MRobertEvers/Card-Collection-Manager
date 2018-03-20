@@ -1,6 +1,7 @@
 #include "vicBlogItem.h"
 #include "StoreFrontEnd.h"
 #include "ImageViewer.h"
+#include "vicBlogHeader.h"
 
 vicBlogItem::vicBlogItem( wxWindow* aptParent,
                           const wxString& aszTitle, 
@@ -14,7 +15,8 @@ vicBlogItem::vicBlogItem( wxWindow* aptParent,
    this->SetSizer( sizer );
 
    // Add the header
-
+   vicBlogHeader* header = new vicBlogHeader( this, aszTitle, "" );
+   sizer->Add( header, wxSizerFlags( 0 ).Expand() );
 
    for( auto& szHistLine : avecHistory )
    {

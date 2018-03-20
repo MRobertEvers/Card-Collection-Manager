@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include "vcEditableTraitList.h"
 
 class vcEditableTraitListItem : public wxPanel

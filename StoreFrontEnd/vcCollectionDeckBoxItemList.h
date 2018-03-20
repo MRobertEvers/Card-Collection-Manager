@@ -1,5 +1,5 @@
 #pragma once
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include <map>
 #include <memory>
 #include <wx/listctrl.h>

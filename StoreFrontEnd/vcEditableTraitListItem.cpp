@@ -60,7 +60,7 @@ vcEditableTraitListItem::GetSelectionInt()
 bool 
 vcEditableTraitListItem::TrySetSelection(const wxString& aszSelect)
 {
-   for( int i = 0; i < m_vecOptions.size(); i++ )
+   for( size_t i = 0; i < m_vecOptions.size(); i++ )
    {
       auto szOpt = m_vecOptions[i];
       if( szOpt == aszSelect.ToStdString() )

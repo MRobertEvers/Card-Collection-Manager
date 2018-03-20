@@ -1,9 +1,9 @@
 #pragma once
-#include<string>
-#include<vector>
-
 #include "Support\TypeDefs.h"
 #include "Collection\CopyItem.h"
+
+#include <string>
+#include <vector>
 
 using namespace std;
 

@@ -20,7 +20,20 @@ viHistoryViewer::viHistoryViewer( wxWindow* aptParent,
    auto riter_hist = mapHist.rbegin();
    for( ; riter_hist != mapHist.rend(); ++riter_hist )
    {
-      vicBlogItem* blogItem = new vicBlogItem( scrollWindow, "Test", riter_hist->second );
+      wxString szTitle = " (";
+      szTitle += std::to_string( riter_hist->second.size() ) + ") Change";
+      if( riter_hist->second.size() > 1 )
+      {
+         szTitle += "s";
+      }
+
+      // Eventually the time will go elsewhere.
+      szTitle += "           ";
+      szTitle += StringInterface::ToTimeString( riter_hist->first, "%D %T" );
+
+      vicBlogItem* blogItem = new vicBlogItem( scrollWindow,
+                                               szTitle,
+                                               riter_hist->second );
       scrollsizer->Add( blogItem, wxSizerFlags( 0 ).Expand() );
    }
 

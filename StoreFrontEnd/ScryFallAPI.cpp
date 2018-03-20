@@ -1,5 +1,5 @@
 #include "ScryFallAPI.h"
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include "json\json.hpp"
 #include "CURLAPI.h"
 

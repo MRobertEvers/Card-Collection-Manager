@@ -1,8 +1,8 @@
 #include "ImageFetcher.h"
-#include "wx/wxprec.h"
 #include "StoreFrontEnd.h"
 #include "CURLAPI.h"
 
+#include <wx/wxprec.h>
 #include <wx/sstream.h>
 #include <wx/imagjpeg.h>
 

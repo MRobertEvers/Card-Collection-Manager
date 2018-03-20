@@ -302,10 +302,8 @@ void
 CollectionSource::CollapseCardLine( string& rszCard, bool abIncludeCount )
 {
    Config* config = Config::Instance();
-   string szFirstKey = "";
    vector<Tag> vecPairedKeys;
    vector<string> vecIdentifyingKeys;
-   vector<TraitItem> vecPrototypeTraits;
    CollectionObject::PseudoIdentifier oParser;
 
    bool bGoodParse = CollectionObject::ParseCardLine( rszCard, oParser );
@@ -410,7 +408,6 @@ CollectionSource::CollapseCardLine( string& rszCard, bool abIncludeCount )
 // Takes the form Name [id]
 // Can also take the form Name [id1=val1,id2=val2]
 // Can also take the form Name [val1,val2]
-// TODO: move this to the collection source.
 void
 CollectionSource::ExpandAdditionLine( string& rszLine )
 {

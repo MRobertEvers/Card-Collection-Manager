@@ -231,6 +231,12 @@
     <ClCompile Include="vicBlogItem.cpp">
       <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
     </ClCompile>
+    <ClCompile Include="vicBlogHeader.cpp">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="wxManualText.cpp">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -409,6 +415,12 @@
     </ClInclude>
     <ClInclude Include="vcCollectionCubeGroup.h">
       <Filter>Views\Cube\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="vicBlogHeader.h">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="wxManualText.h">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

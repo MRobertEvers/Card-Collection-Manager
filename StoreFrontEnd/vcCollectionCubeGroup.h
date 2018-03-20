@@ -1,5 +1,5 @@
 #pragma once
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include "Group.h"
 #include <wx/grid.h>
 #include <wx/scrolwin.h>

@@ -1,7 +1,7 @@
 #pragma once
 #include "../CollectionPro/src/StoreFront.h"
 #include "../CollectionPro/src/StringInterface.h"
-#include "../CollectionPro/src/Config.h"
+
 #include <memory>
 #include <vector>
 

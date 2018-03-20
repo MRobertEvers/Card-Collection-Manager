@@ -1,8 +1,8 @@
 #include "StoreFrontEnd.h"
 #include "ImageFetcher.h"
-#include "wx\wxprec.h"
 #include "SourceDownloader.h"
 
+#include <wx\wxprec.h>
 #include <Windows.h>
 #include <Shlobj.h>
 

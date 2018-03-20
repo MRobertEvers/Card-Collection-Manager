@@ -9,7 +9,8 @@ StringHelper::~StringHelper()
 {
 }
 
-std::string StringHelper::Str_Trim(const std::string& src, char removeChar)
+std::string 
+StringHelper::Str_Trim(const std::string& src, char removeChar)
 {
    size_t first = src.find_first_not_of(removeChar);
    if (std::string::npos == first)
@@ -20,7 +21,8 @@ std::string StringHelper::Str_Trim(const std::string& src, char removeChar)
    return src.substr(first, (last - first + 1));
 }
 
-std::string StringHelper::Str_Replace(const std::string& srz, char removeChar, char replaceChar)
+std::string
+StringHelper::Str_Replace(const std::string& srz, char removeChar, char replaceChar)
 {
    std::string szRetVal = "";
    for (char c : srz)
@@ -33,11 +35,12 @@ std::string StringHelper::Str_Replace(const std::string& srz, char removeChar, c
    return szRetVal;
 }
 
-std::string StringHelper::Str_Clean(const std::string& src)
+std::string 
+StringHelper::Str_Clean(const std::string& src)
 {
    std::string szRetVal = "";
    size_t iSize = src.size();
-   for( int i = 0; i < iSize; i++ )
+   for( size_t i = 0; i < iSize; i++ )
    {
       char c = src[i];
       if( c == 145 )
@@ -77,7 +80,7 @@ std::vector<std::string>
 StringHelper::Str_CmdLineParse( const std::string& srz )
 {
    std::vector<std::string>  lstRetval;
-   int iFirstQuote = srz.find_first_of('\"');
+   size_t iFirstQuote = srz.find_first_of('\"');
    if( iFirstQuote == -1 )
    {
       auto lstSplit = Str_Split( srz, " " );
@@ -169,9 +172,8 @@ StringHelper::SplitIntoLines(const std::string& aszString)
 {
    std::vector<std::string> lstLines;
    std::string szLine = "";
-   for (int i = 0; i < aszString.size(); i++)
+   for (size_t i = 0; i < aszString.size(); i++)
    {
-
       if (aszString[i] == '\n')
       {
          lstLines.push_back(szLine);

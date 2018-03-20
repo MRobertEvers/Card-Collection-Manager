@@ -103,7 +103,7 @@ JSONImporter::buildXMLDoc( const map<string, CardDetails*, sortFunc>& mapDetails
       xmlNode_Cards->append_node(xmlNode_Card);
 
       unsigned int iTraits = details->GetAttrCount();
-      for( int i = 0; i < iTraits; i++ )
+      for( size_t i = 0; i < iTraits; i++ )
       {
          details->Keys[i] = StringHelper::Str_Clean(details->Keys[i]);
          details->Vals[i] = StringHelper::Str_Clean(details->Vals[i]);
