@@ -1,5 +1,6 @@
 #pragma once
 #include <wx/wxprec.h>
+#include <wx/statusbr.h>
 #include <memory>
 
 class viCardEditor;
@@ -24,7 +25,10 @@ protected:
    viCardEditor* m_viCardEditor;
    wxString m_wxszColID;
    std::shared_ptr<CollectionInterface> m_ptCollectionInterface;
+   wxStatusBar* m_infoBar;
 
+   void displayInfoBar();
+   void refreshInfoBar();
    virtual void onEditorAccept( wxCommandEvent& awxEvt );
    virtual void onEditorDecline( wxCommandEvent& awxEvt );
    virtual void onCardChanged( wxCommandEvent& awxEvt );

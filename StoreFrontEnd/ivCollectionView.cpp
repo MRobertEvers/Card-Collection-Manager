@@ -8,8 +8,9 @@
 #include "vStatsViewer.h"
 #include "viHistoryViewer.h"
 
+
 ivCollectionView::ivCollectionView( MainFrame* aptParent, wxWindowID aiWID, const wxString& aszColID )
-   : wxPanel( aptParent, aiWID ), m_wxszColID(aszColID), m_viColEditor(0)
+   : wxPanel( aptParent, aiWID ), m_wxszColID(aszColID), m_viColEditor(0), m_infoBar(0)
 {
    m_ptCollectionInterface = std::make_shared<CollectionInterface>( m_wxszColID.ToStdString() );
 }
@@ -47,6 +48,26 @@ ivCollectionView::ShowHistory()
 {
    auto view = new viHistoryViewer( this, 1, m_ptCollectionInterface );
    view->Show();
+}
+
+void 
+ivCollectionView::displayInfoBar()
+{
+   if( m_infoBar == 0 )
+   {
+      auto sizer = this->GetSizer();
+      m_infoBar = new wxStatusBar( this );
+      sizer->Add( m_infoBar, wxSizerFlags().Expand() );
+      refreshInfoBar();
+   }
+}
+
+
+void 
+ivCollectionView::refreshInfoBar()
+{
+   wxString szCount = "Size: " + std::to_string( m_ptCollectionInterface->GetItemCount() );
+   m_infoBar->SetStatusText( szCount );
 }
 
 void
