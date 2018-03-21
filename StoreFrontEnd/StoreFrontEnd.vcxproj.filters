@@ -237,6 +237,12 @@
     <ClCompile Include="wxManualText.cpp">
       <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
     </ClCompile>
+    <ClCompile Include="ImageHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vicBlogFooter.cpp">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -420,6 +426,12 @@
       <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
     </ClInclude>
     <ClInclude Include="wxManualText.h">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vicBlogFooter.h">
       <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
     </ClInclude>
   </ItemGroup>

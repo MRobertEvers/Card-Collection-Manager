@@ -118,6 +118,8 @@ CollectionIO::GetHistoryTransactions( unsigned int aiStart, unsigned int aiEnd )
       }
    }
 
+   oHistFile.close();
+
    return mapRetVal;
 }
 

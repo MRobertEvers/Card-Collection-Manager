@@ -1,7 +1,8 @@
 #include "vicBlogHeader.h"
 
 BEGIN_EVENT_TABLE( vicBlogHeader, wxPanel )
-EVT_PAINT( vicBlogHeader::paintEvent )
+EVT_PAINT( vicBlogHeader::onPaint )
+EVT_SIZE( vicBlogHeader::onResize )
 END_EVENT_TABLE()
 
 vicBlogHeader::vicBlogHeader( wxWindow* aptParent,
@@ -25,6 +26,8 @@ vicBlogHeader::vicBlogHeader( wxWindow* aptParent,
 
    this->SetSize( size );
    this->SetSizeHints( size );
+
+   bufferBitmap( this->GetSize() );
 }
 
 
@@ -34,30 +37,44 @@ vicBlogHeader::~vicBlogHeader()
 }
 
 void 
-vicBlogHeader::paintEvent( wxPaintEvent & evt )
+vicBlogHeader::bufferBitmap( wxSize size )
 {
-   // depending on your system you may need to look at double-buffered dcs
-   wxPaintDC dc( this );
-   render( dc );
+   // make sure we do not attempt to create a bitmap 
+   // with invalid size (width and/or height < 1)
+   size.IncTo( wxSize( 1, 1 ) );
+
+   m_backBitmap.Create( size.GetWidth(), size.GetHeight() );
+
+   wxMemoryDC mdc;
+   mdc.SelectObject( m_backBitmap );
+   render( mdc );
+   Refresh();
 }
 
-void
-vicBlogHeader::paintNow()
+void 
+vicBlogHeader::onPaint( wxPaintEvent & evt )
 {
-   // depending on your system you may need to look at double-buffered dcs
-   wxClientDC dc( this );
-   render( dc );
+   wxPaintDC dc( this );
+   dc.DrawBitmap( m_backBitmap, 0, 0, false );
+}
+
+void 
+vicBlogHeader::onResize( wxSizeEvent &ev )
+{
+   bufferBitmap(ev.GetSize());
 }
 
 void 
 vicBlogHeader::render( wxDC&  dc )
 {
-   dc.GradientFillLinear(this->GetSize(), wxColour( 255, 255, 255 ), wxColour( 155, 155, 155 ), wxNORTH );
+   dc.GradientFillLinear( this->GetSize(), wxColour( 255, 255, 255 ), wxColour( 155, 155, 155 ), wxNORTH );
 
    dc.SetFont( wxFont( wxFontInfo( 9 ).FaceName( "Trebuchet MS" ) ) );
    dc.DrawText( m_szTitle, 0, 2 );
 
-   dc.SetFont( wxFont( wxFontInfo( 9 ).FaceName( "Trebuchet MS" ) ) );
-   dc.DrawText( m_szSubTitle, 0, 14 );
+   if( m_szSubTitle != "" )
+   {
+      dc.DrawText( m_szSubTitle, 0, 14 );
+   }
 }
 

@@ -164,6 +164,8 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="CardInterface.cpp" />
     <ClCompile Include="cCollectionCube.cpp" />
     <ClCompile Include="cCollectionDeckBox.cpp" />
+    <ClCompile Include="ImageHandler.cpp" />
+    <ClCompile Include="vicBlogFooter.cpp" />
     <ClCompile Include="wxManualText.cpp" />
     <ClInclude Include="CardInterface.h" />
     <ClInclude Include="cCollectionDeckBox.h" />
@@ -213,7 +215,9 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="vStatsViewer.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
     <ClInclude Include="CollectionInterface.h" />
+    <ClInclude Include="ImageHandler.h" />
     <ClInclude Include="ImageViewer.h" />
+    <ClInclude Include="vicBlogFooter.h" />
     <ClInclude Include="vicBlogHeader.h" />
     <ClInclude Include="vicBlogItem.h" />
     <ClInclude Include="vicCollectionPeeker.h" />

@@ -1,5 +1,6 @@
 #pragma once
 #include <wx/wxprec.h>
+#include <wx/bitmap.h>
 
 class vicBlogHeader : public wxPanel
 {
@@ -14,9 +15,12 @@ private:
 
    wxString m_szTitle;
    wxString m_szSubTitle;
+   wxBitmap m_backBitmap;
 
-   void paintEvent( wxPaintEvent & evt );
-   void paintNow();
+   void bufferBitmap( wxSize size );
+
+   void onPaint( wxPaintEvent & evt );
+   void onResize( wxSizeEvent &ev );
 
    void render( wxDC& dc );
 };

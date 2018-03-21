@@ -1,12 +1,13 @@
 #include "vicBlogItem.h"
 #include "StoreFrontEnd.h"
-#include "ImageViewer.h"
+#include "wxImagePanel.h"
 #include "vicBlogHeader.h"
+#include "wxManualText.h"
 
 vicBlogItem::vicBlogItem( wxWindow* aptParent,
                           const wxString& aszTitle, 
                           const std::vector<std::string>& avecHistory )
- : wxPanel( aptParent, 2, wxDefaultPosition, wxDefaultSize, wxBORDER )
+ : wxPanel( aptParent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER )
 {
    auto ptSF = StoreFrontEnd::Server();
    auto ptSFE = StoreFrontEnd::Client();
@@ -47,7 +48,6 @@ vicBlogItem::vicBlogItem( wxWindow* aptParent,
          {
             szImgFilePath = ptSFE->GetRemSymbolFilePath();
             szLineText = FirstItem.Name;
-
          }
          else if( ( Type == StringInterface::ChangeLine ) &&
                   ( SecondItem.Name != "" ) )
@@ -65,11 +65,11 @@ vicBlogItem::vicBlogItem( wxWindow* aptParent,
             subsizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_NONE );
             actionPanel->SetSizer( subsizer );
 
-            ImageViewer* imgTest = new ImageViewer( actionPanel, 1, false );
-            imgTest->DisplayImage( szImgFilePath );
+            wxImagePanel* imgTest = new wxImagePanel( actionPanel, szImgFilePath, wxBitmapType::wxBITMAP_TYPE_ANY, false );
             subsizer->Add( imgTest, wxSizerFlags( 1 ).CenterVertical() );
 
-            wxStaticText* txt = new wxStaticText( actionPanel, 1, szLineText );
+            //wxManualText* txt = new wxManualText( actionPanel, szLineText );
+            wxStaticText* txt = new wxStaticText( actionPanel, wxID_ANY, szLineText );
             subsizer->Add( txt, wxSizerFlags( 1 ).Expand() );
             subsizer->Layout();
 
