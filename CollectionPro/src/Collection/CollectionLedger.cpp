@@ -20,6 +20,12 @@ CollectionLedger::~CollectionLedger()
    }
 }
 
+unsigned int 
+CollectionLedger::GetSize()
+{
+   return m_vecPresent.size();
+}
+
 std::set<std::shared_ptr<CopyItem>>
 CollectionLedger::ViewOwned()
 {

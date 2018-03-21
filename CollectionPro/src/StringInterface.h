@@ -1,9 +1,9 @@
 #pragma once
-#include<string>
-#include<vector>
-
 #include "Support\TypeDefs.h"
 #include "Collection\CopyItem.h"
+
+#include <string>
+#include <vector>
 
 using namespace std;
 
@@ -31,6 +31,17 @@ public:
                               vector<Tag>& rszDetails,
                               vector<Tag>& rszMeta );
 
+   static bool ParseInterfaceLine( const string& aszLine,
+                                   unsigned int& riCount,
+                                   string& rszName,
+                                   vector<Tag>& rszDetails,
+                                   vector<Tag>& rszMeta,
+                                   unsigned int& riCount2,
+                                   string& rszName2,
+                                   vector<Tag>& rszDetails2,
+                                   vector<Tag>& rszMeta2,
+                                   StringInterface::InterfaceLineType& riType );
+
    static bool ParseTagString( const string& aszDetails,
                                vector<Tag>& rlstTags );
 
@@ -42,6 +53,11 @@ public:
    static string ToCardLine( const string& aszName,
                              const vector<Tag>& alstAttrs    = vector<Tag>(),
                              const vector<Tag>& alstMetaTags = vector<Tag>() );
+
+   static unsigned long GetCurrentTimeCount();
+   static unsigned long ToTimeValue( const string& aszTime, const string& aszParse );
+   static string ToTimeString( unsigned long aulTime );
+   static string ToTimeString( unsigned long aulTime, const string& aszFormat );
 
    static InterfaceLineType ParseInterfaceLine( string& rszLine );
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include "ivCollectionView.h"
 #include <wx/listctrl.h>
 #include <wx/object.h> 
@@ -12,6 +12,8 @@ class vCollectionDeckBox : public ivCollectionView
 public:
    vCollectionDeckBox(MainFrame* aptParent, wxWindowID aiWID, const wxString& aszColID);
    ~vCollectionDeckBox();
+
+   void PrepareInterface(  );
 
 private:
    wxDECLARE_EVENT_TABLE();

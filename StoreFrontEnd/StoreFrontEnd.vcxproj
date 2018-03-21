@@ -83,14 +83,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;C:\wxWidgets-3.1.0\lib\vc_lib;C:\wxWidgets-3.1.0\include\msvc;C:\wxWidgets-3.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;$(WXWIN)\wxFreeChart-master\include;$(WXWIN)\lib\vc_lib;$(WXWIN)\include\msvc;$(WXWIN)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib;C:\wxWidgets-3.1.0\wxFreeChart-master\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxFreeChart17ud.lib;wxmsw31ud_core.lib;wxbase31ud.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -99,6 +99,7 @@
       <Command>xcopy /y /d  "$(ProjectDir)Libs\OpenSSL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
+xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
 
 
 </Command>
@@ -122,21 +123,22 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;$(WXWIN)\include;$(WXWIN)\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Zip;$(WXWIN)\wxFreeChart-master\include;$(WXWIN)\include;$(WXWIN)\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;WINVER=0x0500;__WXMSW__;ZLIB_WINAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxmsw31u_core.lib;wxbase31u.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\ZipLib;C:\Users\Matthew\Documents\GitHub_Clean\CollectionPro\StoreFrontEnd\Libs\cURL;$(WXWIN)\lib\vc_lib;C:\wxWidgets-3.1.0\wxFreeChart-master\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>comctl32.lib;libcurl.lib;rpcrt4.lib;wxpng.lib;wxzlib.lib;wxjpeg.lib;wxtiff.lib;wxFreeChart17u.lib;zlibwapi.lib;winmm.lib;advapi32.lib;wxmsw31u_core.lib;wxbase31u.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d  "$(ProjectDir)Libs\OpenSSL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\cURL\*.dll" "$(TargetDir)"
 xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
+xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
 
 
 </Command>
@@ -159,11 +161,17 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="CardInterface.cpp" />
     <ClCompile Include="cCollectionCube.cpp" />
     <ClCompile Include="cCollectionDeckBox.cpp" />
+    <ClCompile Include="ImageHandler.cpp" />
+    <ClCompile Include="vicBlogFooter.cpp" />
+    <ClCompile Include="wxManualText.cpp" />
+    <ClInclude Include="CardInterface.h" />
     <ClInclude Include="cCollectionDeckBox.h" />
     <ClCompile Include="cCollectionsOverview.cpp" />
     <ClCompile Include="CELIOption.cpp" />
+    <ClCompile Include="CollectionInterface.cpp" />
     <ClCompile Include="CURLAPI.cpp" />
     <ClCompile Include="Group.cpp" />
     <ClCompile Include="ImageViewer.cpp" />
@@ -189,6 +197,8 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="vcCollectionsMenuList.cpp" />
     <ClCompile Include="viCardEditor.cpp" />
+    <ClCompile Include="vicBlogHeader.cpp" />
+    <ClCompile Include="vicBlogItem.cpp" />
     <ClCompile Include="vicCollectionEditListItemOption.cpp" />
     <ClCompile Include="vicCollectionEditorList.cpp" />
     <ClCompile Include="vicCollectionEditorListItem.cpp" />
@@ -197,11 +207,28 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ClCompile Include="vicListSelector.cpp" />
     <ClCompile Include="viCollectionEditor.cpp" />
     <ClCompile Include="viCollectionSelector.cpp" />
+    <ClCompile Include="vicStatsViewRow.cpp" />
+    <ClCompile Include="viHistoryViewer.cpp" />
+    <ClCompile Include="vimCMCModule.cpp" />
+    <ClCompile Include="vimCountModule.cpp" />
+    <ClCompile Include="vimTypeBreakDown.cpp" />
+    <ClCompile Include="vStatsViewer.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
+    <ClInclude Include="CollectionInterface.h" />
+    <ClInclude Include="ImageHandler.h" />
     <ClInclude Include="ImageViewer.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="vicBlogFooter.h" />
+    <ClInclude Include="vicBlogHeader.h" />
+    <ClInclude Include="vicBlogItem.h" />
     <ClInclude Include="vicCollectionPeeker.h" />
     <ClInclude Include="viCollectionSelector.h" />
+    <ClInclude Include="vicStatsViewRow.h" />
+    <ClInclude Include="viHistoryViewer.h" />
+    <ClInclude Include="vimCMCModule.h" />
+    <ClInclude Include="vimCountModule.h" />
+    <ClInclude Include="vimTypeBreakDown.h" />
+    <ClInclude Include="vStatsViewer.h" />
+    <ClInclude Include="wxManualText.h" />
     <ClInclude Include="Zip\unzip.h" />
   </ItemGroup>
   <ItemGroup>
@@ -255,6 +282,17 @@ xcopy /y /d  "$(ProjectDir)Libs\ZipLib\*.dll" "$(TargetDir)"
     <ProjectReference Include="..\CollectionPro\CollectionPro.vcxproj">
       <Project>{d9f68704-4aeb-4348-a0f5-bcb536eba2de}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\AddSymb.jpg">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Images\RemSymb.jpg">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="Images\SwapSymb.jpg">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -27,6 +27,8 @@ public:
    void ChildAdded();
    bool IsLoaded();
    vector<Tag> GetPeekValues();
+   map<unsigned long, vector<string>> GetHistoryLines( unsigned int aiStart, 
+                                                       unsigned int aiEnd = 0 );
 
    void AddItem( string aszName,
                  vector<Tag> alstAttrs,

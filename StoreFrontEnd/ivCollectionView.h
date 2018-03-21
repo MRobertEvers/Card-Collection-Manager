@@ -1,9 +1,12 @@
 #pragma once
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
+#include <wx/statusbr.h>
+#include <memory>
 
 class viCardEditor;
 class MainFrame;
 class viCollectionEditor;
+class CollectionInterface;
 
 class ivCollectionView : public wxPanel
 {
@@ -13,12 +16,19 @@ public:
 
    virtual void ShowCollectionEditor();
    virtual void CloseCollectionEditor();
+   virtual void PrepareInterface(  ) = 0;
+   virtual void ShowStats();
+   virtual void ShowHistory();
 
 protected:
    viCollectionEditor* m_viColEditor;
    viCardEditor* m_viCardEditor;
    wxString m_wxszColID;
+   std::shared_ptr<CollectionInterface> m_ptCollectionInterface;
+   wxStatusBar* m_infoBar;
 
+   void displayInfoBar();
+   void refreshInfoBar();
    virtual void onEditorAccept( wxCommandEvent& awxEvt );
    virtual void onEditorDecline( wxCommandEvent& awxEvt );
    virtual void onCardChanged( wxCommandEvent& awxEvt );

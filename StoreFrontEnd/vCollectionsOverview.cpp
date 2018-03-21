@@ -19,7 +19,7 @@ vCollectionsOverview::vCollectionsOverview( wxWindow* aptParent,
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    this->SetSizer(boxSizer);
-   this->GetParent()->SetSize(350, 500);
+   this->GetParent()->SetMinSize(wxSize(350, 500));
    buildCollectionSelector();
    getLoadedCollections();
 }

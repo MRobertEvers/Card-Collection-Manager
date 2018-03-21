@@ -143,6 +143,32 @@ StoreFront::GetAllCardsStartingWith( const string& aszColID,
    return vector<string>();
 }
 
+map<unsigned long, vector<string>>
+StoreFront::GetHistoryLines( const string& aszColID, unsigned int aiStart )
+{
+   if( m_ColFactory->CollectionExists( aszColID ) )
+   {
+      return m_ColFactory->GetCollection( aszColID )->GetHistoryLines(aiStart, -1);
+   }
+   else
+   {
+      return map<unsigned long, vector<string>>();
+   }
+}
+
+map<unsigned long, vector<string>>
+StoreFront::GetHistoryLines( const string& aszColID, unsigned int aiStart, unsigned int aiEnd )
+{
+   if( m_ColFactory->CollectionExists( aszColID ) )
+   {
+      return m_ColFactory->GetCollection( aszColID )->GetHistoryLines( aiStart, aiEnd );
+   }
+   else
+   {
+      return map<unsigned long, vector<string>>();
+   }
+}
+
 vector<pair<string, string>> 
 StoreFront::GetPeekValues( const string& aszColID )
 {
@@ -384,7 +410,7 @@ StoreFront::GetSourcePath()
 string 
 StoreFront::GetSourceFileName()
 {
-   return Config::Instance()->GetSourceFilePath();
+   return Config::Instance()->GetSourceFileName();
 }
 
 string 
@@ -397,6 +423,12 @@ string
 StoreFront::GetImportSourceFilePath()
 {
    return Config::Instance()->GetImportSourceFilePath();
+}
+
+string 
+StoreFront::GetConfigDirectory()
+{
+   return Config::Instance()->GetConfigDirectory();
 }
 
 string 

@@ -1,8 +1,10 @@
 #include "vcCollectionCubeGroup.h"
 #include "MainWindow.h"
 #include "Group.h"
-#include "GroupItemData.h"
 #include "vcCollectionCubeDisplay.h"
+#include "CollectionInterface.h"
+#include "CardInterface.h"
+
 #include <algorithm>
 #include <set>
 #include <wx/event.h>
@@ -49,12 +51,12 @@ vcCollectionCubeGroup::~vcCollectionCubeGroup()
 }
 
 void 
-vcCollectionCubeGroup::PopulateList( std::vector<GroupItemData*> avecItemData, Group aGrp )
+vcCollectionCubeGroup::PopulateList( std::vector<CardInterface*> avecItemData, Group aGrp )
 {
    wxString szColumn = m_szColumnName + " (" + std::to_string(avecItemData.size()) + ")";
    this->SetColLabelValue( 0, szColumn );
 
-   map<wxString, vector<GroupItemData*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
+   map<wxString, vector<CardInterface*>, Group::Sorting> mapGroups( *aGrp.GetSortingFunctor() );
    for( auto& data : avecItemData )
    {
       // TODO: Need way to get meta tags from server so we can sort on them.
@@ -168,7 +170,7 @@ vcCollectionCubeGroup::resizeColumn()
 
 void 
 vcCollectionCubeGroup::performDisplay(
-   map<wxString, vector<GroupItemData*>, Group::Sorting> amapGrps, const Group& aGrp )
+   map<wxString, vector<CardInterface*>, Group::Sorting> amapGrps, const Group& aGrp )
 {
    bool bFirst = true;
    for( auto groupData : amapGrps )
@@ -195,7 +197,7 @@ vcCollectionCubeGroup::performDisplay(
 
 void
 vcCollectionCubeGroup::performDisplayWithSubGrouping(
-   map<wxString, vector<GroupItemData*>, Group::Sorting> amapGrps,
+   map<wxString, vector<CardInterface*>, Group::Sorting> amapGrps,
    const Group& aGrp )
 {
    Group subGroup = aGrp.GetSubGroup( "" );
@@ -204,7 +206,7 @@ vcCollectionCubeGroup::performDisplayWithSubGrouping(
    int index = 0;
    for( auto groupData : amapGrps )
    {
-      map<wxString, multiset<GroupItemData*, Group::ItemSorting>, Group::Sorting>
+      map<wxString, multiset<CardInterface*, Group::ItemSorting>, Group::Sorting>
          mapSubGrpSorting( *subGroup.GetSortingFunctor() );
       for( auto& itemData : groupData.second )
       {
@@ -243,7 +245,8 @@ vcCollectionCubeGroup::performDisplayWithSubGrouping(
 }
 
 
-void vcCollectionCubeGroup::displayNormal( GroupItemData* itemData )
+void 
+vcCollectionCubeGroup::displayNormal( CardInterface* itemData )
 {
    const int cutoff = COLUMN_TEXT_LENGTH;
    wxString buf = itemData->GetName();
@@ -286,7 +289,8 @@ void vcCollectionCubeGroup::displayNormal( GroupItemData* itemData )
    }
 }
 
-void vcCollectionCubeGroup::displayNormal( const wxString &buf, const wxString& aszHash )
+void 
+vcCollectionCubeGroup::displayNormal( const wxString &buf, const wxString& aszHash )
 {
    displayNormal( buf, aszHash, wxFont( wxFontInfo( 9 ).FaceName( "Trebuchet MS" ) ), false, m_wxColor, m_wxFontColor );
 }

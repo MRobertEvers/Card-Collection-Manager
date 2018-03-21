@@ -1,7 +1,7 @@
 #pragma once
 #include "../CollectionPro/src/StoreFront.h"
 #include "../CollectionPro/src/StringInterface.h"
-#include "../CollectionPro/src/Config.h"
+
 #include <memory>
 #include <vector>
 
@@ -24,6 +24,13 @@ public:
    void EstablishFolder( const wxString& aszPath );
 
    std::vector<wxString> GetTextFilesInDirectory( const wxString& aszDir );
+
+   // Resources
+   wxString GetAddSymbolFilePath();
+   wxString GetRemSymbolFilePath();
+   wxString GetSwapSymbolFilePath();
+   wxString GetResourcesDirectory();
+   wxString GetSpritesDirectory();
 
 private:
    StoreFrontEnd();

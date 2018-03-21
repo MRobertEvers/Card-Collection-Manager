@@ -6,7 +6,7 @@ wxEND_EVENT_TABLE()
 
 vcEditableTraitListItem::vcEditableTraitListItem( wxWindow* aptParent,
                                                   wxWindowID aiID,
-                                                  wxString aszTraitName,
+                                                  const wxString& aszTraitName,
                                                   std::vector<std::string> avecOptions )
    : wxPanel(aptParent, aiID), m_vecOptions(avecOptions), m_szName(aszTraitName)
 {
@@ -60,7 +60,7 @@ vcEditableTraitListItem::GetSelectionInt()
 bool 
 vcEditableTraitListItem::TrySetSelection(const wxString& aszSelect)
 {
-   for( int i = 0; i < m_vecOptions.size(); i++ )
+   for( size_t i = 0; i < m_vecOptions.size(); i++ )
    {
       auto szOpt = m_vecOptions[i];
       if( szOpt == aszSelect.ToStdString() )

@@ -16,8 +16,8 @@ public:
                      bool abDefaultLocation = false );
    std::string GetFileName();
 
-   void SetFile(std::string aszFile);
-   std::string GetFile();
+   void SetFilePath(std::string aszFile);
+   std::string GetFilePath();
 
    void SetTimeStamp(unsigned long aulTimeStamp = 0);
    unsigned long GetTimeStamp();

@@ -1,6 +1,6 @@
 #pragma once
 #include<map>
-#include"wx/wxprec.h"
+#include<wx/wxprec.h>
 #include"IMenuEventHandler.h"
 
 class vCollectionsOverview;

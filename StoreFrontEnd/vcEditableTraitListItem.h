@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include "vcEditableTraitList.h"
 
 class vcEditableTraitListItem : public wxPanel
@@ -9,7 +9,7 @@ class vcEditableTraitListItem : public wxPanel
 public:
    vcEditableTraitListItem( wxWindow* aptParent,
                             wxWindowID aiID,
-                            wxString aszTraitName,
+                            const wxString& aszTraitName,
                             std::vector<std::string> avecOptions );
    ~vcEditableTraitListItem();
 

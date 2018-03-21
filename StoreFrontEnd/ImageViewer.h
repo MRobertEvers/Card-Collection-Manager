@@ -14,13 +14,13 @@ public:
    class ImageViewerCallback : public ImageFetcherCallback
    {
    public:
-      ImageViewerCallback( ImageViewer* aptCE, std::shared_ptr<std::mutex> amutex, const wxString& aszFilePath );
+      ImageViewerCallback( ImageViewer* aptCE, std::shared_ptr<std::recursive_mutex> amutex, const wxString& aszFilePath );
 
       virtual void CallBack() override;
 
    private:
       ImageViewer* m_ptViewer;
-      std::shared_ptr<std::mutex> m_mutex;
+      std::shared_ptr<std::recursive_mutex> m_mutex;
       wxString m_szFilePath;
    };
 
@@ -29,7 +29,7 @@ public:
       Image_Ready = 0x91
    };
 public:
-   ImageViewer( wxWindow* aptParent, wxWindowID aiWID );
+   ImageViewer( wxWindow* aptParent, wxWindowID aiWID, bool abDoScale = true );
    ~ImageViewer();
 
    bool DisplayImage( const wxString& aszCardName, 
@@ -43,8 +43,9 @@ private:
    wxDECLARE_EVENT_TABLE();
 
    std::vector<std::shared_ptr<ImageFetcherCallback>> m_vecImageCallbacks;
-   std::shared_ptr<std::mutex> m_mutex;
+   std::shared_ptr<std::recursive_mutex> m_mutex;
    vcImageWrapper* m_ptImageWrapper;
+   bool m_bDoScale;
 
    void fetchImage( const wxString& aszCardName,
                     const wxString& aszMultiVerseID = "",

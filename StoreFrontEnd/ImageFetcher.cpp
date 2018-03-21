@@ -1,8 +1,8 @@
 #include "ImageFetcher.h"
-#include "wx/wxprec.h"
 #include "StoreFrontEnd.h"
 #include "CURLAPI.h"
 
+#include <wx/wxprec.h>
 #include <wx/sstream.h>
 #include <wx/imagjpeg.h>
 
@@ -41,7 +41,7 @@ FetcherThread::Entry()
 
 
 ImageFetcher* ImageFetcher::ms_ptInstance = nullptr;
-std::mutex ImageFetcher::ms_mutexInstance;
+std::recursive_mutex ImageFetcher::ms_mutexInstance;
 
 ImageFetcher::ImageFetcher()
 {
@@ -94,9 +94,9 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
 {
    PrepareImageSetFolder(aszSet);
 
-   downloadImage(aszFilePath, aszCardName, aszSet, aszMUD);
+   bool bSuccess = downloadImage(aszFilePath, aszCardName, aszSet, aszMUD);
 
-   if( aptCallback != nullptr )
+   if( aptCallback != nullptr && bSuccess )
    {
       aptCallback->CallBack();
    }
@@ -113,7 +113,7 @@ ImageFetcher::DownloadCardImage( const wxString& aszFilePath,
 }
 
 
-void 
+bool 
 ImageFetcher::downloadImage( const wxString& aszFilePath,
                              const wxString& aszCardName,
                              const wxString& aszSet,
@@ -123,7 +123,7 @@ ImageFetcher::downloadImage( const wxString& aszFilePath,
    {
       if( tryDownload( aszFilePath, aszCardName, aszSet, aszMUD ) )
       {
-         break;
+         return true;
       }
       else
       {
@@ -140,6 +140,8 @@ ImageFetcher::downloadImage( const wxString& aszFilePath,
          }
       }
    }
+
+   return false;
 }
 
 bool 

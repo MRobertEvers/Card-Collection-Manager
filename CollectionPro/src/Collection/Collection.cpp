@@ -73,6 +73,13 @@ Collection::GetPeekValues()
    return m_ptrCollectionDetails->GetPeekValues();
 }
 
+map<unsigned long, vector<string>>
+Collection::GetHistoryLines( unsigned int aiStart, unsigned int aiEnd )
+{
+   CollectionIO io( this );
+   return io.GetHistoryTransactions(aiStart, aiEnd);
+}
+
 void
 Collection::AddItem( string aszName,
                      vector<Tag> alstAttrs,
@@ -175,8 +182,12 @@ Collection::addItem( const string& aszName,
                      const vector<Tag>& alstMetaTags )
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
-
-   item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags ).get();
+   if( !item.Good() )
+   {
+      return;
+   }
+   
+   item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags );
    InvalidateState();
 }
 
@@ -205,15 +216,20 @@ Collection::changeItem( const string& aszName,
                         const vector<Tag>& alstMetaChanges )
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
-   auto cItem = item->FindCopy( aszUID );
-   if( cItem.Good() ) 
-   { 
-      item->SetIdentifyingTraits( *cItem.Value(), alstChanges, alstMetaChanges );
-      InvalidateState();
-      return true;
+   if( !item.Good() )
+   {
+      return false;
    }
 
-   return false;
+   auto cItem = item->FindCopy( aszUID );
+   if( !cItem.Good() ) 
+   { 
+      return false;
+   }
+
+   item->SetIdentifyingTraits( *cItem.Value(), alstChanges, alstMetaChanges );
+   InvalidateState();
+   return true;
 }
 
 
@@ -225,7 +241,16 @@ Collection::replaceItem( const string& aszName,
                          const vector<Tag>& alstMetaChanges )
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
+   if( !item.Good() )
+   {
+      return false;
+   }
+
    auto newItem = m_ptrCollectionSource->GetCardPrototype( aszNewName );
+   if( !newItem.Good() )
+   {
+      return false;
+   }
 
    if( removeItem( item->GetName(), aszUID ) )
    {

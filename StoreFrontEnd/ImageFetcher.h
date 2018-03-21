@@ -71,7 +71,7 @@ public:
 
 private:
    ImageFetcher();
-   void downloadImage( const wxString& aszFilePath,
+   bool downloadImage( const wxString& aszFilePath,
                        const wxString& aszCardName,
                        const wxString& aszSet,
                        const wxString& aszMUD );
@@ -79,11 +79,11 @@ private:
                      const wxString& aszCardName,
                      const wxString& aszSet,
                      const wxString& aszMUD );
-   std::mutex m_mutexThreadList;
+   std::recursive_mutex m_mutexThreadList;
    std::set<wxString> m_setThreadList;
 
 public:
-   static std::mutex ms_mutexInstance;
+   static std::recursive_mutex ms_mutexInstance;
    static ImageFetcher* Instance();
 
 private:

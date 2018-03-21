@@ -3,7 +3,11 @@
 #include "Collection\CopyItem.h"
 #include "Config.h"
 
+#include <sstream>
 #include <algorithm>
+#include <iomanip>
+#include <cstdio>
+#include <ctime>
 
 using namespace std;
 
@@ -173,6 +177,53 @@ StringInterface::ParseCardLine( const string& aszLine,
    return bGoodParse;
 }
 
+
+bool 
+StringInterface::ParseInterfaceLine( const string& aszLine,
+                                     unsigned int& riCount,
+                                     string& rszName,
+                                     vector<Tag>& rszDetails,
+                                     vector<Tag>& rszMeta,
+                                     unsigned int& riCount2,
+                                     string& rszName2,
+                                     vector<Tag>& rszDetails2,
+                                     vector<Tag>& rszMeta2,
+                                     StringInterface::InterfaceLineType& riType )
+{
+   string szFixedLine = StringHelper::Str_Trim( aszLine, ' ' );
+   if( szFixedLine.size() < 1 )
+   {
+      return false;
+   }
+
+   riType = ParseInterfaceLine( szFixedLine );
+
+   if( riType == InterfaceLineType::ChangeLine )
+   {
+      auto vecPair = StringHelper::Str_Split( szFixedLine, "->" );
+      if( vecPair.size() < 2 )
+      {
+         return false;
+      }
+
+      for( auto& pairItem : vecPair )
+      {
+         pairItem == StringHelper::Str_Trim( pairItem, ' ' );
+      }
+
+      if( ParseCardLine( vecPair[0], riCount, rszName, rszDetails, rszMeta ) )
+      {
+         return ParseCardLine( vecPair[1], riCount2, rszName2, rszDetails2, rszMeta2 );
+      }
+   }
+   else
+   {
+      return ParseCardLine( szFixedLine, riCount, rszName, rszDetails, rszMeta );
+   }
+
+   return false;
+}
+
 bool
 StringInterface::ParseTagString( const string& aszDetails,
                                  vector<Tag>& rlstTags )
@@ -255,6 +306,55 @@ StringInterface::ToCardLine( const string& aszName,
    }
 
    return szLine;
+}
+
+unsigned long 
+StringInterface::GetCurrentTimeCount()
+{
+   return time( 0 );
+}
+
+unsigned long 
+StringInterface::ToTimeValue( const string& aszTime, const string& aszParse )
+{
+   struct std::tm tm;
+   string szTimeParse = aszTime;// szLine.substr( iOpenDate + 1, iCloseDate - iOpenDate - 1 );
+   istringstream ss( szTimeParse );
+   // %a day of week abbrev or full
+   // %b month abbrev or full
+   // %d day of month
+   // %Y 4 digit year
+   ss >> std::get_time( &tm, aszParse.c_str() );//"%a %b %d %H:%M:%S %Y" );
+   return mktime( &tm );
+}
+
+string 
+StringInterface::ToTimeString( unsigned long aulTime )
+{
+   // OLD WAY
+   //time_t now = aulTime;
+   //struct tm timeinfo;
+   //localtime_s( &timeinfo, &now );
+   //char str[26];
+   //asctime_s( str, sizeof str, &timeinfo );
+   //str[strlen( str ) - 1] = 0;
+   //return string( str )
+
+   // This should be the same as the above.
+   return ToTimeString(aulTime, "%a %b %d %H:%M:%S %Y");
+}
+
+string 
+StringInterface::ToTimeString( unsigned long aulTime, const string& aszFormat )
+{
+   time_t timeType = aulTime;
+   tm tmStruct;
+   localtime_s( &tmStruct, &timeType );
+
+   stringstream ss;
+   ss << put_time( &tmStruct, aszFormat.c_str() );//"%F_%T" );
+   
+   return ss.str();
 }
 
 StringInterface::InterfaceLineType

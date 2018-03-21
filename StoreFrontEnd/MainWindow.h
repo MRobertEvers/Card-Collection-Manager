@@ -7,7 +7,7 @@
 // received the window as the parent - argument in their constructors.
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include <wx/aui/framemanager.h>
 #include <vector>
 

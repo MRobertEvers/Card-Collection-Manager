@@ -1,5 +1,5 @@
 #pragma once
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Define a new application type, each program should derive a class from wxApp
 class MyApp : public wxApp

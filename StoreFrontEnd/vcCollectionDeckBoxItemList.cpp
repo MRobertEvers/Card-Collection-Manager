@@ -1,6 +1,7 @@
 #include "vcCollectionDeckBoxItemList.h"
 #include "StoreFrontEnd.h"
-#include "GroupItemData.h"
+#include "CardInterface.h"
+#include "CollectionInterface.h"
 #include "Group.h"
 
 wxBEGIN_EVENT_TABLE(vcCollectionDeckBoxItemList, wxPanel)
@@ -10,8 +11,8 @@ wxEND_EVENT_TABLE()
 
 
 vcCollectionDeckBoxItemList::vcCollectionDeckBoxItemList( wxWindow* aptParent,
-                                                          const wxString& aszColID )
-   : wxPanel(aptParent), m_wxszColID(aszColID)
+                                                          std::shared_ptr<CollectionInterface> aptInt )
+   : wxPanel(aptParent), m_ptColInt(aptInt)
 {
    m_iSelection = -1;
    m_wxListControl = new wxListCtrl( this, List,
@@ -39,23 +40,11 @@ vcCollectionDeckBoxItemList::~vcCollectionDeckBoxItemList()
 void 
 vcCollectionDeckBoxItemList::RefreshList()
 {
-   auto ptSF = StoreFrontEnd::Server();
-   Query query;
-   query.UIDs();
-   query.IncludeCount();
-   auto lstCol = ptSF->GetAllCardsStartingWith(m_wxszColID.ToStdString(), query);
-
-   m_vecDataItems.clear();
-   m_vecDataItemsDisplayOrder.clear();
-   for( auto& szItem : lstCol )
-   {
-      GroupItemData data(szItem, GroupItemData::LONG_NAME);
-      m_vecDataItems.push_back(data);
-   }
+   m_ptColInt->Refresh();
 
    m_wxListControl->Freeze();
    m_wxListControl->DeleteAllItems();
-   displayGrouping(performGrouping(m_vecDataItems));
+   displayGrouping(performGrouping(m_ptColInt->GetItemInterfaces()));
    m_wxListControl->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER);
    m_wxListControl->SetColumnWidth(1, wxLIST_AUTOSIZE);
    m_wxListControl->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER);
@@ -66,7 +55,7 @@ vcCollectionDeckBoxItemList::RefreshList()
    this->Layout();
 }
 
-GroupItemData 
+CardInterface 
 vcCollectionDeckBoxItemList::GetItemByListIndex(int Ind)
 {
    if( ( Ind < m_vecDataItemsDisplayOrder.size() ) && 
@@ -76,16 +65,16 @@ vcCollectionDeckBoxItemList::GetItemByListIndex(int Ind)
    }
    else
    {
-      return GroupItemData();
+      return CardInterface();
    }
 }
 
-GroupItemData 
+CardInterface 
 vcCollectionDeckBoxItemList::GetFirst()
 {
    if( m_vecDataItemsDisplayOrder.size() > 0 )
    {
-      int i = 0;
+      size_t i = 0;
       while( i < m_vecDataItemsDisplayOrder.size()  &&
              m_vecDataItemsDisplayOrder[i] == NULL )
       {
@@ -96,7 +85,7 @@ vcCollectionDeckBoxItemList::GetFirst()
          return *m_vecDataItemsDisplayOrder[i];
       }
    }
-   return GroupItemData();
+   return CardInterface();
 }
 
 int 
@@ -104,7 +93,7 @@ vcCollectionDeckBoxItemList::GetFirstInt()
 {
    if( m_vecDataItemsDisplayOrder.size() > 0 )
    {
-      int i = 0;
+      size_t i = 0;
       while( i < m_vecDataItemsDisplayOrder.size() &&
          m_vecDataItemsDisplayOrder[i] == NULL )
       {
@@ -121,7 +110,7 @@ vcCollectionDeckBoxItemList::GetFirstInt()
 bool 
 vcCollectionDeckBoxItemList::IsEmpty()
 {
-   return m_vecDataItems.size() == 0;
+   return m_ptColInt->GetItemInterfaces().size() == 0;
 }
 
 void
@@ -147,8 +136,8 @@ vcCollectionDeckBoxItemList::onItemDeselection(wxListEvent& awxEvt)
 
 // Returns a list of pointers to the input vector. SO DONT DELETE THE VECTOR BEFORE
 // USING THE RETURN.
-std::map<wxString, std::vector<GroupItemData*>>
-vcCollectionDeckBoxItemList::performGrouping(std::vector<GroupItemData>& avecItems)
+std::map<wxString, std::vector<CardInterface*>>
+vcCollectionDeckBoxItemList::performGrouping(std::vector<CardInterface>& avecItems)
 {
    Group overrideGrp;
    // TODO: Use the stringIface to get the collection.group. write this func.
@@ -166,8 +155,8 @@ vcCollectionDeckBoxItemList::performGrouping(std::vector<GroupItemData>& avecIte
              .OverrideGrouping(overrideGrp);
 
 
-   map<wxString, vector<GroupItemData*>> mapGroups;
-   // So you assign each item in your collection to a GroupItemData,
+   map<wxString, vector<CardInterface*>> mapGroups;
+   // So you assign each item in your collection to a CardInterface,
    // then the do something like below to extract the group that they should belong.
    for( auto& data : avecItems )
    {
@@ -180,7 +169,7 @@ vcCollectionDeckBoxItemList::performGrouping(std::vector<GroupItemData>& avecIte
 
 void 
 vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
-                                             std::vector<GroupItemData*>>& amapGrouping)
+                                             std::vector<CardInterface*>>& amapGrouping)
 {
    unsigned int iCount = 0;
    for( auto& group : amapGrouping )
@@ -203,7 +192,7 @@ vcCollectionDeckBoxItemList::displayGrouping(const map<wxString,
 }
 
 void 
-vcCollectionDeckBoxItemList::addListItem(GroupItemData& aData)
+vcCollectionDeckBoxItemList::addListItem(CardInterface& aData)
 {
    wxString buf = std::to_string(aData.GetNumber());
    int i = m_wxListControl->GetItemCount();

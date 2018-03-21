@@ -3,7 +3,7 @@
 
 ImageViewer::
 ImageViewerCallback::
-ImageViewerCallback( ImageViewer* aptCE, std::shared_ptr<std::mutex> amutex, const wxString& aszFilePath )
+ImageViewerCallback( ImageViewer* aptCE, std::shared_ptr<std::recursive_mutex> amutex, const wxString& aszFilePath )
    : ImageFetcherCallback(), m_ptViewer( aptCE ), m_mutex( amutex ), m_szFilePath(aszFilePath)
 {
 
@@ -29,19 +29,20 @@ wxBEGIN_EVENT_TABLE( ImageViewer, wxPanel )
 EVT_BUTTON( Image_Ready, ImageViewer::onImageReady )
 wxEND_EVENT_TABLE()
 
-ImageViewer::ImageViewer( wxWindow* aptParent, wxWindowID aiWID )
-   : wxPanel( aptParent, aiWID ), m_ptImageWrapper( new vcImageWrapper( this, 3 ) )
+ImageViewer::ImageViewer( wxWindow* aptParent, wxWindowID aiWID, bool abDoScale )
+   : wxPanel( aptParent, aiWID ), m_ptImageWrapper( new vcImageWrapper( this, 3, abDoScale ) ), m_bDoScale(abDoScale)
 {
-   m_mutex = std::shared_ptr<std::mutex>( new std::mutex() );
+   m_mutex = std::shared_ptr<std::recursive_mutex>( new std::recursive_mutex() );
 
    wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
    this->SetSizer( boxSizer );
-   boxSizer->Add( m_ptImageWrapper, wxSizerFlags( 1 ).Shaped() );
+   boxSizer->Add( m_ptImageWrapper, wxSizerFlags( 1 ).Expand() );
 }
 
 
 ImageViewer::~ImageViewer()
 {
+   stopCallbacks();
    m_vecImageCallbacks.clear();
 }
 
@@ -71,9 +72,13 @@ ImageViewer::DisplayImage( const wxString& aszCardName,
 bool
 ImageViewer::DisplayImage( const wxString& aszFilePath )
 {
+   m_mutex->lock();
    wxLog::EnableLogging( false );
    bool bRetVal = m_ptImageWrapper->SetImage( aszFilePath );
+   this->SetSize( m_ptImageWrapper->GetSize() );
+   this->SetSizeHints( m_ptImageWrapper->GetSize() );
    wxLog::EnableLogging( true );
+   m_mutex->unlock();
    return bRetVal;
 }
 

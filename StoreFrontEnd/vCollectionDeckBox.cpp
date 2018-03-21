@@ -5,6 +5,7 @@
 #include "GroupItemData.h"
 #include "MainWindow.h"
 #include "viCardEditor.h"
+#include "CollectionInterface.h"
 
 wxBEGIN_EVENT_TABLE(vCollectionDeckBox, wxPanel)
 EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionDeckBox::onCardChanged )
@@ -19,6 +20,7 @@ vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent,
                                         const wxString& aszColID )
    : ivCollectionView(aptParent, aiWID, aszColID)
 {
+   PrepareInterface();
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer(1, 3, 0, 0);
    boxSizer->AddGrowableCol(0);
    boxSizer->AddGrowableRow(0);
@@ -39,6 +41,16 @@ vCollectionDeckBox::vCollectionDeckBox( MainFrame* aptParent,
 vCollectionDeckBox::~vCollectionDeckBox()
 {
 
+}
+
+void 
+vCollectionDeckBox::PrepareInterface()
+{
+   Query query;
+   query.UIDs();
+   query.IncludeCount();
+
+   m_ptCollectionInterface->PrepareInterface( query );
 }
 
 
@@ -67,7 +79,7 @@ vCollectionDeckBox::onCardChanged( wxCommandEvent& awxEvt )
 void 
 vCollectionDeckBox::buildItemList()
 {
-   m_vcItemList = new vcCollectionDeckBoxItemList(this, m_wxszColID);
+   m_vcItemList = new vcCollectionDeckBoxItemList(this, m_ptCollectionInterface);
    this->GetSizer()->Add(m_vcItemList, wxSizerFlags(1).Expand());
 }
 

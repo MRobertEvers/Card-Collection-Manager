@@ -235,7 +235,7 @@ Identifier::addSubAddress(vector<unsigned int>& avecSAs, unsigned int aiSA)
    // Replace a less specific set with this more
    // general set.
    // or do nothing because this SA is less specific.
-   for( int i = 0; i < avecSAs.size(); i++ )
+   for( size_t i = 0; i < avecSAs.size(); i++ )
    {
       int SA = avecSAs[i];
       if( isSuperSet( SA, aiSA ) )

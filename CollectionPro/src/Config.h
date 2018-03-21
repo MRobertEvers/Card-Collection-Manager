@@ -27,7 +27,8 @@ public:
    std::string GetHistoryFolderName();
    std::string GetMetaFolderName();
    std::string GetImagesDirectory();
-   
+
+   std::string GetConfigDirectory();
    std::string GetCollectionsDirectory();
    std::string GetCollectionsFolderName();
    std::string GetCollectionsMetaDirectory();

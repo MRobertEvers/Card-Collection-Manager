@@ -1,10 +1,11 @@
 #pragma once
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include <map>
+#include <memory>
 #include <wx/listctrl.h>
 
-class GroupItemData;
-
+class CardInterface;
+class CollectionInterface;
 
 class vcCollectionDeckBoxItemList : public wxPanel
 {
@@ -14,31 +15,31 @@ public:
       List = 0x0
    };
 
-   vcCollectionDeckBoxItemList(wxWindow* aptParent, const wxString& aszColID);
+   vcCollectionDeckBoxItemList( wxWindow* aptParent, 
+                                std::shared_ptr<CollectionInterface> aptInt );
    ~vcCollectionDeckBoxItemList();
 
    void RefreshList();
-   GroupItemData GetItemByListIndex(int Ind);
-   GroupItemData GetFirst();
+   CardInterface GetItemByListIndex(int Ind);
+   CardInterface GetFirst();
    int GetFirstInt();
    bool IsEmpty();
 private:
    // This is so we can populate event data before sending it up.
    wxDECLARE_EVENT_TABLE();
 
-   std::vector<GroupItemData> m_vecDataItems;
-   std::vector<GroupItemData*> m_vecDataItemsDisplayOrder;
+   std::vector<CardInterface*> m_vecDataItemsDisplayOrder;
    wxListCtrl* m_wxListControl;
-   wxString m_wxszColID;
+   std::shared_ptr<CollectionInterface> m_ptColInt;
 
    int m_iSelection;
 
    void onItemSelection(wxListEvent& awxEvt);
    void onItemDeselection(wxListEvent& awxEvt);
-   std::map<wxString, std::vector<GroupItemData*>> 
-      performGrouping(std::vector<GroupItemData>& avecItems);
+   std::map<wxString, std::vector<CardInterface*>> 
+      performGrouping(std::vector<CardInterface>& avecItems);
 
-   void displayGrouping(const std::map<wxString,std::vector<GroupItemData*>> &amapGrouping);
-   void addListItem(GroupItemData& aData);
+   void displayGrouping(const std::map<wxString,std::vector<CardInterface*>> &amapGrouping);
+   void addListItem( CardInterface& aData);
 };
 

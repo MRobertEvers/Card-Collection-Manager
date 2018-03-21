@@ -2,12 +2,11 @@
 #include "Collection.h"
 #include "CollectionFactory.h"
 #include "CollectionLedger.h"
+#include "CopyItem.h"
 #include "../StringInterface.h"
 #include "../Addressing/Addresser.h"
 
 #include <algorithm>
-#include <iomanip>
-#include <ctime>
 
 using namespace std;
 
@@ -49,7 +48,79 @@ CollectionIO::LoadCollection( const string& aszFileName, CollectionFactory* aoFa
 void 
 CollectionIO::SaveCollection()
 {
+   saveCollection();
 
+   saveMeta();
+
+   saveHistory();
+
+   saveOverhead();
+}
+
+map<unsigned long, vector<string>> 
+CollectionIO::GetHistoryTransactions( unsigned int aiStart, unsigned int aiEnd )
+{
+   auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
+
+   map<unsigned long, vector<string>> mapRetVal;
+
+   string szHistFile = GetHistoryFile( ptCollectionDetails->GetFileName() );
+
+   ifstream oHistFile( szHistFile, std::ios::in );
+   unsigned int iLookingAtTrans = 0;
+
+   // Find the first
+   bool bIsDateline = false;
+   map<unsigned long, vector<string>>::iterator iter_current = mapRetVal.end();
+   while( iLookingAtTrans < aiEnd )
+   {
+      bIsDateline = false;
+
+      string szLine;
+      if( !std::getline( oHistFile, szLine ) )
+      {
+         break;
+      }
+
+      size_t iOpenDate = szLine.find_first_of( '[' );
+      size_t iCloseDate = szLine.find_first_of( ']' );
+      if( iOpenDate >= 0 && iCloseDate > iOpenDate )
+      {
+         iLookingAtTrans++;
+         bIsDateline = true;
+      }
+
+      if( iLookingAtTrans >= aiStart )
+      {
+         if( bIsDateline )
+         {
+            string szTimeParse = szLine.substr( iOpenDate + 1, iCloseDate - iOpenDate - 1 );
+            auto time = StringInterface::ToTimeValue( szTimeParse, "%a %b %d %H:%M:%S %Y" );
+
+            auto iter_mapIns = mapRetVal.insert( make_pair( time, vector<string>() ) );
+            if( iter_mapIns.second )
+            {
+               iter_current = iter_mapIns.first;
+            }
+            else
+            {
+               break;
+            }
+         }
+         else if( iter_current != mapRetVal.end() )
+         {
+            string szTrimLine = StringHelper::Str_Trim( szLine, ' ' );
+            if( szTrimLine != "" )
+            {
+               iter_current->second.push_back( szTrimLine );
+            }
+         }
+      }
+   }
+
+   oHistFile.close();
+
+   return mapRetVal;
 }
 
 bool 
@@ -58,6 +129,7 @@ CollectionIO::PrepareCollectionInitialization( const string& aszFileName )
    bool bRetVal = true;
 
    // a. Save the file name.
+   m_ptLoadToken->CollectionFilePath = aszFileName;
    m_ptLoadToken->CollectionFileName = StripFileName(aszFileName);
 
    // b. Get lines in quotes and card lines from file.
@@ -123,7 +195,10 @@ CollectionIO::PopulateCollectionFields()
 {
    m_ptCollection->m_ptrCollectionDetails->SetName( m_ptLoadToken->CollectionName );
    m_ptCollection->m_ptrCollectionDetails->SetProcessLines( m_ptLoadToken->OverheadProcessLines );
-   m_ptCollection->m_ptrCollectionDetails->SetFileName( m_ptLoadToken->CollectionFileName );
+   m_ptCollection->m_ptrCollectionDetails->SetFilePath( m_ptLoadToken->CollectionFilePath );
+
+   // setting the filepath sets this.
+   //m_ptCollection->m_ptrCollectionDetails->SetFileName( m_ptLoadToken->CollectionFileName );
 
    m_ptCollection->m_ptrCollectionDetails->SetInitialized( true );
 
@@ -353,7 +428,7 @@ CollectionIO::loadOverheadProcessLine( const std::string& aszLine )
    // TODO: This should not be literall.
    if( iWords > 2 && lstSplitLine[0] == "Peek" )
    {
-      int indOfValueStart = 0;
+      size_t indOfValueStart = 0;
       for( size_t i = 1; i < iWords; i++ )
       {
          auto szWord = lstSplitLine[i];
@@ -428,10 +503,7 @@ CollectionIO::loadOverheadPropertyLine(const std::string& aszLine)
    }
    else if( szKey == "Session" )
    {
-      tm tm{};
-      istringstream str_stream( szValue );
-      str_stream >> get_time( &tm, "%Y-%m-%d_%T" );
-      time_t time = mktime( &tm );
+      auto time = StringInterface::ToTimeValue( szValue, "%Y-%m-%d_%T" );
       ptDetails->SetTimeStamp( time );
    }
    
@@ -616,27 +688,39 @@ CollectionIO::saveHistory()
 
    if( lstHistoryLines.size() > 0 )
    {
-      string szTimeString = "";
-      time_t now = time( 0 );
-      struct tm timeinfo;
-      localtime_s( &timeinfo, &now );
-      char str[26];
-      asctime_s( str, sizeof str, &timeinfo );
-      str[strlen( str ) - 1] = 0;
+      string szTime = StringInterface::ToTimeString( StringInterface::GetCurrentTimeCount() );
 
-      ofstream oHistFile;
-      string szHistFile = CollectionIO::GetHistoryFile( ptCollectionDetails->GetFileName() );
-      oHistFile.open( szHistFile, ios_base::app );
+      string szHistFile = GetHistoryFile( ptCollectionDetails->GetFileName() );
 
-      oHistFile << "[" << str << "] " << endl;
+      // If a history file already exists, rename it.
+      string szHistFileTmp = szHistFile + ".tmp";
+      std::rename( szHistFile.c_str(), szHistFileTmp.c_str() );
 
-      vector<string>::iterator iter_histLines = lstHistoryLines.begin();
-      for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
+      ofstream oHistFile( szHistFile, std::ios::out );
+      if( oHistFile.good() )
       {
-         oHistFile << *iter_histLines << endl;
+         // Add the new entry at the top.
+         oHistFile << "[" << szTime << "] " << endl;
+
+         vector<string>::iterator iter_histLines = lstHistoryLines.begin();
+         for( ; iter_histLines != lstHistoryLines.end(); ++iter_histLines )
+         {
+            oHistFile << *iter_histLines << endl;
+         }
+      }
+
+      // Append the old.
+      ifstream oHistFileOld( szHistFileTmp, std::ios::in );
+      if( oHistFileOld.good() )
+      {
+         oHistFile << oHistFileOld.rdbuf();
       }
 
       oHistFile.close();
+      oHistFileOld.close();
+
+      // Delete the tmp.
+      std::remove( szHistFileTmp.c_str() );
    }
 }
 
@@ -650,7 +734,7 @@ CollectionIO::saveMeta()
    listQuery.IncludeMetaType( Persistent );
    vector<string> lstMetaLines = m_ptCollection->QueryCollection( listQuery );
 
-   oMetaFile.open( CollectionIO::GetMetaFile( ptCollectionDetails->GetFileName() ) );
+   oMetaFile.open( GetMetaFile( ptCollectionDetails->GetFileName() ) );
 
    vector<string>::iterator iter_MetaLine = lstMetaLines.begin();
    for( ; iter_MetaLine != lstMetaLines.end(); ++iter_MetaLine )
@@ -670,12 +754,13 @@ CollectionIO::saveOverhead()
    auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
 
    ofstream oColFile;
-   oColFile.open( CollectionIO::GetOverheadFile( ptCollectionDetails->GetFileName() ) );
+   oColFile.open( GetOverheadFile( ptCollectionDetails->GetFileName() ) );
 
-   tm otm;
+   // Populate the timestampe with the current time.
    ptCollectionDetails->SetTimeStamp();
-   time_t time = ptCollectionDetails->GetTimeStamp();
-   localtime_s( &otm, &time );
+
+   // Get the time in string format.
+   string szTime = StringInterface::ToTimeString( ptCollectionDetails->GetTimeStamp(), "%F_%T" );
 
    oColFile << Config::CollectionDefinitionKey
       << " ID=\"" << m_ptCollection->GetIdentifier().GetFullAddress() << "\"" << endl;
@@ -684,14 +769,48 @@ CollectionIO::saveOverhead()
       << " CC=\"" << ptCollectionDetails->GetChildrenCount() << "\"" << endl;
 
    oColFile << Config::CollectionDefinitionKey
-      << " Session=\"" << put_time( &otm, "%F_%T" ) << "\"" << endl;
+      << " Session=\"" << szTime << "\"" << endl;
 
    for( auto szLine : ptCollectionDetails->GetProcessLines() )
    {
       oColFile << szLine << endl;
    }
 
+   saveRequiredPeekValues(oColFile);
+
    oColFile.close();
+}
+
+void 
+CollectionIO::saveRequiredPeekValues( ofstream& aFile )
+{
+   auto ptDetails = m_ptCollection->m_ptrCollectionDetails;
+   auto ptLedger = m_ptCollection->m_ptrCollectionLedger;
+
+   auto vecPeek = ptDetails->GetPeekValues();
+   map<string, string> mapPeek( vecPeek.begin(), vecPeek.end() );
+   
+   auto iter_find = mapPeek.find( "Count" );
+   if( iter_find == mapPeek.end() )
+   {
+      aFile << "Peek " << "Count \"" << ptLedger->GetSize() << "\"" << endl;
+   }
+
+   iter_find = mapPeek.find( "Id" );
+   if( iter_find == mapPeek.end() )
+   {
+      aFile << "Peek " << "Id \"" << ptDetails->GetAddress()->GetFullAddress() << "\"" << endl;
+   }
+
+   iter_find = mapPeek.find( "Icon" );
+   if( iter_find == mapPeek.end() )
+   {
+      auto colItems = ptLedger->ViewPresent();
+      if( colItems.size() > 0 )
+      {
+         aFile << "Peek " << "Icon \"" << (*colItems.begin())->GetObject()->GetName() << "\"" << endl;
+      }
+   }
 }
 
 void 
@@ -714,7 +833,7 @@ CollectionIO::saveCollection()
    }
 
    ofstream oColFile;
-   oColFile.open( ptCollectionDetails->GetFile() );
+   oColFile.open( ptCollectionDetails->GetFilePath() );
 
    oColFile << "\"" << ptCollectionDetails->GetName() << "\"" << endl;
 

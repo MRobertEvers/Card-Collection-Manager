@@ -19,7 +19,7 @@ FileWriterFunctor::Append( void *contents, size_t size, size_t nmemb )
    return size * nmemb;
 }
 
-void
+bool
 CURLAPI::Easy_HTTP( const std::string& aszRequest, cURLFunctor* aptBuffer )
 {
    CURL *curl;
@@ -33,10 +33,12 @@ CURLAPI::Easy_HTTP( const std::string& aszRequest, cURLFunctor* aptBuffer )
       curl_easy_setopt( curl, CURLOPT_WRITEDATA, aptBuffer );
       res = curl_easy_perform( curl );
       curl_easy_cleanup( curl );
+      return CURLcode::CURLE_OK == res;
    }
+   return false;
 }
 
-void 
+bool 
 CURLAPI::Easy_HTTPS( const std::string& aszRequest, cURLFunctor* aptBuffer )
 {
    CURL *curl;
@@ -54,7 +56,11 @@ CURLAPI::Easy_HTTPS( const std::string& aszRequest, cURLFunctor* aptBuffer )
       curl_easy_setopt( curl, CURLOPT_WRITEDATA, aptBuffer );
       res = curl_easy_perform( curl );
       curl_easy_cleanup( curl );
+
+      return CURLcode::CURLE_OK == res;
    }
+
+   return false;
 }
 
 size_t 

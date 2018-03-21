@@ -1,8 +1,8 @@
 #include "StoreFrontEnd.h"
 #include "ImageFetcher.h"
-#include "wx\wxprec.h"
 #include "SourceDownloader.h"
 
+#include <wx\wxprec.h>
 #include <Windows.h>
 #include <Shlobj.h>
 
@@ -84,6 +84,9 @@ StoreFrontEnd::EstablishFolderStructure()
 
    szDataFolder = Server()->GetCollectionsOverheadDirectory();
    EstablishFolder( szDataFolder );
+
+   auto szResourceFolder = GetSpritesDirectory();
+   EstablishFolder( szResourceFolder );
 }
 
 void 
@@ -119,4 +122,34 @@ StoreFrontEnd::GetTextFilesInDirectory( const wxString& aszDir )
    }
 
    return vecRetVal;
+}
+
+wxString 
+StoreFrontEnd::GetAddSymbolFilePath()
+{
+   return GetSpritesDirectory() + "AddSymb.jpg";
+}
+
+wxString 
+StoreFrontEnd::GetRemSymbolFilePath()
+{
+   return GetSpritesDirectory() + "RemSymb.jpg";
+}
+
+wxString 
+StoreFrontEnd::GetSwapSymbolFilePath()
+{
+   return GetSpritesDirectory() + "SwapSymb.jpg";
+}
+
+wxString 
+StoreFrontEnd::GetResourcesDirectory()
+{
+   return Server()->GetConfigDirectory() + "Resources\\";
+}
+
+wxString 
+StoreFrontEnd::GetSpritesDirectory()
+{
+   return GetResourcesDirectory() + "Sprites\\";
 }

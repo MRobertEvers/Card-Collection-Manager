@@ -52,7 +52,7 @@ AddressBook::AddResident( const Identifier& aAddrAddress )
    m_Address.MergeIdentifier( aAddrAddress );
 
    bool AddedToRef = false;
-   for( int i = 0; i < m_vecResidentIn.size(); i++ )
+   for( size_t i = 0; i < m_vecResidentIn.size(); i++ )
    {
       auto address = &m_vecResidentIn[i];
       bool bRefAdd = address->MergeIdentifier( aAddrAddress );
@@ -78,7 +78,7 @@ AddressBook::RemoveResident( const Identifier& aAddrAddress,
 
    m_Address.ExtractIdentifier( removeAddress );
 
-   for( int i = 0; i < m_vecResidentIn.size(); i++ )
+   for( size_t i = 0; i < m_vecResidentIn.size(); i++ )
    {
       if( m_vecResidentIn.at( i ).ExtractIdentifier( removeAddress ) )
       {

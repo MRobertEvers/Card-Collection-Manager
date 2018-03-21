@@ -1,8 +1,9 @@
 #include "CollectionDetails.h"
-
-#include <ctime>
 #include "../Config.h"
 #include "../Support/StringHelper.h"
+#include "CollectionIO.h"
+
+#include <ctime>
 
 CollectionDetails::CollectionDetails()
 {
@@ -34,7 +35,7 @@ CollectionDetails::SetFileName(std::string aszFileName, bool abDefaultLocation)
    
    if( abDefaultLocation )
    {
-      SetFile(Config::Instance()->GetCollectionsDirectory() + "\\\\" + m_szFileName + ".txt");
+      SetFilePath(Config::Instance()->GetCollectionsDirectory() + "\\\\" + m_szFileName + ".txt");
    }
 }
 
@@ -46,20 +47,16 @@ CollectionDetails::GetFileName()
 }
 
 void 
-CollectionDetails::SetFile( std::string aszFile )
+CollectionDetails::SetFilePath( std::string aszFile )
 {
    m_szFile = aszFile;
 
-   // Get the file name.
-   auto lstSplitFile = StringHelper::Str_Split(aszFile, "\\");
-   auto szFile = lstSplitFile[lstSplitFile.size() - 1];
-   auto lstSplitExt = StringHelper::Str_Split(szFile, ".");
-   szFile = lstSplitExt[0];
+   std::string szFile = CollectionIO::StripFileName(aszFile);
 
    SetFileName(szFile);
 }
 std::string 
-CollectionDetails::GetFile()
+CollectionDetails::GetFilePath()
 {
    return m_szFile;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 class vcItemNameCheckBox;
 
