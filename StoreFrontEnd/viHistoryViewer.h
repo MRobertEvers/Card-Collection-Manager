@@ -12,6 +12,10 @@ public:
    ~viHistoryViewer();
 
 private:
+   DECLARE_EVENT_TABLE()
+
    std::shared_ptr<CollectionInterface> m_ptInterface;
+
+   void onResize( wxSizeEvent &ev );
 };
 

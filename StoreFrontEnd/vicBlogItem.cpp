@@ -9,7 +9,11 @@
 myImageGridCellRenderer::myImageGridCellRenderer( const wxString& aszImagePath )
    : m_szPath( aszImagePath )
 {
-
+   wxImage cellImage;
+   if( cellImage.LoadFile( m_szPath ) )
+   {
+      m_bitMap = wxBitmap( cellImage );
+   }
 }
 
 void
@@ -21,24 +25,23 @@ myImageGridCellRenderer::Draw( wxGrid& grid, wxGridCellAttr& attr, wxDC& dc,
    // Erase this cells background
    wxGridCellRenderer::Draw( grid, attr, dc, rect, row, col, isSelected );
 
-   wxImage cellImage;
-   if( cellImage.LoadFile( m_szPath ) )
-   {
-      wxBitmap cellBitmap( cellImage );
-      wxRect newRect = rect;
-      newRect.SetLeft( rect.GetLeft() + cellBitmap.GetSize().GetWidth() );
+   wxRect newRect = rect;
+   newRect.SetLeft( rect.GetLeft() + m_bitMap.GetSize().GetWidth() );
 
-      // Draw the text shifted to the right past the image (so the image doesnt draw over it).
-      wxGridCellStringRenderer::Draw( grid, attr, dc, newRect, row, col, isSelected );
+   // Draw the text shifted to the right past the image (so the image doesnt draw over it).
+   wxGridCellStringRenderer::Draw( grid, attr, dc, newRect, row, col, isSelected );
 
-      // Draw the image.
-      dc.DrawBitmap( cellBitmap, rect.x, rect.y + (rect.height/2 - cellBitmap.GetSize().GetHeight()/2) );
-   }
-   else
-   {
-      wxLogError( _T( "The myimage.jpg, in cell:\n row '%d', column '%d',\n didn't load, does it exist?" ), row, col );
-      grid.SetCellValue( row, col, "Here's should be an image" );
-   }
+   // Draw the image.
+   dc.DrawBitmap( m_bitMap, rect.x, rect.y + (rect.height/2 - m_bitMap.GetSize().GetHeight()/2) );
+}
+
+wxSize
+myImageGridCellRenderer::GetBestSize( wxGrid& grid,
+                                      wxGridCellAttr& attr,
+                                      wxDC& dc,
+                                      int row, int col )
+{
+   return wxGridCellStringRenderer::GetBestSize(grid, attr, dc, row, col) + m_bitMap.GetSize();
 }
 
 
@@ -120,7 +123,7 @@ vicBlogItem::vicBlogItem( wxWindow* aptParent,
          m_ptGrid->SetCellRenderer( iRow, 0, new myImageGridCellRenderer( szImgFilePath ) );
       }
    }
-
+   m_ptGrid->AutoSizeColumn( 0, true );
    vicBlogFooter* footer = new vicBlogFooter( this, aszFooter );
    sizer->Add( footer, wxSizerFlags( 0 ).Expand() );
 }
@@ -141,7 +144,7 @@ vicBlogItem::onScroll( wxScrollWinEvent& awxEvt )
 void 
 vicBlogItem::onResize( wxSizeEvent &ev )
 {
-   m_ptGrid->SetColSize( 0, this->GetVirtualSize().GetWidth() );
+   // m_ptGrid->SetColSize( 0, this->GetClientSize().GetWidth() );
 
    ev.Skip();
 }

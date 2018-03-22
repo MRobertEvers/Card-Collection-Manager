@@ -52,6 +52,7 @@ void
 vicBlogFooter::onResize( wxSizeEvent &ev )
 {
    bufferBitmap( ev.GetSize() );
+   ev.Skip();
 }
 
 void

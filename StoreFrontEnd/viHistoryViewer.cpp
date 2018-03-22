@@ -1,6 +1,10 @@
 #include "viHistoryViewer.h"
 #include "vicBlogItem.h"
 
+BEGIN_EVENT_TABLE( viHistoryViewer, wxFrame )
+EVT_SIZE( viHistoryViewer::onResize )
+END_EVENT_TABLE()
+
 viHistoryViewer::viHistoryViewer( wxWindow* aptParent,
                                   wxWindowID aiID,
                                   std::shared_ptr<CollectionInterface> aptInterface)
@@ -10,9 +14,9 @@ viHistoryViewer::viHistoryViewer( wxWindow* aptParent,
    this->SetSizer( sizer );
 
    wxScrolledWindow* scrollWindow = new wxScrolledWindow( this );
-   scrollWindow->SetScrollRate( 10, 20 );
    wxBoxSizer* scrollsizer = new wxBoxSizer( wxVERTICAL );
    scrollWindow->SetSizer( scrollsizer );
+   scrollWindow->SetScrollRate( 10, 20 );
 
    auto mapHist = aptInterface->GetHistoryGroups();
 
@@ -41,4 +45,10 @@ viHistoryViewer::viHistoryViewer( wxWindow* aptParent,
 
 viHistoryViewer::~viHistoryViewer()
 {
+}
+
+void
+viHistoryViewer::onResize( wxSizeEvent &ev )
+{
+   ev.Skip();
 }
