@@ -85,6 +85,9 @@
     <Filter Include="Views\Interfaces\HistoryViewer\Components">
       <UniqueIdentifier>{7447ecb0-6978-4537-a798-1737302f47f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="wxExtensions">
+      <UniqueIdentifier>{1f8d4857-1ef4-4712-a4d3-76d4898757c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -242,6 +245,9 @@
     </ClCompile>
     <ClCompile Include="vicBlogFooter.cpp">
       <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="wxInfiniteGrid.cpp">
+      <Filter>wxExtensions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -433,6 +439,9 @@
     </ClInclude>
     <ClInclude Include="vicBlogFooter.h">
       <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="wxInfiniteGrid.h">
+      <Filter>wxExtensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

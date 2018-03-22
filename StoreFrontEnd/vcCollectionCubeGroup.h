@@ -1,7 +1,7 @@
 #pragma once
-#include <wx/wxprec.h>
 #include "Group.h"
-#include <wx/grid.h>
+#include "wxInfiniteGrid.h"
+#include <wx/wxprec.h>
 #include <wx/scrolwin.h>
 #include <wx/colour.h>
 #include <vector>
@@ -10,7 +10,7 @@
 class GroupItemData;
 class wxFont;
 
-class vcCollectionCubeGroup : public wxGrid
+class vcCollectionCubeGroup : public wxInfiniteGrid
 {
 public:
    vcCollectionCubeGroup( wxPanel* aptParent,
@@ -46,7 +46,7 @@ private:
    void onResize( wxSizeEvent& awxEvt );
    void onSelectRange( wxGridRangeSelectEvent& awxEvt );
    void onSelectColumn( wxGridEvent& awxEvt );
-   void onScroll( wxScrollWinEvent& awxEvt );
+   //void onScroll( wxScrollWinEvent& awxEvt );
 
    void resizeColumn();
    void performDisplay( std::map<wxString, std::vector<CardInterface*>, Group::Sorting> amapGrps,

@@ -12,10 +12,10 @@
 #define COLUMN_WIDTH 154
 #define COLUMN_TEXT_LENGTH 5000
 
-wxBEGIN_EVENT_TABLE( vcCollectionCubeGroup, wxGrid )
+wxBEGIN_EVENT_TABLE( vcCollectionCubeGroup, wxInfiniteGrid )
 EVT_SIZE( vcCollectionCubeGroup::onResize )
 EVT_GRID_RANGE_SELECT( vcCollectionCubeGroup::onSelectRange )
-EVT_SCROLLWIN( vcCollectionCubeGroup::onScroll )
+//EVT_SCROLLWIN( vcCollectionCubeGroup::onScroll )
 EVT_GRID_LABEL_LEFT_CLICK( vcCollectionCubeGroup::onSelectColumn )
 //EVT_LIST_COL_BEGIN_DRAG( vcCollectionCubeDisplay::Group_List, vcCollectionCubeGroup::onColumnResize )
 EVT_GRID_CELL_LEFT_CLICK( vcCollectionCubeGroup::onItemSelection )
@@ -26,7 +26,7 @@ vcCollectionCubeGroup::vcCollectionCubeGroup( wxPanel* aptParent,
                                               wxWindowID aiWID,
                                               wxString aszColumn,
                                               int aiColumnIndex )
-   : wxGrid(aptParent, aiWID, wxDefaultPosition, wxDefaultSize, wxBORDER ), m_iSelection(-1), m_iColumnIndex(aiColumnIndex),
+   : wxInfiniteGrid(aptParent, aiWID, wxDefaultPosition, wxDefaultSize, wxBORDER ), m_iSelection(-1), m_iColumnIndex(aiColumnIndex),
      m_szColumnName(aszColumn), m_wxColor(wxColour("WHITE")), m_wxFontColor( wxColour( 78,111,47) ),
      m_wxSubSectionFontColor( wxColour( "BLACK" ) )
 {
@@ -155,12 +155,12 @@ vcCollectionCubeGroup::onSelectColumn( wxGridEvent& awxEvt )
    awxEvt.StopPropagation();
 }
 
-void 
-vcCollectionCubeGroup::onScroll( wxScrollWinEvent& awxEvt )
-{
-   awxEvt.ResumePropagation( 999 );
-   awxEvt.Skip();
-}
+//void 
+//vcCollectionCubeGroup::onScroll( wxScrollWinEvent& awxEvt )
+//{
+//   awxEvt.ResumePropagation( 999 );
+//   awxEvt.Skip();
+//}
 
 void 
 vcCollectionCubeGroup::resizeColumn()

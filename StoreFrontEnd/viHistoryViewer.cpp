@@ -27,12 +27,9 @@ viHistoryViewer::viHistoryViewer( wxWindow* aptParent,
          szTitle += "s";
       }
 
-      // Eventually the time will go elsewhere.
-      szTitle += "           ";
-      szTitle += StringInterface::ToTimeString( riter_hist->first, "%D %T" );
-
       vicBlogItem* blogItem = new vicBlogItem( scrollWindow,
                                                szTitle,
+                                               StringInterface::ToTimeString( riter_hist->first, "%D %T" ),
                                                riter_hist->second );
       scrollsizer->Add( blogItem, wxSizerFlags( 0 ).Expand() );
    }

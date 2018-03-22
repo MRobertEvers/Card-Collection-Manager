@@ -70,11 +70,9 @@ vicBlogHeader::render( wxDC&  dc )
    dc.GradientFillLinear( this->GetSize(), wxColour( 255, 255, 255 ), wxColour( 155, 155, 155 ), wxNORTH );
 
    dc.SetFont( wxFont( wxFontInfo( 9 ).FaceName( "Trebuchet MS" ) ) );
-   dc.DrawText( m_szTitle, 0, 2 );
-
-   if( m_szSubTitle != "" )
-   {
-      dc.DrawText( m_szSubTitle, 0, 14 );
-   }
+   auto extent = dc.GetTextExtent( m_szTitle );
+   dc.DrawText( m_szTitle, 
+      4,
+      this->GetSize().GetHeight() / 2 - extent.GetHeight() / 2 );
 }
 

@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-class wxGrid;
+class wxInfiniteGrid;
 
 class myImageGridCellRenderer : public wxGridCellStringRenderer
 {
@@ -23,6 +23,7 @@ class vicBlogItem : public wxPanel
 public:
    vicBlogItem( wxWindow* aptParent,
                 const wxString& aszTitle,
+                const wxString& aszFooter,
                 const std::vector<std::string>& avecHistory);
    ~vicBlogItem();
 
@@ -39,8 +40,9 @@ private:
 private:
    DECLARE_EVENT_TABLE()
 
-   wxGrid* m_ptGrid;
+   wxInfiniteGrid* m_ptGrid;
 
+   void onScroll( wxScrollWinEvent& awxEvt );
    void onResize( wxSizeEvent &ev );
 };
 
