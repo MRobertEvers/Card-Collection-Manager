@@ -68,7 +68,7 @@ void
 StoreFrontEnd::EstablishFolderStructure()
 {
    // /Config/Source folder
-   auto szSourceFolder = Server()->GetSourceFilePath();
+   auto szSourceFolder = Server()->GetSourceDirectory();
    EstablishFolder( szSourceFolder );
 
    // /Config/Images folder

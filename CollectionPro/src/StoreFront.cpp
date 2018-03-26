@@ -402,7 +402,7 @@ StoreFront::GetImportSourceFileName()
 }
 
 string 
-StoreFront::GetSourcePath()
+StoreFront::GetSourceDirectory()
 {
    return Config::Instance()->GetSourceDirectory();
 }

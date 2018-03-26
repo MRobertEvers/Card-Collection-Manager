@@ -65,7 +65,7 @@ public:
    string GetCollectionsHistoryDirectory();
    string GetCollectionsOverheadDirectory();
    string GetImportSourceFileName();
-   string GetSourcePath();
+   string GetSourceDirectory();
    string GetSourceFileName();
    string GetSourceFilePath();
    string GetImportSourceFilePath();
