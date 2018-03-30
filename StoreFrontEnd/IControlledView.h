@@ -3,6 +3,6 @@ class IControlledView
 {
 public:
    IControlledView();
-   ~IControlledView();
+   virtual ~IControlledView();
 };
 

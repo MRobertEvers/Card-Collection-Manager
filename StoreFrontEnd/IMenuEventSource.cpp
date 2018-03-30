@@ -16,7 +16,7 @@ IMenuEventSource::~IMenuEventSource()
 void 
 IMenuEventSource::RegisterMenu( wxMenu* fileMenu, const wxString& aszTitle )
 {
-
+   m_wxMenuBar->Append( fileMenu, aszTitle );
 }
 
 void
@@ -53,14 +53,11 @@ IMenuEventSource::ReleaseMenuEventHandler()
 void
 IMenuEventSource::BindMenuEventHandler( IMenuEventHandler* aEventHandler )
 {
-   if( nullptr != m_EventHandler )
-   {
-      m_EventHandler = aEventHandler;
+   m_EventHandler = aEventHandler;
 
-      if( m_EventHandler )
-      {
-         m_EventHandler->BindEventHandler();
-      }
+   if( m_EventHandler )
+   {
+      m_EventHandler->BindEventHandler();
    }
 }
 

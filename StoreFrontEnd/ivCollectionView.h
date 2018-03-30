@@ -16,7 +16,6 @@ public:
 
    virtual void PrepareInterface() = 0;
 
-
    virtual void ShowCollectionEditor();
    virtual void CloseCollectionEditor();
    virtual void ShowStats();

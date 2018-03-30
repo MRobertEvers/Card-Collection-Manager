@@ -10,16 +10,10 @@
 #include <wx/wxprec.h>
 #include <wx/aui/framemanager.h>
 #include <vector>
-
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
+#include <memory>
 
 class CMainWindow;
 class VMainWindow;
-
-// IDs for the controls and the menu commands. Taken from minimal sample.
-
 
 class MainFrame
 {
@@ -41,4 +35,5 @@ public:
 private:
    CMainWindow * m_Controller;
    VMainWindow* m_View;
+   
 };

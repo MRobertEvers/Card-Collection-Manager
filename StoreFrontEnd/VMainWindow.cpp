@@ -86,8 +86,8 @@ VMainWindow::SetView( wxPanel* aptEVTHandler )
 {
    if( m_CurrentPanel != nullptr )
    {
-      this->GetSizer()->Detach( aptEVTHandler );
-      aptEVTHandler->Destroy();
+      this->GetSizer()->Detach( m_CurrentPanel );
+      m_CurrentPanel->Destroy();
    }
 
    m_CurrentPanel = aptEVTHandler;

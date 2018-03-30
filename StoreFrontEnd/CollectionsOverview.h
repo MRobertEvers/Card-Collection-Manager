@@ -1,10 +1,11 @@
 #pragma once
+#include "IControlledView.h"
 
 class IMenuEventSource;
 class cCollectionsOverview;
 class vCollectionsOverview;
 
-class CollectionsOverview
+class CollectionsOverview : public IControlledView
 {
 public:
    CollectionsOverview( IMenuEventSource* aParent );

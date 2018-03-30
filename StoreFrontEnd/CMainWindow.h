@@ -4,6 +4,7 @@
 
 class VMainWindow;
 class IMenuEventHandler;
+class IControlledView;
 
 class CMainWindow
 {
@@ -24,6 +25,6 @@ public:
 
 private:
    VMainWindow* m_View;
-   
+   std::shared_ptr<IControlledView> m_ptrControlledView;
 };
 

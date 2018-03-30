@@ -1,4 +1,5 @@
 #pragma once
+#include "IControlledView.h"
 #include <wx/wxprec.h>
 
 class MainFrame;
@@ -6,7 +7,7 @@ class cCollectionCube;
 class ivCollectionView;
 class IMenuEventSource;
 
-class CollectionCube
+class CollectionCube : public IControlledView
 {
 public:
    CollectionCube( IMenuEventSource* aParent, const wxString& aszColName );

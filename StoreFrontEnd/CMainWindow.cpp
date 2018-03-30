@@ -7,6 +7,7 @@
 #include "CollectionsOverview.h"
 #include "cCollectionCube.h"
 #include "vCollectionsOverview.h"
+#include "IControlledView.h"
 
 CMainWindow::CMainWindow( VMainWindow* aptView )
    : m_View(aptView)
@@ -22,20 +23,24 @@ CMainWindow::~CMainWindow()
 void 
 CMainWindow::ShowCollectionsOverview()
 {
-   m_View->ReleaseMenuEventHandler();
    auto memleak = new CollectionsOverview( m_View );
+   m_ptrControlledView = std::shared_ptr<IControlledView>( memleak );
+   m_View->ReleaseMenuEventHandler();
    m_View->SetView( memleak->GetView() );
 }
 
 void 
 CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType )
 {
+   auto ptsf = StoreFrontEnd::Server();
+
    if( aType == Cube_View )
    {
       m_View->ReleaseMenuEventHandler();
 
-      CollectionCube cube(m_View, aszColID);
-      m_View->SetView( cube.GetView() );
+      CollectionCube* cube = new CollectionCube(m_View, ptsf->GetCollectionID(aszColID.ToStdString()));
+      m_ptrControlledView = std::shared_ptr<IControlledView>( cube );
+      m_View->SetView( cube->GetView() );
    }
    else
    {
