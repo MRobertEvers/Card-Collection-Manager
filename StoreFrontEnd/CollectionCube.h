@@ -2,7 +2,6 @@
 #include "IControlledView.h"
 #include <wx/wxprec.h>
 
-class MainFrame;
 class cCollectionCube;
 class ivCollectionView;
 class IMenuEventSource;

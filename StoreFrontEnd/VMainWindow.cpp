@@ -71,14 +71,14 @@ VMainWindow::OnViewCollectionAs( wxCommandEvent& awxEvt )
 {
    wxString szCollection = awxEvt.GetString();
    int iType = awxEvt.GetInt();
-   //if( iType == Menu_View_As_Deck )
-   //{
-   //   setView( new cCollectionDeckBox( this, wxString( szCollection ) ) );
-   //}
-   //else if( iType == Menu_View_As_Cube )
-   //{
-   //   setView( new cCollectionCube( this, wxString( szCollection ) ) );
-   //}
+   if( iType == MainFrame::Menu_View_As_Deck )
+   {
+      m_Controller->ShowCollection( szCollection, CMainWindow::Deck_View );
+   }
+   else if( iType == MainFrame::Menu_View_As_Cube )
+   {
+      m_Controller->ShowCollection( szCollection, CMainWindow::Cube_View );
+   }
 }
 
 void 

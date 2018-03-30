@@ -12,7 +12,7 @@ cCollectionCube::cCollectionCube( IMenuEventSource* aParent, vCollectionCube* aV
 
 cCollectionCube::~cCollectionCube()
 {
-   m_wxCube->Destroy();
+
 }
 
 wxPanel*

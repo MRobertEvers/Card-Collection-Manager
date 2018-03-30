@@ -2,6 +2,7 @@
 #include "IMenuEventHandler.h"
 #include "StoreFrontEnd.h"
 #include "CollectionCube.h"
+#include "CollectionDeckBox.h"
 #include "VMainWindow.h"
 #include "ivCollectionView.h"
 #include "CollectionsOverview.h"
@@ -33,18 +34,28 @@ void
 CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType )
 {
    auto ptsf = StoreFrontEnd::Server();
+   wxString szID = ptsf->GetCollectionID( aszColID.ToStdString() );
+   // TODO: THIS SHOULD NOT BE A LITERAL STRING.
+   if( szID == "NF" )
+   {
+      szID = aszColID;
+   }
 
    if( aType == Cube_View )
    {
       m_View->ReleaseMenuEventHandler();
 
-      CollectionCube* cube = new CollectionCube(m_View, ptsf->GetCollectionID(aszColID.ToStdString()));
+      CollectionCube* cube = new CollectionCube(m_View, szID );
       m_ptrControlledView = std::shared_ptr<IControlledView>( cube );
       m_View->SetView( cube->GetView() );
    }
    else
    {
+      m_View->ReleaseMenuEventHandler();
 
+      CollectionDeckBox* cube = new CollectionDeckBox( m_View, szID );
+      m_ptrControlledView = std::shared_ptr<IControlledView>( cube );
+      m_View->SetView( cube->GetView() );
    }
 }
 

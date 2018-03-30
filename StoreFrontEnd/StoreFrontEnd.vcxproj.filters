@@ -258,6 +258,18 @@
     <ClCompile Include="IControlledView.cpp">
       <Filter>Views\Template</Filter>
     </ClCompile>
+    <ClCompile Include="cCollectionDeckBox.cpp">
+      <Filter>Views\Deckbox</Filter>
+    </ClCompile>
+    <ClCompile Include="vCollectionDeckBox.cpp">
+      <Filter>Views\Deckbox</Filter>
+    </ClCompile>
+    <ClCompile Include="vcCollectionDeckBoxItemList.cpp">
+      <Filter>Views\Deckbox\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CollectionDeckBox.cpp">
+      <Filter>Views\Deckbox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -460,6 +472,18 @@
     </ClInclude>
     <ClInclude Include="IControlledView.h">
       <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="cCollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
+    </ClInclude>
+    <ClInclude Include="vCollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
+    </ClInclude>
+    <ClInclude Include="vcCollectionDeckBoxItemList.h">
+      <Filter>Views\Deckbox\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
