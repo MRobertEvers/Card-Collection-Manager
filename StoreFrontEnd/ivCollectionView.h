@@ -4,19 +4,21 @@
 #include <memory>
 
 class viCardEditor;
-class MainFrame;
+class IMenuEventSource;
 class viCollectionEditor;
 class CollectionInterface;
 
 class ivCollectionView : public wxPanel
 {
 public:
-   ivCollectionView( MainFrame* aptParent, wxWindowID aiWID, const wxString& aszColID );
+   ivCollectionView( IMenuEventSource* aptParent, wxWindowID aiWID, const wxString& aszColID );
    ~ivCollectionView();
+
+   virtual void PrepareInterface() = 0;
+
 
    virtual void ShowCollectionEditor();
    virtual void CloseCollectionEditor();
-   virtual void PrepareInterface(  ) = 0;
    virtual void ShowStats();
    virtual void ShowHistory();
 

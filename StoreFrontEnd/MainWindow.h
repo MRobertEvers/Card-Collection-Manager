@@ -15,13 +15,13 @@
 #include "wx/wx.h"
 #endif
 
-class wxMenu;
-class IMenuEventHandler;
+class CMainWindow;
+class VMainWindow;
 
 // IDs for the controls and the menu commands. Taken from minimal sample.
 
 
-class MainFrame : public wxFrame
+class MainFrame
 {
 public:
    enum
@@ -38,36 +38,7 @@ public:
    MainFrame(const wxString& title);
    ~MainFrame();
 
-   void RegisterMenu(wxMenu* fileMenu, wxString aszTitle);
-
-   void OnQuit(wxCommandEvent& event);
-   void OnAbout(wxCommandEvent& event);
-
-   void OnViewCollection(wxCommandEvent& event);
-   void OnViewCollectionOverview(wxCommandEvent& awxEvt);
-   void OnImportSource(wxCommandEvent& awxEvt);
-   void OnGenericMenuEvent(wxCommandEvent& awxEvt);
-   void OnViewCollectionAs( wxCommandEvent& awxEvt );
-
-   void RegisterSendMenuEvents();
-   void ReleaseMenuEventHandler();
-   void BindMenuEventHandler();
-
 private:
-   wxDECLARE_EVENT_TABLE();
-
-   IMenuEventHandler* m_CurrentPanel;
-   wxMenuBar* m_wxMenuBar;
-   std::vector<wxMenu*> m_vecViewMenus;
-   bool m_bEvtHandlerView;
-   bool m_bEvtHandlerViewFlag;
-
-   void buildMenus();
-
-   void viewCollectionsOverview();
-   void viewCollection(const wxString& aszColName);
-
-   void setView(IMenuEventHandler* awxNewPanel);
-
-   void appendMenuOptions(unsigned int aiMenuID, const wxString& aszName);
+   CMainWindow * m_Controller;
+   VMainWindow* m_View;
 };

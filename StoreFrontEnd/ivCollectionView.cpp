@@ -2,14 +2,14 @@
 #include "viCollectionEditor.h"
 #include "viCardEditor.h"
 #include "GroupItemData.h"
-#include "MainWindow.h"
+#include "IMenuEventSource.h"
 #include "viCardEditor.h"
 #include "CollectionInterface.h"
 #include "vStatsViewer.h"
 #include "viHistoryViewer.h"
 
 
-ivCollectionView::ivCollectionView( MainFrame* aptParent, wxWindowID aiWID, const wxString& aszColID )
+ivCollectionView::ivCollectionView( IMenuEventSource* aptParent, wxWindowID aiWID, const wxString& aszColID )
    : wxPanel( aptParent, aiWID ), m_wxszColID(aszColID), m_viColEditor(0), m_infoBar(0)
 {
    m_ptCollectionInterface = std::make_shared<CollectionInterface>( m_wxszColID.ToStdString() );

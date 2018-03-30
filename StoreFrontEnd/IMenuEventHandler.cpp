@@ -1,7 +1,7 @@
 #include "IMenuEventHandler.h"
-#include "MainWindow.h"
+#include "IMenuEventSource.h"
 
-IMenuEventHandler::IMenuEventHandler(MainFrame* aParent)
+IMenuEventHandler::IMenuEventHandler( IMenuEventSource* aParent)
 {
    m_MFParent = aParent;
 }
@@ -23,7 +23,7 @@ IMenuEventHandler::ReleaseEventHandler()
 {
    for( auto& menuItem : m_mapTitleToEventID )
    {
-      m_MFParent->Unbind(wxEVT_MENU, &MainFrame::OnGenericMenuEvent, m_MFParent, menuItem.second);
+      m_MFParent->Unbind(wxEVT_MENU, &IMenuEventSource::OnGenericMenuEvent, m_MFParent, menuItem.second);
    }
 }
 
@@ -48,7 +48,7 @@ IMenuEventHandler::registerMenu(const wxString& aszMenuName)
    {
       wxMenuItem* wxMI = new wxMenuItem(menuNew, menuItem.second, menuItem.first);
       menuNew->Append(wxMI);
-      m_MFParent->Bind(wxEVT_MENU, &MainFrame::OnGenericMenuEvent, m_MFParent, menuItem.second);
+      m_MFParent->Bind(wxEVT_MENU, &IMenuEventSource::OnGenericMenuEvent, m_MFParent, menuItem.second);
    }
    m_MFParent->RegisterMenu(menuNew, aszMenuName);
 }

@@ -17,7 +17,7 @@ EVT_BUTTON( viCollectionEditor::Changes_Accept, vCollectionCube::onEditorAccept 
 EVT_BUTTON( viCollectionEditor::Changes_Decline, vCollectionCube::onEditorDecline )
 wxEND_EVENT_TABLE()
 
-vCollectionCube::vCollectionCube( MainFrame* aptParent,
+vCollectionCube::vCollectionCube( IMenuEventSource* aptParent,
                                   wxWindowID aiWID,
                                   const wxString& aszColID )
    : ivCollectionView( aptParent, aiWID, aszColID )

@@ -2,8 +2,9 @@
 #include "vCollectionCube.h"
 #include "StoreFrontEnd.h"
 #include "MainWindow.h"
+#include "IMenuEventSource.h"
 
-cCollectionCube::cCollectionCube( MainFrame* aParent, const wxString& aszColName )
+cCollectionCube::cCollectionCube( IMenuEventSource* aParent, const wxString& aszColName )
    : IMenuEventHandler( aParent ), m_ColID( aszColName )
 {
    m_wxCube = new vCollectionCube( aParent, 9, m_ColID );

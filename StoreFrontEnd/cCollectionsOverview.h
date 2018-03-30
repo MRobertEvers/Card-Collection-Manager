@@ -10,7 +10,7 @@ class cCollectionsOverview : public IMenuEventHandler
 {
 public:
 
-   cCollectionsOverview(MainFrame* aParent);
+   cCollectionsOverview( IMenuEventSource* aParent );
    virtual ~cCollectionsOverview();
 
    wxPanel* GetView() override;

@@ -1,10 +1,10 @@
 #pragma once
-#include"wx\wxprec.h"
-#include"IMenuEventHandler.h"
-#include<map>
+#include "IMenuEventHandler.h"
+#include <wx\wxprec.h>
+#include <map>
 
 class vCollectionCube;
-class MainFrame;
+class IMenuEventSource;
 
 class cCollectionCube : public IMenuEventHandler
 {
@@ -18,15 +18,15 @@ public:
       Menu_ViewHist = 0x5353
    };
 
-   cCollectionCube( MainFrame* aParent, const wxString& aszColName );
+   cCollectionCube( IMenuEventSource* aParent, const wxString& aszColName );
    virtual ~cCollectionCube();
 
    wxPanel* GetView() override;
 
-   void BindEventHandler();
+   void BindEventHandler() override;
 
 protected:
-   void handleEvent( unsigned int aiEvent );
+   void handleEvent( unsigned int aiEvent ) override;
 
 private:
    vCollectionCube* m_wxCube;

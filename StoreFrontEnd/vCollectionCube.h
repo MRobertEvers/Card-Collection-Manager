@@ -5,12 +5,12 @@
 #include <wx/grid.h>
 
 class vcCollectionCubeDisplay;
-class MainFrame;
+class IMenuEventSource;
 
 class vCollectionCube : public ivCollectionView
 {
 public:
-   vCollectionCube( MainFrame* aptParent, wxWindowID aiWID, const wxString& aszColID );
+   vCollectionCube( IMenuEventSource* aParent, wxWindowID aiWID, const wxString& aszColID );
    ~vCollectionCube();
 
    void PrepareInterface();

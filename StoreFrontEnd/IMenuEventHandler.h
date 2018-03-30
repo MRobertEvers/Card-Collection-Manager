@@ -5,14 +5,14 @@
 #include <wx/event.h>
 #include <wx/menu.h>
 
-class MainFrame;
+class IMenuEventSource;
 
 // Requires      registerSendMenuEvents to be put in the constructor
 // so that the event receiver knows to register event handlers
 class IMenuEventHandler
 {
 public:
-   IMenuEventHandler(MainFrame* aParent);
+   IMenuEventHandler( IMenuEventSource* aParent);
    virtual ~IMenuEventHandler();
 
    void MenuEvent(wxCommandEvent& awxEvt);
@@ -31,7 +31,7 @@ protected:
 
    void registerMenu(const wxString& aszMenuName);
 
-   MainFrame* m_MFParent;
+   IMenuEventSource* m_MFParent;
 private:
    std::map<wxString, unsigned int> m_mapTitleToEventID;
 };

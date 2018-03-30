@@ -1,8 +1,9 @@
 #include"cCollectionsOverview.h"
 #include"vCollectionsOverview.h"
+#include "IMenuEventSource.h"
 #include"MainWindow.h"
 
-cCollectionsOverview::cCollectionsOverview(MainFrame* aParent)
+cCollectionsOverview::cCollectionsOverview(IMenuEventSource* aParent)
    : IMenuEventHandler(aParent)
 {
    m_wxOverview = new vCollectionsOverview(aParent, 8);

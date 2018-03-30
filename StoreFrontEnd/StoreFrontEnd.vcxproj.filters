@@ -102,12 +102,6 @@
     <ClCompile Include="MainWindow.cpp">
       <Filter>Views</Filter>
     </ClCompile>
-    <ClCompile Include="vCollectionDeckBox.cpp">
-      <Filter>Views\Deckbox</Filter>
-    </ClCompile>
-    <ClCompile Include="vcCollectionDeckBoxItemList.cpp">
-      <Filter>Views\Deckbox\Components</Filter>
-    </ClCompile>
     <ClCompile Include="viCollectionEditor.cpp">
       <Filter>Views\Interfaces\CollectionEditor</Filter>
     </ClCompile>
@@ -140,9 +134,6 @@
     </ClCompile>
     <ClCompile Include="IMenuEventHandler.cpp">
       <Filter>Views\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="cCollectionDeckBox.cpp">
-      <Filter>Views\Deckbox</Filter>
     </ClCompile>
     <ClCompile Include="cCollectionsOverview.cpp">
       <Filter>Views\Overview</Filter>
@@ -249,6 +240,24 @@
     <ClCompile Include="wxInfiniteGrid.cpp">
       <Filter>wxExtensions</Filter>
     </ClCompile>
+    <ClCompile Include="CMainWindow.cpp">
+      <Filter>Views</Filter>
+    </ClCompile>
+    <ClCompile Include="VMainWindow.cpp">
+      <Filter>Views</Filter>
+    </ClCompile>
+    <ClCompile Include="CollectionCube.cpp">
+      <Filter>Views\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="IMenuEventSource.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="CollectionsOverview.cpp">
+      <Filter>Views\Overview</Filter>
+    </ClCompile>
+    <ClCompile Include="IControlledView.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StorefrontConfig.h">
@@ -265,12 +274,6 @@
     </ClInclude>
     <ClInclude Include="MainWindow.h">
       <Filter>Views</Filter>
-    </ClInclude>
-    <ClInclude Include="vCollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
-    </ClInclude>
-    <ClInclude Include="vcCollectionDeckBoxItemList.h">
-      <Filter>Views\Deckbox\Components</Filter>
     </ClInclude>
     <ClInclude Include="viCollectionEditor.h">
       <Filter>Views\Interfaces\CollectionEditor</Filter>
@@ -346,9 +349,6 @@
     </ClInclude>
     <ClInclude Include="json\json.hpp">
       <Filter>Libraries</Filter>
-    </ClInclude>
-    <ClInclude Include="cCollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
     </ClInclude>
     <ClInclude Include="curl\curl.h">
       <Filter>Libraries\cURL</Filter>
@@ -442,6 +442,24 @@
     </ClInclude>
     <ClInclude Include="wxInfiniteGrid.h">
       <Filter>wxExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="CMainWindow.h">
+      <Filter>Views</Filter>
+    </ClInclude>
+    <ClInclude Include="VMainWindow.h">
+      <Filter>Views</Filter>
+    </ClInclude>
+    <ClInclude Include="CollectionCube.h">
+      <Filter>Views\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="IMenuEventSource.h">
+      <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="CollectionsOverview.h">
+      <Filter>Views\Overview</Filter>
+    </ClInclude>
+    <ClInclude Include="IControlledView.h">
+      <Filter>Views\Template</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
