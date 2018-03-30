@@ -4,11 +4,9 @@
 #include "MainWindow.h"
 #include "IMenuEventSource.h"
 
-cCollectionCube::cCollectionCube( IMenuEventSource* aParent, const wxString& aszColName )
-   : IMenuEventHandler( aParent ), m_ColID( aszColName )
+cCollectionCube::cCollectionCube( IMenuEventSource* aParent, vCollectionCube* aView, const wxString& aszColName )
+   : IMenuEventHandler( aParent ), m_ColID( aszColName ), m_wxCube(aView)
 {
-   m_wxCube = new vCollectionCube( aParent, 9, m_ColID );
-
    registerSendMenuEvents();
 }
 

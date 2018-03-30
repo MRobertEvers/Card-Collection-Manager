@@ -23,6 +23,6 @@ private:
    void onCancelItem(wxCommandEvent& awxEvt);
    std::vector<vicCollectionEditorListItem*> m_vecItems;
 
-   void removeChild(vicCollectionEditorListItem* aptChild);
+   std::vector<vicCollectionEditorListItem*>::iterator removeChild(vicCollectionEditorListItem* aptChild);
 };
 

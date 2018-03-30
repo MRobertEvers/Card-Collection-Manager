@@ -18,7 +18,7 @@ public:
       Menu_ViewHist = 0x5353
    };
 
-   cCollectionCube( IMenuEventSource* aParent, const wxString& aszColName );
+   cCollectionCube( IMenuEventSource* aParent, vCollectionCube* aView, const wxString& aszColName );
    virtual ~cCollectionCube();
 
    wxPanel* GetView() override;

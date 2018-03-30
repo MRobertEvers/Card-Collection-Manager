@@ -59,11 +59,13 @@ vicCollectionEditorList::GetCommandList()
 void 
 vicCollectionEditorList::ClearList()
 {
-   for( auto& child : m_vecItems )
+   auto iter_start = m_vecItems.begin();
+   while( iter_start != m_vecItems.end() )
    {
-      removeChild(child);
+      iter_start = removeChild( *iter_start );
    }
    m_vecItems.clear();
+   this->Layout();
 }
 
 void
@@ -82,16 +84,25 @@ vicCollectionEditorList::onCancelItem(wxCommandEvent& awxEvt)
    if( remChild != NULL )
    {
       removeChild((vicCollectionEditorListItem*)remChild);
+      this->Layout();
    }
 }
 
-void 
+std::vector<vicCollectionEditorListItem*>::iterator
 vicCollectionEditorList::removeChild(vicCollectionEditorListItem* aptChild)
 {
-   auto iter_item = find(m_vecItems.begin(), m_vecItems.end(), aptChild);
-   m_vecItems.erase(iter_item);
+   auto iter_item = find( m_vecItems.begin(), m_vecItems.end(), aptChild );
+   if( iter_item != m_vecItems.end() )
+   {
+      this->GetSizer()->Detach( aptChild );
+      aptChild->Destroy();
+      
+      auto retval = m_vecItems.erase( iter_item );
+      return retval;
+   }
+   else
+   {
+      return m_vecItems.end();
+   }
 
-   this->GetSizer()->Detach(aptChild);
-   aptChild->Destroy();
-   PostSizeEvent();
 }

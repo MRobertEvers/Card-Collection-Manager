@@ -5,8 +5,10 @@
 
 CollectionCube::CollectionCube( IMenuEventSource* aParent, const wxString& aszColName )
 {
-   m_Controller = new cCollectionCube( aParent, aszColName );
-   m_View = new vCollectionCube( aParent, wxID_ANY, aszColName );
+   auto view = new vCollectionCube( aParent, wxID_ANY, aszColName );
+   m_Controller = new cCollectionCube( aParent, view, aszColName );
+
+   m_View = view;
 
    // TODO: Polymorphism with sharedptr
    aParent->BindMenuEventHandler( m_Controller );
