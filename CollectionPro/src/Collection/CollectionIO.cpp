@@ -406,6 +406,12 @@ CollectionIO::loadOverheadFile()
       }
    }
 
+   // TODO: Do this for the other special values.
+   if( m_ptLoadToken->CollectionAddress == "" )
+   {
+      m_ptLoadToken->CollectionAddress = m_ptCollection->GetIdentifier().GetFullAddress();
+   }
+
    return true;
 }
 
