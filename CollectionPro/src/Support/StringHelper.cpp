@@ -51,9 +51,13 @@ StringHelper::Str_Clean(const std::string& src)
       {
          szRetVal += "AE";
       }
-      else if( c == '\'' || c == '\"' )
+      else if( c == '\"' )
       {
          // leave out
+      }
+      else if( c == '\'' )
+      {
+         szRetVal += "\'";
       }
       else if( c < 0 )
       {
