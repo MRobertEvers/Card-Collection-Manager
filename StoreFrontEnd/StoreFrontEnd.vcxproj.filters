@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -88,402 +80,457 @@
     <Filter Include="wxExtensions">
       <UniqueIdentifier>{1f8d4857-1ef4-4712-a4d3-76d4898757c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="StoreFrontEnd">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="App.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vCollectionsOverview.cpp">
-      <Filter>Views\Overview</Filter>
-    </ClCompile>
-    <ClCompile Include="vcCollectionsMenuList.cpp">
-      <Filter>Views\Overview\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="MainWindow.cpp">
+    <ClCompile Include="Views\MainWindow\CMainWindow.cpp">
       <Filter>Views</Filter>
     </ClCompile>
-    <ClCompile Include="viCollectionEditor.cpp">
-      <Filter>Views\Interfaces\CollectionEditor</Filter>
+    <ClCompile Include="Views\MainWindow\MainWindow.cpp">
+      <Filter>Views</Filter>
     </ClCompile>
-    <ClCompile Include="vicListSelector.cpp">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    <ClCompile Include="Views\MainWindow\VMainWindow.cpp">
+      <Filter>Views</Filter>
     </ClCompile>
-    <ClCompile Include="vicCollectionEditorList.cpp">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vicCollectionEditorListItem.cpp">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vicCollectionEditorListItemPlusMinusCounter.cpp">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vicCollectionEditListItemOption.cpp">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="viCardEditor.cpp">
-      <Filter>Views\Interfaces\CardEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="wxImagePanel.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="StoreFrontEnd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageFetcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IMenuEventHandler.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="cCollectionsOverview.cpp">
-      <Filter>Views\Overview</Filter>
-    </ClCompile>
-    <ClCompile Include="vcEditableTraitList.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vcEditableTraitListItem.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vcItemNameCheckBox.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vcEditableItemList.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="cCollectionCube.cpp">
+    <ClCompile Include="Views\CollectionCube\cCollectionCube.cpp">
       <Filter>Views\Cube</Filter>
     </ClCompile>
-    <ClCompile Include="vCollectionCube.cpp">
+    <ClCompile Include="Views\CollectionCube\CollectionCube.cpp">
       <Filter>Views\Cube</Filter>
     </ClCompile>
-    <ClCompile Include="vcCollectionCubeGroup.cpp">
+    <ClCompile Include="Views\CollectionCube\vCollectionCube.cpp">
+      <Filter>Views\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionCube\vcCollectionCubeDisplay.cpp">
       <Filter>Views\Cube\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Group.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GroupItemData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vcCollectionCubeDisplay.cpp">
+    <ClCompile Include="Views\CollectionCube\vcCollectionCubeGroup.cpp">
       <Filter>Views\Cube\Components</Filter>
     </ClCompile>
-    <ClCompile Include="CELIOption.cpp">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ScryFallAPI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="json\jsoncpp.cpp">
-      <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="ivCollectionView.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="SourceDownloader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CURLAPI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="viCollectionSelector.cpp">
-      <Filter>Views\Interfaces\CollectionSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageViewer.cpp">
-      <Filter>Views\Interfaces\ImageViewer</Filter>
-    </ClCompile>
-    <ClCompile Include="vcImageWrapper.cpp">
-      <Filter>Views\Interfaces\ImageViewer</Filter>
-    </ClCompile>
-    <ClCompile Include="vicCollectionPeeker.cpp">
-      <Filter>Views\Interfaces\CollectionSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="CollectionInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CardInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vicStatsViewRow.cpp">
-      <Filter>Views\Interfaces\StatsViewer\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vimCountModule.cpp">
-      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="vimCMCModule.cpp">
-      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="vStatsViewer.cpp">
-      <Filter>Views\Interfaces\StatsViewer</Filter>
-    </ClCompile>
-    <ClCompile Include="vimTypeBreakDown.cpp">
-      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="viHistoryViewer.cpp">
-      <Filter>Views\Interfaces\HistoryViewer</Filter>
-    </ClCompile>
-    <ClCompile Include="vicBlogItem.cpp">
-      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="vicBlogHeader.cpp">
-      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="wxManualText.cpp">
-      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vicBlogFooter.cpp">
-      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="wxInfiniteGrid.cpp">
-      <Filter>wxExtensions</Filter>
-    </ClCompile>
-    <ClCompile Include="CMainWindow.cpp">
-      <Filter>Views</Filter>
-    </ClCompile>
-    <ClCompile Include="VMainWindow.cpp">
-      <Filter>Views</Filter>
-    </ClCompile>
-    <ClCompile Include="CollectionCube.cpp">
-      <Filter>Views\Cube</Filter>
-    </ClCompile>
-    <ClCompile Include="IMenuEventSource.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="CollectionsOverview.cpp">
-      <Filter>Views\Overview</Filter>
-    </ClCompile>
-    <ClCompile Include="IControlledView.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="cCollectionDeckBox.cpp">
+    <ClCompile Include="Views\CollectionDeckBox\cCollectionDeckBox.cpp">
       <Filter>Views\Deckbox</Filter>
     </ClCompile>
-    <ClCompile Include="vCollectionDeckBox.cpp">
+    <ClCompile Include="Views\CollectionDeckBox\CollectionDeckBox.cpp">
       <Filter>Views\Deckbox</Filter>
     </ClCompile>
-    <ClCompile Include="vcCollectionDeckBoxItemList.cpp">
+    <ClCompile Include="Views\CollectionDeckBox\vCollectionDeckBox.cpp">
+      <Filter>Views\Deckbox</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionDeckBox\vcCollectionDeckBoxItemList.cpp">
       <Filter>Views\Deckbox\Components</Filter>
     </ClCompile>
-    <ClCompile Include="CollectionDeckBox.cpp">
-      <Filter>Views\Deckbox</Filter>
+    <ClCompile Include="Views\CardEditor\viCardEditor.cpp">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardEditor\vcEditableItemList.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardEditor\vcEditableTraitList.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardEditor\vcEditableTraitListItem.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionEditor\viCollectionEditor.cpp">
+      <Filter>Views\Interfaces\CollectionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionEditor\CELIOption.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionEditor\vicCollectionEditListItemOption.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionEditor\vicCollectionEditorList.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionEditor\vicCollectionEditorListItem.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionEditor\vicCollectionEditorListItemPlusMinusCounter.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionEditor\vicListSelector.cpp">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionPreviewer\vicCollectionPeeker.cpp">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionPreviewer\viCollectionSelector.cpp">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionHistory\viHistoryViewer.cpp">
+      <Filter>Views\Interfaces\HistoryViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionHistory\vicBlogFooter.cpp">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionHistory\vicBlogHeader.cpp">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionHistory\vicBlogItem.cpp">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\ImageViewer\ImageViewer.cpp">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\ImageViewer\vcImageWrapper.cpp">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionStats\vStatsViewer.cpp">
+      <Filter>Views\Interfaces\StatsViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionStats\Modules\vimCMCModule.cpp">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionStats\Modules\vimCountModule.cpp">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionStats\Modules\vimTypeBreakDown.cpp">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionStats\vicStatsViewRow.cpp">
+      <Filter>Views\Interfaces\StatsViewer\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionsOverview\cCollectionsOverview.cpp">
+      <Filter>Views\Overview</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionsOverview\CollectionsOverview.cpp">
+      <Filter>Views\Overview</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionsOverview\vCollectionsOverview.cpp">
+      <Filter>Views\Overview</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionsOverview\vcCollectionsMenuList.cpp">
+      <Filter>Views\Overview\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\ViewTemplates\icCollectionView.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\ViewTemplates\IControlledView.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\ViewTemplates\IMenuEventHandler.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\ViewTemplates\IMenuEventSource.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\ViewTemplates\ivCollectionView.cpp">
+      <Filter>Views\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\wxExtras\wxImagePanel.cpp">
+      <Filter>wxExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\wxExtras\wxInfiniteGrid.cpp">
+      <Filter>wxExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\wxExtras\wxManualText.cpp">
+      <Filter>wxExtensions</Filter>
+    </ClCompile>
+    <ClCompile Include="include\json\jsoncpp.cpp">
+      <Filter>Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\App.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\CardInterface.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\CollectionInterface.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\CURLAPI.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\Group.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\GroupItemData.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\ImageFetcher.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\ImageHandler.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\SourceDownloader.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="StoreFrontEnd\StoreFrontEnd.cpp">
+      <Filter>StoreFrontEnd</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardEditor\vcItemNameCheckBox.cpp">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StorefrontConfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="App.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vCollectionsOverview.h">
-      <Filter>Views\Overview</Filter>
-    </ClInclude>
-    <ClInclude Include="vcCollectionsMenuList.h">
-      <Filter>Views\Overview\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="MainWindow.h">
+    <ClInclude Include="Views\MainWindow\CMainWindow.h">
       <Filter>Views</Filter>
     </ClInclude>
-    <ClInclude Include="viCollectionEditor.h">
-      <Filter>Views\Interfaces\CollectionEditor</Filter>
+    <ClInclude Include="Views\MainWindow\MainWindow.h">
+      <Filter>Views</Filter>
     </ClInclude>
-    <ClInclude Include="vicListSelector.h">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    <ClInclude Include="Views\MainWindow\VMainWindow.h">
+      <Filter>Views</Filter>
     </ClInclude>
-    <ClInclude Include="vicCollectionEditorList.h">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="vicCollectionEditorListItem.h">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="vicCollectionEditorListItemPlusMinusCounter.h">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="CELIOption.h">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="vicCollectionEditListItemOption.h">
-      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="viCardEditor.h">
-      <Filter>Views\Interfaces\CardEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="StoreFrontEnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CETraitOption.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="wxImagePanel.h">
-      <Filter>Views\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageFetcher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IMenuEventHandler.h">
-      <Filter>Views\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="cCollectionsOverview.h">
-      <Filter>Views\Overview</Filter>
-    </ClInclude>
-    <ClInclude Include="vcEditableTraitList.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="vcEditableTraitListItem.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="vcItemNameCheckBox.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="vcEditableItemList.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="cCollectionCube.h">
+    <ClInclude Include="Views\CollectionCube\cCollectionCube.h">
       <Filter>Views\Cube</Filter>
     </ClInclude>
-    <ClInclude Include="vCollectionCube.h">
+    <ClInclude Include="Views\CollectionCube\CollectionCube.h">
       <Filter>Views\Cube</Filter>
     </ClInclude>
-    <ClInclude Include="Group.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Views\CollectionCube\vCollectionCube.h">
+      <Filter>Views\Cube</Filter>
     </ClInclude>
-    <ClInclude Include="GroupItemData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vcCollectionCubeDisplay.h">
+    <ClInclude Include="Views\CollectionCube\vcCollectionCubeDisplay.h">
       <Filter>Views\Cube\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ScryFallAPI.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Views\CollectionCube\vcCollectionCubeGroup.h">
+      <Filter>Views\Cube\Components</Filter>
     </ClInclude>
-    <ClInclude Include="json\json.hpp">
-      <Filter>Libraries</Filter>
+    <ClInclude Include="Views\CollectionDeckBox\cCollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
     </ClInclude>
-    <ClInclude Include="curl\curl.h">
-      <Filter>Libraries\cURL</Filter>
+    <ClInclude Include="Views\CollectionDeckBox\CollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
     </ClInclude>
-    <ClInclude Include="curl\curlver.h">
-      <Filter>Libraries\cURL</Filter>
+    <ClInclude Include="Views\CollectionDeckBox\vCollectionDeckBox.h">
+      <Filter>Views\Deckbox</Filter>
     </ClInclude>
-    <ClInclude Include="curl\easy.h">
-      <Filter>Libraries\cURL</Filter>
+    <ClInclude Include="Views\CollectionDeckBox\vcCollectionDeckBoxItemList.h">
+      <Filter>Views\Deckbox\Components</Filter>
     </ClInclude>
-    <ClInclude Include="curl\mprintf.h">
-      <Filter>Libraries\cURL</Filter>
+    <ClInclude Include="Views\CardEditor\viCardEditor.h">
+      <Filter>Views\Interfaces\CardEditor</Filter>
     </ClInclude>
-    <ClInclude Include="curl\multi.h">
-      <Filter>Libraries\cURL</Filter>
+    <ClInclude Include="Views\CardEditor\vcEditableItemList.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
-    <ClInclude Include="curl\stdcheaders.h">
-      <Filter>Libraries\cURL</Filter>
+    <ClInclude Include="Views\CardEditor\vcEditableTraitList.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
-    <ClInclude Include="curl\system.h">
-      <Filter>Libraries\cURL</Filter>
+    <ClInclude Include="Views\CardEditor\vcEditableTraitListItem.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
-    <ClInclude Include="curl\typecheck-gcc.h">
-      <Filter>Libraries\cURL</Filter>
+    <ClInclude Include="Views\CollectionEditor\viCollectionEditor.h">
+      <Filter>Views\Interfaces\CollectionEditor</Filter>
     </ClInclude>
-    <ClInclude Include="ivCollectionView.h">
+    <ClInclude Include="Views\CollectionEditor\CELIOption.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionEditor\vicCollectionEditListItemOption.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionEditor\vicCollectionEditorList.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionEditor\vicCollectionEditorListItem.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionEditor\vicCollectionEditorListItemPlusMinusCounter.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionEditor\vicListSelector.h">
+      <Filter>Views\Interfaces\CollectionEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionPreviewer\vicCollectionPeeker.h">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionPreviewer\viCollectionSelector.h">
+      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionHistory\viHistoryViewer.h">
+      <Filter>Views\Interfaces\HistoryViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionHistory\vicBlogFooter.h">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionHistory\vicBlogHeader.h">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionHistory\vicBlogItem.h">
+      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\ImageViewer\ImageViewer.h">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\ImageViewer\vcImageWrapper.h">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionStats\vStatsViewer.h">
+      <Filter>Views\Interfaces\StatsViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionStats\Modules\vimCMCModule.h">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionStats\Modules\vimCountModule.h">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionStats\Modules\vimTypeBreakDown.h">
+      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionStats\vicStatsViewRow.h">
+      <Filter>Views\Interfaces\StatsViewer\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionsOverview\cCollectionsOverview.h">
+      <Filter>Views\Overview</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionsOverview\CollectionsOverview.h">
+      <Filter>Views\Overview</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionsOverview\vCollectionsOverview.h">
+      <Filter>Views\Overview</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionsOverview\vcCollectionsMenuList.h">
+      <Filter>Views\Overview\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\ViewTemplates\icCollectionView.h">
       <Filter>Views\Template</Filter>
     </ClInclude>
-    <ClInclude Include="SourceDownloader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Views\ViewTemplates\IControlledView.h">
+      <Filter>Views\Template</Filter>
     </ClInclude>
-    <ClInclude Include="CURLAPI.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Views\ViewTemplates\IMenuEventHandler.h">
+      <Filter>Views\Template</Filter>
     </ClInclude>
-    <ClInclude Include="Zip\unzip.h">
+    <ClInclude Include="Views\ViewTemplates\IMenuEventSource.h">
+      <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\ViewTemplates\ivCollectionView.h">
+      <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\wxExtras\wxImagePanel.h">
+      <Filter>wxExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\wxExtras\wxInfiniteGrid.h">
+      <Filter>wxExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\wxExtras\wxManualText.h">
+      <Filter>wxExtensions</Filter>
+    </ClInclude>
+    <ClInclude Include="include\curl\curl.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\curl\curlver.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\curl\easy.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\curl\mprintf.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\curl\multi.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\curl\stdcheaders.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\curl\system.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\curl\typecheck-gcc.h">
+      <Filter>Libraries\cURL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Zip\crc32.h">
       <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="viCollectionSelector.h">
-      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    <ClInclude Include="include\Zip\crypt.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="ImageViewer.h">
-      <Filter>Views\Interfaces\ImageViewer</Filter>
+    <ClInclude Include="include\Zip\deflate.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vcImageWrapper.h">
-      <Filter>Views\Interfaces\ImageViewer</Filter>
+    <ClInclude Include="include\Zip\gzguts.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vicCollectionPeeker.h">
-      <Filter>Views\Interfaces\CollectionSelector</Filter>
+    <ClInclude Include="include\Zip\inffast.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="CollectionInterface.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\Zip\inffixed.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="CardInterface.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\Zip\inftrees.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vStatsViewer.h">
-      <Filter>Views\Interfaces\StatsViewer</Filter>
+    <ClInclude Include="include\Zip\ioapi.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vicStatsViewRow.h">
-      <Filter>Views\Interfaces\StatsViewer\Components</Filter>
+    <ClInclude Include="include\Zip\iowin32.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vimCountModule.h">
-      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    <ClInclude Include="include\Zip\mztools.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vimCMCModule.h">
-      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    <ClInclude Include="include\Zip\trees.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vimTypeBreakDown.h">
-      <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
+    <ClInclude Include="include\Zip\unzip.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="viHistoryViewer.h">
-      <Filter>Views\Interfaces\HistoryViewer</Filter>
+    <ClInclude Include="include\Zip\zconf.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vicBlogItem.h">
-      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    <ClInclude Include="include\Zip\zip.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vcCollectionCubeGroup.h">
-      <Filter>Views\Cube\Components</Filter>
+    <ClInclude Include="include\Zip\zlib.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="vicBlogHeader.h">
-      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    <ClInclude Include="include\Zip\zutil.h">
+      <Filter>Libraries\Zip</Filter>
     </ClInclude>
-    <ClInclude Include="wxManualText.h">
-      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    <ClInclude Include="include\json\json.hpp">
+      <Filter>Libraries</Filter>
     </ClInclude>
-    <ClInclude Include="ImageHandler.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="StoreFrontEnd\App.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="vicBlogFooter.h">
-      <Filter>Views\Interfaces\HistoryViewer\Components</Filter>
+    <ClInclude Include="StoreFrontEnd\CardInterface.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="wxInfiniteGrid.h">
-      <Filter>wxExtensions</Filter>
+    <ClInclude Include="StoreFrontEnd\CETraitOption.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="CMainWindow.h">
-      <Filter>Views</Filter>
+    <ClInclude Include="StoreFrontEnd\CollectionInterface.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="VMainWindow.h">
-      <Filter>Views</Filter>
+    <ClInclude Include="StoreFrontEnd\CURLAPI.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="CollectionCube.h">
-      <Filter>Views\Cube</Filter>
+    <ClInclude Include="StoreFrontEnd\Group.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="IMenuEventSource.h">
-      <Filter>Views\Template</Filter>
+    <ClInclude Include="StoreFrontEnd\GroupItemData.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="CollectionsOverview.h">
-      <Filter>Views\Overview</Filter>
+    <ClInclude Include="StoreFrontEnd\ImageFetcher.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="IControlledView.h">
-      <Filter>Views\Template</Filter>
+    <ClInclude Include="StoreFrontEnd\ImageHandler.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="cCollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
+    <ClInclude Include="StoreFrontEnd\ScryFallAPI.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="vCollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
+    <ClInclude Include="StoreFrontEnd\SourceDownloader.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="vcCollectionDeckBoxItemList.h">
-      <Filter>Views\Deckbox\Components</Filter>
+    <ClInclude Include="StoreFrontEnd\StorefrontConfig.h">
+      <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="CollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
+    <ClInclude Include="StoreFrontEnd\StoreFrontEnd.h">
+      <Filter>StoreFrontEnd</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardEditor\vcItemNameCheckBox.h">
+      <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
