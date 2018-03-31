@@ -50,6 +50,8 @@ public:
 
    void SaveCollection();
 
+   void ExportCollection( Query aQuery );
+
    bool InitializeCollection();
 
    bool InitializeCollection( string aszFileName );

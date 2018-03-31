@@ -32,6 +32,8 @@ public:
    
    void SaveCollection();
 
+   void ExportCollection( Query aQuery );
+
    std::map<unsigned long, std::vector<std::string>> GetHistoryTransactions( unsigned int aiStart, unsigned int aiEnd );
 
 private:
@@ -97,10 +99,12 @@ private:
    void saveOverhead();
    void saveRequiredPeekValues( ofstream& aFile );
    void saveCollection();
+   void exportCollection(Query aQuery);
 
 public:
    static bool CollectionFileExists( std::string aszFileName );
    static std::string StripFileName( std::string aszFilePath );
+   static std::string StripFileName( std::string aszFilePath, string& rszDirectory );
    static std::string GetCollectionFile( std::string aszCollectionName );
    static std::string GetMetaFile( std::string aszCollectionName );
    static std::string GetHistoryFile( std::string aszCollectionName );

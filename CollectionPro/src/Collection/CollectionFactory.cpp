@@ -34,6 +34,25 @@ CollectionFactory::SaveCollection( string aszCollectionID ) const
    }
 }
 
+void 
+CollectionFactory::ExportCollection( std::string aszCollectionID, Query aQuery ) const
+{
+   auto collection = GetCollection( aszCollectionID );
+   if( collection.Good() )
+   {
+      // Save each member of this family.
+      Location oColLocation = collection->GetIdentifier();
+      for( auto lCol : m_lstCollections )
+      {
+         Address olColLocation = lCol->GetIdentifier().ToAddress();
+         if( olColLocation.ContainsLocation( oColLocation ) )
+         {
+            lCol->ExportCollection(aQuery);
+         }
+      }
+   }
+}
+
 string 
 CollectionFactory::LoadCollectionFromFile(string aszFileName)
 {

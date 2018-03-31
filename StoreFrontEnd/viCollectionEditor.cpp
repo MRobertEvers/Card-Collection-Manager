@@ -18,7 +18,8 @@ wxEND_EVENT_TABLE()
 
 
 viCollectionEditor::viCollectionEditor(wxWindow* aptParent, wxWindowID aiWID, wxString aszColID)
-   : wxFrame(aptParent, aiWID, "Collection Editor"), m_szCollectionID(aszColID),
+   : wxFrame(aptParent, aiWID, "Collection Editor", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxSTAY_ON_TOP ),
+     m_szCollectionID(aszColID),
      m_bHandleTextEvent(true), m_ulTimeLastKeyStroke(0), m_timer(this, TIMER_ID),
      m_bIsWaitingForDrop(false), m_bIsSelectionFlag(false)
 {

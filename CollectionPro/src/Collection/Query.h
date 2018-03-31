@@ -18,6 +18,8 @@ public:
       m_bIncludeCount = true;
       m_bUIDs = false;
       m_bClassed = false;
+      m_bIncludeIDString = true;
+      m_bIncludeMetaString = true;
    }
 
    void UIDs() { Default(true); m_bUIDs = true; }
@@ -25,6 +27,8 @@ public:
    Query& FindHash(const std::string& aszHash) { m_vecHashes.push_back(aszHash); return *this; }
    Query& Short() { m_bIsShort = true; return *this; }
    Query& IncludeCount() { m_bIncludeCount = true; return *this; }
+   Query& SetIncludeIDs( bool abInclude ) { m_bIncludeIDString = abInclude; return *this; }
+   Query& SetIncludeMeta( bool abInclude ) { m_bIncludeMetaString = abInclude; return *this; }
    Query& HashType(CopyItem::HashType hashType) { m_htHash = hashType; return *this; }
    Query& HashAny() { m_htHash = CopyItem::HashType::Default; return *this; }
    Query& HashIDs() { m_htHash = CopyItem::HashType::Ids; return *this; }
@@ -39,7 +43,9 @@ public:
    Query& HiddenMeta() { m_mttMetaType = MetaTagType::Hidden; return *this; }
 
    bool GetIncludeCount() const { return m_bIncludeCount; }
-   bool GetShort() const { return m_bIsShort; }
+   bool GetIncludeIDString() const { return m_bIncludeIDString; }
+   bool GetIncludeMetaString() const { return m_bIncludeMetaString; }
+   bool GetIsShort() const { return m_bIsShort; }
    std::string GetSearch() const { return m_szSearch; }
    bool GetCollapsed() const { return m_bCollapsed; }
    CopyItem::HashType GetHashType() const { return m_htHash; }
@@ -55,6 +61,8 @@ private:
    std::string m_szSearch;
    bool m_bCollapsed;
    bool m_bIncludeCount;
+   bool m_bIncludeIDString;
+   bool m_bIncludeMetaString;
    CopyItem::HashType m_htHash;
    MetaTagType m_mttMetaType;
    std::vector<std::string> m_vecHashes;

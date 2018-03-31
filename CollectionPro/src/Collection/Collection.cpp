@@ -121,6 +121,13 @@ Collection::SaveCollection()
    IO.SaveCollection();
 }
 
+void 
+Collection::ExportCollection( Query aQuery )
+{
+   CollectionIO IO( this );
+   IO.ExportCollection(aQuery);
+}
+
 bool
 Collection::InitializeCollection()
 {

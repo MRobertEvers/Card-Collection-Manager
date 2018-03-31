@@ -3,6 +3,7 @@
 #include "../Support/StringHelper.h"
 #include "CollectionSource.h"
 #include "../Support/TryGet.h"
+#include "Query.h"
 
 #include <vector>
 #include <string>
@@ -26,6 +27,7 @@ public:
    std::vector<Tag> PeekCollection( const std::string& aszColFile ) const;
 
    void SaveCollection(std::string aszCollectionID) const;
+   void ExportCollection( std::string aszCollectionID, Query aQuery ) const;
    std::string LoadCollectionFromFile(std::string aszColFile);
 
    std::string CreateNewCollection(std::string aszColName, std::string aszParentID = "");

@@ -57,6 +57,12 @@ CollectionIO::SaveCollection()
    saveOverhead();
 }
 
+void 
+CollectionIO::ExportCollection( Query aQuery )
+{
+   exportCollection( aQuery );
+}
+
 map<unsigned long, vector<string>> 
 CollectionIO::GetHistoryTransactions( unsigned int aiStart, unsigned int aiEnd )
 {
@@ -822,24 +828,25 @@ CollectionIO::saveRequiredPeekValues( ofstream& aFile )
 void 
 CollectionIO::saveCollection()
 {
-   auto ptSource = m_ptCollection->m_ptrCollectionSource;
-   auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
-
    // Group lists only by id. When loading, these lists are only
    // used to create a template card. We only need the base details.
    Query listQuery( true );
+   listQuery.Short();
    listQuery.IncludeMetaType( None );
    listQuery.HashType( CopyItem::HashType::Ids );
-   vector<string> lstLines = m_ptCollection->QueryCollection( listQuery );
+   
+   exportCollection( listQuery );
+}
 
-   // Convert the lines to shorthand
-   for( auto& szLine : lstLines )
-   {
-      ptSource->CollapseCardLine( szLine );
-   }
+void 
+CollectionIO::exportCollection( Query aQuery )
+{
+   auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
+
+   vector<string> lstLines = m_ptCollection->QueryCollection( aQuery );
 
    ofstream oColFile;
-   oColFile.open( ptCollectionDetails->GetFilePath() );
+   oColFile.open( ptCollectionDetails->GetFileDirectory() + ptCollectionDetails->GetName() + ".export.txt" );
 
    oColFile << "\"" << ptCollectionDetails->GetName() << "\"" << endl;
 
@@ -865,11 +872,18 @@ CollectionIO::CollectionFileExists( string aszFileName )
 string
 CollectionIO::StripFileName( string aszFilePath )
 {
+   string tmp;
+   return StripFileName(aszFilePath, tmp );
+}
+
+string
+CollectionIO::StripFileName( string aszFilePath, string& rszDirectory )
+{
    auto lstSplitFile = StringHelper::Str_Split( aszFilePath, "\\" );
    auto szFile = lstSplitFile[lstSplitFile.size() - 1];
+   rszDirectory = aszFilePath.substr(0, aszFilePath.size() - szFile.size() );
    auto lstSplitExt = StringHelper::Str_Split( szFile, "." );
    szFile = lstSplitExt[0];
-
    return szFile;
 }
 

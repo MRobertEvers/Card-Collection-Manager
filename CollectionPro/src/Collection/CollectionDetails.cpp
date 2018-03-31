@@ -46,13 +46,27 @@ CollectionDetails::GetFileName()
    return m_szFileName;
 }
 
+
+void 
+CollectionDetails::SetFileDirectory( std::string aszFileDirectory )
+{
+   m_szFileDirectory = aszFileDirectory;
+}
+
+std::string 
+CollectionDetails::GetFileDirectory()
+{
+   return m_szFileDirectory;
+}
+
 void 
 CollectionDetails::SetFilePath( std::string aszFile )
 {
    m_szFile = aszFile;
 
-   std::string szFile = CollectionIO::StripFileName(aszFile);
-
+   string szDir;
+   std::string szFile = CollectionIO::StripFileName(aszFile, szDir );
+   SetFileDirectory( szDir );
    SetFileName(szFile);
 }
 std::string 

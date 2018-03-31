@@ -16,6 +16,9 @@ public:
                      bool abDefaultLocation = false );
    std::string GetFileName();
 
+   void SetFileDirectory( std::string aszFileDirectory );
+   std::string GetFileDirectory();
+
    void SetFilePath(std::string aszFile);
    std::string GetFilePath();
 
@@ -47,6 +50,7 @@ private:
    std::string m_szName;
    std::string m_szFile;
    std::string m_szFileName;
+   std::string m_szFileDirectory;
    unsigned long m_ulTimeStamp;
    unsigned int m_iChildrenCount;
    std::vector<std::string> m_vecProcessLines;

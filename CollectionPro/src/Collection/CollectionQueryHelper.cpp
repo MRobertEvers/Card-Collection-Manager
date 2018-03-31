@@ -183,16 +183,28 @@ CollectionQueryHelper::performQuery( const Query& aiQueryParms,
          vecMeta = cardData.Copy->GetMetaTags( aiQueryParms.GetMetaType() );
       }
 
+      // Remove the ID String or the Hash string if they are excluded.
+      auto vecIDs = cardData.Copy->GetIdentifyingAttributes();
+      if( !aiQueryParms.GetIncludeIDString() )
+      {
+         vecIDs.clear();
+      }
+
+      if( !aiQueryParms.GetIncludeMetaString() )
+      {
+         vecMeta.clear();
+      }
+
       szLine = CollectionObject::ToCardLine(
          cardData.Copy->GetAddress(),
          cardData.Name,
-         cardData.Copy->GetIdentifyingAttributes(),
+         vecIDs,
          vecMeta,
          *ptColDetails->GetAddress(),
          cardData.Count
       );
 
-      if( aiQueryParms.GetShort() )
+      if( aiQueryParms.GetIsShort() )
       {
          ptColSource->CollapseCardLine( szLine );
       }

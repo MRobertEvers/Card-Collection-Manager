@@ -6,7 +6,7 @@
 vStatsViewer::vStatsViewer( wxWindow* aptParent,
                             wxWindowID aiID,
                             std::shared_ptr<CollectionInterface> aptInterface )
-   : wxFrame(aptParent, aiID, "Stats"), m_ptInterface(aptInterface)
+   : wxFrame(aptParent, aiID, "Stats", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxSTAY_ON_TOP ), m_ptInterface(aptInterface)
 {
    // Want 3 by n.
    wxBoxSizer* sizer = new wxBoxSizer( wxVERTICAL );

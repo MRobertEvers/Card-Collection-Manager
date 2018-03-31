@@ -92,6 +92,12 @@ StoreFront::SaveCollection(const string& aszCollectionID)
    m_ColFactory->SaveCollection(aszCollectionID);
 }
 
+void 
+StoreFront::ExportCollection( const string& aszCollectionName, Query aQuery )
+{
+   m_ColFactory->ExportCollection( aszCollectionName, aQuery );
+}
+
 string 
 StoreFront::LoadCollection(const string& aszCollectionFile)
 {

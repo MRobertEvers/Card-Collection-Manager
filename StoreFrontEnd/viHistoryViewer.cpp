@@ -8,7 +8,7 @@ END_EVENT_TABLE()
 viHistoryViewer::viHistoryViewer( wxWindow* aptParent,
                                   wxWindowID aiID,
                                   std::shared_ptr<CollectionInterface> aptInterface)
-   : wxFrame( aptParent, aiID, "History" ), m_ptInterface( aptInterface )
+   : wxFrame( aptParent, aiID, "History", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxSTAY_ON_TOP ), m_ptInterface( aptInterface )
 {
    wxBoxSizer* sizer = new wxBoxSizer( wxVERTICAL );
    this->SetSizer( sizer );

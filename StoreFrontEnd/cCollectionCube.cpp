@@ -29,6 +29,8 @@ cCollectionCube::BindEventHandler()
    prepareMenuItem( "Stats", Menu_Stats );
    prepareMenuItem( "History", Menu_ViewHist );
    prepareMenuItem( "View As Deck", Menu_View_As_Deck );
+   // TODO: I want this to be a submenu.
+   prepareMenuItem( "Export As XMage", Menu_Export_XMage );
    registerMenu( "Collection" );
 }
 
@@ -59,5 +61,16 @@ cCollectionCube::handleEvent( unsigned int aiEvent )
    else if( aiEvent == cCollectionCube::Menu_ViewHist )
    {
       m_wxCube->ShowHistory();
+   }
+   else if( aiEvent == cCollectionCube::Menu_Export_XMage )
+   {
+      Query listQuery( true );
+      listQuery.IncludeMetaType( None );
+      listQuery.HashType( CopyItem::HashType::Ids );
+      listQuery.SetIncludeMeta( false );
+      listQuery.SetIncludeIDs( false );
+
+      auto ptSF = StoreFrontEnd::Server();
+      ptSF->ExportCollection( m_ColID.ToStdString(), listQuery );
    }
 }
