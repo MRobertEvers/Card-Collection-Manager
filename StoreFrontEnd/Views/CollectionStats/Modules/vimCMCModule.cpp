@@ -10,6 +10,9 @@
 #include <wx/ClickableRenderer.h>
 
 BEGIN_EVENT_TABLE( vimCMCModule, wxChartPanel )
+EVT_MOUSE_EVENTS( vimCMCModule::OnMouseEvents )
+EVT_LEFT_DOWN( vimCMCModule::OnMouseEvents )
+EVT_MOUSE_CAPTURE_LOST( vimCMCModule::LoseFocus )
 END_EVENT_TABLE()
 
 void 
@@ -193,6 +196,20 @@ vimCMCModule::vimCMCModule( wxWindow* aptParent,
 }
 
 vimCMCModule::~vimCMCModule()
+{
+
+}
+
+
+void
+vimCMCModule::OnMouseEvents( wxMouseEvent &ev )
+{
+
+}
+
+
+void
+vimCMCModule::LoseFocus( wxMouseCaptureLostEvent& awxevt )
 {
 
 }

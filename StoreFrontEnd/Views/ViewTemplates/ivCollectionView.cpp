@@ -39,6 +39,7 @@ void
 ivCollectionView::ShowStats()
 {
    auto view = new vStatsViewer( this, 1, m_ptCollectionInterface );
+   view->SetFocus();
    view->Show();
 }
 

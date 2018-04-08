@@ -4,6 +4,7 @@
 #include <wx/event.h>
 #include <memory>
 #include <vector>
+#include <wx/aui/framemanager.h>
 
 class vicStatsViewRow;
 
@@ -15,9 +16,13 @@ public:
                  std::shared_ptr<CollectionInterface> aptInterface );
    ~vStatsViewer();
 
+   void OnMouseEvents( wxMouseEvent &ev );
+   void LoseFocus( wxMouseCaptureLostEvent& awxevt );
+
 private:
    wxDECLARE_EVENT_TABLE();
    std::vector<vicStatsViewRow> m_vecRows;
    std::shared_ptr<CollectionInterface> m_ptInterface;
+   wxAuiManager m_mgr;
 };
 
