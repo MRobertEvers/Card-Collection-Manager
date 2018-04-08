@@ -52,8 +52,9 @@ public:
                  wxWindowID aiID,
                  std::shared_ptr<CollectionInterface> aptInterface );
    ~vimCMCModule();
-   void OnMouseEvents( wxMouseEvent &ev );
-   void LoseFocus( wxMouseCaptureLostEvent& awxevt );
+
+   wxString GetColorID( CardInterface& item );
+
 private:
    wxDECLARE_EVENT_TABLE();
    std::shared_ptr<CollectionInterface> m_ptInterface;
