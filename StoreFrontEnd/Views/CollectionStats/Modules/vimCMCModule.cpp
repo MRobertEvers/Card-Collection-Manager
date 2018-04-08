@@ -6,11 +6,57 @@
 #include <wx/axis/categoryaxis.h>
 #include <wx/xy/xyhistorenderer.h>
 #include <wx/category/categorysimpledataset.h>
+#include <wx/ClickableShape.h>
+#include <wx/ClickableRenderer.h>
+
+BEGIN_EVENT_TABLE( vimCMCModule, wxChartPanel )
+END_EVENT_TABLE()
+
+void 
+ClickMode::Init( wxChartPanel* panel )
+{
+   m_Panel = panel;
+}
+
+void
+ClickMode::ShowToolTip( ClickableShape* dataShape )
+{
+   if( dataShape != nullptr )
+   {
+      auto myData = dataShape->GetData();
+      m_Panel->GetChart()->SetTooltip( new TextTooltip( m_LastPoint,
+         {
+            myData->GetCategoryName(),
+            wxString( myData->GetSeriesName() + ": " + std::to_string( myData->GetSeriesValue() ) ),
+            wxString( "Total: " + std::to_string( myData->GetCategoryTotalOfAllSeries() ) )
+         }
+      ) );
+      m_Panel->ChartChanged( nullptr );
+   }
+   else
+   {
+      m_Panel->GetChart()->SetTooltip( nullptr );
+   }
+}
+
+void 
+ClickMode::ChartMouseDown( wxPoint &pt, int key )
+{
+   m_LastPoint = pt;
+
+   auto plot = m_Panel->GetChart()->GetPlot();
+   auto intPlot = dynamic_cast<InteractivePlot*>(plot);
+   if( intPlot != nullptr )
+   {
+      auto data = intPlot->GetDataAtPoint( pt );
+      ShowToolTip( data );
+   }
+}
 
 vimCMCModule::vimCMCModule( wxWindow* aptParent,
                             wxWindowID aiID,
                             std::shared_ptr<CollectionInterface> aptInterface )
-   : wxPanel(aptParent, aiID), m_ptInterface(aptInterface)
+   : wxChartPanel(aptParent, aiID), m_ptInterface(aptInterface)
 {
    wxGridSizer* sizer = new wxGridSizer( 1, 1, 0, 0 );
    this->SetSizer( sizer );
@@ -105,15 +151,16 @@ vimCMCModule::vimCMCModule( wxWindow* aptParent,
    BarType *barType = new StackedBarType( barSize, 0 );
 
    // Set bar renderer for it, with stacked bar type
-   BarRenderer *renderer = new BarRenderer( barType );
+   ClickableBarRenderer *renderer = new ClickableBarRenderer( barType );
 
-   renderer->SetBarDraw( 0, new GradientAreaDraw( DEFAULT_BAR_FILL_COLOUR_0, DEFAULT_BAR_FILL_COLOUR_0,
-                                                  DEFAULT_BAR_FILL_COLOUR_0.ChangeLightness( 150 ), wxNORTH ) );
+   renderer->SetBarDraw( 0, new ClickableGradientAreaDraw( DEFAULT_BAR_FILL_COLOUR_0, DEFAULT_BAR_FILL_COLOUR_0,
+                                                           DEFAULT_BAR_FILL_COLOUR_0.ChangeLightness( 150 ), wxNORTH,
+                                                           new ClickableCategoryData( dataset ) ) );
    //renderer->SetBarDraw( 1, new GradientAreaDraw( *wxTRANSPARENT_PEN, DEFAULT_BAR_FILL_COLOUR_1,
    //   DEFAULT_BAR_FILL_COLOUR_1.ChangeLightness( 50 ), wxSOUTH ) );
 
    // assign renderer to dataset - necessary step
-   dataset->SetRenderer( renderer );
+   dataset->SetRenderer( (BarRenderer*)renderer );
 
 
 
@@ -141,9 +188,8 @@ vimCMCModule::vimCMCModule( wxWindow* aptParent,
 
    // and finally construct and return chart
 
-
-   wxChartPanel* wxChart = new wxChartPanel( this, 1, new Chart( plot, "Mana Curve" ) );
-   sizer->Add( wxChart, wxSizerFlags(1 ).Expand() );
+   this->SetChart( new Chart( plot, "Mana Curve" ) );
+   this->SetMode( new ClickMode() );
 }
 
 vimCMCModule::~vimCMCModule()

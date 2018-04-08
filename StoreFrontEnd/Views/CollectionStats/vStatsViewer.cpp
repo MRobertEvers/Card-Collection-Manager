@@ -3,6 +3,7 @@
 #include "./Modules/vimCMCModule.h"
 #include "./Modules/vimTypeBreakDown.h"
 
+
 vStatsViewer::vStatsViewer( wxWindow* aptParent,
                             wxWindowID aiID,
                             std::shared_ptr<CollectionInterface> aptInterface )

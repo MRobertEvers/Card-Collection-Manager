@@ -1,10 +1,10 @@
 #include "VMainWindow.h"
+#include "MainWindow.h"
+#include "CMainWindow.h"
 #include "../StoreFrontEnd/StorefrontConfig.h"
 #include "../CollectionsOverview/vCollectionsOverview.h"
 #include "../ViewTemplates/icCollectionView.h"
 #include "../ViewTemplates/IMenuEventHandler.h"
-#include "MainWindow.h"
-#include "CMainWindow.h"
 
 wxBEGIN_EVENT_TABLE(VMainWindow, IMenuEventSource )
 EVT_BUTTON(vCollectionsOverview::View_Collection, VMainWindow::OnViewCollection)

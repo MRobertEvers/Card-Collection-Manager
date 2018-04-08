@@ -140,7 +140,7 @@ vicListSelector::onComboBoxTextChanged(wxCommandEvent& awxEvt)
 {
    // For some reason, when an option in the combobox is selected via mouse,
    // the event fires twice. Once with the option, and then once with blank text...
-   auto szSend = m_wxComboBox->GetValue();
+   auto szSend = m_wxComboBox->GetValue().ToStdString();
    if( szSend.size() == 0 )
    {
       awxEvt.StopPropagation();
@@ -148,6 +148,7 @@ vicListSelector::onComboBoxTextChanged(wxCommandEvent& awxEvt)
    }
 
    awxEvt.SetString(szSend);
+
    transform( szSend.begin(), szSend.end(),
               szSend.begin(), ::tolower );
    for( auto& option : m_vecOptions )
@@ -170,7 +171,7 @@ vicListSelector::onAcceptButton(wxCommandEvent& awxEvt)
 {
    // Looks at the text that is currently in the box and gets
    // the option if it matches one.
-   auto szCurrentText = GetText();
+   auto szCurrentText = GetText().ToStdString();
    transform( szCurrentText.begin(), szCurrentText.end(),
               szCurrentText.begin(), ::tolower );
    for( auto& option : m_vecOptions )
