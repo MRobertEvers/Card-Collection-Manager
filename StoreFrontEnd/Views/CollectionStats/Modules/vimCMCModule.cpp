@@ -1,4 +1,5 @@
 #include "vimCMCModule.h"
+#include "../vStatsViewer.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
 
 #include <map>
@@ -10,53 +11,14 @@
 #include <wx/axis/categoryaxis.h>
 #include <wx/xy/xyhistorenderer.h>
 #include <wx/category/categorysimpledataset.h>
-#include <wx/ClickableShape.h>
 #include <wx/tokenzr.h>
 #include <wx/ClickableRenderer.h>
+#include <wx/ClickableShape.h>
+
 
 BEGIN_EVENT_TABLE( vimCMCModule, wxChartPanel )
 END_EVENT_TABLE()
 
-void 
-ClickMode::Init( wxChartPanel* panel )
-{
-   m_Panel = panel;
-}
-
-void
-ClickMode::ShowToolTip( ClickableShape* dataShape )
-{
-   if( dataShape != nullptr )
-   {
-      auto myData = dataShape->GetData();
-      m_Panel->GetChart()->SetTooltip( new TextTooltip( m_LastPoint,
-         {
-            "CMC: " + myData->GetCategoryName(),
-            wxString( myData->GetSeriesName() + ": " + std::to_string( myData->GetSeriesValue() ) ),
-            wxString( "Total: " + std::to_string( myData->GetCategoryTotalOfAllSeries() ) )
-         }
-      ) );
-   }
-   else
-   {
-      m_Panel->GetChart()->SetTooltip( nullptr );
-   }
-   m_Panel->ChartChanged( nullptr );
-}
-
-void 
-ClickMode::ChartMouseDown( wxPoint &pt, int key )
-{
-   m_LastPoint = pt;
-
-   auto plot = m_Panel->GetChart()->GetPlot();
-   auto intPlot = dynamic_cast<InteractivePlot*>(plot);
-   if( intPlot != nullptr )
-   {
-      auto data = intPlot->GetDataAtPoint( pt );
-      ShowToolTip( data );
-   }
-}
 
 vimCMCModule::vimCMCModule( wxWindow* aptParent,
                             wxWindowID aiID,

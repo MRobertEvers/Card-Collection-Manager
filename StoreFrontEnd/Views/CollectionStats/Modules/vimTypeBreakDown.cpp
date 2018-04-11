@@ -1,4 +1,5 @@
 #include "vimTypeBreakDown.h"
+#include "../vStatsViewer.h"
 #include "../StoreFrontEnd/Group.h"
 
 #include <vector>
@@ -6,11 +7,13 @@
 #include <wx/chartpanel.h>
 #include <wx/pie/pieplot.h>
 #include <wx/category/categorysimpledataset.h>
+#include <wx/ClickableRenderer.h>
+#include <wx/ClickableShape.h>
 
 vimTypeBreakDown::vimTypeBreakDown( wxWindow* aptParent,
                                     wxWindowID aiID,
                                     std::shared_ptr<CollectionInterface> aptInterface )
-   : wxPanel( aptParent, aiID ), m_ptInterface( aptInterface )
+   : wxChartPanel( aptParent, aiID ), m_ptInterface( aptInterface )
 {
    wxGridSizer* sizer = new wxGridSizer( 1, 1, 0, 0 );
    this->SetSizer( sizer );
@@ -68,11 +71,16 @@ vimTypeBreakDown::vimTypeBreakDown( wxWindow* aptParent,
    // create dataset
    CategorySimpleDataset* dataset = new CategorySimpleDataset( vecCategories.data(), vecCategories.size() );
 
+
+   ClickablePieRenderer* renderer = new ClickablePieRenderer();
+
+   renderer->SetAreaDraw( 0, new ClickableSemiCircleDraw( *wxBLACK, *wxBLACK, new ClickableCategoryData( dataset ) ) );
+
    // and add serie to it
-   dataset->AddSerie( wxT( "Serie 1" ), vecValues1.data(), vecValues1.size() );
+   dataset->AddSerie( wxT( "Card Types" ), vecValues1.data(), vecValues1.size() );
 
    // create category renderer for legend drawing
-   dataset->SetRenderer( new CategoryRenderer( *colorScheme ) );
+   dataset->SetRenderer( (PieRenderer*)(renderer) );
 
    // set color scheme
    plot->SetColorScheme( colorScheme );
@@ -82,9 +90,8 @@ vimTypeBreakDown::vimTypeBreakDown( wxWindow* aptParent,
    // set legend to plot
    plot->SetLegend( new Legend( wxCENTER, wxRIGHT ) );
 
-   // and finally create chart
-   wxChartPanel* wxChart = new wxChartPanel( this, 1, new Chart( plot, "Type Breakdown" ) );
-   sizer->Add( wxChart, wxSizerFlags( 1 ).Expand() );
+   this->SetChart( new Chart( plot, "Type Breakdown" ) );
+   this->SetMode( new ClickMode() );
 }
 
 

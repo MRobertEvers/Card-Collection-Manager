@@ -2,6 +2,50 @@
 #include "vicStatsViewRow.h"
 #include "./Modules/vimCMCModule.h"
 #include "./Modules/vimTypeBreakDown.h"
+#include <wx/ClickableRenderer.h>
+#include <wx/ClickableShape.h>
+#include <wx/InteractivePlot.h>
+
+void
+ClickMode::Init( wxChartPanel* panel )
+{
+   m_Panel = panel;
+}
+
+void
+ClickMode::ShowToolTip( ClickableShape* dataShape )
+{
+   if( dataShape != nullptr )
+   {
+      auto myData = dataShape->GetData();
+      m_Panel->GetChart()->SetTooltip( new TextTooltip( m_LastPoint,
+         {
+            "CMC: " + myData->GetCategoryName(),
+            wxString( myData->GetSeriesName() + ": " + std::to_string( myData->GetSeriesValue() ) ),
+            wxString( "Total: " + std::to_string( myData->GetCategoryTotalOfAllSeries() ) )
+         }
+      ) );
+   }
+   else
+   {
+      m_Panel->GetChart()->SetTooltip( nullptr );
+   }
+   m_Panel->ChartChanged( nullptr );
+}
+
+void
+ClickMode::ChartMouseDown( wxPoint &pt, int key )
+{
+   m_LastPoint = pt;
+
+   auto plot = m_Panel->GetChart()->GetPlot();
+   auto intPlot = dynamic_cast<InteractivePlot*>(plot);
+   if( intPlot != nullptr )
+   {
+      auto data = intPlot->GetDataAtPoint( pt );
+      ShowToolTip( data );
+   }
+}
 
 BEGIN_EVENT_TABLE( vStatsViewer, wxFrame )
 EVT_MOUSE_EVENTS( vStatsViewer::OnMouseEvents )
@@ -25,6 +69,12 @@ vStatsViewer::vStatsViewer( wxWindow* aptParent,
    //row->AddModule( mod );
    //mod->SetFocus();
    m_mgr.AddPane( mod,
+                  wxAuiPaneInfo().Center().BestSize( 400, 400 ).CloseButton( false ).Caption( wxT( "chart" ) ) );
+
+   vimTypeBreakDown* mod2 = new vimTypeBreakDown( this, 1, m_ptInterface );
+   //row->AddModule( mod );
+   //mod->SetFocus();
+   m_mgr.AddPane( mod2,
                   wxAuiPaneInfo().Center().BestSize( 400, 400 ).CloseButton( false ).Caption( wxT( "chart" ) ) );
 
    //vimTypeBreakDown* mod2 = new vimTypeBreakDown( this, 1, m_ptInterface );

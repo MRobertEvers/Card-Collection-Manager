@@ -1,9 +1,10 @@
 #pragma once
 #include "../StoreFrontEnd/CollectionInterface.h"
+#include <wx/chartpanel.h>
 #include <wx/wxprec.h>
 #include <memory>
 
-class vimTypeBreakDown : public wxPanel
+class vimTypeBreakDown : public wxChartPanel
 {
 public:
    vimTypeBreakDown( wxWindow* aptParent,
