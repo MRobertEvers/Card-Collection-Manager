@@ -20,7 +20,7 @@ ClickMode::ShowToolTip( ClickableShape* dataShape )
       auto myData = dataShape->GetData();
       m_Panel->GetChart()->SetTooltip( new TextTooltip( m_LastPoint,
          {
-            "CMC: " + myData->GetCategoryName(),
+            "Type: " + myData->GetCategoryName(),
             wxString( myData->GetSeriesName() + ": " + std::to_string( myData->GetSeriesValue() ) ),
             wxString( "Total: " + std::to_string( myData->GetCategoryTotalOfAllSeries() ) )
          }

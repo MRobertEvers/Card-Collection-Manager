@@ -16,6 +16,29 @@
 #include <wx/ClickableShape.h>
 
 
+void
+BarClickMode::ShowToolTip( ClickableShape* dataShape )
+{
+   if( dataShape != nullptr )
+   {
+      auto myData = dataShape->GetData();
+      m_Panel->GetChart()->SetTooltip( new TextTooltip( m_LastPoint,
+         {
+            "CMC: " + myData->GetCategoryName(),
+            wxString( myData->GetSeriesName() + ": " + std::to_string( (unsigned int)myData->GetSeriesValue() ) ),
+            wxString( "Total: " + std::to_string( (unsigned int)myData->GetCategoryTotalOfAllSeries() ) )
+         }
+      ) );
+   }
+   else
+   {
+      m_Panel->GetChart()->SetTooltip( nullptr );
+   }
+   m_Panel->ChartChanged( nullptr );
+}
+
+
+
 BEGIN_EVENT_TABLE( vimCMCModule, wxChartPanel )
 END_EVENT_TABLE()
 
@@ -163,7 +186,7 @@ vimCMCModule::vimCMCModule( wxWindow* aptParent,
    // and finally construct and return chart
 
    this->SetChart( new Chart( plot, "Mana Curve" ) );
-   this->SetMode( new ClickMode() );
+   this->SetMode( new BarClickMode() );
 }
 
 vimCMCModule::~vimCMCModule()

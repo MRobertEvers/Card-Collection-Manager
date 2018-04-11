@@ -10,6 +10,25 @@
 #include <wx/ClickableRenderer.h>
 #include <wx/ClickableShape.h>
 
+void 
+PieClickMode::ShowToolTip( ClickableShape* dataShape )
+{
+   if( dataShape != nullptr )
+   {
+      auto myData = dataShape->GetData();
+      m_Panel->GetChart()->SetTooltip( new TextTooltip( m_LastPoint,
+         {
+            myData->GetCategoryName() + ": " + std::to_string( (unsigned int)myData->GetSeriesValue() )
+         }
+      ) );
+   }
+   else
+   {
+      m_Panel->GetChart()->SetTooltip( nullptr );
+   }
+   m_Panel->ChartChanged( nullptr );
+}
+
 vimTypeBreakDown::vimTypeBreakDown( wxWindow* aptParent,
                                     wxWindowID aiID,
                                     std::shared_ptr<CollectionInterface> aptInterface )
@@ -91,7 +110,7 @@ vimTypeBreakDown::vimTypeBreakDown( wxWindow* aptParent,
    plot->SetLegend( new Legend( wxCENTER, wxRIGHT ) );
 
    this->SetChart( new Chart( plot, "Type Breakdown" ) );
-   this->SetMode( new ClickMode() );
+   this->SetMode( new PieClickMode() );
 }
 
 

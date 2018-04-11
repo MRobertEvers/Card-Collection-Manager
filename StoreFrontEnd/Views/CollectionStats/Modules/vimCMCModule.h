@@ -1,8 +1,15 @@
 #pragma once
 #include "../StoreFrontEnd/CollectionInterface.h"
+#include "../vStatsViewer.h"
 #include <wx/chartpanel.h>
 #include <wx/wxprec.h>
 #include <memory>
+
+class BarClickMode : public ClickMode
+{
+public:
+   virtual void ShowToolTip( ClickableShape* dataShape );
+};
 
 
 class vimCMCModule : public wxChartPanel

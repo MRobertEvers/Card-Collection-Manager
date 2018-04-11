@@ -15,11 +15,11 @@ class ClickMode : public ChartPanelMode
 {
 public:
    ClickMode() {}
-   ~ClickMode() {}
+   virtual ~ClickMode() {}
 
    void Init( wxChartPanel* panel );
 
-   void ShowToolTip( ClickableShape* dataShape );
+   virtual void ShowToolTip( ClickableShape* dataShape );
 
    void ChartEnterWindow()
    {
@@ -43,7 +43,7 @@ public:
    {
    }
 
-private:
+protected:
    wxChartPanel * m_Panel;
    wxPoint m_LastPoint;
 };
