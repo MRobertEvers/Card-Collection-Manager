@@ -12,11 +12,11 @@ CELIOption::ParseCollectionItemsList( const vector<string>& avecItems )
    for( auto& id : avecItems )
    {
       unsigned int Count;
-      string Name;
+      string ParentGroupName;
       vector<pair<string, string>> Identifiers;
       vector<pair<string, string>> MetaTags;
 
-      StringInterface::ParseCardLine( id, Count, Name, Identifiers, MetaTags );
+      StringInterface::ParseCardLine( id, Count, ParentGroupName, Identifiers, MetaTags );
 
       CELIOption option;
       option.Display = ptSF->CollapseCardLine( id, false );

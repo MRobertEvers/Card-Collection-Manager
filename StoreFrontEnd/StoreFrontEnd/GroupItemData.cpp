@@ -104,13 +104,13 @@ GroupItemData::parseLongName(const wxString& aszName)
    vector<pair<string, string>> vecIDs;
    vector<pair<string, string>> vecMeta;
    unsigned int Count;
-   string Name;
+   string ParentGroupName;
 
-   StringInterface::ParseCardLine( aszName.ToStdString(), Count, Name,
+   StringInterface::ParseCardLine( aszName.ToStdString(), Count, ParentGroupName,
                          vecIDs, vecMeta );
 
    m_iNumber = Count;
-   m_szName = Name;
+   m_szName = ParentGroupName;
 
    if( vecMeta.size() > 0 )
    {

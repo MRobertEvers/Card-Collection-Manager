@@ -60,9 +60,21 @@ Group::Group(bool abIsEmpty)
    ItemSortingFunctor = std::shared_ptr<ItemSorting>( new ItemSorting() );
 }
 
+wxString 
+Group::GetParentGroupName()
+{
+   return ParentGroupName;
+}
+
+Group& 
+Group::SetSubGroupOf( const wxString& aszName )
+{
+   ParentGroupName = aszName;
+   return *this;
+}
+
 Group&
-Group::
-GroupOn( const wxString& aszKey, bool abIsMetaKey )
+Group::GroupOn( const wxString& aszKey, bool abIsMetaKey )
 {
    Key = aszKey;
    MetaKey = abIsMetaKey;
@@ -70,24 +82,21 @@ GroupOn( const wxString& aszKey, bool abIsMetaKey )
 }
 
 Group& 
-Group::
-AliasGroup( const wxString& aszGroup, const wxString& aszAlias )
+Group::AliasGroup( const wxString& aszGroup, const wxString& aszAlias )
 {
    Aliases.insert( std::make_pair( aszGroup, aszAlias ) );
    return *this;
 }
 
 Group&
-Group::
-BroadenGroup( const wxString& aszValue )
+Group::BroadenGroup( const wxString& aszValue )
 {
    BroadenedValues.push_back( aszValue );
    return *this;
 }
 
 Group&
-Group::
-OverrideGrouping( const Group& aGrouping )
+Group::OverrideGrouping( const Group& aGrouping )
 {
    Overrides.push_back( aGrouping );
    return *this;
@@ -101,8 +110,9 @@ Group::SetDefaultSubGroup( const Group& aGrouping )
 }
 
 Group& 
-Group::AddSubGroup( const wxString& aszMajorGroup, const Group& aGrouping )
+Group::AddSubGroup( const wxString& aszMajorGroup, Group& aGrouping )
 {
+   aGrouping.SetSubGroupOf( aszMajorGroup );
    SubGroups.insert( std::make_pair(aszMajorGroup, aGrouping ) );
    return *this;
 }

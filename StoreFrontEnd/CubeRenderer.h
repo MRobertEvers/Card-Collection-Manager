@@ -26,6 +26,7 @@ public:
 
    Group GetGrouping();
 
+
 protected:
    virtual ColoredGroupColumnRenderer* uiGetColumnRenderer( const wxString& aszColumnName, const Group& aGroup );
 
@@ -34,6 +35,7 @@ private:
    void uiAddColumn( const wxString& aszColumnName,
                      std::vector<CardInterface*> avecItemData );
    void uiBuildGrouping();
+   wxColour uiGetColumnColor( const wxString& aszColumnName );
 
 
    Group m_Grouping;
@@ -72,8 +74,8 @@ public:
    void SetBackgroundColor( const wxColour& aColour );
    void SetFontColor( const wxColour& aColour );
 
+   /* ColumnRenderer */
    void Draw( std::vector<CardInterface*> avecItemData ) = 0;
-
    virtual int DisplayItem( const wxString& buf, const wxString& aszHash,
                             const wxFont& awxFont, 
                             bool abAlignCenter = false, 
@@ -81,7 +83,6 @@ public:
                             const wxColour& awxBackgroundColor = wxColour( 255, 255, 255 ),
                             int aiRow = -1,
                             unsigned int aiRowHeight = 0 );
-
    virtual void UndisplayItem( int aiRow );
 
    virtual wxColour GetBackgroundColor();
@@ -96,7 +97,7 @@ class DisplayGroup;
 class DisplayNodeSource
 {
 public:
-   virtual DisplayGroup* GetDisplayGroup( int aiType, Group aGroup,
+   virtual DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
                                           std::vector<CardInterface*> avecItems,
                                           DisplayGroup* aParent ) = 0;
 };
@@ -106,6 +107,7 @@ class DisplayGroup
 public:
    DisplayGroup( ColumnRenderer* apRenderer,
                  DisplayNodeSource* apSource,
+                 wxString aszGroupName,
                  Group aGroup,
                  std::vector<CardInterface*> avecItems,
                  DisplayGroup* aParent = nullptr );
@@ -119,7 +121,10 @@ public:
    virtual void Draw() = 0;
    virtual void UnDraw() = 0;
 
+   // Returns the number of items drawn by this group.
    virtual int GetSize();
+   // Returns the number of rows drawn by this group.
+   virtual int GetDrawSize();
    // Gets the first row that belongs to this group... not necessarily drawn.
    virtual int GetFirstRow();
    virtual int GetFirstItemRow();
@@ -128,6 +133,7 @@ public:
    virtual bool IsFirstChild();
    virtual int GetLevel();
 
+   wxString m_szGroupName;
    Group m_Group;
    ColumnRenderer* m_pRenderer;
    DisplayGroup* m_Parent;
@@ -146,8 +152,9 @@ public:
               DisplayNodeSource* apSource,
               Group aGroup,
               std::vector<CardInterface*> avecItems,
+              wxString aszGroupName = "",
               DisplayGroup* aParent = nullptr )
-      : DisplayGroup(apRenderer, apSource, aGroup, avecItems, aParent){}
+      : DisplayGroup(apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent){}
    virtual ~RootGroup() {}
 
    virtual int GetTotalOverhead() { return 0; }
@@ -165,7 +172,7 @@ public:
    virtual bool RemoveItem( CardInterface* aptItem );
    virtual void AddItem( CardInterface* aptItem );
 
-   DisplayGroup* GetDisplayGroup( int aiType, Group aGroup,
+   DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
                                   std::vector<CardInterface*> avecItems,
                                   DisplayGroup* aParent );
    
@@ -175,13 +182,14 @@ protected:
    public:
       TypeGroup( ColumnRenderer* apRenderer, 
                  DisplayNodeSource* apSource,
+                 wxString aszGroupName,
                  Group aGroup,
                  std::vector<CardInterface*> avecItems,
                  DisplayGroup* aParent = nullptr );
 
       virtual ~TypeGroup();
 
-      virtual int GetSize();
+      virtual int GetDrawSize();
       virtual void Draw();
       virtual void UnDraw();
       virtual int GetFirstItemRow();
@@ -199,6 +207,7 @@ protected:
    public:
       CMCGroup( ColumnRenderer* apRenderer, 
                 DisplayNodeSource* apSource,
+                wxString aszGroupName,
                 Group aGroup,
                 std::vector<CardInterface*> avecItems,
                 DisplayGroup* aParent = nullptr );
@@ -215,7 +224,7 @@ protected:
       bool m_bHasDrawnFirst;
    };
 private:
-   
+   wxString uiGetDisplayTitle();
    //std::vector<OrderedDisplayNode*> m_vecDisplayNodes;
    DisplayGroup* m_Root;
 };

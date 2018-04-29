@@ -123,7 +123,10 @@ CubeRenderer::GetGrouping()
 ColoredGroupColumnRenderer*
 CubeRenderer::uiGetColumnRenderer( const wxString& aszGroupName, const Group& aGroup )
 {
-   return new OrderedSubgroupColumnRenderer( this, wxID_ANY, aGroup );
+   auto ptRenderer = new OrderedSubgroupColumnRenderer( this, wxID_ANY, aGroup );
+   ptRenderer->SetBackgroundColor( uiGetColumnColor( aszGroupName ) );
+   ptRenderer->SetTitle( aszGroupName );
+   return ptRenderer;
    //if( aszGroupName == "Multicolor" )
    //{
    //   return new MultiDistinctGroupColumnRenderer( this, wxID_ANY, aGroup );
@@ -215,6 +218,41 @@ CubeRenderer::uiBuildGrouping()
    m_Grouping = defaultGrp;
 }
 
+wxColour 
+CubeRenderer::uiGetColumnColor( const wxString& aszColumnName )
+{
+   if( aszColumnName == "W" )
+   {
+      return wxColour( 255, 252, 243 );
+   }
+   else if( aszColumnName == "U" )
+   {
+      return wxColour( 235, 245, 255 );
+   }
+   else if( aszColumnName == "B" )
+   {
+      return wxColour( 227, 227, 227 );
+   }
+   else if( aszColumnName == "R" )
+   {
+      return wxColour( 255, 231, 231 );
+   }
+   else if( aszColumnName == "G" )
+   {
+      return wxColour( 242, 255, 230 );
+   }
+   else if( aszColumnName == "Multicolor" )
+   {
+      return wxColour( 255, 255, 220 );
+   }
+   else if( aszColumnName == "Colorless" )
+   {
+      return wxColour( 255, 241, 228 );
+   }
+
+   return wxColour();
+}
+
 ColoredGroupColumnRenderer::ColoredGroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID,
                                                         const Group& aGroup )
    : wxInfiniteGrid( aParent, aiWID, wxDefaultPosition, wxDefaultSize, wxBORDER ), m_Group(aGroup)
@@ -300,9 +338,9 @@ ColoredGroupColumnRenderer::GetBackgroundColor()
    return m_ColumnColour;
 }
 
-DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSource, Group aGroup,
+DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSource, wxString aszGroupName, Group aGroup,
                             std::vector<CardInterface*> avecItems, DisplayGroup* aParent )
-   : m_pRenderer( apRenderer ), m_pSource(apSource), m_Group(aGroup), m_Parent(aParent)
+   : m_pRenderer( apRenderer ), m_pSource(apSource), m_Group(aGroup), m_Parent(aParent), m_szGroupName(aszGroupName)
 {
    if( !aGroup.IsEmpty() )
    {
@@ -327,7 +365,7 @@ DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSou
       for( auto& group : tmpMap )
       {
          // Children Nodes.
-         DisplayGroup* node = m_pSource->GetDisplayGroup(GetLevel()+1, aGroup.GetSubGroup( group.first ), group.second, this);
+         DisplayGroup* node = m_pSource->GetDisplayGroup(GetLevel()+1, group.first, aGroup.GetSubGroup( group.first ), group.second, this);
          m_mapChildren[group.first] = node;
       }
    }
@@ -416,7 +454,7 @@ DisplayGroup::AddItem( CardInterface* aptItem )
       }
       else
       {
-         DisplayGroup* node = m_pSource->GetDisplayGroup( GetLevel(), subGroup, {aptItem}, this );
+         DisplayGroup* node = m_pSource->GetDisplayGroup( GetLevel(), szGroup, subGroup, {aptItem}, this );
          m_mapChildren[szGroup] = node;
       }
    }
@@ -425,11 +463,24 @@ DisplayGroup::AddItem( CardInterface* aptItem )
 int 
 DisplayGroup::GetSize()
 {
-   int iSize = GetTotalOverhead();
+   int iSize = 0;
 
    for( auto& child : m_mapChildren )
    {
       iSize += child.second->GetSize();
+   }
+
+   return iSize + m_setItems.size();
+}
+
+int 
+DisplayGroup::GetDrawSize()
+{
+   int iSize = GetTotalOverhead();
+
+   for( auto& child : m_mapChildren )
+   {
+      iSize += child.second->GetDrawSize();
    }
    return iSize + m_setItems.size();
 }
@@ -453,7 +504,7 @@ DisplayGroup::GetFirstRow()
          }
          else
          {
-            iStart += sibling.second->GetSize();
+            iStart += sibling.second->GetDrawSize();
          }
       }
    }
@@ -530,10 +581,11 @@ DisplayGroup::GetLevel()
 OrderedSubgroupColumnRenderer::
 TypeGroup::TypeGroup( ColumnRenderer* apRenderer, 
                       DisplayNodeSource* apSource,
+                      wxString aszGroupName,
                       Group aGroup,
                       vector<CardInterface*> avecItems,
                       DisplayGroup* aParent )
-   : DisplayGroup( apRenderer, apSource, aGroup, avecItems, aParent), m_bHasDrawnLast(false), m_bHasDrawnHeader(false)
+   : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent), m_bHasDrawnLast(false), m_bHasDrawnHeader(false)
 {
 
 }
@@ -546,9 +598,10 @@ TypeGroup::~TypeGroup()
 
 int 
 OrderedSubgroupColumnRenderer::
-TypeGroup::GetSize()
+TypeGroup::GetDrawSize()
 {
-   return DisplayGroup::GetSize() - m_setItems.size();
+   // Since this class doesn't draw any items, the GetSize() function will return incorrectly.
+   return DisplayGroup::GetDrawSize() - m_setItems.size();
 }
 
 void 
@@ -557,7 +610,7 @@ TypeGroup::Draw()
 {
    if( !m_bHasDrawnHeader )
    {
-      wxString buf = /*GROUP NAME +*/ " (" + std::to_string( 0 ) + ")";
+      wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
       m_pRenderer->DisplayItem( buf, "",
                                 wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
                                 true, wxColour( "BLACK" ),
@@ -591,7 +644,7 @@ TypeGroup::Draw()
    if( m_bHasDrawnLast && IsLastChild() )
    {
       // Undraw endspace
-      m_pRenderer->UndisplayItem( GetFirstRow() + GetSize() );
+      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
       m_bHasDrawnLast = false;
    }
    else if( !m_bHasDrawnLast && !IsLastChild() )
@@ -602,7 +655,7 @@ TypeGroup::Draw()
       m_pRenderer->DisplayItem( "", "",
                                 wxFont(), false, wxColour(),
                                 m_pRenderer->GetBackgroundColor(), 
-                                GetFirstRow() + GetSize() );
+                                GetFirstRow() + GetDrawSize() );
       m_bHasDrawnLast = true;
    }
 }
@@ -619,7 +672,7 @@ TypeGroup::UnDraw()
 
    if( m_bHasDrawnLast )
    {
-      m_pRenderer->UndisplayItem( GetFirstRow() + GetSize() );
+      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
       m_bHasDrawnLast = false;
    }
 }
@@ -658,10 +711,11 @@ TypeGroup::GetTotalOverhead()
 OrderedSubgroupColumnRenderer::
 CMCGroup::CMCGroup( ColumnRenderer* apRenderer,
                     DisplayNodeSource* apSource,
+                    wxString aszGroupName,
                     Group aGroup,
                     vector<CardInterface*> avecItems,
                     DisplayGroup* aParent )
-   : DisplayGroup( apRenderer, apSource, aGroup, avecItems, aParent), m_bHasDrawnFirst(false)
+   : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent), m_bHasDrawnFirst(false)
 {
 
 }
@@ -767,32 +821,50 @@ void
 OrderedSubgroupColumnRenderer::Draw( vector<CardInterface*> avecItemData )
 {
    m_Root = new RootGroup( this, this, m_Group, avecItemData );
+
+   this->SetColLabelValue( 0, uiGetDisplayTitle() );
    m_Root->Draw();
+
+   this->SetColSize( 0, this->GetVirtualSize().GetWidth() );
 }
 
 bool 
 OrderedSubgroupColumnRenderer::RemoveItem( CardInterface* aptItem )
 {
-   return m_Root->RemoveItem( aptItem );
+   if( m_Root->RemoveItem( aptItem ) )
+   {
+      this->SetColLabelValue( 0, uiGetDisplayTitle() );
+      return true;
+   }
+   return false;
 }
 
 void 
 OrderedSubgroupColumnRenderer::AddItem( CardInterface* aptItem )
 {
    m_Root->AddItem( aptItem );
+   this->SetColLabelValue( 0, uiGetDisplayTitle() );
 }
 
 DisplayGroup* 
-OrderedSubgroupColumnRenderer::GetDisplayGroup( int aiType, Group aGroup,
+OrderedSubgroupColumnRenderer::GetDisplayGroup( int aiType,
+                                                wxString aszGroupName,
+                                                Group aGroup,
                                                 std::vector<CardInterface*> avecItems,
                                                 DisplayGroup* aParent )
 {
    if( aiType == 1 )
    {
-      return new TypeGroup( this, this, aGroup, avecItems, aParent );
+      return new TypeGroup( this, this, aszGroupName, aGroup, avecItems, aParent );
    }
    else if( aiType == 2 )
    {
-      return new CMCGroup( this, this, aGroup, avecItems, aParent );
+      return new CMCGroup( this, this, aszGroupName, aGroup, avecItems, aParent );
    }
+}
+
+wxString
+OrderedSubgroupColumnRenderer::uiGetDisplayTitle()
+{
+   return m_szGroupTitle + " (" + std::to_string( m_Root->GetSize() ) + ")";
 }

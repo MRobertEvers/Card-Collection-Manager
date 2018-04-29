@@ -38,7 +38,7 @@ private:
    {
    public:
       unsigned int Count;
-      std::string Name;
+      std::string ParentGroupName;
       std::vector<std::pair<std::string, std::string>> DetailVec;
       std::vector<std::pair<std::string, std::string>> MetaVec;
    };

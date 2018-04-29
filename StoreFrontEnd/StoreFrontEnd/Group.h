@@ -36,6 +36,9 @@ public:
 
 
    Group(bool abIsEmpty = false);
+   // Not used in grouping.
+   wxString GetParentGroupName();
+   Group& SetSubGroupOf( const wxString& aszName );
    Group& GroupOn( const wxString& aszKey, bool abIsMetaKey = true );
 
    // Applied last. Any group matching aszGroup exactly will appear as aszAlias.
@@ -45,7 +48,7 @@ public:
    Group& BroadenGroup( const wxString& aszValue );
    Group& OverrideGrouping( const Group& aGrouping );
    Group& SetDefaultSubGroup( const Group& aGrouping );
-   Group& AddSubGroup( const wxString& aszMajorGroup, const Group& aGrouping );
+   Group& AddSubGroup( const wxString& aszMajorGroup, Group& aGrouping );
    Group& SetGroupSortingFunctor( SortingOperator* aptFunctor );
    Group& SetItemSortingFunctor( SortingOperator* aptFunctor );
 
@@ -56,6 +59,8 @@ public:
    bool IsEmpty() const;
 
 private:
+   wxString ParentGroupName;
+
    wxString Key;
    bool MetaKey;
    bool BIsEmpty;

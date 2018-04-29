@@ -10,13 +10,13 @@ CardInterface::CardInterface( const string& aszCardLine )
    vector<pair<string, string>> vecIDs;
    vector<pair<string, string>> vecMeta;
    unsigned int Count;
-   string Name;
+   string ParentGroupName;
 
-   StringInterface::ParseCardLine( aszCardLine, Count, Name,
+   StringInterface::ParseCardLine( aszCardLine, Count, ParentGroupName,
                                    vecIDs, vecMeta );
 
    m_iCount = Count;
-   m_szName = Name;
+   m_szName = ParentGroupName;
 
    if( vecMeta.size() > 0 )
    {

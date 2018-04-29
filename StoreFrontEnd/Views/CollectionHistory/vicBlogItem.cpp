@@ -82,8 +82,8 @@ vicBlogItem::vicBlogItem( wxWindow* aptParent,
       StringInterface::InterfaceLineType Type;
 
       bool ParseResult = StringInterface::ParseInterfaceLine( szHistLine,
-         FirstItem.Count, FirstItem.Name, FirstItem.DetailVec, FirstItem.MetaVec,
-         SecondItem.Count, SecondItem.Name, SecondItem.DetailVec, SecondItem.MetaVec,
+         FirstItem.Count, FirstItem.ParentGroupName, FirstItem.DetailVec, FirstItem.MetaVec,
+         SecondItem.Count, SecondItem.ParentGroupName, SecondItem.DetailVec, SecondItem.MetaVec,
          Type );
 
       if( !ParseResult )
@@ -91,25 +91,25 @@ vicBlogItem::vicBlogItem( wxWindow* aptParent,
          continue;
       }
 
-      if( FirstItem.Name != "" )
+      if( FirstItem.ParentGroupName != "" )
       {
          wxString szImgFilePath;
          wxString szLineText;
          if( Type == StringInterface::AddLine )
          {
             szImgFilePath = ptSFE->GetAddSymbolFilePath();
-            szLineText = FirstItem.Name;
+            szLineText = FirstItem.ParentGroupName;
          }
          else if( Type == StringInterface::RemoveLine )
          {
             szImgFilePath = ptSFE->GetRemSymbolFilePath();
-            szLineText = FirstItem.Name;
+            szLineText = FirstItem.ParentGroupName;
          }
          else if( ( Type == StringInterface::ChangeLine ) &&
-                  ( SecondItem.Name != "" ) )
+                  ( SecondItem.ParentGroupName != "" ) )
          {
             szImgFilePath = ptSFE->GetSwapSymbolFilePath();
-            szLineText = FirstItem.Name + " > " + SecondItem.Name;
+            szLineText = FirstItem.ParentGroupName + " > " + SecondItem.ParentGroupName;
          }
 
          // Add the row

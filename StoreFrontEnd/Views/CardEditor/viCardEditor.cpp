@@ -117,14 +117,14 @@ viCardEditor::parseNew(wxString aszColID, wxString aszCardHash )
    {
       auto item = vecItems.at( 0 );
       unsigned int Count;
-      string Name;
+      string ParentGroupName;
       vector<pair<string, string>> Identifiers;
       vector<pair<string, string>> MetaTags;
 
-      StringInterface::ParseCardLine( item, Count, Name, Identifiers, MetaTags );
-      m_szCardName = Name;
+      StringInterface::ParseCardLine( item, Count, ParentGroupName, Identifiers, MetaTags );
+      m_szCardName = ParentGroupName;
 
-      auto mapOptions = ptSF->GetIdentifyingAttributeOptions( Name );
+      auto mapOptions = ptSF->GetIdentifyingAttributeOptions( ParentGroupName );
       for( auto& pairAttr : Identifiers )
       {
          CETraitOption option;
