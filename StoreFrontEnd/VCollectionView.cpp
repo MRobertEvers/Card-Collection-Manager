@@ -1,6 +1,6 @@
 #include "VCollectionView.h"
 
-VCollectionView::VCollectionView( wxPanel* aParent, wxWindowID aiWID )
+VCollectionView::VCollectionView( wxFrame* aParent, wxWindowID aiWID )
    : wxPanel(aParent, aiWID)
 {
    wxFlexGridSizer* boxSizer = new wxFlexGridSizer( 1, 3, 0, 0 );

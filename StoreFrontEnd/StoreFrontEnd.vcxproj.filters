@@ -104,18 +104,6 @@
     <ClCompile Include="Views\MainWindow\VMainWindow.cpp">
       <Filter>Views</Filter>
     </ClCompile>
-    <ClCompile Include="Views\CollectionDeckBox\cCollectionDeckBox.cpp">
-      <Filter>Views\Deckbox</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionDeckBox\CollectionDeckBox.cpp">
-      <Filter>Views\Deckbox</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionDeckBox\vCollectionDeckBox.cpp">
-      <Filter>Views\Deckbox</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionDeckBox\vcCollectionDeckBoxItemList.cpp">
-      <Filter>Views\Deckbox\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Views\CardEditor\viCardEditor.cpp">
       <Filter>Views\Interfaces\CardEditor</Filter>
     </ClCompile>
@@ -282,18 +270,6 @@
     </ClInclude>
     <ClInclude Include="Views\MainWindow\VMainWindow.h">
       <Filter>Views</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionDeckBox\cCollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionDeckBox\CollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionDeckBox\vCollectionDeckBox.h">
-      <Filter>Views\Deckbox</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionDeckBox\vcCollectionDeckBoxItemList.h">
-      <Filter>Views\Deckbox\Components</Filter>
     </ClInclude>
     <ClInclude Include="Views\CardEditor\viCardEditor.h">
       <Filter>Views\Interfaces\CardEditor</Filter>

@@ -179,10 +179,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\CardEditor\vcEditableTraitListItem.cpp" />
     <ClCompile Include="Views\CardEditor\vcItemNameCheckBox.cpp" />
     <ClCompile Include="Views\CardEditor\viCardEditor.cpp" />
-    <ClCompile Include="Views\CollectionDeckBox\cCollectionDeckBox.cpp" />
-    <ClCompile Include="Views\CollectionDeckBox\CollectionDeckBox.cpp" />
-    <ClCompile Include="Views\CollectionDeckBox\vcCollectionDeckBoxItemList.cpp" />
-    <ClCompile Include="Views\CollectionDeckBox\vCollectionDeckBox.cpp" />
     <ClCompile Include="Views\CollectionEditor\CELIOption.cpp" />
     <ClCompile Include="Views\CollectionEditor\vicCollectionEditListItemOption.cpp" />
     <ClCompile Include="Views\CollectionEditor\vicCollectionEditorList.cpp" />
@@ -264,10 +260,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\CardEditor\vcEditableTraitListItem.h" />
     <ClInclude Include="Views\CardEditor\vcItemNameCheckBox.h" />
     <ClInclude Include="Views\CardEditor\viCardEditor.h" />
-    <ClInclude Include="Views\CollectionDeckBox\cCollectionDeckBox.h" />
-    <ClInclude Include="Views\CollectionDeckBox\CollectionDeckBox.h" />
-    <ClInclude Include="Views\CollectionDeckBox\vcCollectionDeckBoxItemList.h" />
-    <ClInclude Include="Views\CollectionDeckBox\vCollectionDeckBox.h" />
     <ClInclude Include="Views\CollectionEditor\CELIOption.h" />
     <ClInclude Include="Views\CollectionEditor\vicCollectionEditListItemOption.h" />
     <ClInclude Include="Views\CollectionEditor\vicCollectionEditorList.h" />

@@ -56,7 +56,7 @@ CubeDisplayItemSorter::operator()( const wxString& agrpLeft, const wxString& agr
 
 
 CubeRenderer::CubeRenderer( wxPanel* aParent, wxWindowID aiWID )
-   : wxScrolledWindow( aParent, aiWID )
+   : wxScrolledWindow( aParent, aiWID ), m_Grouping(Group(true))
 {
    wxBoxSizer* boxSizer = new wxBoxSizer( wxHORIZONTAL );
    this->SetSizer( boxSizer );
@@ -157,6 +157,8 @@ CubeRenderer::uiAddColumn( const wxString& aszColumnName, vector<CardInterface*>
    auto grouping = GetGrouping();
    auto ptColumn = uiGetColumnRenderer( aszColumnName, grouping.GetSubGroup(aszColumnName) );
    m_mapColumns.insert( make_pair( aszColumnName, ptColumn) );
+
+   this->GetSizer()->Add( ptColumn, wxSizerFlags( 1 ).Left().Border( wxRIGHT, 3 ) );
 
    // Draw the column here.
    ptColumn->Draw( avecItemData );
@@ -311,11 +313,11 @@ DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSou
       {
          // TODO: Need way to get meta tags from server so we can sort on them.
          auto szGroup = aGroup.GetGroup( *data );
-         if( !aGroup.GetSubGroup( szGroup ).IsEmpty() )
+         if( !aGroup.GetSubGroup( szGroup ).IsEmpty() || szGroup != "" )
          {
             tmpMap[szGroup].push_back( data );
          }
-         else
+         else if( szGroup == "" )
          {
             // Defaults to sort alphabetically.
             m_setItems.insert( data );
@@ -325,7 +327,7 @@ DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSou
       for( auto& group : tmpMap )
       {
          // Children Nodes.
-         DisplayGroup* node = m_pSource->GetDisplayGroup(GetLevel(), aGroup.GetSubGroup( group.first ), group.second, this);
+         DisplayGroup* node = m_pSource->GetDisplayGroup(GetLevel()+1, aGroup.GetSubGroup( group.first ), group.second, this);
          m_mapChildren[group.first] = node;
       }
    }
@@ -437,17 +439,17 @@ DisplayGroup::GetFirstRow()
 {
    if( IsFirstChild() )
    {
-      return 0;
+      return m_Parent == nullptr ? 0 : m_Parent->GetFirstItemRow();
    }
    else
    {
-      int iStart = m_Parent->GetFirstItemRow();
+      int iStart = m_Parent == nullptr ? 0 : m_Parent->GetFirstItemRow();
       for( auto& sibling : m_Parent->m_mapChildren )
       {
          if( sibling.second == this )
          {
             // Children should override this to add any overhead drawn before m_setItems.
-            return iStart + 1;
+            return iStart;
          }
          else
          {
@@ -540,6 +542,13 @@ OrderedSubgroupColumnRenderer::
 TypeGroup::~TypeGroup()
 {
 
+}
+
+int 
+OrderedSubgroupColumnRenderer::
+TypeGroup::GetSize()
+{
+   return DisplayGroup::GetSize() - m_setItems.size();
 }
 
 void 
@@ -729,6 +738,15 @@ CMCGroup::GetTotalOverhead()
    else
    {
       return 0;
+   }
+}
+
+void
+RootGroup::Draw()
+{
+   for( auto& child : m_mapChildren )
+   {
+      child.second->Draw();
    }
 }
 

@@ -23,7 +23,7 @@ public:
 class VCollectionView : public wxPanel
 {
 public:
-   VCollectionView( wxPanel* aParent, wxWindowID aiWID );
+   VCollectionView( wxFrame* aParent, wxWindowID aiWID );
    ~VCollectionView();
 
    void SetController( CCollectionView* aptController );
@@ -34,8 +34,6 @@ public:
    void Draw( std::vector<CardInterface*> avecItemData );
 
 private:
-   wxDECLARE_EVENT_TABLE();
-
    CCollectionView* m_ptController;
    GroupRenderer* m_ptRenderer;
 };

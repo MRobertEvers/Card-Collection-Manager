@@ -2,9 +2,8 @@
 #include "VMainWindow.h"
 #include "../ViewTemplates/IMenuEventHandler.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
-#include "../CollectionCube/CollectionCube.h"
-#include "../CollectionCube/cCollectionCube.h"
-#include "../CollectionDeckBox/CollectionDeckBox.h"
+#include "../CCollectionView.h"
+#include "../VCollectionView.h"
 #include "../ViewTemplates/ivCollectionView.h"
 #include "../ViewTemplates/IControlledView.h"
 #include "../CollectionsOverview/CollectionsOverview.h"
@@ -34,6 +33,7 @@ void
 CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType )
 {
    auto ptsf = StoreFrontEnd::Server();
+   auto ptse = StoreFrontEnd::Client();
    wxString szID = ptsf->GetCollectionID( aszColID.ToStdString() );
    // TODO: THIS SHOULD NOT BE A LITERAL STRING.
    if( szID == "NF" )
@@ -45,17 +45,24 @@ CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType 
    {
       m_View->ReleaseMenuEventHandler();
 
-      CollectionCube* cube = new CollectionCube(m_View, szID );
-      m_ptrControlledView = std::shared_ptr<IControlledView>( cube );
-      m_View->SetView( cube->GetView() );
+      VCollectionView* view = new VCollectionView( m_View, wxID_ANY );
+      auto ptCol = new CollectionInterface( szID.ToStdString() );
+      ptCol->Refresh();
+      auto pt = std::shared_ptr<CollectionInterface>( ptCol );
+      CCollectionView* cube = new CCollectionView( view, pt );
+      //m_ptrControlledView = std::shared_ptr<IControlledView>( view );
+      view->SetController( cube );
+      cube->SetCubeRenderer();
+      m_View->SetView( view );
+
    }
    else
    {
-      m_View->ReleaseMenuEventHandler();
+      //m_View->ReleaseMenuEventHandler();
 
-      CollectionDeckBox* cube = new CollectionDeckBox( m_View, szID );
-      m_ptrControlledView = std::shared_ptr<IControlledView>( cube );
-      m_View->SetView( cube->GetView() );
+      //CollectionDeckBox* cube = new CollectionDeckBox( m_View, szID );
+      //m_ptrControlledView = std::shared_ptr<IControlledView>( cube );
+      //m_View->SetView( cube->GetView() );
    }
 }
 

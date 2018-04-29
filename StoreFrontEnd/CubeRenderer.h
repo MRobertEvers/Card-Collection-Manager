@@ -151,7 +151,7 @@ public:
    virtual ~RootGroup() {}
 
    virtual int GetTotalOverhead() { return 0; }
-   virtual void Draw() {}
+   virtual void Draw();
    virtual void UnDraw() {};
 };
 
@@ -181,6 +181,7 @@ protected:
 
       virtual ~TypeGroup();
 
+      virtual int GetSize();
       virtual void Draw();
       virtual void UnDraw();
       virtual int GetFirstItemRow();
