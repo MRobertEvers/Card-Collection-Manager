@@ -7,6 +7,19 @@
 #include "../StoreFrontEnd/GroupItemData.h"
 #include "../MainWindow/MainWindow.h"
 
+
+class CubeDisplayColumnSorter : public  Group::SortingOperator
+{
+public:
+   bool operator()( const wxString& agrpLeft, const wxString& agrpRight ) const;
+};
+
+class CubeDisplayItemSorter : public  Group::SortingOperator
+{
+public:
+   bool operator()( const wxString& agrpLeft, const wxString& agrpRight ) const;
+};
+
 wxBEGIN_EVENT_TABLE( vCollectionCube, wxPanel )
 EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
 EVT_BUTTON( viCardEditor::Image_Changed, vCollectionCube::onNewItemSelectView )

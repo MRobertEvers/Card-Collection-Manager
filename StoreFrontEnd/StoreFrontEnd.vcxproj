@@ -159,6 +159,8 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CCollectionView.cpp" />
+    <ClCompile Include="CubeRenderer.cpp" />
     <ClCompile Include="include\json\jsoncpp.cpp" />
     <ClCompile Include="StoreFrontEnd\App.cpp" />
     <ClCompile Include="StoreFrontEnd\CardInterface.cpp" />
@@ -171,16 +173,12 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp" />
     <ClCompile Include="StoreFrontEnd\SourceDownloader.cpp" />
     <ClCompile Include="StoreFrontEnd\StoreFrontEnd.cpp" />
+    <ClCompile Include="VCollectionView.cpp" />
     <ClCompile Include="Views\CardEditor\vcEditableItemList.cpp" />
     <ClCompile Include="Views\CardEditor\vcEditableTraitList.cpp" />
     <ClCompile Include="Views\CardEditor\vcEditableTraitListItem.cpp" />
     <ClCompile Include="Views\CardEditor\vcItemNameCheckBox.cpp" />
     <ClCompile Include="Views\CardEditor\viCardEditor.cpp" />
-    <ClCompile Include="Views\CollectionCube\cCollectionCube.cpp" />
-    <ClCompile Include="Views\CollectionCube\CollectionCube.cpp" />
-    <ClCompile Include="Views\CollectionCube\vcCollectionCubeDisplay.cpp" />
-    <ClCompile Include="Views\CollectionCube\vcCollectionCubeGroup.cpp" />
-    <ClCompile Include="Views\CollectionCube\vCollectionCube.cpp" />
     <ClCompile Include="Views\CollectionDeckBox\cCollectionDeckBox.cpp" />
     <ClCompile Include="Views\CollectionDeckBox\CollectionDeckBox.cpp" />
     <ClCompile Include="Views\CollectionDeckBox\vcCollectionDeckBoxItemList.cpp" />
@@ -220,6 +218,8 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp" />
     <ClCompile Include="Views\wxExtras\wxInfiniteGrid.cpp" />
     <ClCompile Include="Views\wxExtras\wxManualText.cpp" />
+    <ClInclude Include="CCollectionView.h" />
+    <ClInclude Include="CubeRenderer.h" />
     <ClInclude Include="include\curl\curl.h" />
     <ClInclude Include="include\curl\curlver.h" />
     <ClInclude Include="include\curl\easy.h" />
@@ -258,16 +258,12 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="StoreFrontEnd\SourceDownloader.h" />
     <ClInclude Include="StoreFrontEnd\StorefrontConfig.h" />
     <ClInclude Include="StoreFrontEnd\StoreFrontEnd.h" />
+    <ClInclude Include="VCollectionView.h" />
     <ClInclude Include="Views\CardEditor\vcEditableItemList.h" />
     <ClInclude Include="Views\CardEditor\vcEditableTraitList.h" />
     <ClInclude Include="Views\CardEditor\vcEditableTraitListItem.h" />
     <ClInclude Include="Views\CardEditor\vcItemNameCheckBox.h" />
     <ClInclude Include="Views\CardEditor\viCardEditor.h" />
-    <ClInclude Include="Views\CollectionCube\cCollectionCube.h" />
-    <ClInclude Include="Views\CollectionCube\CollectionCube.h" />
-    <ClInclude Include="Views\CollectionCube\vcCollectionCubeDisplay.h" />
-    <ClInclude Include="Views\CollectionCube\vcCollectionCubeGroup.h" />
-    <ClInclude Include="Views\CollectionCube\vCollectionCube.h" />
     <ClInclude Include="Views\CollectionDeckBox\cCollectionDeckBox.h" />
     <ClInclude Include="Views\CollectionDeckBox\CollectionDeckBox.h" />
     <ClInclude Include="Views\CollectionDeckBox\vcCollectionDeckBoxItemList.h" />

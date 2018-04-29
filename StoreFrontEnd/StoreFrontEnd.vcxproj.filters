@@ -87,6 +87,12 @@
     <Filter Include="Views\Cube\CardEditorComponent">
       <UniqueIdentifier>{bf47c679-081a-4ceb-a74a-a9dfac4423f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\CollectionView">
+      <UniqueIdentifier>{0f0abdf4-5830-4281-96cb-bcba71ffc9da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\CollectionView\Renderers">
+      <UniqueIdentifier>{7c602b2a-bdef-4525-9aed-58a2a86fc996}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Views\MainWindow\CMainWindow.cpp">
@@ -97,21 +103,6 @@
     </ClCompile>
     <ClCompile Include="Views\MainWindow\VMainWindow.cpp">
       <Filter>Views</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionCube\cCollectionCube.cpp">
-      <Filter>Views\Cube</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionCube\CollectionCube.cpp">
-      <Filter>Views\Cube</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionCube\vCollectionCube.cpp">
-      <Filter>Views\Cube</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionCube\vcCollectionCubeDisplay.cpp">
-      <Filter>Views\Cube\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionCube\vcCollectionCubeGroup.cpp">
-      <Filter>Views\Cube\Components</Filter>
     </ClCompile>
     <ClCompile Include="Views\CollectionDeckBox\cCollectionDeckBox.cpp">
       <Filter>Views\Deckbox</Filter>
@@ -272,6 +263,15 @@
     <ClCompile Include="include\json\jsoncpp.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
+    <ClCompile Include="VCollectionView.cpp">
+      <Filter>Views\CollectionView</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollectionView.cpp">
+      <Filter>Views\CollectionView</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeRenderer.cpp">
+      <Filter>Views\CollectionView\Renderers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Views\MainWindow\CMainWindow.h">
@@ -282,21 +282,6 @@
     </ClInclude>
     <ClInclude Include="Views\MainWindow\VMainWindow.h">
       <Filter>Views</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionCube\cCollectionCube.h">
-      <Filter>Views\Cube</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionCube\CollectionCube.h">
-      <Filter>Views\Cube</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionCube\vCollectionCube.h">
-      <Filter>Views\Cube</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionCube\vcCollectionCubeDisplay.h">
-      <Filter>Views\Cube\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionCube\vcCollectionCubeGroup.h">
-      <Filter>Views\Cube\Components</Filter>
     </ClInclude>
     <ClInclude Include="Views\CollectionDeckBox\cCollectionDeckBox.h">
       <Filter>Views\Deckbox</Filter>
@@ -534,6 +519,15 @@
     </ClInclude>
     <ClInclude Include="Views\CardEditor\vcItemNameCheckBox.h">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="VCollectionView.h">
+      <Filter>Views\CollectionView</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollectionView.h">
+      <Filter>Views\CollectionView</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeRenderer.h">
+      <Filter>Views\CollectionView\Renderers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

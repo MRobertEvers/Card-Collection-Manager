@@ -12,7 +12,7 @@ CollectionInterface::~CollectionInterface()
 {
 }
 
-std::vector<CardInterface>& 
+std::list<CardInterface>& 
 CollectionInterface::GetItemInterfaces()
 {
    return m_vecCopies;

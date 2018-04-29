@@ -3,6 +3,7 @@
 #include "StoreFrontEnd.h"
 #include <string>
 #include <vector>
+#include <list>
 #include <map>
 
 class CollectionInterface
@@ -11,7 +12,7 @@ public:
    CollectionInterface(const std::string& aszColdID);
    ~CollectionInterface();
 
-   std::vector<CardInterface>& GetItemInterfaces();
+   std::list<CardInterface>& GetItemInterfaces();
    std::map<unsigned long, std::vector<std::string>> GetHistoryGroups();
    unsigned int GetItemCount();
    std::string GetColId();
@@ -20,7 +21,7 @@ public:
 
 private:
    std::string m_szColId;
-   std::vector<CardInterface> m_vecCopies;
+   std::list<CardInterface> m_vecCopies;
    Query m_LastQuery;
 };
 
