@@ -10,10 +10,16 @@ class CardInterface;
 class CardRenderer : public wxPanel
 {
 public:
+   enum Events
+   {
+      Image_Downloaded = 0x5
+   };
+
    class ImageDownloadCallback : public ImageFetcherCallback
    {
    public:
       ImageDownloadCallback( CardRenderer* apHost,
+                             CardInterface* apCallbackCard,
                              std::shared_ptr<std::mutex> aCallBackMutex );
       ~ImageDownloadCallback();
 
@@ -24,6 +30,7 @@ public:
    private:
       unsigned int m_uiRenderCountTarget;
       CardRenderer* m_pCardEditor;
+      CardInterface* m_pCardInterface;
       std::shared_ptr<std::mutex> m_mutex;
    };
 
@@ -34,6 +41,8 @@ public:
    void DisplayImage( CardInterface* apCard );
 
 private:
+   wxDECLARE_EVENT_TABLE();
+
    // If a callback comesback with an older render count, ignore it.
    unsigned int m_uiRenderCount;
    ImageViewer* m_pImagePanel;
@@ -41,5 +50,6 @@ private:
 
    std::string getCardImageFile();
 
+   void onImageCallback( wxCommandEvent& awxEvt );
    void uiDisplayCard();
 };
