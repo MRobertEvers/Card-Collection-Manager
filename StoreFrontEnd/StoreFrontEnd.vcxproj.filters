@@ -93,6 +93,12 @@
     <Filter Include="Views\CollectionView\Renderers">
       <UniqueIdentifier>{7c602b2a-bdef-4525-9aed-58a2a86fc996}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Interfaces\CardViewer">
+      <UniqueIdentifier>{72551492-3639-4422-b030-164362320e7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\CardViewer\EditorModules">
+      <UniqueIdentifier>{e6f5e0a8-8edb-4413-882e-7b5d87383eb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Views\MainWindow\CMainWindow.cpp">
@@ -251,14 +257,29 @@
     <ClCompile Include="include\json\jsoncpp.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
-    <ClCompile Include="VCollectionView.cpp">
+    <ClCompile Include="Views\CollectionView\CCollectionView.cpp">
       <Filter>Views\CollectionView</Filter>
     </ClCompile>
-    <ClCompile Include="CCollectionView.cpp">
+    <ClCompile Include="Views\CollectionView\CollectionView.cpp">
       <Filter>Views\CollectionView</Filter>
     </ClCompile>
-    <ClCompile Include="CubeRenderer.cpp">
+    <ClCompile Include="Views\CollectionView\VCollectionView.cpp">
+      <Filter>Views\CollectionView</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionView\CubeRenderer.cpp">
       <Filter>Views\CollectionView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardView\CardView.cpp">
+      <Filter>Views\Interfaces\CardViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardView\CCardView.cpp">
+      <Filter>Views\Interfaces\CardViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardView\VCardView.cpp">
+      <Filter>Views\Interfaces\CardViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardView\CardRenderer.cpp">
+      <Filter>Views\Interfaces\CardViewer\EditorModules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -496,14 +517,29 @@
     <ClInclude Include="Views\CardEditor\vcItemNameCheckBox.h">
       <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
-    <ClInclude Include="VCollectionView.h">
+    <ClInclude Include="Views\CollectionView\CCollectionView.h">
       <Filter>Views\CollectionView</Filter>
     </ClInclude>
-    <ClInclude Include="CCollectionView.h">
+    <ClInclude Include="Views\CollectionView\CollectionView.h">
       <Filter>Views\CollectionView</Filter>
     </ClInclude>
-    <ClInclude Include="CubeRenderer.h">
+    <ClInclude Include="Views\CollectionView\VCollectionView.h">
+      <Filter>Views\CollectionView</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionView\CubeRenderer.h">
       <Filter>Views\CollectionView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardView\CardView.h">
+      <Filter>Views\Interfaces\CardViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardView\CCardView.h">
+      <Filter>Views\Interfaces\CardViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardView\VCardView.h">
+      <Filter>Views\Interfaces\CardViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardView\CardRenderer.h">
+      <Filter>Views\Interfaces\CardViewer\EditorModules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

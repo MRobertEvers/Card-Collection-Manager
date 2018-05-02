@@ -159,8 +159,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CCollectionView.cpp" />
-    <ClCompile Include="CubeRenderer.cpp" />
     <ClCompile Include="include\json\jsoncpp.cpp" />
     <ClCompile Include="StoreFrontEnd\App.cpp" />
     <ClCompile Include="StoreFrontEnd\CardInterface.cpp" />
@@ -173,12 +171,15 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp" />
     <ClCompile Include="StoreFrontEnd\SourceDownloader.cpp" />
     <ClCompile Include="StoreFrontEnd\StoreFrontEnd.cpp" />
-    <ClCompile Include="VCollectionView.cpp" />
     <ClCompile Include="Views\CardEditor\vcEditableItemList.cpp" />
     <ClCompile Include="Views\CardEditor\vcEditableTraitList.cpp" />
     <ClCompile Include="Views\CardEditor\vcEditableTraitListItem.cpp" />
     <ClCompile Include="Views\CardEditor\vcItemNameCheckBox.cpp" />
     <ClCompile Include="Views\CardEditor\viCardEditor.cpp" />
+    <ClCompile Include="Views\CardView\CardRenderer.cpp" />
+    <ClCompile Include="Views\CardView\CardView.cpp" />
+    <ClCompile Include="Views\CardView\CCardView.cpp" />
+    <ClCompile Include="Views\CardView\VCardView.cpp" />
     <ClCompile Include="Views\CollectionEditor\CELIOption.cpp" />
     <ClCompile Include="Views\CollectionEditor\vicCollectionEditListItemOption.cpp" />
     <ClCompile Include="Views\CollectionEditor\vicCollectionEditorList.cpp" />
@@ -201,6 +202,10 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\CollectionStats\Modules\vimTypeBreakDown.cpp" />
     <ClCompile Include="Views\CollectionStats\vicStatsViewRow.cpp" />
     <ClCompile Include="Views\CollectionStats\vStatsViewer.cpp" />
+    <ClCompile Include="Views\CollectionView\CCollectionView.cpp" />
+    <ClCompile Include="Views\CollectionView\CollectionView.cpp" />
+    <ClCompile Include="Views\CollectionView\CubeRenderer.cpp" />
+    <ClCompile Include="Views\CollectionView\VCollectionView.cpp" />
     <ClCompile Include="Views\ImageViewer\ImageViewer.cpp" />
     <ClCompile Include="Views\ImageViewer\vcImageWrapper.cpp" />
     <ClCompile Include="Views\MainWindow\CMainWindow.cpp" />
@@ -214,8 +219,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp" />
     <ClCompile Include="Views\wxExtras\wxInfiniteGrid.cpp" />
     <ClCompile Include="Views\wxExtras\wxManualText.cpp" />
-    <ClInclude Include="CCollectionView.h" />
-    <ClInclude Include="CubeRenderer.h" />
     <ClInclude Include="include\curl\curl.h" />
     <ClInclude Include="include\curl\curlver.h" />
     <ClInclude Include="include\curl\easy.h" />
@@ -254,12 +257,15 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="StoreFrontEnd\SourceDownloader.h" />
     <ClInclude Include="StoreFrontEnd\StorefrontConfig.h" />
     <ClInclude Include="StoreFrontEnd\StoreFrontEnd.h" />
-    <ClInclude Include="VCollectionView.h" />
     <ClInclude Include="Views\CardEditor\vcEditableItemList.h" />
     <ClInclude Include="Views\CardEditor\vcEditableTraitList.h" />
     <ClInclude Include="Views\CardEditor\vcEditableTraitListItem.h" />
     <ClInclude Include="Views\CardEditor\vcItemNameCheckBox.h" />
     <ClInclude Include="Views\CardEditor\viCardEditor.h" />
+    <ClInclude Include="Views\CardView\CardRenderer.h" />
+    <ClInclude Include="Views\CardView\CardView.h" />
+    <ClInclude Include="Views\CardView\CCardView.h" />
+    <ClInclude Include="Views\CardView\VCardView.h" />
     <ClInclude Include="Views\CollectionEditor\CELIOption.h" />
     <ClInclude Include="Views\CollectionEditor\vicCollectionEditListItemOption.h" />
     <ClInclude Include="Views\CollectionEditor\vicCollectionEditorList.h" />
@@ -282,6 +288,10 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\CollectionStats\Modules\vimTypeBreakDown.h" />
     <ClInclude Include="Views\CollectionStats\vicStatsViewRow.h" />
     <ClInclude Include="Views\CollectionStats\vStatsViewer.h" />
+    <ClInclude Include="Views\CollectionView\CCollectionView.h" />
+    <ClInclude Include="Views\CollectionView\CollectionView.h" />
+    <ClInclude Include="Views\CollectionView\CubeRenderer.h" />
+    <ClInclude Include="Views\CollectionView\VCollectionView.h" />
     <ClInclude Include="Views\ImageViewer\ImageViewer.h" />
     <ClInclude Include="Views\ImageViewer\vcImageWrapper.h" />
     <ClInclude Include="Views\MainWindow\CMainWindow.h" />

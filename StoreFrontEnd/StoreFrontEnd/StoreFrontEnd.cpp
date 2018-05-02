@@ -1,10 +1,12 @@
 #include "StoreFrontEnd.h"
 #include "ImageFetcher.h"
 #include "SourceDownloader.h"
+#include "CollectionInterface.h"
 
 #include <wx\wxprec.h>
 #include <Windows.h>
 #include <Shlobj.h>
+#include <fstream>
 
 StoreFront* StoreFrontEnd::m_ptInstance = nullptr;
 StoreFrontEnd* StoreFrontEnd::m_ptClient = nullptr;
@@ -62,6 +64,15 @@ StoreFrontEnd::DownloadImportSourceFile()
    SD.FetchMTGJson();
    SD.UnzipMTGJson();
    return true;
+}
+
+bool 
+StoreFrontEnd::IsFileExist( const wxString& aszFilePath )
+{
+   ifstream file( aszFilePath.ToStdString() );
+   auto bResult = file.good();
+   file.close();
+   return bResult;
 }
 
 void 
@@ -152,4 +163,20 @@ wxString
 StoreFrontEnd::GetSpritesDirectory()
 {
    return GetResourcesDirectory() + "Sprites\\";
+}
+
+std::shared_ptr<CollectionInterface> 
+StoreFrontEnd::GetCollection( const wxString& aszID )
+{
+   auto iter_collection = m_mapCollections.find( aszID );
+   if( iter_collection != m_mapCollections.end() )
+   {
+      return iter_collection->second;
+   }
+   else
+   {
+      auto pair = std::make_pair( aszID, new CollectionInterface( aszID.ToStdString() ) );
+      pair.second->Refresh();
+      return m_mapCollections.insert( pair ).first->second;
+   }
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "StoreFrontEnd\CollectionInterface.h"
+#include "..\StoreFrontEnd\CollectionInterface.h"
 
 #include <memory>
 

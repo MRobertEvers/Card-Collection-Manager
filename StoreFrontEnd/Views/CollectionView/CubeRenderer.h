@@ -1,7 +1,7 @@
 #pragma once
-#include "Views\wxExtras\wxInfiniteGrid.h"
-#include "StoreFrontEnd\Group.h"
 #include "VCollectionView.h"
+#include "..\Views\wxExtras\wxInfiniteGrid.h"
+#include "..\StoreFrontEnd\Group.h"
 #include <wx/wxprec.h>
 #include <wx/object.h> 
 #include <wx/grid.h>
@@ -26,7 +26,6 @@ public:
 
    Group GetGrouping();
 
-
 protected:
    virtual ColoredGroupColumnRenderer* uiGetColumnRenderer( const wxString& aszColumnName, const Group& aGroup );
 
@@ -36,7 +35,6 @@ private:
                      std::vector<CardInterface*> avecItemData );
    void uiBuildGrouping();
    wxColour uiGetColumnColor( const wxString& aszColumnName );
-
 
    Group m_Grouping;
    std::map<wxString, ColoredGroupColumnRenderer*> m_mapColumns;
@@ -59,6 +57,8 @@ public:
 
    virtual wxColour GetBackgroundColor() = 0;
 };
+
+
 
 class ColoredGroupColumnRenderer : public wxInfiniteGrid, public GroupRenderer, public ColumnRenderer
 {
@@ -91,6 +91,11 @@ protected:
    wxColour m_ColumnColour;
    wxString m_szGroupTitle;
    Group m_Group;
+
+private:
+   wxDECLARE_EVENT_TABLE();
+   void uiOnResize( wxSizeEvent& awxEvt );
+
 };
 
 class DisplayGroup;

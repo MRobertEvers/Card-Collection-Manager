@@ -1,6 +1,6 @@
 #pragma once
-#include "Views\wxExtras\wxInfiniteGrid.h"
-#include "StoreFrontEnd\Group.h"
+#include "..\Views\wxExtras\wxInfiniteGrid.h"
+#include "..\StoreFrontEnd\Group.h"
 #include <wx/wxprec.h>
 #include <wx/object.h> 
 #include <wx/grid.h>
@@ -34,6 +34,8 @@ public:
    void Draw( std::vector<CardInterface*> avecItemData );
 
 private:
+   wxDECLARE_EVENT_TABLE();
+
    CCollectionView* m_ptController;
    GroupRenderer* m_ptRenderer;
 };

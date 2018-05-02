@@ -1,5 +1,5 @@
 #include "CubeRenderer.h"
-#include "StoreFrontEnd\CardInterface.h"
+#include "..\StoreFrontEnd\CardInterface.h"
 #include <algorithm>
 
 using namespace std;
@@ -53,6 +53,7 @@ CubeDisplayItemSorter::operator()( const wxString& agrpLeft, const wxString& agr
 
    return iLeft < iRight;
 }
+
 
 
 CubeRenderer::CubeRenderer( wxPanel* aParent, wxWindowID aiWID )
@@ -253,6 +254,10 @@ CubeRenderer::uiGetColumnColor( const wxString& aszColumnName )
    return wxColour();
 }
 
+wxBEGIN_EVENT_TABLE( ColoredGroupColumnRenderer, wxInfiniteGrid )
+EVT_SIZE( ColoredGroupColumnRenderer::uiOnResize )
+wxEND_EVENT_TABLE()
+
 ColoredGroupColumnRenderer::ColoredGroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID,
                                                         const Group& aGroup )
    : wxInfiniteGrid( aParent, aiWID, wxDefaultPosition, wxDefaultSize, wxBORDER ), m_Group(aGroup)
@@ -336,6 +341,12 @@ wxColour
 ColoredGroupColumnRenderer::GetBackgroundColor()
 {
    return m_ColumnColour;
+}
+
+void
+ColoredGroupColumnRenderer::uiOnResize( wxSizeEvent& awxEvt )
+{
+   this->SetColSize( 0, this->GetVirtualSize().GetWidth() );
 }
 
 DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSource, wxString aszGroupName, Group aGroup,

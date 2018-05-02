@@ -1,4 +1,13 @@
 #include "VCollectionView.h"
+#include "../Views/CardEditor/viCardEditor.h"
+
+wxBEGIN_EVENT_TABLE( VCollectionView, wxPanel )
+//EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
+//EVT_BUTTON( viCardEditor::Image_Changed, vCollectionCube::onNewItemSelectView )
+//EVT_GRID_CELL_LEFT_CLICK( vCollectionCube::onNewItemSelected )
+//EVT_BUTTON( viCollectionEditor::Changes_Accept, vCollectionCube::onEditorAccept )
+//EVT_BUTTON( viCollectionEditor::Changes_Decline, vCollectionCube::onEditorDecline )
+wxEND_EVENT_TABLE()
 
 VCollectionView::VCollectionView( wxFrame* aParent, wxWindowID aiWID )
    : wxPanel(aParent, aiWID)
@@ -16,7 +25,8 @@ VCollectionView::VCollectionView( wxFrame* aParent, wxWindowID aiWID )
 
 VCollectionView::~VCollectionView()
 {
-   delete m_ptRenderer;
+   // Don't need to destroy this because wxwidgets will.
+   //m_ptRenderer->Destroy();
 }
 
 void 

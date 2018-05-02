@@ -2,8 +2,8 @@
 #include "VMainWindow.h"
 #include "../ViewTemplates/IMenuEventHandler.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
-#include "../CCollectionView.h"
-#include "../VCollectionView.h"
+#include "../Views/CollectionView/CollectionView.h"
+#include "../Views/CollectionView/CollectionView.h"
 #include "../ViewTemplates/ivCollectionView.h"
 #include "../ViewTemplates/IControlledView.h"
 #include "../CollectionsOverview/CollectionsOverview.h"
@@ -23,10 +23,11 @@ CMainWindow::~CMainWindow()
 void 
 CMainWindow::ShowCollectionsOverview()
 {
-   auto memleak = new CollectionsOverview( m_View );
-   m_ptrControlledView = std::shared_ptr<IControlledView>( memleak );
    m_View->ReleaseMenuEventHandler();
-   m_View->SetView( memleak->GetView() );
+
+   auto tmp = new CollectionsOverview( m_View );
+   m_ptrControlledView = std::shared_ptr<IControlledView>( tmp );
+   m_View->SetView( tmp->GetView() );
 }
 
 void 
@@ -45,16 +46,10 @@ CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType 
    {
       m_View->ReleaseMenuEventHandler();
 
-      VCollectionView* view = new VCollectionView( m_View, wxID_ANY );
-      auto ptCol = new CollectionInterface( szID.ToStdString() );
-      ptCol->Refresh();
-      auto pt = std::shared_ptr<CollectionInterface>( ptCol );
-      CCollectionView* cube = new CCollectionView( view, pt );
-      //m_ptrControlledView = std::shared_ptr<IControlledView>( view );
-      view->SetController( cube );
-      cube->SetCubeRenderer();
-      m_View->SetView( view );
+      auto tmp = new CollectionView( m_View, ptse->GetCollection( szID ) );
 
+      m_ptrControlledView = std::shared_ptr<IControlledView>( tmp );
+      m_View->SetView( tmp->GetView() );
    }
    else
    {

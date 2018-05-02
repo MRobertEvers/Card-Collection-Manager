@@ -39,6 +39,7 @@ IMenuEventSource::ReleaseMenuEventHandler()
    if( m_EventHandler )
    {
       m_EventHandler->ReleaseEventHandler();
+      m_EventHandler = nullptr;
    }
 
    // Clear tracking menus
