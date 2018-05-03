@@ -182,13 +182,7 @@
     <ClCompile Include="Views\CollectionStats\vicStatsViewRow.cpp">
       <Filter>Views\Interfaces\StatsViewer\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Views\CollectionsOverview\cCollectionsOverview.cpp">
-      <Filter>Views\Overview</Filter>
-    </ClCompile>
     <ClCompile Include="Views\CollectionsOverview\CollectionsOverview.cpp">
-      <Filter>Views\Overview</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionsOverview\vCollectionsOverview.cpp">
       <Filter>Views\Overview</Filter>
     </ClCompile>
     <ClCompile Include="Views\CollectionsOverview\vcCollectionsMenuList.cpp">
@@ -281,6 +275,12 @@
     <ClCompile Include="Views\CardView\CardRenderer.cpp">
       <Filter>Views\Interfaces\CardViewer\EditorModules</Filter>
     </ClCompile>
+    <ClCompile Include="Views\CollectionsOverview\VCollectionsOverview.cpp">
+      <Filter>Views\Overview</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionsOverview\CCollectionsOverview.cpp">
+      <Filter>Views\Overview</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Views\MainWindow\CMainWindow.h">
@@ -364,13 +364,7 @@
     <ClInclude Include="Views\CollectionStats\vicStatsViewRow.h">
       <Filter>Views\Interfaces\StatsViewer\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Views\CollectionsOverview\cCollectionsOverview.h">
-      <Filter>Views\Overview</Filter>
-    </ClInclude>
     <ClInclude Include="Views\CollectionsOverview\CollectionsOverview.h">
-      <Filter>Views\Overview</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionsOverview\vCollectionsOverview.h">
       <Filter>Views\Overview</Filter>
     </ClInclude>
     <ClInclude Include="Views\CollectionsOverview\vcCollectionsMenuList.h">
@@ -540,6 +534,12 @@
     </ClInclude>
     <ClInclude Include="Views\CardView\CardRenderer.h">
       <Filter>Views\Interfaces\CardViewer\EditorModules</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionsOverview\VCollectionsOverview.h">
+      <Filter>Views\Overview</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionsOverview\CCollectionsOverview.h">
+      <Filter>Views\Overview</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

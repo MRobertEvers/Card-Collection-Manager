@@ -347,6 +347,7 @@ void
 ColoredGroupColumnRenderer::onResize( wxSizeEvent& awxEvt )
 {
    this->SetColSize( 0, this->GetVirtualSize().GetWidth() );
+   awxEvt.Skip();
 }
 
 DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSource, wxString aszGroupName, Group aGroup,
@@ -474,7 +475,7 @@ DisplayGroup::AddItem( CardInterface* aptItem )
 CardInterface* 
 DisplayGroup::GetItem( unsigned int auiItemRow )
 {
-   auto iFirstItem = GetFirstItemRow();
+   auto iFirstItem = (unsigned int)GetFirstItemRow();
    if( iFirstItem <= auiItemRow && auiItemRow < iFirstItem + GetSize() )
    {
       if( m_setItems.size() > 0 )
@@ -921,6 +922,7 @@ OrderedSubgroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
    auto iSelectedRow = awxEvt.GetRow();
    auto pClickedItem = m_Root->GetItem( iSelectedRow );
    //DisplayItem( pClickedItem );
+   awxEvt.Skip();
 }
 
 wxString

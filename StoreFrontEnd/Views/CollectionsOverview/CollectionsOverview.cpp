@@ -6,8 +6,8 @@
 
 CollectionsOverview::CollectionsOverview( IMenuEventSource* aParent )
 {
-   m_Controller = new cCollectionsOverview( aParent );
-   m_View = new vCollectionsOverview( aParent, wxID_ANY );
+   m_Controller = new CCollectionsOverview( aParent );
+   m_View = new VCollectionsOverview( aParent, wxID_ANY );
 
    // TODO: Polymorphism with sharedptr
    aParent->BindMenuEventHandler( m_Controller );
@@ -19,13 +19,13 @@ CollectionsOverview::~CollectionsOverview()
    delete m_Controller;
 }
 
-cCollectionsOverview*
+CCollectionsOverview*
 CollectionsOverview::GetController()
 {
    return m_Controller;
 }
 
-vCollectionsOverview*
+VCollectionsOverview*
 CollectionsOverview::GetView()
 {
    return m_View;

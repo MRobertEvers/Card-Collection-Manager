@@ -7,7 +7,7 @@
 #include "../ViewTemplates/IMenuEventHandler.h"
 
 wxBEGIN_EVENT_TABLE(VMainWindow, IMenuEventSource )
-EVT_BUTTON(vCollectionsOverview::View_Collection, VMainWindow::OnViewCollection)
+EVT_BUTTON(VCollectionsOverview::View_Collection, VMainWindow::OnViewCollection)
 EVT_MENU(MainFrame::Menu_Quit, VMainWindow::OnQuit)
 EVT_MENU( MainFrame::Menu_About, VMainWindow::OnAbout)
 EVT_MENU( MainFrame::Menu_Main, VMainWindow::OnViewCollectionOverview)

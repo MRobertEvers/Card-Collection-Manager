@@ -3,32 +3,32 @@
 #include "../ViewTemplates/IMenuEventSource.h"
 #include "../MainWindow/MainWindow.h"
 
-cCollectionsOverview::cCollectionsOverview(IMenuEventSource* aParent)
+CCollectionsOverview::CCollectionsOverview(IMenuEventSource* aParent)
    : IMenuEventHandler(aParent)
 {
-   m_wxOverview = new vCollectionsOverview(aParent, 8);
+   m_wxOverview = new VCollectionsOverview(aParent, 8);
 }
 
 
-cCollectionsOverview::~cCollectionsOverview()
+CCollectionsOverview::~CCollectionsOverview()
 {
 }
 
 wxPanel*
-cCollectionsOverview::GetView()
+CCollectionsOverview::GetView()
 {
    return m_wxOverview;
 }
 
 void
-cCollectionsOverview::BindEventHandler()
+CCollectionsOverview::BindEventHandler()
 {
 
 }
 
 
 void
-cCollectionsOverview::handleEvent(unsigned int aiEvent)
+CCollectionsOverview::handleEvent(unsigned int aiEvent)
 {
 
 }

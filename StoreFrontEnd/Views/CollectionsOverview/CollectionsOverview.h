@@ -2,8 +2,8 @@
 #include "../ViewTemplates/IControlledView.h"
 
 class IMenuEventSource;
-class cCollectionsOverview;
-class vCollectionsOverview;
+class CCollectionsOverview;
+class VCollectionsOverview;
 
 class CollectionsOverview : public IControlledView
 {
@@ -11,11 +11,11 @@ public:
    CollectionsOverview( IMenuEventSource* aParent );
    ~CollectionsOverview();
 
-   cCollectionsOverview* GetController();
-   vCollectionsOverview* GetView();
+   CCollectionsOverview* GetController();
+   VCollectionsOverview* GetView();
 
 private:
-   cCollectionsOverview * m_Controller;
-   vCollectionsOverview* m_View;
+   CCollectionsOverview * m_Controller;
+   VCollectionsOverview* m_View;
 };
 

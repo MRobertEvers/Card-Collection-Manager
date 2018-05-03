@@ -1,5 +1,6 @@
 #include "VCollectionView.h"
 #include "../Views/CardEditor/viCardEditor.h"
+#include "../Views/CardView/VCardView.h"
 
 wxBEGIN_EVENT_TABLE( VCollectionView, wxPanel )
 //EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
@@ -56,4 +57,10 @@ VCollectionView::Draw( std::vector<CardInterface*> avecItemData )
    {
       m_ptRenderer->Draw( avecItemData );
    }
+}
+
+void 
+VCollectionView::ShowCardViewer( wxPanel* aptViewer )
+{
+   GetSizer()->Add( aptViewer, wxSizerFlags( 1 ).Expand() );
 }

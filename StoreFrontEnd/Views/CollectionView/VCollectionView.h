@@ -7,6 +7,7 @@
 #include <memory>
 #include <map>
 
+class VCardView;
 class CardInterface;
 class CCollectionView;
 
@@ -32,6 +33,8 @@ public:
    void SetRenderer( GroupRenderer* aptRenderer );
 
    void Draw( std::vector<CardInterface*> avecItemData );
+
+   void ShowCardViewer( wxPanel* aptViewer );
 
 private:
    wxDECLARE_EVENT_TABLE();

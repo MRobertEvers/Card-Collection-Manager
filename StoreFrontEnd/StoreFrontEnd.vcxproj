@@ -199,10 +199,10 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\CollectionHistory\viHistoryViewer.cpp" />
     <ClCompile Include="Views\CollectionPreviewer\vicCollectionPeeker.cpp" />
     <ClCompile Include="Views\CollectionPreviewer\viCollectionSelector.cpp" />
-    <ClCompile Include="Views\CollectionsOverview\cCollectionsOverview.cpp" />
+    <ClCompile Include="Views\CollectionsOverview\CCollectionsOverview.cpp" />
     <ClCompile Include="Views\CollectionsOverview\CollectionsOverview.cpp" />
     <ClCompile Include="Views\CollectionsOverview\vcCollectionsMenuList.cpp" />
-    <ClCompile Include="Views\CollectionsOverview\vCollectionsOverview.cpp" />
+    <ClCompile Include="Views\CollectionsOverview\VCollectionsOverview.cpp" />
     <ClCompile Include="Views\CollectionStats\Modules\vimCMCModule.cpp" />
     <ClCompile Include="Views\CollectionStats\Modules\vimCountModule.cpp" />
     <ClCompile Include="Views\CollectionStats\Modules\vimTypeBreakDown.cpp" />
@@ -285,10 +285,10 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\CollectionHistory\viHistoryViewer.h" />
     <ClInclude Include="Views\CollectionPreviewer\vicCollectionPeeker.h" />
     <ClInclude Include="Views\CollectionPreviewer\viCollectionSelector.h" />
-    <ClInclude Include="Views\CollectionsOverview\cCollectionsOverview.h" />
+    <ClInclude Include="Views\CollectionsOverview\CCollectionsOverview.h" />
     <ClInclude Include="Views\CollectionsOverview\CollectionsOverview.h" />
     <ClInclude Include="Views\CollectionsOverview\vcCollectionsMenuList.h" />
-    <ClInclude Include="Views\CollectionsOverview\vCollectionsOverview.h" />
+    <ClInclude Include="Views\CollectionsOverview\VCollectionsOverview.h" />
     <ClInclude Include="Views\CollectionStats\Modules\vimCMCModule.h" />
     <ClInclude Include="Views\CollectionStats\Modules\vimCountModule.h" />
     <ClInclude Include="Views\CollectionStats\Modules\vimTypeBreakDown.h" />

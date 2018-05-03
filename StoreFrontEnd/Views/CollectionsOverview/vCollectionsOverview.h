@@ -3,7 +3,7 @@
 
 class vcCollectionsMenuList;
 
-class vCollectionsOverview : public wxPanel
+class VCollectionsOverview : public wxPanel
 {
 public:
    enum
@@ -13,8 +13,8 @@ public:
       View_Collection = 0x2
    };
 
-   vCollectionsOverview(wxWindow* aptParent, wxWindowID aiWID);
-   ~vCollectionsOverview();
+   VCollectionsOverview(wxWindow* aptParent, wxWindowID aiWID);
+   ~VCollectionsOverview();
 
    void OnLoadCollection(wxCommandEvent& awxEvt);
 

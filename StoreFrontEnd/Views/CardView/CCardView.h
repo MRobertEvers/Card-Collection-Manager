@@ -6,7 +6,7 @@ class CardInterface;
 class CCardView
 {
 public:
-   CCardView( VCardView* apView, CardInterface* apModel );
+   CCardView( VCardView* apView );
    ~CCardView();
 
    void SetModel( CardInterface* apModel );

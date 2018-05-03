@@ -3,15 +3,15 @@
 #include <map>
 #include <wx/wxprec.h>
 
-class vCollectionsOverview;
+class VCollectionsOverview;
 class MainFrame;
 
-class cCollectionsOverview : public IMenuEventHandler
+class CCollectionsOverview : public IMenuEventHandler
 {
 public:
 
-   cCollectionsOverview( IMenuEventSource* aParent );
-   virtual ~cCollectionsOverview();
+   CCollectionsOverview( IMenuEventSource* aParent );
+   virtual ~CCollectionsOverview();
 
    wxPanel* GetView() override;
 
@@ -21,6 +21,6 @@ protected:
    void handleEvent(unsigned int aiEvent);
 
 private:
-   vCollectionsOverview * m_wxOverview;
+   VCollectionsOverview * m_wxOverview;
    std::map<wxString, unsigned int> m_mapTitleToEventID;
 };

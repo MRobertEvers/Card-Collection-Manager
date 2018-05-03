@@ -9,10 +9,11 @@ class CCardView;
 class CardView : public IControlledView
 {
 public:
-   CardView( wxFrame* aptParent, CardInterface* apModel );
+   CardView( wxPanel* aptParent );
    ~CardView();
 
    wxPanel* GetView();
+   CCardView* GetController();
 
 private:
    VCardView* m_pView;

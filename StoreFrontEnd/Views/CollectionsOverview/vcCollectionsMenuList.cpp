@@ -7,8 +7,8 @@
 wxBEGIN_EVENT_TABLE(vcCollectionsMenuList, wxPanel)
 EVT_LIST_ITEM_SELECTED(List, vcCollectionsMenuList::onItemSelection)
 EVT_LIST_ITEM_DESELECTED(List, vcCollectionsMenuList::onItemDeselection)
-EVT_BUTTON( vCollectionsOverview::View_Collection, vcCollectionsMenuList::OnViewCollection )
-EVT_BUTTON( vCollectionsOverview::Add_Collection, vcCollectionsMenuList::OnAddCollection )
+EVT_BUTTON( VCollectionsOverview::View_Collection, vcCollectionsMenuList::OnViewCollection )
+EVT_BUTTON( VCollectionsOverview::Add_Collection, vcCollectionsMenuList::OnAddCollection )
 wxEND_EVENT_TABLE()
 
 vcCollectionsMenuList::vcCollectionsMenuList(wxWindow* aptParent)
@@ -96,13 +96,13 @@ void
 vcCollectionsMenuList::buildButtons()
 {
    wxButton* loadButt = new wxButton( this, 
-                                      vCollectionsOverview::Load_Collection,
+                                      VCollectionsOverview::Load_Collection,
                                       "Load Collection" );
    m_wxViewButton = new wxButton( this,
-                                  vCollectionsOverview::View_Collection,
+                                  VCollectionsOverview::View_Collection,
                                   "View Collection" );
    wxButton* addButt = new wxButton( this, 
-                                     vCollectionsOverview::Add_Collection,
+                                     VCollectionsOverview::Add_Collection,
                                      "Add Collection" );
 
    this->GetSizer()->Add(loadButt, wxSizerFlags().Expand());

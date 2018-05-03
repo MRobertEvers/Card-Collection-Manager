@@ -7,23 +7,24 @@
 #include <wx/wfstream.h>
 
 
-wxBEGIN_EVENT_TABLE(vCollectionsOverview, wxPanel)
-EVT_BUTTON(vCollectionsOverview::Load_Collection, vCollectionsOverview::OnLoadCollection)
-EVT_BUTTON( viCollectionSelector::Load_Button, vCollectionsOverview::onLoadCollection )
+wxBEGIN_EVENT_TABLE(VCollectionsOverview, wxPanel)
+EVT_BUTTON(VCollectionsOverview::Load_Collection, VCollectionsOverview::OnLoadCollection)
+EVT_BUTTON( viCollectionSelector::Load_Button, VCollectionsOverview::onLoadCollection )
 wxEND_EVENT_TABLE()
 
-vCollectionsOverview::vCollectionsOverview( wxWindow* aptParent,
+VCollectionsOverview::VCollectionsOverview( wxWindow* aptParent,
                                             wxWindowID aiWID = wxID_ANY ) 
    : wxPanel(aptParent, aiWID)
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    this->SetSizer(boxSizer);
 
-   this->GetParent()->SetMinSize(wxSize(350, 500));
-   if( this->GetParent()->GetSize().GetWidth() < this->GetParent()->GetMinSize().GetWidth() ||
-       this->GetParent()->GetSize().GetHeight() < this->GetParent()->GetMinSize().GetHeight() )
+   auto pTargetFrame = this->GetParent();
+   pTargetFrame->SetMinSize( wxSize( 350, 500 ) );
+   if( pTargetFrame->GetSize().GetWidth() < pTargetFrame->GetMinSize().GetWidth() ||
+      pTargetFrame->GetSize().GetHeight() < pTargetFrame->GetMinSize().GetHeight() )
    {
-      this->GetParent()->SetSize( wxSize( 350, 500 ) );
+      pTargetFrame->SetSize( pTargetFrame->GetMinSize() );
    }
 
    buildCollectionSelector();
@@ -31,13 +32,13 @@ vCollectionsOverview::vCollectionsOverview( wxWindow* aptParent,
 }
 
 
-vCollectionsOverview::~vCollectionsOverview()
+VCollectionsOverview::~VCollectionsOverview()
 {
    delete m_vcCollectionsPanel;
 }
 
 void 
-vCollectionsOverview::onLoadCollection( wxCommandEvent& awxEvt )
+VCollectionsOverview::onLoadCollection( wxCommandEvent& awxEvt )
 {
    StoreFront* ptSF = StoreFrontEnd::Server();
    auto szPath = awxEvt.GetString();
@@ -52,20 +53,20 @@ vCollectionsOverview::onLoadCollection( wxCommandEvent& awxEvt )
 }
 
 void 
-vCollectionsOverview::buildCollectionsPreview() 
+VCollectionsOverview::buildCollectionsPreview() 
 {
 
 }
 
 void 
-vCollectionsOverview::buildCollectionSelector() 
+VCollectionsOverview::buildCollectionSelector() 
 {
    m_vcCollectionsPanel = new vcCollectionsMenuList(this);
    this->GetSizer()->Add(m_vcCollectionsPanel, 1, wxEXPAND);
 }
 
 void 
-vCollectionsOverview::getLoadedCollections()
+VCollectionsOverview::getLoadedCollections()
 {
    auto ptSF = StoreFrontEnd::Server();
    auto vecCols = ptSF->GetLoadedCollections();
@@ -78,7 +79,7 @@ vCollectionsOverview::getLoadedCollections()
 
 
 void
-vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
+VCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
 {
 /*
    wxFileDialog openFileDialog( this, _("Open Collection file"), "", "",
@@ -109,12 +110,12 @@ vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
    awxEvt.StopPropagation();
 */
    auto sel = new viCollectionSelector( this, 4 );
-   wxFrame* pTargetFrame = sel;
    sel->Show();
-   sel->SetMinSize( wxSize( 450, 600 ) );
-   if( sel->GetSize().GetWidth() < sel->GetMinSize().GetWidth() ||
-      sel->GetSize().GetHeight() < sel->GetMinSize().GetHeight() )
+   wxFrame* pTargetFrame = sel;
+   pTargetFrame->SetMinSize( wxSize( 450, 600 ) );
+   if( pTargetFrame->GetSize().GetWidth() < pTargetFrame->GetMinSize().GetWidth() ||
+      pTargetFrame->GetSize().GetHeight() < pTargetFrame->GetMinSize().GetHeight() )
    {
-      sel->SetSize( sel->GetMinSize() );
+      pTargetFrame->SetSize( pTargetFrame->GetMinSize() );
    }
 }
