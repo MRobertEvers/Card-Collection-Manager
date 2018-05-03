@@ -18,7 +18,14 @@ vCollectionsOverview::vCollectionsOverview( wxWindow* aptParent,
 {
    wxBoxSizer* boxSizer = new wxBoxSizer(wxHORIZONTAL);
    this->SetSizer(boxSizer);
+
    this->GetParent()->SetMinSize(wxSize(350, 500));
+   if( this->GetParent()->GetSize().GetWidth() < this->GetParent()->GetMinSize().GetWidth() ||
+       this->GetParent()->GetSize().GetHeight() < this->GetParent()->GetMinSize().GetHeight() )
+   {
+      this->GetParent()->SetSize( wxSize( 350, 500 ) );
+   }
+
    buildCollectionSelector();
    getLoadedCollections();
 }
@@ -102,5 +109,12 @@ vCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)
    awxEvt.StopPropagation();
 */
    auto sel = new viCollectionSelector( this, 4 );
+   wxFrame* pTargetFrame = sel;
    sel->Show();
+   sel->SetMinSize( wxSize( 450, 600 ) );
+   if( sel->GetSize().GetWidth() < sel->GetMinSize().GetWidth() ||
+      sel->GetSize().GetHeight() < sel->GetMinSize().GetHeight() )
+   {
+      sel->SetSize( sel->GetMinSize() );
+   }
 }

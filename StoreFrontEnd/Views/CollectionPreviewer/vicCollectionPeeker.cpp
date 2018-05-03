@@ -8,7 +8,7 @@ vicCollectionPeeker::vicCollectionPeeker( wxWindow* aptParent )
 {
    wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
    this->SetSizer( boxSizer );
-   this->SetSizeHints( 223, 400 );
+   this->SetSizeHints( 223, 500 );
 }
 
 

@@ -94,8 +94,8 @@ protected:
 
 private:
    wxDECLARE_EVENT_TABLE();
-   void uiOnResize( wxSizeEvent& awxEvt );
 
+   void onResize( wxSizeEvent& awxEvt );
 };
 
 class DisplayGroup;
@@ -120,6 +120,7 @@ public:
 
    bool RemoveItem( CardInterface* aptItem );
    void AddItem( CardInterface* aptItem );
+   CardInterface* GetItem( unsigned int auiItemRow );
 
    // Returns all overhead plus the size of children.
    virtual int GetTotalOverhead() = 0;
@@ -159,7 +160,7 @@ public:
               std::vector<CardInterface*> avecItems,
               wxString aszGroupName = "",
               DisplayGroup* aParent = nullptr )
-      : DisplayGroup(apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent){}
+      : DisplayGroup(apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent) {}
    virtual ~RootGroup() {}
 
    virtual int GetTotalOverhead() { return 0; }
@@ -229,6 +230,10 @@ protected:
       bool m_bHasDrawnFirst;
    };
 private:
+   wxDECLARE_EVENT_TABLE();
+
+   void onItemClicked( wxGridEvent& awxEvt );
+
    wxString uiGetDisplayTitle();
    //std::vector<OrderedDisplayNode*> m_vecDisplayNodes;
    DisplayGroup* m_Root;

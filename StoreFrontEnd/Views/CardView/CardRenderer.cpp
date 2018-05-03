@@ -26,10 +26,15 @@ ImageDownloadCallback::CallBack()
        ( m_pCardEditor->m_uiRenderCount < m_uiRenderCountTarget ) )
    {
       // Perhaps need to perform this on the main thread.
+
+      // Data to isolate the correct callback function
       wxCommandEvent updateEvt( wxEVT_BUTTON );
       updateEvt.SetId( CardRenderer::Image_Downloaded );
+
+      // Data used in the callback.
       updateEvt.SetInt( m_pCardEditor->m_uiRenderCount );
       updateEvt.SetClientData( m_pCardInterface );
+
       ::wxPostEvent( m_pCardEditor , updateEvt );
    }
    m_mutex->unlock();

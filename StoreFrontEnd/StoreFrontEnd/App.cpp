@@ -13,6 +13,8 @@ bool MyApp::OnInit()
    StoreFrontEnd::Server();
    wxInitAllImageHandlers();
 
+   // The app needs to be made HIGH-DPI aware. Do this properties->manifest tool
+   // Contrary to the wiki... WINVER=0x0500 must be added to pre-processor definitions.
    MainFrame *frame = new MainFrame( "StoreFrontPro" );
 
    return true;

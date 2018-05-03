@@ -255,7 +255,7 @@ CubeRenderer::uiGetColumnColor( const wxString& aszColumnName )
 }
 
 wxBEGIN_EVENT_TABLE( ColoredGroupColumnRenderer, wxInfiniteGrid )
-EVT_SIZE( ColoredGroupColumnRenderer::uiOnResize )
+EVT_SIZE( ColoredGroupColumnRenderer::onResize )
 wxEND_EVENT_TABLE()
 
 ColoredGroupColumnRenderer::ColoredGroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID,
@@ -344,7 +344,7 @@ ColoredGroupColumnRenderer::GetBackgroundColor()
 }
 
 void
-ColoredGroupColumnRenderer::uiOnResize( wxSizeEvent& awxEvt )
+ColoredGroupColumnRenderer::onResize( wxSizeEvent& awxEvt )
 {
    this->SetColSize( 0, this->GetVirtualSize().GetWidth() );
 }
@@ -469,6 +469,43 @@ DisplayGroup::AddItem( CardInterface* aptItem )
          m_mapChildren[szGroup] = node;
       }
    }
+}
+
+CardInterface* 
+DisplayGroup::GetItem( unsigned int auiItemRow )
+{
+   auto iFirstItem = GetFirstItemRow();
+   if( iFirstItem <= auiItemRow && auiItemRow < iFirstItem + GetSize() )
+   {
+      if( m_setItems.size() > 0 )
+      {
+         int iIndex = iFirstItem;
+         for( auto iter_item = m_setItems.begin(); 
+              iter_item != m_setItems.end(); 
+              ++iter_item, ++iIndex )
+         {
+            if( iIndex == auiItemRow )
+            {
+               return *iter_item;
+            }
+         }
+      }
+      else
+      {
+         for( auto& child : m_mapChildren )
+         {
+            auto pFound = child.second->GetItem(auiItemRow);
+            if( pFound != nullptr )
+            {
+               return pFound;
+            }
+         }
+
+         // If we haven't returned out yet, then we return nullptr below.
+      }
+   }
+
+   return nullptr;
 }
 
 int 
@@ -815,6 +852,10 @@ RootGroup::Draw()
    }
 }
 
+wxBEGIN_EVENT_TABLE( OrderedSubgroupColumnRenderer, ColoredGroupColumnRenderer )
+EVT_GRID_CELL_LEFT_CLICK( OrderedSubgroupColumnRenderer::onItemClicked )
+wxEND_EVENT_TABLE()
+
 OrderedSubgroupColumnRenderer::OrderedSubgroupColumnRenderer( wxPanel* aParent,
                                                               wxWindowID aiWID, 
                                                               const Group& aGroup )
@@ -872,6 +913,14 @@ OrderedSubgroupColumnRenderer::GetDisplayGroup( int aiType,
    {
       return new CMCGroup( this, this, aszGroupName, aGroup, avecItems, aParent );
    }
+}
+
+void 
+OrderedSubgroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
+{
+   auto iSelectedRow = awxEvt.GetRow();
+   auto pClickedItem = m_Root->GetItem( iSelectedRow );
+   //DisplayItem( pClickedItem );
 }
 
 wxString
