@@ -48,6 +48,7 @@ CollectionInterface::PrepareInterface( Query aquery )
    m_LastQuery = aquery;
 }
 
+// Prepare interface must be called before this function!!
 void 
 CollectionInterface::Refresh()
 {

@@ -21,6 +21,14 @@ VCollectionView::VCollectionView( wxFrame* aParent, wxWindowID aiWID )
    this->SetSizer( boxSizer );
 
    this->GetParent()->SetMinSize( wxSize( 550, 500 ) );
+
+   auto pTargetFrame = this->GetParent();
+   if( pTargetFrame->GetSize().GetWidth() < pTargetFrame->GetMinSize().GetWidth() ||
+      pTargetFrame->GetSize().GetHeight() < pTargetFrame->GetMinSize().GetHeight() )
+   {
+      pTargetFrame->SetSize( pTargetFrame->GetMinSize() );
+   }
+
    this->GetParent()->Layout();
 }
 
@@ -47,6 +55,7 @@ VCollectionView::SetRenderer( GroupRenderer* aptRenderer )
    if( panel != nullptr )
    {
       GetSizer()->Add( panel, wxSizerFlags( 1 ).Expand() );
+      this->Layout();
    }
 }
 
@@ -63,4 +72,5 @@ void
 VCollectionView::ShowCardViewer( wxPanel* aptViewer )
 {
    GetSizer()->Add( aptViewer, wxSizerFlags( 1 ).Expand() );
+   this->Layout();
 }

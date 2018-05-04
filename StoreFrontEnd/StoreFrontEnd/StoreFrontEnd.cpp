@@ -176,7 +176,6 @@ StoreFrontEnd::GetCollection( const wxString& aszID )
    else
    {
       auto pair = std::make_pair( aszID, new CollectionInterface( aszID.ToStdString() ) );
-      pair.second->Refresh();
       return m_mapCollections.insert( pair ).first->second;
    }
 }

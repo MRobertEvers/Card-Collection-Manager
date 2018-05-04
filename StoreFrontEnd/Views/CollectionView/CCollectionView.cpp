@@ -19,11 +19,17 @@ CCollectionView::~CCollectionView()
 void 
 CCollectionView::SetCubeRenderer()
 {
+   // Below is for CUBEVIEW
+   Query query;
+   query.AnyMeta();
+   m_ptModel->PrepareInterface( query );
+   m_ptModel->Refresh();
+
    std::vector<CardInterface*> vecItems;
    CardInterface* pFirst = nullptr;
    for( auto& item : m_ptModel->GetItemInterfaces() )
    {
-      if( pFirst != nullptr )
+      if( pFirst == nullptr )
       {
          pFirst = &item;
       }

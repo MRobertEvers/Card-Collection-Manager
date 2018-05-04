@@ -55,7 +55,7 @@ wxEND_EVENT_TABLE()
 CardRenderer::CardRenderer( wxPanel* apParent )
    : wxPanel(apParent), m_pImagePanel(nullptr), m_uiRenderCount(0)
 {
-
+   m_pImagePanel = new ImageViewer( this, wxID_ANY, false );
 }
 
 CardRenderer::~CardRenderer()
@@ -100,11 +100,6 @@ CardRenderer::onImageCallback( wxCommandEvent& awxEvt )
 void 
 CardRenderer::uiDisplayCard()
 {
-   if( m_pImagePanel == nullptr )
-   {
-      m_pImagePanel = new ImageViewer( this, wxID_ANY, false );
-   }
-
    // Check if the image file exists.
    auto ptse = StoreFrontEnd::Client();
    auto szFilePath = getCardImageFile();
