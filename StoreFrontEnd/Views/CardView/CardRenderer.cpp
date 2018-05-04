@@ -5,10 +5,10 @@
 CardRenderer::
 ImageDownloadCallback::ImageDownloadCallback( CardRenderer* apHost,
                                               CardInterface* apCallbackCard,
-                                              std::shared_ptr<std::mutex> aCallBackMutex )
-   : m_uiRenderCountTarget(apHost->m_uiRenderCount), m_pCardInterface(apCallbackCard)
+                                              std::shared_ptr<std::recursive_mutex> aCallBackMutex )
+   : m_pCardEditor(apHost), m_uiRenderCountTarget(apHost->m_uiRenderCount), m_pCardInterface(apCallbackCard)
 {
-
+   m_mutex = std::shared_ptr<std::recursive_mutex>( aCallBackMutex );
 }
 
 CardRenderer::
@@ -23,7 +23,7 @@ ImageDownloadCallback::CallBack()
 {
    m_mutex->lock();
    if( ( GetDoCall() ) &&
-       ( m_pCardEditor->m_uiRenderCount < m_uiRenderCountTarget ) )
+       ( m_pCardEditor->m_uiRenderCount == m_uiRenderCountTarget ) )
    {
       // Perhaps need to perform this on the main thread.
 
@@ -55,12 +55,18 @@ wxEND_EVENT_TABLE()
 CardRenderer::CardRenderer( wxPanel* apParent )
    : wxPanel(apParent), m_pImagePanel(nullptr), m_uiRenderCount(0)
 {
+   m_mutex = std::shared_ptr<std::recursive_mutex>( new std::recursive_mutex() );
    m_pImagePanel = new ImageViewer( this, wxID_ANY, false );
 }
 
 CardRenderer::~CardRenderer()
 {
-
+   m_mutex->lock();
+   if( m_pCurrentCallback != nullptr )
+   {
+      m_pCurrentCallback->SetDoCall( false );
+   }
+   m_mutex->unlock();
 }
 
 void 
@@ -69,11 +75,11 @@ CardRenderer::DisplayImage( CardInterface* apCard )
    // Display the image.
    m_pCardInterface = apCard;
 
-   uiDisplayCard();
+   uiDisplayCard( m_pCardInterface );
 }
 
 std::string 
-CardRenderer::getCardImageFile()
+CardRenderer::getCardImageFile( CardInterface* apCard )
 {
    auto ptse = StoreFrontEnd::Server();
    return ptse->GetImageFilePath( m_pCardInterface->GetName(), m_pCardInterface->GetSet() );
@@ -95,14 +101,16 @@ CardRenderer::onImageCallback( wxCommandEvent& awxEvt )
       auto pCard = (CardInterface*)awxEvt.GetClientData();
       DisplayImage( pCard );
    }
+
+   m_pCurrentCallback = nullptr;
 }
 
 void 
-CardRenderer::uiDisplayCard()
+CardRenderer::uiDisplayCard( CardInterface* apCard )
 {
    // Check if the image file exists.
    auto ptse = StoreFrontEnd::Client();
-   auto szFilePath = getCardImageFile();
+   auto szFilePath = getCardImageFile( apCard );
 
    auto bFileExists = ptse->IsFileExist( szFilePath );
    if( ( !bFileExists ) ||
@@ -110,5 +118,20 @@ CardRenderer::uiDisplayCard()
    {
       // If we couldn't display for some reason
       // Send out callback to download
+
+      // Disable the last callback
+      m_mutex->lock();
+      if( m_pCurrentCallback != nullptr )
+      {
+         m_pCurrentCallback->SetDoCall( false );
+      }
+      m_mutex->unlock();
+
+      auto callBack = std::shared_ptr<ImageDownloadCallback>( new ImageDownloadCallback( this, apCard, m_mutex ) );
+      m_pCurrentCallback = callBack;
+
+      // The thread keeps a shared pointer to the callback so we don't have to worry about randomly deleting
+      // callbacks. 
+      ptse->DownloadCardImage( apCard, std::shared_ptr<ImageFetcherCallback>( callBack ) );
    }
 }

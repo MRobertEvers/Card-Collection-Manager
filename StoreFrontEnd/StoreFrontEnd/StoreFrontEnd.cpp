@@ -2,7 +2,7 @@
 #include "ImageFetcher.h"
 #include "SourceDownloader.h"
 #include "CollectionInterface.h"
-
+#include "../StoreFrontEnd/CardInterface.h"
 #include <wx\wxprec.h>
 #include <Windows.h>
 #include <Shlobj.h>
@@ -53,7 +53,18 @@ StoreFrontEnd::DownloadCardImage( const wxString& aszFilePath,
                                   std::shared_ptr<ImageFetcherCallback> aptCallback )
 {
    ImageFetcher::Instance()->PDownloadImage(aszFilePath, aszCardName, aszSet, aszMUD, aptCallback);
+   return true;
+}
 
+bool 
+StoreFrontEnd::DownloadCardImage( CardInterface* apCard,
+                                  std::shared_ptr<ImageFetcherCallback> aptCallback )
+{
+   auto ptse = StoreFrontEnd::Server();
+   auto szFilePath = ptse->GetImageFilePath( apCard->GetName(), apCard->GetSet() );
+
+   ImageFetcher::Instance()->PDownloadImage( szFilePath, apCard->GetName(), apCard->GetSet(),
+                                             apCard->GetMultiverseID(), aptCallback );
    return true;
 }
 

@@ -8,6 +8,7 @@
 class wxString;
 class ImageFetcherCallback;
 class CollectionInterface;
+class CardInterface;
 
 class StoreFrontEnd
 {
@@ -17,6 +18,8 @@ public:
                            const wxString& aszCardName,
                            const wxString& aszSet,
                            const wxString& aszMUD,
+                           std::shared_ptr<ImageFetcherCallback> aptCallback );
+   bool DownloadCardImage( CardInterface* apCard,
                            std::shared_ptr<ImageFetcherCallback> aptCallback );
    bool DownloadImportSourceFile();
 

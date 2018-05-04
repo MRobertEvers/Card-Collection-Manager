@@ -69,6 +69,13 @@ CardInterface::GetName() const
    return m_szName;
 }
 
+string 
+CardInterface::GetMultiverseID() const
+{
+   auto ptSF = StoreFrontEnd::Server();
+   return ptSF->GetIdentifyingAttribute( m_szName, GetFirstUID(), "multiverseid" );
+}
+
 string
 CardInterface::GetManaCost() const
 {

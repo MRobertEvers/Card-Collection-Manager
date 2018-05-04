@@ -13,6 +13,7 @@ public:
    std::string GetHash() const;
    std::string GetFirstUID() const;
    std::string GetName() const;
+   std::string GetMultiverseID() const;
    std::string GetManaCost() const;
    std::string GetCMC() const;
    std::string GetCardType() const;

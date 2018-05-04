@@ -82,6 +82,7 @@ ImageViewer::DisplayImage( const wxString& aszFilePath )
    return bRetVal;
 }
 
+// TODO: Remove image fetching from here...
 void 
 ImageViewer::fetchImage( const wxString& aszCardName,
                          const wxString& aszMultiVerseID,
