@@ -476,7 +476,7 @@ CardInterface*
 DisplayGroup::GetItem( unsigned int auiItemRow )
 {
    auto iFirstItem = (unsigned int)GetFirstItemRow();
-   if( iFirstItem <= auiItemRow && auiItemRow < iFirstItem + GetSize() )
+   if( iFirstItem <= auiItemRow && auiItemRow < iFirstItem + GetDrawSize() )
    {
       if( m_setItems.size() > 0 )
       {
@@ -921,8 +921,11 @@ OrderedSubgroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
 {
    auto iSelectedRow = awxEvt.GetRow();
    auto pClickedItem = m_Root->GetItem( iSelectedRow );
-   //DisplayItem( pClickedItem );
-   awxEvt.Skip();
+   if( pClickedItem != nullptr )
+   {
+      awxEvt.SetClientData( pClickedItem );
+      awxEvt.Skip();
+   }
 }
 
 wxString

@@ -12,6 +12,7 @@ public:
    ~CCollectionView();
 
    void SetCubeRenderer();
+   void ViewItem( CardInterface* apItem );
 
 private:
    void uiShowCardViewer();

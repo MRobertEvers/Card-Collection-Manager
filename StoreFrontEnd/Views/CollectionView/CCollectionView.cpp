@@ -44,6 +44,13 @@ CCollectionView::SetCubeRenderer()
 }
 
 void 
+CCollectionView::ViewItem( CardInterface* apItem )
+{
+   auto pCardViewer = m_ptCardViewer->GetController();
+   pCardViewer->SetModel( apItem );
+}
+
+void 
 CCollectionView::uiShowCardViewer()
 {
    if( m_ptCardViewer == nullptr )
