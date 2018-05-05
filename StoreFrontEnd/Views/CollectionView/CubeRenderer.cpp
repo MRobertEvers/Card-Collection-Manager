@@ -124,18 +124,20 @@ CubeRenderer::GetGrouping()
 ColoredGroupColumnRenderer*
 CubeRenderer::uiGetColumnRenderer( const wxString& aszGroupName, const Group& aGroup )
 {
-   auto ptRenderer = new OrderedSubgroupColumnRenderer( this, wxID_ANY, aGroup );
+   ColoredGroupColumnRenderer* ptRenderer;
+
+   if( aszGroupName == "Multicolor" )
+   {
+      ptRenderer = new MultiDistinctGroupColumnRenderer( this, wxID_ANY, aGroup );
+   }
+   else
+   {
+      ptRenderer = new OrderedSubgroupColumnRenderer( this, wxID_ANY, aGroup );
+   }
+
    ptRenderer->SetBackgroundColor( uiGetColumnColor( aszGroupName ) );
    ptRenderer->SetTitle( aszGroupName );
    return ptRenderer;
-   //if( aszGroupName == "Multicolor" )
-   //{
-   //   return new MultiDistinctGroupColumnRenderer( this, wxID_ANY, aGroup );
-   //}
-   //else
-   //{
-   //   return new OrderedSubgroupColumnRenderer(this, wxID_ANY, aGroup );
-   //}
 }
 
 void
@@ -932,4 +934,191 @@ wxString
 OrderedSubgroupColumnRenderer::uiGetDisplayTitle()
 {
    return m_szGroupTitle + " (" + std::to_string( m_Root->GetSize() ) + ")";
+}
+
+wxBEGIN_EVENT_TABLE( MultiDistinctGroupColumnRenderer, ColoredGroupColumnRenderer )
+EVT_GRID_CELL_LEFT_CLICK( MultiDistinctGroupColumnRenderer::onItemClicked )
+wxEND_EVENT_TABLE()
+
+MultiDistinctGroupColumnRenderer::MultiDistinctGroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID, const Group& aGroup )
+   : ColoredGroupColumnRenderer( aParent, aiWID, aGroup )
+{
+   
+}
+
+MultiDistinctGroupColumnRenderer::~MultiDistinctGroupColumnRenderer()
+{
+   delete m_Root;
+}
+
+// ColoredGroupColumnRenderer
+void 
+MultiDistinctGroupColumnRenderer::Draw( std::vector<CardInterface*> avecItemData )
+{
+   m_Root = new RootGroup( this, this, m_Group, avecItemData );
+
+   this->SetColLabelValue( 0, uiGetDisplayTitle() );
+   m_Root->Draw();
+
+   this->SetColSize( 0, this->GetVirtualSize().GetWidth() );
+}
+
+bool 
+MultiDistinctGroupColumnRenderer::RemoveItem( CardInterface* aptItem )
+{
+   if( m_Root->RemoveItem( aptItem ) )
+   {
+      this->SetColLabelValue( 0, uiGetDisplayTitle() );
+      return true;
+   }
+   return false;
+}
+
+void 
+MultiDistinctGroupColumnRenderer::AddItem( CardInterface* aptItem )
+{
+   m_Root->AddItem( aptItem );
+   this->SetColLabelValue( 0, uiGetDisplayTitle() );
+}
+
+// DisplayNodeSource
+DisplayGroup* 
+MultiDistinctGroupColumnRenderer::GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
+                                                   std::vector<CardInterface*> avecItems,
+                                                   DisplayGroup* aParent )
+{
+   if( aiType == 1 )
+   {
+      return new GuildGroup( this, this, aszGroupName, aGroup, avecItems, aParent );
+   }
+}
+
+void 
+MultiDistinctGroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
+{
+   auto iSelectedRow = awxEvt.GetRow();
+   auto pClickedItem = m_Root->GetItem( iSelectedRow );
+   if( pClickedItem != nullptr )
+   {
+      awxEvt.SetClientData( pClickedItem );
+      awxEvt.Skip();
+   }
+}
+
+wxString
+MultiDistinctGroupColumnRenderer::uiGetDisplayTitle()
+{
+   return m_szGroupTitle + " (" + std::to_string( m_Root->GetSize() ) + ")";
+}
+
+MultiDistinctGroupColumnRenderer::
+GuildGroup::GuildGroup( ColumnRenderer* apRenderer,
+                        DisplayNodeSource* apSource,
+                        wxString aszGroupName,
+                        Group aGroup,
+                        std::vector<CardInterface*> avecItems,
+                        DisplayGroup* aParent )
+   : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent ), 
+   m_bHasDrawnHeader( false ),
+   m_bHasDrawnLastSpacer(false)
+{
+
+}
+
+MultiDistinctGroupColumnRenderer::
+GuildGroup::~GuildGroup()
+{
+
+}
+
+void 
+MultiDistinctGroupColumnRenderer::
+GuildGroup::Draw()
+{
+   if( !m_bHasDrawnHeader )
+   {
+      // Undraw space
+      wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+      m_pRenderer->DisplayItem( buf, "",
+                                wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                true, wxColour( "BLACK" ),
+                                m_pRenderer->GetBackgroundColor(), 
+                                GetFirstRow() );
+      m_bHasDrawnHeader = true;
+   }
+
+   int iRow = GetFirstItemRow();
+   for( auto& child : m_setItems )
+   {
+      m_pRenderer->DisplayItem( child->GetName(), child->GetHash(),
+                                wxFont(), false, wxColour(),
+                                m_pRenderer->GetBackgroundColor(),
+                                iRow );
+      m_mapDrawnItems[child] = true;
+      iRow++;
+   }
+
+   // Undraw all the end space
+   if( m_bHasDrawnLastSpacer && IsLastChild() )
+   {
+      // Undraw endspace
+      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
+      m_bHasDrawnLastSpacer = false;
+   }
+   else if( !m_bHasDrawnLastSpacer && !IsLastChild() )
+   {
+      // Draw endspace
+      // TODO: All these header things need to be updated to the right row...
+      // Perhaps don't link on old spot but rather where it is expected to be.
+      m_pRenderer->DisplayItem( "", "",
+                                wxFont(), false, wxColour(),
+                                m_pRenderer->GetBackgroundColor(), 
+                                GetFirstRow() + GetDrawSize() );
+      m_bHasDrawnLastSpacer = true;
+   }
+}
+
+void
+MultiDistinctGroupColumnRenderer::
+GuildGroup::UnDraw()
+{
+   if( m_bHasDrawnHeader )
+   {
+      m_pRenderer->UndisplayItem( GetFirstRow() );
+   }
+
+   if( m_bHasDrawnLastSpacer )
+   {
+      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
+   }
+}
+
+int 
+MultiDistinctGroupColumnRenderer::
+GuildGroup::GetFirstItemRow()
+{
+   int iFirstDrawnRow = GetFirstRow();
+   if( m_bHasDrawnHeader )
+   {
+      iFirstDrawnRow += 1;
+   }
+   return iFirstDrawnRow;
+}
+
+int 
+MultiDistinctGroupColumnRenderer::
+GuildGroup::GetTotalOverhead()
+{
+   int iSize = 0;
+   if( m_bHasDrawnHeader )
+   {
+      iSize++;
+   }
+
+   if( m_bHasDrawnLastSpacer )
+   {
+      iSize++;
+   }
+
+   return iSize;
 }

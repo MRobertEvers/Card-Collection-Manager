@@ -174,10 +174,12 @@ public:
    OrderedSubgroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID, const Group& aGroup );
    virtual ~OrderedSubgroupColumnRenderer();
 
+   // ColoredGroupColumnRenderer
    void Draw( std::vector<CardInterface*> avecItemData );
    virtual bool RemoveItem( CardInterface* aptItem );
    virtual void AddItem( CardInterface* aptItem );
 
+   // DisplayNodeSource
    DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
                                   std::vector<CardInterface*> avecItems,
                                   DisplayGroup* aParent );
@@ -235,19 +237,55 @@ private:
    void onItemClicked( wxGridEvent& awxEvt );
 
    wxString uiGetDisplayTitle();
-   //std::vector<OrderedDisplayNode*> m_vecDisplayNodes;
    DisplayGroup* m_Root;
 };
 
-//class MultiDistinctGroupColumnRenderer : public ColoredGroupColumnRenderer
-//{
-//public:
-//   MultiDistinctGroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID, const Group& aGroup )
-//      : ColoredGroupColumnRenderer( aParent, aiWID, aGroup )
-//   {
-//   }
-//
-//protected:
-//   virtual void uiBuildColumn( std::vector<CardInterface*> avecItemData );
-//   void uiAddItem( CardInterface* aptItem );
-//};
+class MultiDistinctGroupColumnRenderer : public ColoredGroupColumnRenderer, public DisplayNodeSource
+{
+public:
+   MultiDistinctGroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID, const Group& aGroup );
+   ~MultiDistinctGroupColumnRenderer();
+
+   // ColoredGroupColumnRenderer
+   void Draw( std::vector<CardInterface*> avecItemData );
+   virtual bool RemoveItem( CardInterface* aptItem );
+   virtual void AddItem( CardInterface* aptItem );
+
+   // DisplayNodeSource
+   DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
+                                  std::vector<CardInterface*> avecItems,
+                                  DisplayGroup* aParent );
+
+protected:
+   class GuildGroup : public DisplayGroup
+   {
+   public:
+      GuildGroup( ColumnRenderer* apRenderer,
+                  DisplayNodeSource* apSource,
+                  wxString aszGroupName,
+                  Group aGroup,
+                  std::vector<CardInterface*> avecItems,
+                  DisplayGroup* aParent = nullptr );
+
+      virtual ~GuildGroup();
+
+      virtual void Draw();
+      virtual void UnDraw();
+      virtual int GetFirstItemRow();
+      virtual int GetTotalOverhead();
+
+   private:
+      // This group draws an empty row after if it is not the last group.
+      bool m_bHasDrawnLastSpacer;
+
+      bool m_bHasDrawnHeader;
+   };
+
+private:
+   wxDECLARE_EVENT_TABLE();
+
+   void onItemClicked( wxGridEvent& awxEvt );
+
+   wxString uiGetDisplayTitle();
+   DisplayGroup* m_Root;
+};
