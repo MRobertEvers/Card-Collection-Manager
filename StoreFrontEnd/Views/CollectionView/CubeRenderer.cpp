@@ -258,6 +258,7 @@ CubeRenderer::uiGetColumnColor( const wxString& aszColumnName )
 
 wxBEGIN_EVENT_TABLE( ColoredGroupColumnRenderer, wxInfiniteGrid )
 EVT_SIZE( ColoredGroupColumnRenderer::onResize )
+EVT_GRID_CELL_LEFT_CLICK( ColoredGroupColumnRenderer::onItemClicked )
 wxEND_EVENT_TABLE()
 
 ColoredGroupColumnRenderer::ColoredGroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID,
@@ -350,6 +351,16 @@ ColoredGroupColumnRenderer::onResize( wxSizeEvent& awxEvt )
 {
    this->SetColSize( 0, this->GetVirtualSize().GetWidth() );
    awxEvt.Skip();
+}
+
+void 
+ColoredGroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
+{
+   auto arrCells = this->GetSelectedCells();
+   for( size_t i = 0; i < GetNumberRows(); i++ )
+   {
+      this->DeselectCell( i, 0 );
+   }
 }
 
 DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSource, wxString aszGroupName, Group aGroup,
@@ -855,10 +866,6 @@ RootGroup::Draw()
    }
 }
 
-wxBEGIN_EVENT_TABLE( OrderedSubgroupColumnRenderer, ColoredGroupColumnRenderer )
-EVT_GRID_CELL_LEFT_CLICK( OrderedSubgroupColumnRenderer::onItemClicked )
-wxEND_EVENT_TABLE()
-
 OrderedSubgroupColumnRenderer::OrderedSubgroupColumnRenderer( wxPanel* aParent,
                                                               wxWindowID aiWID, 
                                                               const Group& aGroup )
@@ -921,6 +928,7 @@ OrderedSubgroupColumnRenderer::GetDisplayGroup( int aiType,
 void 
 OrderedSubgroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
 {
+   ColoredGroupColumnRenderer::onItemClicked( awxEvt );
    auto iSelectedRow = awxEvt.GetRow();
    auto pClickedItem = m_Root->GetItem( iSelectedRow );
    if( pClickedItem != nullptr )
@@ -935,10 +943,6 @@ OrderedSubgroupColumnRenderer::uiGetDisplayTitle()
 {
    return m_szGroupTitle + " (" + std::to_string( m_Root->GetSize() ) + ")";
 }
-
-wxBEGIN_EVENT_TABLE( MultiDistinctGroupColumnRenderer, ColoredGroupColumnRenderer )
-EVT_GRID_CELL_LEFT_CLICK( MultiDistinctGroupColumnRenderer::onItemClicked )
-wxEND_EVENT_TABLE()
 
 MultiDistinctGroupColumnRenderer::MultiDistinctGroupColumnRenderer( wxPanel* aParent, wxWindowID aiWID, const Group& aGroup )
    : ColoredGroupColumnRenderer( aParent, aiWID, aGroup )
@@ -1003,6 +1007,7 @@ MultiDistinctGroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
       awxEvt.SetClientData( pClickedItem );
       awxEvt.Skip();
    }
+   ColoredGroupColumnRenderer::onItemClicked( awxEvt );
 }
 
 wxString

@@ -96,6 +96,7 @@ private:
    wxDECLARE_EVENT_TABLE();
 
    void onResize( wxSizeEvent& awxEvt );
+   virtual void onItemClicked( wxGridEvent& awxEvt );
 };
 
 class DisplayGroup;
@@ -175,14 +176,14 @@ public:
    virtual ~OrderedSubgroupColumnRenderer();
 
    // ColoredGroupColumnRenderer
-   void Draw( std::vector<CardInterface*> avecItemData );
-   virtual bool RemoveItem( CardInterface* aptItem );
-   virtual void AddItem( CardInterface* aptItem );
+   void Draw( std::vector<CardInterface*> avecItemData ) override;
+   virtual bool RemoveItem( CardInterface* aptItem ) override;
+   virtual void AddItem( CardInterface* aptItem ) override;
 
    // DisplayNodeSource
    DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
                                   std::vector<CardInterface*> avecItems,
-                                  DisplayGroup* aParent );
+                                  DisplayGroup* aParent ) override;
    
 protected:
    class TypeGroup : public DisplayGroup
@@ -232,9 +233,9 @@ protected:
       bool m_bHasDrawnFirst;
    };
 private:
-   wxDECLARE_EVENT_TABLE();
 
-   void onItemClicked( wxGridEvent& awxEvt );
+   // ColoredGroupColumnRenderer
+   void onItemClicked( wxGridEvent& awxEvt ) override;
 
    wxString uiGetDisplayTitle();
    DisplayGroup* m_Root;
@@ -247,14 +248,14 @@ public:
    ~MultiDistinctGroupColumnRenderer();
 
    // ColoredGroupColumnRenderer
-   void Draw( std::vector<CardInterface*> avecItemData );
-   virtual bool RemoveItem( CardInterface* aptItem );
-   virtual void AddItem( CardInterface* aptItem );
+   void Draw( std::vector<CardInterface*> avecItemData ) override;
+   virtual bool RemoveItem( CardInterface* aptItem ) override;
+   virtual void AddItem( CardInterface* aptItem ) override;
 
    // DisplayNodeSource
    DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
                                   std::vector<CardInterface*> avecItems,
-                                  DisplayGroup* aParent );
+                                  DisplayGroup* aParent ) override;
 
 protected:
    class GuildGroup : public DisplayGroup
@@ -282,9 +283,8 @@ protected:
    };
 
 private:
-   wxDECLARE_EVENT_TABLE();
-
-   void onItemClicked( wxGridEvent& awxEvt );
+   // ColoredGroupColumnRenderer
+   void onItemClicked( wxGridEvent& awxEvt ) override;
 
    wxString uiGetDisplayTitle();
    DisplayGroup* m_Root;
