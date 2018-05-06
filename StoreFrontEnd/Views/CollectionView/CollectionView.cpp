@@ -10,6 +10,8 @@ CollectionView::CollectionView( wxFrame* aptParent, IMenuEventSource* apSource, 
    m_pController = new CCollectionView( m_pView, apSource, aptModel );
    m_pView->SetController( m_pController );
    m_pController->SetCubeRenderer();
+
+   apSource->BindMenuEventHandler( m_pController );
 }
 
 CollectionView::~CollectionView()

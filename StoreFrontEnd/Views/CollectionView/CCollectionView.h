@@ -25,9 +25,10 @@ public:
    void BindEventHandler();
    void SetCubeRenderer();
    void ViewItem( CardInterface* apItem );
+   void OnCollectionEdited();
 
 private:
-
+   
    void handleEvent( unsigned int aiEvent );
    void uiShowCardViewer();
 

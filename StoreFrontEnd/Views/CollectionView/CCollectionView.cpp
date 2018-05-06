@@ -67,6 +67,27 @@ CCollectionView::ViewItem( CardInterface* apItem )
    pCardViewer->SetModel( apItem );
 }
 
+void 
+CCollectionView::OnCollectionEdited()
+{
+   // Simply calculate differences
+   m_ptModel->Refresh();
+
+   std::vector<CardInterface*> vecItems;
+   CardInterface* pFirst = nullptr;
+   for( auto& item : m_ptModel->GetItemInterfaces() )
+   {
+      if( pFirst == nullptr )
+      {
+         pFirst = &item;
+      }
+      vecItems.push_back( &item );
+   }
+
+   m_ptView->Draw( vecItems );
+   m_ptCardViewer->GetController()->SetModel( pFirst );
+}
+
 void
 CCollectionView::handleEvent( unsigned int aiEvent )
 {

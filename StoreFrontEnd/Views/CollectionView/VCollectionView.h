@@ -42,5 +42,6 @@ private:
    CCollectionView* m_ptController;
    GroupRenderer* m_ptRenderer;
 
+   void onCollectionEditorAccept( wxCommandEvent& awxEvt );
    void onItemClicked( wxGridEvent& awxEvt );
 };

@@ -1,13 +1,13 @@
 #include "VCollectionView.h"
 #include "CCollectionView.h"
 #include "../Views/CardView/VCardView.h"
+#include "../Views/CollectionEditor/viCollectionEditor.h"
 
 wxBEGIN_EVENT_TABLE( VCollectionView, wxPanel )
 //EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
 //EVT_BUTTON( viCardEditor::Image_Changed, vCollectionCube::onNewItemSelectView )
 EVT_GRID_CELL_LEFT_CLICK( VCollectionView::onItemClicked )
-//EVT_BUTTON( viCollectionEditor::Changes_Accept, vCollectionCube::onEditorAccept )
-//EVT_BUTTON( viCollectionEditor::Changes_Decline, vCollectionCube::onEditorDecline )
+EVT_BUTTON( viCollectionEditor::Changes_Accept, VCollectionView::onCollectionEditorAccept )
 wxEND_EVENT_TABLE()
 
 VCollectionView::VCollectionView( wxFrame* aParent, wxWindowID aiWID )
@@ -74,6 +74,14 @@ VCollectionView::ShowCardViewer( wxPanel* aptViewer )
    GetSizer()->Add( aptViewer, wxSizerFlags( 1 ).Expand() );
    this->Layout();
 }
+
+
+void 
+VCollectionView::onCollectionEditorAccept( wxCommandEvent& awxEvt )
+{
+   m_ptController->OnCollectionEdited();
+}
+
 
 void 
 VCollectionView::onItemClicked( wxGridEvent& awxEvt )

@@ -49,7 +49,6 @@ CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType 
 
       m_ptrControlledView = std::shared_ptr<IControlledView>( tmp );
       m_View->SetView( tmp->GetView() );
-      m_View->BindMenuEventHandler( tmp->GetController() );
    }
    else
    {

@@ -76,6 +76,11 @@ CubeRenderer::~CubeRenderer()
 void
 CubeRenderer::Draw( std::vector<CardInterface*> avecItemData )
 {
+   for( auto& existing : m_mapColumns )
+   {
+      existing.second->Destroy();
+   }
+
    uiBuildColumns( avecItemData );
 }
 
@@ -155,6 +160,8 @@ CubeRenderer::uiBuildColumns( vector<CardInterface*> avecItems )
    {
       uiAddColumn( group.first, group.second );
    }
+
+   Layout();
 }
 
 void 

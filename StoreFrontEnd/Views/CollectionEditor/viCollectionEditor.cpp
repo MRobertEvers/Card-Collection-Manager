@@ -13,7 +13,6 @@ EVT_TIMER(TIMER_ID, viCollectionEditor::onDropDownDelay)
 EVT_COMBOBOX(vicListSelector::ComboBox, viCollectionEditor::onComboBoxSelection)
 EVT_BUTTON(Changes_Accept, viCollectionEditor::onAccept)
 EVT_BUTTON(Changes_Decline, viCollectionEditor::onDecline)
-EVT_CLOSE( viCollectionEditor::onClose )
 wxEND_EVENT_TABLE()
 
 
@@ -260,19 +259,7 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
 void 
 viCollectionEditor::onDecline(wxCommandEvent& awxEvt)
 {
-   // TODO: CLOSE THIS WINDOW>
-   awxEvt.Skip();
-}
-
-void 
-viCollectionEditor::onClose( wxCloseEvent& awxEvt )
-{
-   wxCommandEvent wxCloseEvent( wxEVT_BUTTON );
-   wxCloseEvent.SetId( Changes_Decline );
-   ::wxPostEvent( this->GetParent(), wxCloseEvent );
-
-   // Need to veto because the parent will destroy this.
-   awxEvt.Veto();
+   Destroy();
 }
 
 unsigned long 
