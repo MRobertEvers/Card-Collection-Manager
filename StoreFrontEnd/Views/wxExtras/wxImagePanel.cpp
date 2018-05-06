@@ -61,21 +61,20 @@ wxImagePanel::wxImagePanel(wxWindow* parent, wxString file,
       auto imageSize = image.GetSize();
       SetSizeHints( imageSize );
       SetSize( imageSize );
-   }
 
-   if( DoScale )
-   {
-      w = -1;
-      h = -1;
+      if( DoScale )
+      {
+         w = -1;
+         h = -1;
+      }
+      else
+      {
+         auto imageSize = image.GetSize();
+         w = imageSize.GetWidth();
+         h = imageSize.GetHeight();
+         resized = wxBitmap( image.Scale( w, h /*, wxIMAGE_QUALITY_HIGH*/ ) );
+      }
    }
-   else
-   {
-      auto imageSize = image.GetSize();
-      w = imageSize.GetWidth();
-      h = imageSize.GetHeight();
-      resized = wxBitmap( image.Scale( w, h /*, wxIMAGE_QUALITY_HIGH*/ ) );
-   }
-
 }
 
 /*

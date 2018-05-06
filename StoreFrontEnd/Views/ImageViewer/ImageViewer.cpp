@@ -75,8 +75,11 @@ ImageViewer::DisplayImage( const wxString& aszFilePath )
    m_mutex->lock();
    wxLog::EnableLogging( false );
    bool bRetVal = m_ptImageWrapper->SetImage( aszFilePath );
-   this->SetSize( m_ptImageWrapper->GetSize() );
-   this->SetSizeHints( m_ptImageWrapper->GetSize() );
+   if( bRetVal )
+   {
+      this->SetSize( m_ptImageWrapper->GetSize() );
+      this->SetSizeHints( m_ptImageWrapper->GetSize() );
+   }
    wxLog::EnableLogging( true );
    m_mutex->unlock();
    return bRetVal;

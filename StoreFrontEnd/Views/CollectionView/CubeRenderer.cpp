@@ -76,12 +76,14 @@ CubeRenderer::~CubeRenderer()
 void
 CubeRenderer::Draw( std::vector<CardInterface*> avecItemData )
 {
+   this->Freeze();
    for( auto& existing : m_mapColumns )
    {
       existing.second->Destroy();
    }
 
    uiBuildColumns( avecItemData );
+   this->Thaw();
 }
 
 // Returns true if the item was successfully removed.
