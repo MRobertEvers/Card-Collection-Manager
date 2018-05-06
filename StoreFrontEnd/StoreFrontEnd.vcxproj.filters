@@ -188,9 +188,6 @@
     <ClCompile Include="Views\CollectionsOverview\vcCollectionsMenuList.cpp">
       <Filter>Views\Overview\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Views\ViewTemplates\icCollectionView.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
     <ClCompile Include="Views\ViewTemplates\IControlledView.cpp">
       <Filter>Views\Template</Filter>
     </ClCompile>
@@ -198,9 +195,6 @@
       <Filter>Views\Template</Filter>
     </ClCompile>
     <ClCompile Include="Views\ViewTemplates\IMenuEventSource.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\ViewTemplates\ivCollectionView.cpp">
       <Filter>Views\Template</Filter>
     </ClCompile>
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp">
@@ -370,9 +364,6 @@
     <ClInclude Include="Views\CollectionsOverview\vcCollectionsMenuList.h">
       <Filter>Views\Overview\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Views\ViewTemplates\icCollectionView.h">
-      <Filter>Views\Template</Filter>
-    </ClInclude>
     <ClInclude Include="Views\ViewTemplates\IControlledView.h">
       <Filter>Views\Template</Filter>
     </ClInclude>
@@ -380,9 +371,6 @@
       <Filter>Views\Template</Filter>
     </ClInclude>
     <ClInclude Include="Views\ViewTemplates\IMenuEventSource.h">
-      <Filter>Views\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\ViewTemplates\ivCollectionView.h">
       <Filter>Views\Template</Filter>
     </ClInclude>
     <ClInclude Include="Views\wxExtras\wxImagePanel.h">

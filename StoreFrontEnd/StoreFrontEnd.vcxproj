@@ -217,11 +217,9 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\MainWindow\CMainWindow.cpp" />
     <ClCompile Include="Views\MainWindow\MainWindow.cpp" />
     <ClCompile Include="Views\MainWindow\VMainWindow.cpp" />
-    <ClCompile Include="Views\ViewTemplates\icCollectionView.cpp" />
     <ClCompile Include="Views\ViewTemplates\IControlledView.cpp" />
     <ClCompile Include="Views\ViewTemplates\IMenuEventHandler.cpp" />
     <ClCompile Include="Views\ViewTemplates\IMenuEventSource.cpp" />
-    <ClCompile Include="Views\ViewTemplates\ivCollectionView.cpp" />
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp" />
     <ClCompile Include="Views\wxExtras\wxInfiniteGrid.cpp" />
     <ClCompile Include="Views\wxExtras\wxManualText.cpp" />
@@ -303,11 +301,9 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\MainWindow\CMainWindow.h" />
     <ClInclude Include="Views\MainWindow\MainWindow.h" />
     <ClInclude Include="Views\MainWindow\VMainWindow.h" />
-    <ClInclude Include="Views\ViewTemplates\icCollectionView.h" />
     <ClInclude Include="Views\ViewTemplates\IControlledView.h" />
     <ClInclude Include="Views\ViewTemplates\IMenuEventHandler.h" />
     <ClInclude Include="Views\ViewTemplates\IMenuEventSource.h" />
-    <ClInclude Include="Views\ViewTemplates\ivCollectionView.h" />
     <ClInclude Include="Views\wxExtras\wxImagePanel.h" />
     <ClInclude Include="Views\wxExtras\wxInfiniteGrid.h" />
     <ClInclude Include="Views\wxExtras\wxManualText.h" />

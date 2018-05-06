@@ -3,7 +3,6 @@
 #include "CMainWindow.h"
 #include "../StoreFrontEnd/StorefrontConfig.h"
 #include "../CollectionsOverview/vCollectionsOverview.h"
-#include "../ViewTemplates/icCollectionView.h"
 #include "../ViewTemplates/IMenuEventHandler.h"
 
 wxBEGIN_EVENT_TABLE(VMainWindow, IMenuEventSource )
