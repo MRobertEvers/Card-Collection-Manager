@@ -50,14 +50,6 @@ CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType 
       m_ptrControlledView = std::shared_ptr<IControlledView>( tmp );
       m_View->SetView( tmp->GetView() );
    }
-   else
-   {
-      //m_View->ReleaseMenuEventHandler();
-
-      //CollectionDeckBox* cube = new CollectionDeckBox( m_View, szID );
-      //m_ptrControlledView = std::shared_ptr<IControlledView>( cube );
-      //m_View->SetView( cube->GetView() );
-   }
 }
 
 void 

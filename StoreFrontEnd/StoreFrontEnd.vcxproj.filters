@@ -23,15 +23,6 @@
     <Filter Include="Views\Overview\Components">
       <UniqueIdentifier>{0290169f-9ba2-4200-b4fc-253db1f52915}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Views\Deckbox">
-      <UniqueIdentifier>{f37700cb-e82e-40ca-b01e-d99f94b16bf2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Views\Deckbox\Components">
-      <UniqueIdentifier>{a3566811-f2d1-45a5-b14f-3f28a82b0af9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Views\Deckbox\ComponentHelpers">
-      <UniqueIdentifier>{4963d8e0-6851-4db2-a3f9-1ed7888d8ffd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Views\Interfaces">
       <UniqueIdentifier>{de6c1d01-12f1-405e-bafd-e6d6fd204c6a}</UniqueIdentifier>
     </Filter>
@@ -56,12 +47,6 @@
     <Filter Include="Views\Template">
       <UniqueIdentifier>{921bdce0-b8b2-4984-abc0-1dc54c078048}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Views\Cube">
-      <UniqueIdentifier>{84c8dacd-fdf8-43de-9057-a5148544ff2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Views\Cube\Components">
-      <UniqueIdentifier>{4a01723e-c28a-433a-a4d3-970b99701fda}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Views\Interfaces\StatsViewer">
       <UniqueIdentifier>{8f564d03-09b7-49e7-b975-c60609cf543b}</UniqueIdentifier>
     </Filter>
@@ -80,9 +65,6 @@
     <Filter Include="StoreFrontEnd">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Views\Cube\CardEditorComponent">
-      <UniqueIdentifier>{bf47c679-081a-4ceb-a74a-a9dfac4423f7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Views\CollectionView">
       <UniqueIdentifier>{0f0abdf4-5830-4281-96cb-bcba71ffc9da}</UniqueIdentifier>
