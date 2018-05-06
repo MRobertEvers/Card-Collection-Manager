@@ -53,6 +53,7 @@ CMainWindow::ImportSource()
 void 
 CMainWindow::uiSetMainPanel( std::shared_ptr<IControlledView> apView )
 {
+   // Release then bind the new menu
    if( m_ptrControlledView != nullptr )
    {
       auto pMenuHandler = m_ptrControlledView->GetEventHandler();
@@ -69,5 +70,6 @@ CMainWindow::uiSetMainPanel( std::shared_ptr<IControlledView> apView )
       pMenuHandler->BindToMenu( m_View->GetMenu(), m_View );
    }
 
+   // Set the view.
    m_View->SetView( m_ptrControlledView->GetView() );
 }
