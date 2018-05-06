@@ -2,6 +2,7 @@
 #include <wx/wxprec.h>
 
 class vcCollectionsMenuList;
+class CCollectionsOverview;
 
 class VCollectionsOverview : public wxPanel
 {
@@ -16,12 +17,15 @@ public:
    VCollectionsOverview(wxWindow* aptParent, wxWindowID aiWID);
    ~VCollectionsOverview();
 
+   void SetController( CCollectionsOverview* aptController );
+
    void OnLoadCollection(wxCommandEvent& awxEvt);
 
 
 private:
    wxDECLARE_EVENT_TABLE();
 
+   CCollectionsOverview* m_pController;
    vcCollectionsMenuList* m_vcCollectionsPanel;
 
    void onLoadCollection( wxCommandEvent& awxEvt );

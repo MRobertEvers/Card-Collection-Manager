@@ -1,32 +1,32 @@
 #include "CollectionsOverview.h"
 #include "cCollectionsOverview.h"
 #include "vCollectionsOverview.h"
-#include "../ViewTemplates/IMenuEventSource.h"
+#include <wx/wxprec.h>
 
 
-CollectionsOverview::CollectionsOverview( IMenuEventSource* aParent )
+CollectionsOverview::CollectionsOverview( wxFrame* aParent )
 {
-   m_Controller = new CCollectionsOverview( aParent );
-   m_View = new VCollectionsOverview( aParent, wxID_ANY );
+   m_pView = new VCollectionsOverview( aParent, wxID_ANY );
+   m_pController = new CCollectionsOverview( m_pView );
 
-   // TODO: Polymorphism with sharedptr
-   aParent->BindMenuEventHandler( m_Controller );
+   m_pView->SetController( m_pController );
 }
 
 
 CollectionsOverview::~CollectionsOverview()
 {
-   delete m_Controller;
+   delete m_pController;
 }
 
-CCollectionsOverview*
-CollectionsOverview::GetController()
+std::shared_ptr<IMenuEventHandler> 
+CollectionsOverview::GetEventHandler()
 {
-   return m_Controller;
+   // Overview has no menu.
+   return nullptr;
 }
 
-VCollectionsOverview*
+wxPanel*
 CollectionsOverview::GetView()
 {
-   return m_View;
+   return m_pView;
 }

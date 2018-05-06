@@ -6,7 +6,7 @@ class CardInterface;
 class VCardView;
 class CCardView;
 
-class CardView : public IControlledView
+class CardView
 {
 public:
    CardView( wxPanel* aptParent );

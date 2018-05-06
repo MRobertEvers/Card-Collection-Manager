@@ -5,32 +5,24 @@
 #include <wx/event.h>
 #include <wx/menu.h>
 
-class IMenuEventSource;
-
-// Requires      registerSendMenuEvents to be put in the constructor
-// so that the event receiver knows to register event handlers
+// Events must be bound to the main window because the owner of this handler
+// isn't in the event chain of the menu that it binds to.
 class IMenuEventHandler
 {
 public:
-   IMenuEventHandler( IMenuEventSource* aParent );
-   virtual ~IMenuEventHandler();
+   enum
+   {
+      GenericMenuEvent = 0x444
+   };
 
-   void MenuEvent(wxCommandEvent& awxEvt);
+public:
+   virtual ~IMenuEventHandler() {}
 
-   virtual void BindEventHandler() = 0;
+   // The instance handle events here
+   virtual void OnMenuEvent(wxCommandEvent& awxEvt) = 0;
 
-   void ReleaseEventHandler();
+   // The instance puts itself on the menubar
+   virtual void BindToMenu( wxMenuBar* apMenu, wxEvtHandler* apFrame ) = 0;
 
-protected:
-   virtual void handleEvent(unsigned int aiEvent) = 0;
-
-   void registerSendMenuEvents();
-   
-   void prepareMenuItem(const wxString& aszTitle, const unsigned int aiID);
-
-   void registerMenu(const wxString& aszMenuName);
-
-   IMenuEventSource* m_MFParent;
-private:
-   std::map<wxString, unsigned int> m_mapTitleToEventID;
+   virtual void ReleaseMenu( wxMenuBar* apMenu, wxEvtHandler* apFrame ) = 0;
 };

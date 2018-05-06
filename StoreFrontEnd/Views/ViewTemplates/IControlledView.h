@@ -1,8 +1,13 @@
 #pragma once
+#include <memory>
+
+class IMenuEventHandler;
+class wxPanel;
+
 class IControlledView
 {
 public:
-   IControlledView();
-   virtual ~IControlledView();
+   virtual std::shared_ptr<IMenuEventHandler> GetEventHandler() = 0;
+   virtual wxPanel* GetView() = 0;
 };
 

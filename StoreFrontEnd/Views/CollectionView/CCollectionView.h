@@ -7,29 +7,25 @@ class CardView;
 class IMenuEventSource;
 class VCollectionView;
 
-class CCollectionView : public IMenuEventHandler
+class CCollectionView
 {
 public:
-   enum Events
-   {
-      Menu_Save = 0x3,
-      Menu_Edit,
-      Menu_Stats,
-      Menu_History,
-      Menu_XMage
-   };
-
-   CCollectionView( VCollectionView* aptView, IMenuEventSource* apSource, std::shared_ptr<CollectionInterface> aptModel);
+   CCollectionView( VCollectionView* aptView, std::shared_ptr<CollectionInterface> aptModel);
    ~CCollectionView();
 
-   void BindEventHandler();
    void SetCubeRenderer();
    void ViewItem( CardInterface* apItem );
+
+   void OnDoEdit();
+   void OnViewStats();
+   void OnViewHistory();
+   void OnExportXMage();
+   void OnSave();
+
    void OnCollectionEdited();
 
 private:
    
-   void handleEvent( unsigned int aiEvent );
    void uiShowCardViewer();
 
    std::shared_ptr<CardView> m_ptCardViewer;

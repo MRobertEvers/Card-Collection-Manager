@@ -78,6 +78,9 @@
     <Filter Include="Views\Interfaces\CardViewer\EditorModules">
       <UniqueIdentifier>{e6f5e0a8-8edb-4413-882e-7b5d87383eb2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\CollectionView\Menus">
+      <UniqueIdentifier>{0e16539d-c9ba-4387-838c-4a58d1bad37b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Views\MainWindow\CMainWindow.cpp">
@@ -155,9 +158,6 @@
     <ClCompile Include="Views\ViewTemplates\IMenuEventHandler.cpp">
       <Filter>Views\Template</Filter>
     </ClCompile>
-    <ClCompile Include="Views\ViewTemplates\IMenuEventSource.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp">
       <Filter>wxExtensions</Filter>
     </ClCompile>
@@ -232,6 +232,9 @@
     </ClCompile>
     <ClCompile Include="Views\ImageViewer\ImageWrapper.cpp">
       <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionView\CollectionViewMenu.cpp">
+      <Filter>Views\CollectionView\Menus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,9 +311,6 @@
       <Filter>Views\Template</Filter>
     </ClInclude>
     <ClInclude Include="Views\ViewTemplates\IMenuEventHandler.h">
-      <Filter>Views\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\ViewTemplates\IMenuEventSource.h">
       <Filter>Views\Template</Filter>
     </ClInclude>
     <ClInclude Include="Views\wxExtras\wxImagePanel.h">
@@ -465,6 +465,9 @@
     </ClInclude>
     <ClInclude Include="Views\ImageViewer\ImageWrapper.h">
       <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionView\CollectionViewMenu.h">
+      <Filter>Views\CollectionView\Menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

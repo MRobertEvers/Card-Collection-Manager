@@ -204,6 +204,7 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\CollectionStats\vStatsViewer.cpp" />
     <ClCompile Include="Views\CollectionView\CCollectionView.cpp" />
     <ClCompile Include="Views\CollectionView\CollectionView.cpp" />
+    <ClCompile Include="Views\CollectionView\CollectionViewMenu.cpp" />
     <ClCompile Include="Views\CollectionView\CubeRenderer.cpp" />
     <ClCompile Include="Views\CollectionView\VCollectionView.cpp" />
     <ClCompile Include="Views\ImageViewer\ImageViewer.cpp" />
@@ -213,7 +214,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\MainWindow\VMainWindow.cpp" />
     <ClCompile Include="Views\ViewTemplates\IControlledView.cpp" />
     <ClCompile Include="Views\ViewTemplates\IMenuEventHandler.cpp" />
-    <ClCompile Include="Views\ViewTemplates\IMenuEventSource.cpp" />
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp" />
     <ClCompile Include="Views\wxExtras\wxInfiniteGrid.cpp" />
     <ClInclude Include="include\curl\curl.h" />
@@ -281,6 +281,7 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\CollectionStats\vStatsViewer.h" />
     <ClInclude Include="Views\CollectionView\CCollectionView.h" />
     <ClInclude Include="Views\CollectionView\CollectionView.h" />
+    <ClInclude Include="Views\CollectionView\CollectionViewMenu.h" />
     <ClInclude Include="Views\CollectionView\CubeRenderer.h" />
     <ClInclude Include="Views\CollectionView\VCollectionView.h" />
     <ClInclude Include="Views\ImageViewer\ImageViewer.h" />
@@ -290,7 +291,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\MainWindow\VMainWindow.h" />
     <ClInclude Include="Views\ViewTemplates\IControlledView.h" />
     <ClInclude Include="Views\ViewTemplates\IMenuEventHandler.h" />
-    <ClInclude Include="Views\ViewTemplates\IMenuEventSource.h" />
     <ClInclude Include="Views\wxExtras\wxImagePanel.h" />
     <ClInclude Include="Views\wxExtras\wxInfiniteGrid.h" />
   </ItemGroup>
