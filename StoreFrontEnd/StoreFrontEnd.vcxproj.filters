@@ -65,9 +65,6 @@
     <Filter Include="Views\Interfaces\StatsViewer">
       <UniqueIdentifier>{8f564d03-09b7-49e7-b975-c60609cf543b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Views\Interfaces\StatsViewer\Components">
-      <UniqueIdentifier>{42283d38-a96e-49a8-a1b2-cc58a91e7dc6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Views\Interfaces\StatsViewer\Modules">
       <UniqueIdentifier>{fc80ad81-6283-4b69-b7a1-4e440d6f47cb}</UniqueIdentifier>
     </Filter>
@@ -109,18 +106,6 @@
     </ClCompile>
     <ClCompile Include="Views\MainWindow\VMainWindow.cpp">
       <Filter>Views</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CardEditor\viCardEditor.cpp">
-      <Filter>Views\Interfaces\CardEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CardEditor\vcEditableItemList.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CardEditor\vcEditableTraitList.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CardEditor\vcEditableTraitListItem.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClCompile>
     <ClCompile Include="Views\CollectionEditor\viCollectionEditor.cpp">
       <Filter>Views\Interfaces\CollectionEditor</Filter>
@@ -164,9 +149,6 @@
     <ClCompile Include="Views\ImageViewer\ImageViewer.cpp">
       <Filter>Views\Interfaces\ImageViewer</Filter>
     </ClCompile>
-    <ClCompile Include="Views\ImageViewer\vcImageWrapper.cpp">
-      <Filter>Views\Interfaces\ImageViewer</Filter>
-    </ClCompile>
     <ClCompile Include="Views\CollectionStats\vStatsViewer.cpp">
       <Filter>Views\Interfaces\StatsViewer</Filter>
     </ClCompile>
@@ -178,9 +160,6 @@
     </ClCompile>
     <ClCompile Include="Views\CollectionStats\Modules\vimTypeBreakDown.cpp">
       <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionStats\vicStatsViewRow.cpp">
-      <Filter>Views\Interfaces\StatsViewer\Components</Filter>
     </ClCompile>
     <ClCompile Include="Views\CollectionsOverview\CollectionsOverview.cpp">
       <Filter>Views\Overview</Filter>
@@ -201,9 +180,6 @@
       <Filter>wxExtensions</Filter>
     </ClCompile>
     <ClCompile Include="Views\wxExtras\wxInfiniteGrid.cpp">
-      <Filter>wxExtensions</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\wxExtras\wxManualText.cpp">
       <Filter>wxExtensions</Filter>
     </ClCompile>
     <ClCompile Include="StoreFrontEnd\App.cpp">
@@ -239,9 +215,6 @@
     <ClCompile Include="StoreFrontEnd\StoreFrontEnd.cpp">
       <Filter>StoreFrontEnd</Filter>
     </ClCompile>
-    <ClCompile Include="Views\CardEditor\vcItemNameCheckBox.cpp">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClCompile>
     <ClCompile Include="include\json\jsoncpp.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
@@ -275,6 +248,9 @@
     <ClCompile Include="Views\CollectionsOverview\CCollectionsOverview.cpp">
       <Filter>Views\Overview</Filter>
     </ClCompile>
+    <ClCompile Include="Views\ImageViewer\ImageWrapper.cpp">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Views\MainWindow\CMainWindow.h">
@@ -285,18 +261,6 @@
     </ClInclude>
     <ClInclude Include="Views\MainWindow\VMainWindow.h">
       <Filter>Views</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CardEditor\viCardEditor.h">
-      <Filter>Views\Interfaces\CardEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CardEditor\vcEditableItemList.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CardEditor\vcEditableTraitList.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CardEditor\vcEditableTraitListItem.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
     </ClInclude>
     <ClInclude Include="Views\CollectionEditor\viCollectionEditor.h">
       <Filter>Views\Interfaces\CollectionEditor</Filter>
@@ -340,9 +304,6 @@
     <ClInclude Include="Views\ImageViewer\ImageViewer.h">
       <Filter>Views\Interfaces\ImageViewer</Filter>
     </ClInclude>
-    <ClInclude Include="Views\ImageViewer\vcImageWrapper.h">
-      <Filter>Views\Interfaces\ImageViewer</Filter>
-    </ClInclude>
     <ClInclude Include="Views\CollectionStats\vStatsViewer.h">
       <Filter>Views\Interfaces\StatsViewer</Filter>
     </ClInclude>
@@ -354,9 +315,6 @@
     </ClInclude>
     <ClInclude Include="Views\CollectionStats\Modules\vimTypeBreakDown.h">
       <Filter>Views\Interfaces\StatsViewer\Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\CollectionStats\vicStatsViewRow.h">
-      <Filter>Views\Interfaces\StatsViewer\Components</Filter>
     </ClInclude>
     <ClInclude Include="Views\CollectionsOverview\CollectionsOverview.h">
       <Filter>Views\Overview</Filter>
@@ -377,9 +335,6 @@
       <Filter>wxExtensions</Filter>
     </ClInclude>
     <ClInclude Include="Views\wxExtras\wxInfiniteGrid.h">
-      <Filter>wxExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\wxExtras\wxManualText.h">
       <Filter>wxExtensions</Filter>
     </ClInclude>
     <ClInclude Include="include\curl\curl.h">
@@ -496,9 +451,6 @@
     <ClInclude Include="StoreFrontEnd\StoreFrontEnd.h">
       <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="Views\CardEditor\vcItemNameCheckBox.h">
-      <Filter>Views\Interfaces\CardEditor\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Views\CollectionView\CCollectionView.h">
       <Filter>Views\CollectionView</Filter>
     </ClInclude>
@@ -528,6 +480,9 @@
     </ClInclude>
     <ClInclude Include="Views\CollectionsOverview\CCollectionsOverview.h">
       <Filter>Views\Overview</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\ImageViewer\ImageWrapper.h">
+      <Filter>Views\Interfaces\ImageViewer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

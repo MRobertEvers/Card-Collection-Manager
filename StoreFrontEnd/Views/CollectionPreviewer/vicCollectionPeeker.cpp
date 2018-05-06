@@ -32,7 +32,7 @@ vicCollectionPeeker::SetPeek( const wxString& aszColName,
    }
    auto szSetImage = ptSF->GetDefaultIdentifyingAttributeValue( aszIconName.ToStdString(), "set" );
    auto szMUDImage = ptSF->GetDefaultIdentifyingAttributeValue( aszIconName.ToStdString(), "multiverseid" );
-   m_Viewer->DisplayImage(aszIconName, szMUDImage, szSetImage);
+   //m_Viewer->DisplayImage(aszIconName, szMUDImage, szSetImage);
 
    setPeek( aszColName, amapPeekVals );
 }

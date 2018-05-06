@@ -1,5 +1,4 @@
 #include "vStatsViewer.h"
-#include "vicStatsViewRow.h"
 #include "./Modules/vimCMCModule.h"
 #include "./Modules/vimTypeBreakDown.h"
 #include <wx/ClickableRenderer.h>

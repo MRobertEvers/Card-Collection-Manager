@@ -3,14 +3,18 @@
 
 class wxImagePanel;
 
-class vcImageWrapper : public wxPanel
+/*
+* Allows an interface for easily switching images. Does not handle errors.
+*/
+class ImageWrapper : public wxPanel
 {
 public:
-   vcImageWrapper(wxWindow* aptParent,
+   ImageWrapper(wxWindow* aptParent,
                   wxWindowID aiID,
                   bool abDoScale = true);
-   ~vcImageWrapper();
+   ~ImageWrapper();
 
+   // Changes the displayed image.
    bool SetImage(const wxString& aszImagePath);
 
 private:

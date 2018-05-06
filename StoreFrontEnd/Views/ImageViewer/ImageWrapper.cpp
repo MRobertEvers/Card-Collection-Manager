@@ -1,7 +1,7 @@
-#include "vcImageWrapper.h"
+#include "ImageWrapper.h"
 #include "../wxExtras/wxImagePanel.h"
 
-vcImageWrapper::vcImageWrapper(wxWindow* aptParent,
+ImageWrapper::ImageWrapper(wxWindow* aptParent,
                                wxWindowID aiID,
                                bool abDoScale)
    : wxPanel(aptParent, aiID), m_bDoScale(abDoScale)
@@ -13,13 +13,13 @@ vcImageWrapper::vcImageWrapper(wxWindow* aptParent,
    this->SetMinSize(this->GetSize());
 }
 
-vcImageWrapper::~vcImageWrapper()
+ImageWrapper::~ImageWrapper()
 {
 
 }
 
 bool 
-vcImageWrapper::SetImage(const wxString& aszImagePath)
+ImageWrapper::SetImage(const wxString& aszImagePath)
 {
    freeImage();
    m_jpgPanel = new wxImagePanel(this, aszImagePath, wxBitmapType::wxBITMAP_TYPE_ANY, m_bDoScale);
@@ -39,7 +39,7 @@ vcImageWrapper::SetImage(const wxString& aszImagePath)
 }
 
 void
-vcImageWrapper::freeImage()
+ImageWrapper::freeImage()
 {
    if( m_jpgPanel != nullptr )
    {

@@ -177,11 +177,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp" />
     <ClCompile Include="StoreFrontEnd\SourceDownloader.cpp" />
     <ClCompile Include="StoreFrontEnd\StoreFrontEnd.cpp" />
-    <ClCompile Include="Views\CardEditor\vcEditableItemList.cpp" />
-    <ClCompile Include="Views\CardEditor\vcEditableTraitList.cpp" />
-    <ClCompile Include="Views\CardEditor\vcEditableTraitListItem.cpp" />
-    <ClCompile Include="Views\CardEditor\vcItemNameCheckBox.cpp" />
-    <ClCompile Include="Views\CardEditor\viCardEditor.cpp" />
     <ClCompile Include="Views\CardView\CardRenderer.cpp" />
     <ClCompile Include="Views\CardView\CardView.cpp" />
     <ClCompile Include="Views\CardView\CCardView.cpp" />
@@ -206,14 +201,13 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\CollectionStats\Modules\vimCMCModule.cpp" />
     <ClCompile Include="Views\CollectionStats\Modules\vimCountModule.cpp" />
     <ClCompile Include="Views\CollectionStats\Modules\vimTypeBreakDown.cpp" />
-    <ClCompile Include="Views\CollectionStats\vicStatsViewRow.cpp" />
     <ClCompile Include="Views\CollectionStats\vStatsViewer.cpp" />
     <ClCompile Include="Views\CollectionView\CCollectionView.cpp" />
     <ClCompile Include="Views\CollectionView\CollectionView.cpp" />
     <ClCompile Include="Views\CollectionView\CubeRenderer.cpp" />
     <ClCompile Include="Views\CollectionView\VCollectionView.cpp" />
     <ClCompile Include="Views\ImageViewer\ImageViewer.cpp" />
-    <ClCompile Include="Views\ImageViewer\vcImageWrapper.cpp" />
+    <ClCompile Include="Views\ImageViewer\ImageWrapper.cpp" />
     <ClCompile Include="Views\MainWindow\CMainWindow.cpp" />
     <ClCompile Include="Views\MainWindow\MainWindow.cpp" />
     <ClCompile Include="Views\MainWindow\VMainWindow.cpp" />
@@ -222,7 +216,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\ViewTemplates\IMenuEventSource.cpp" />
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp" />
     <ClCompile Include="Views\wxExtras\wxInfiniteGrid.cpp" />
-    <ClCompile Include="Views\wxExtras\wxManualText.cpp" />
     <ClInclude Include="include\curl\curl.h" />
     <ClInclude Include="include\curl\curlver.h" />
     <ClInclude Include="include\curl\easy.h" />
@@ -261,11 +254,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="StoreFrontEnd\SourceDownloader.h" />
     <ClInclude Include="StoreFrontEnd\StorefrontConfig.h" />
     <ClInclude Include="StoreFrontEnd\StoreFrontEnd.h" />
-    <ClInclude Include="Views\CardEditor\vcEditableItemList.h" />
-    <ClInclude Include="Views\CardEditor\vcEditableTraitList.h" />
-    <ClInclude Include="Views\CardEditor\vcEditableTraitListItem.h" />
-    <ClInclude Include="Views\CardEditor\vcItemNameCheckBox.h" />
-    <ClInclude Include="Views\CardEditor\viCardEditor.h" />
     <ClInclude Include="Views\CardView\CardRenderer.h" />
     <ClInclude Include="Views\CardView\CardView.h" />
     <ClInclude Include="Views\CardView\CCardView.h" />
@@ -290,14 +278,13 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\CollectionStats\Modules\vimCMCModule.h" />
     <ClInclude Include="Views\CollectionStats\Modules\vimCountModule.h" />
     <ClInclude Include="Views\CollectionStats\Modules\vimTypeBreakDown.h" />
-    <ClInclude Include="Views\CollectionStats\vicStatsViewRow.h" />
     <ClInclude Include="Views\CollectionStats\vStatsViewer.h" />
     <ClInclude Include="Views\CollectionView\CCollectionView.h" />
     <ClInclude Include="Views\CollectionView\CollectionView.h" />
     <ClInclude Include="Views\CollectionView\CubeRenderer.h" />
     <ClInclude Include="Views\CollectionView\VCollectionView.h" />
     <ClInclude Include="Views\ImageViewer\ImageViewer.h" />
-    <ClInclude Include="Views\ImageViewer\vcImageWrapper.h" />
+    <ClInclude Include="Views\ImageViewer\ImageWrapper.h" />
     <ClInclude Include="Views\MainWindow\CMainWindow.h" />
     <ClInclude Include="Views\MainWindow\MainWindow.h" />
     <ClInclude Include="Views\MainWindow\VMainWindow.h" />
@@ -306,7 +293,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\ViewTemplates\IMenuEventSource.h" />
     <ClInclude Include="Views\wxExtras\wxImagePanel.h" />
     <ClInclude Include="Views\wxExtras\wxInfiniteGrid.h" />
-    <ClInclude Include="Views\wxExtras\wxManualText.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CollectionPro\CollectionPro.vcxproj">

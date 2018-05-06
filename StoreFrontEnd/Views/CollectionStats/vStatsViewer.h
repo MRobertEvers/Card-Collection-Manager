@@ -7,7 +7,6 @@
 #include <wx/chartpanel.h>
 #include <wx/aui/framemanager.h>
 
-class vicStatsViewRow;
 class ClickableShape;
 class wxChartPanel;
 
@@ -62,7 +61,6 @@ public:
 
 private:
    wxDECLARE_EVENT_TABLE();
-   std::vector<vicStatsViewRow> m_vecRows;
    std::shared_ptr<CollectionInterface> m_ptInterface;
    wxAuiManager m_mgr;
 };
