@@ -17,7 +17,6 @@ public:
 
    void MenuEvent(wxCommandEvent& awxEvt);
 
-   virtual wxPanel* GetView() = 0;
    virtual void BindEventHandler() = 0;
 
    void ReleaseEventHandler();

@@ -13,7 +13,7 @@ public:
    CCollectionsOverview( IMenuEventSource* aParent );
    virtual ~CCollectionsOverview();
 
-   wxPanel* GetView() override;
+   wxPanel* GetView();
 
    void BindEventHandler();
 

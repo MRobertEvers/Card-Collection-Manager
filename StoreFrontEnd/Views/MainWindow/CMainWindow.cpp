@@ -1,10 +1,9 @@
 #include "CMainWindow.h"
 #include "VMainWindow.h"
-#include "../ViewTemplates/IMenuEventHandler.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
+#include "../ViewTemplates/IMenuEventHandler.h"
 #include "../Views/CollectionView/CollectionView.h"
-#include "../Views/CollectionView/CollectionView.h"
-#include "../ViewTemplates/ivCollectionView.h"
+#include "../Views/CollectionView/CCollectionView.h"
 #include "../ViewTemplates/IControlledView.h"
 #include "../CollectionsOverview/CollectionsOverview.h"
 #include "../CollectionsOverview/vCollectionsOverview.h"
@@ -46,10 +45,11 @@ CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType 
    {
       m_View->ReleaseMenuEventHandler();
 
-      auto tmp = new CollectionView( m_View, ptse->GetCollection( szID ) );
+      auto tmp = new CollectionView( m_View, m_View, ptse->GetCollection( szID ) );
 
       m_ptrControlledView = std::shared_ptr<IControlledView>( tmp );
       m_View->SetView( tmp->GetView() );
+      m_View->BindMenuEventHandler( tmp->GetController() );
    }
    else
    {

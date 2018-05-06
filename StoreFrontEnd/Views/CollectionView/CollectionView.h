@@ -7,14 +7,16 @@
 
 class CCollectionView;
 class VCollectionView;
+class IMenuEventSource;
 
 class CollectionView : public IControlledView
 {
 public:
-   CollectionView( wxFrame* aptParent, std::shared_ptr<CollectionInterface> aptModel );
+   CollectionView( wxFrame* aptParent, IMenuEventSource* apSource, std::shared_ptr<CollectionInterface> aptModel );
    ~CollectionView();
 
    wxPanel* GetView();
+   CCollectionView* GetController();
 
 private:
    CCollectionView* m_pController;
