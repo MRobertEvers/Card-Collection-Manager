@@ -1,5 +1,4 @@
 #include "Group.h"
-#include "GroupItemData.h"
 #include "CardInterface.h"
 
 Group::ItemSorting::ItemSorting()

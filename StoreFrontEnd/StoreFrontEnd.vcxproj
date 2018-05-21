@@ -171,9 +171,7 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="StoreFrontEnd\CollectionInterface.cpp" />
     <ClCompile Include="StoreFrontEnd\CURLAPI.cpp" />
     <ClCompile Include="StoreFrontEnd\Group.cpp" />
-    <ClCompile Include="StoreFrontEnd\GroupItemData.cpp" />
     <ClCompile Include="StoreFrontEnd\ImageFetcher.cpp" />
-    <ClCompile Include="StoreFrontEnd\ImageHandler.cpp" />
     <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp" />
     <ClCompile Include="StoreFrontEnd\SourceDownloader.cpp" />
     <ClCompile Include="StoreFrontEnd\StoreFrontEnd.cpp" />
@@ -247,9 +245,7 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="StoreFrontEnd\CollectionInterface.h" />
     <ClInclude Include="StoreFrontEnd\CURLAPI.h" />
     <ClInclude Include="StoreFrontEnd\Group.h" />
-    <ClInclude Include="StoreFrontEnd\GroupItemData.h" />
     <ClInclude Include="StoreFrontEnd\ImageFetcher.h" />
-    <ClInclude Include="StoreFrontEnd\ImageHandler.h" />
     <ClInclude Include="StoreFrontEnd\ScryFallAPI.h" />
     <ClInclude Include="StoreFrontEnd\SourceDownloader.h" />
     <ClInclude Include="StoreFrontEnd\StorefrontConfig.h" />

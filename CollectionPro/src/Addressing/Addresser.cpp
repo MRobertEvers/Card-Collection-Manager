@@ -2,90 +2,164 @@
 #include "Addresser.h"
 
 #include <time.h>
+#include <sstream>
+#include <iomanip>
 #include <algorithm>
 #include "../Config.h"
 #include "../Support/StringHelper.h"
 
 using namespace std;
 
-// 1 is included for search algorithms.
-const vector<int> 
-Addresser::Primes({ 1,2,3,5,7,11,13,17,19,23,29,31,37,41 });
 unsigned int
 Addresser::ms_iRandom = 0;
 
-Addresser::Addresser()
-{
-
-}
-
-Addresser::~Addresser()
-{
-
-}
-
-int 
-Addresser::GetPrime( unsigned int aiPrimeIndex ) const
-{
-   return Primes.at(aiPrimeIndex);
-}
-
-int 
-Addresser::GetLowPrimeIndex( unsigned int aiComposite ) const
-{
-   size_t iPC = Primes.size();
-   for (size_t i = 1; i < iPC; i++)
-   {
-      if ( aiComposite % Primes[i] == 0)
-      {
-         return i;
-      }
-   }
-
-   return 0;
-}
-
-int 
-Addresser::GetLowPrime( unsigned int aiComposite ) const
-{
-   return Primes[GetLowPrimeIndex(aiComposite)];
-}
-
-int 
-Addresser::GetHighPrimeIndex( unsigned int aiComposite ) const
-{
-   size_t iPC = Primes.size();
-   for (size_t i = iPC; i > 1; i--)
-   {
-      if (aiComposite % Primes[i-1] == 0)
-      {
-         return i-1;
-      }
-   }
-
-   return 0;
-}
-
-int 
-Addresser::GetHighPrime( unsigned int aiComposite ) const
-{
-   return Primes[GetHighPrimeIndex(aiComposite)];
-}
-
-unsigned int
-Addresser::PopFactor( unsigned int aiComp ) const
-{
-   unsigned int iHigh = GetHighPrime( aiComp );
-
-   return aiComp / iHigh;
-}
-   
-int 
+int
 Addresser::GetRandom()
 {
-   ms_iRandom+=rand();
-   srand(time(0) - ms_iRandom);
+   ms_iRandom += rand();
+
+   srand( time( 0 ) - ms_iRandom );
+
    return rand();
+}
+
+SubAddress::SubAddress( unsigned char aiAddress )
+{
+   m_vecPath.push_back( aiAddress );
+}
+
+SubAddress::SubAddress( std::vector<unsigned char> avecAdressPath )
+{
+   m_vecPath = avecAdressPath;
+}
+
+SubAddress::SubAddress( std::string aszPath )
+{
+   string szSubAddress = aszPath;
+   char iSubAddress;
+   int iStart = 0;
+   while( iStart <= szSubAddress.size() - 2 )
+   {
+      string szSubByte = szSubAddress.substr( iStart, 2 );
+
+      // Convert hex string to int.
+      unsigned int iNumChars;
+      iSubAddress = stoi( szSubAddress, &iNumChars, 16 );
+      if( iNumChars > 0 )
+      {
+         // Reverses order.
+         m_vecPath.push_back( iSubAddress );
+      }
+
+      iStart += 2;
+   }
+}
+
+bool 
+SubAddress::IsSuperSetOf( const SubAddress& rhs )
+{
+   bool bIsSuper = true;
+   int i;
+   for( i = 0; i < Size() && i < rhs.Size(); i++ )
+   {
+      bIsSuper &= m_vecPath[i] == rhs.m_vecPath[i];
+   }
+
+   bIsSuper &= i == Size();
+
+   return bIsSuper;
+}
+
+vector<unsigned char> 
+SubAddress::GetPath( int aiStop ) const
+{
+   if( aiStop == -1 )
+   {
+      return m_vecPath;
+   }
+   else if( aiStop < (int)Size() )
+   {
+      return vector<unsigned char>( m_vecPath.begin(), m_vecPath.begin() + aiStop );
+   }
+   else
+   {
+      return m_vecPath;
+   }
+}
+
+string
+SubAddress::ToString()
+{
+   stringstream ss;
+   for( auto node : m_vecPath )
+   {
+      ss << std::setfill('0') << std::setw(2) << std::hex << (int)node;
+   }
+   return ss.str();
+}
+
+void 
+SubAddress::Push( unsigned char aiNode )
+{
+   m_vecPath.insert( m_vecPath.begin(), aiNode );
+}
+
+
+bool
+SubAddress::operator==( const SubAddress& rhs ) const
+{
+   if( m_vecPath.size() != rhs.m_vecPath.size() )
+   {
+      return false;
+   }
+   else
+   {
+      for( int i = 0; i < m_vecPath.size(); i++ )
+      {
+         if( m_vecPath[i] != rhs.m_vecPath[i] )
+         {
+            return false;
+         }
+      }
+
+      return true;
+   }
+}
+
+bool
+SubAddress::operator!=( const SubAddress& rhs ) const
+{
+   return !(*this == rhs);
+}
+
+bool
+SubAddress::operator<( const SubAddress& rhs ) const
+{
+   if( m_vecPath.size() < rhs.m_vecPath.size() )
+   {
+      return true;
+   }
+   else if( m_vecPath.size() > rhs.m_vecPath.size() )
+   {
+      return false;
+   }
+   else
+   {
+      for( int i = 0; i < m_vecPath.size(); i++ )
+      {
+         if( m_vecPath[i] < rhs.m_vecPath[i] )
+         {
+            return true;
+         }
+         else if( m_vecPath[i] > rhs.m_vecPath[i] )
+         {
+            return false;
+         }
+      }
+
+      // They are equal
+      return false;
+   }
 }
 
 Identifier::Identifier()
@@ -109,7 +183,7 @@ Identifier::IsEmpty() const
    return m_veciSubAddresses.size()==0;
 }
 
-vector<unsigned int> 
+vector<SubAddress>
 Identifier::GetSubAddresses() const
 {
    return m_veciSubAddresses;
@@ -137,11 +211,11 @@ Identifier::GetFullAddress() const
 {
    string szFullString = GetMain();
    bool first = true;
-   for(unsigned int subAddr : m_veciSubAddresses)
+   for( SubAddress_t subAddr : m_veciSubAddresses)
    {
       if (!first) { szFullString += ","; }
       else { szFullString += "-"; }
-      szFullString += to_string(subAddr);
+      szFullString += subAddr.ToString();
       first = false;
    }
 
@@ -197,29 +271,69 @@ Identifier::parseIdName( const string& aszID )
    {
       m_szMain = Config::NotFoundString;
    }
+   //TODO
 
-   // Add the parsed subAddresses, default to 1 if none named.
-   lstUIandPF.push_back("1");
+   // Add the parsed sub-addresses, no subaddresses defaults to 0 meaning root.
+   if( lstUIandPF.size() == 1 )
+   {
+      lstUIandPF.push_back("00");
+   }
+   
    if( lstUIandPF.size() > 1 )
    {
-      lstSubAddresses = StringHelper::Str_Split(lstUIandPF[1], string(","));
+      lstSubAddresses = StringHelper::Str_Split( lstUIandPF[1], string( "," ) );
       size_t iSAC = lstSubAddresses.size();
       for (size_t i = 0; i < iSAC; i++)
       {
          szSubAddress = lstSubAddresses[i];
-         iSubAddress = stoi(szSubAddress, &iNumChars);
-         if (iNumChars > 0)
+         if( szSubAddress.size() % 2 == 0 && szSubAddress.size() >= 2 )
          {
-            addSubAddress(m_veciSubAddresses, iSubAddress);
+            int iStart = 0;
+            while( iStart <= szSubAddress.size()-2 )
+            {
+               string szSubByte = szSubAddress.substr( iStart, 2 );
+
+               // Convert hex string to int.
+               iSubAddress = stoi( szSubAddress, &iNumChars, 16 );
+               if( iNumChars > 0 )
+               {
+                  addSubAddress( m_veciSubAddresses, iSubAddress );
+               }
+
+               iStart += 2;
+            }
+
          }
+
       }
    }
-
-   // Remove the default if this address is empty
-   if( aszID == "" )
+   else
    {
-       m_veciSubAddresses.clear();
+      // Root collection
    }
+
+   //// Add the parsed subAddresses, default to 1 if none named.
+   //lstUIandPF.push_back("1");
+   //if( lstUIandPF.size() > 1 )
+   //{
+   //   lstSubAddresses = StringHelper::Str_Split(lstUIandPF[1], string(","));
+   //   size_t iSAC = lstSubAddresses.size();
+   //   for (size_t i = 0; i < iSAC; i++)
+   //   {
+   //      szSubAddress = lstSubAddresses[i];
+   //      iSubAddress = stoi(szSubAddress, &iNumChars);
+   //      if (iNumChars > 0)
+   //      {
+   //         addSubAddress(m_veciSubAddresses, iSubAddress);
+   //      }
+   //   }
+   //}
+
+   //// Remove the default if this address is empty
+   //if( aszID == "" )
+   //{
+   //    m_veciSubAddresses.clear();
+   //}
 }
 
 // Returns
@@ -228,7 +342,7 @@ Identifier::parseIdName( const string& aszID )
 // 1 := Replaced Exisiting aisa
 // 2 := Inserted ordered
 int 
-Identifier::addSubAddress(vector<unsigned int>& avecSAs, unsigned int aiSA)
+Identifier::addSubAddress(vector<SubAddress_t>& avecSAs, SubAddress_t aiSA)
 {
    int iAdded = 0;
 
@@ -237,7 +351,7 @@ Identifier::addSubAddress(vector<unsigned int>& avecSAs, unsigned int aiSA)
    // or do nothing because this SA is less specific.
    for( size_t i = 0; i < avecSAs.size(); i++ )
    {
-      int SA = avecSAs[i];
+      SubAddress SA = avecSAs[i];
       if( isSuperSet( SA, aiSA ) )
       {
          avecSAs[i] = aiSA;
@@ -275,89 +389,24 @@ Identifier::addSubAddress(vector<unsigned int>& avecSAs, unsigned int aiSA)
    return iAdded;
 }
 
-// Returns true if
-// 1. The values are equal.
-// 2. Superset divides Subset AND the smallest remaining prime factor
-//    is larger than the largest prime factor in the super set.
-//    e.g. 6 (superset), and 150 (subset). 150 / 6 = 25 (Divides), min(5, 5) >= max(2, 3, 5, 5)
-//
-// The reason for the second requirement (the smallest remaining prime
-//  factor is smaller than the largest prime factor) is due to the fact that divides
-//  does not filter all non-parent branches. Take 6 and 12 for example.
-//  2*3 and 2*2*3. They are not on the same branch. See circled Below.
-// ===========================================
-// 1---------2---------4---------8---------16
-//  \-3-9-27  \-(2*3)   \-(4*3)
-//     \-3*5     \-2*3*5
 bool
-Identifier::isSuperSet(unsigned int aiSuperSet, unsigned int aiSubSet) const
+Identifier::isSuperSet(SubAddress_t aiSuperSet, SubAddress_t aiSubSet) const
 {
-   if (aiSubSet == aiSuperSet) { return true; }
-   Addresser addresser;
-
-   // The subset will have a larger code, ie 30. The superset will be, e.g. 6.
-   if (aiSubSet % aiSuperSet == 0)
-   {
-      int iSmallPrime = addresser.GetLowPrimeIndex(aiSubSet / aiSuperSet);
-      int iSuperLargePrime = addresser.GetHighPrimeIndex(aiSuperSet);
-
-      return iSmallPrime >= iSuperLargePrime;
-   }
-   else
-   {
-      return false;
-   }
+   return aiSuperSet.IsSuperSetOf( aiSubSet );
 }
 
 int 
-Identifier::compareSubAddress( unsigned int aiSOne,
-                               unsigned int aiSTwo ) const
+Identifier::compareSubAddress( SubAddress_t aiSOne,
+                               SubAddress_t aiSTwo ) const
 {
-   Addresser addr;
-   unsigned int sOne = aiSOne;
-   unsigned int sTwo = aiSTwo;
-   bool bDone = false;
-   while( !bDone )
+   if( aiSOne == aiSTwo )
    {
-      int lowPrimeOne = addr.GetLowPrime(sOne);
-      int lowPrimeTwo = addr.GetLowPrime(sTwo);
-      if( lowPrimeOne < lowPrimeTwo )
-      {
-         return -1;
-      }
-      else if( lowPrimeTwo < lowPrimeOne )
-      {
-         return 1;
-      }
-      else
-      {
-         int iSmallestCount = 0;
-         while( addr.GetLowPrime( sOne ) == lowPrimeOne && sOne != 1)
-         {
-            sOne /= lowPrimeOne;
-            iSmallestCount++;
-         }
-
-         while( addr.GetLowPrime( sTwo ) == lowPrimeTwo && sTwo != 1 )
-         {
-            sTwo /= lowPrimeTwo;
-            iSmallestCount--;
-         }
-
-         if( iSmallestCount > 0 )
-         {
-            return -1;
-         }
-         else if( iSmallestCount < 0 )
-         {
-            return 1;
-         }
-      }
-
-      bDone = sOne == sTwo;
+      return 0;
    }
-
-   return 0;
+   else
+   {
+      return aiSOne < aiSTwo ? 1 : -1;
+   }
 }
 
 Address::Address()
@@ -375,7 +424,7 @@ Address::~Address()
 
 }
 
-vector<unsigned int> 
+vector<SubAddress> 
 Address::GetSubAddresses() const
 {
    return m_veciSubAddresses;
@@ -404,7 +453,7 @@ Address::ContainsLocation( const Location& aLoc ) const
 }
 
 bool 
-Address::AddSubAddress( unsigned int aiSub )
+Address::AddSubAddress( SubAddress aiSub )
 {
    return addSubAddress(m_veciSubAddresses, aiSub) > 0;
 }
@@ -412,11 +461,10 @@ Address::AddSubAddress( unsigned int aiSub )
 // TODO: This will completely remove all matchin addresses
 // instead of pithing the subset subaddresses.
 int 
-Address::RemoveSubAddress( unsigned int aiSub )
+Address::RemoveSubAddress( SubAddress aiSub )
 {
-   Addresser addresser;
    int iResult = 0;
-   int iSetVal = aiSub == 1 ? 0 : aiSub/addresser.GetHighPrime(aiSub);
+   int iSetVal = aiSub.GetLeastSignificantValue();
 
    for( auto iSub : GetSubAddresses() )
    {
@@ -437,7 +485,7 @@ Address::RemoveSubAddress( unsigned int aiSub )
 // 3 := Another already specifies, removed old.
 // 4 := Error
 int 
-Address::SetSubAddress(unsigned int aiAlreadySub, unsigned int aiSub)
+Address::SetSubAddress(SubAddress_t aiAlreadySub, SubAddress_t aiSub)
 {
    int iResult = 0;
    auto iter_found = find( m_veciSubAddresses.begin(),
@@ -446,7 +494,7 @@ Address::SetSubAddress(unsigned int aiAlreadySub, unsigned int aiSub)
 
    if( iter_found != m_veciSubAddresses.end() )
    {
-      vector<unsigned int> vecAddTest(m_veciSubAddresses);
+      vector<SubAddress_t> vecAddTest(m_veciSubAddresses);
       vecAddTest.erase(vecAddTest.begin() + 
                        distance(m_veciSubAddresses.begin(), iter_found));
 
@@ -536,7 +584,7 @@ Location::Location(const string& aszId) : Identifier(aszId)
    }
 }
 
-Location::Location( const string& aszMain, unsigned int aiSA )
+Location::Location( const string& aszMain, SubAddress_t aiSA )
 {
    m_iAddress = aiSA;
    m_szMain = aszMain;
@@ -574,31 +622,26 @@ Location::IsSpecifiedBy( const Address& aAddress ) const
    return bFoundSubAddressMatch;
 }
 
-vector<unsigned int> 
+vector<SubAddress_t>
 Location::GetSubAddresses() const
 {
-   return vector<unsigned int>(1, m_iAddress);
+   return vector<SubAddress_t>(1, m_iAddress);
 }
 
 vector<Location> 
 Location::GetLocationsSpecified() const
 {
    vector<Location> vecRetVal;
-   Addresser addr;
    vecRetVal.push_back( *this );
-   unsigned int iComp = m_iAddress;
-   iComp = addr.PopFactor( iComp );
-   while( iComp > 1 )
+   for( int i = 0; i < m_iAddress.Size(); i++ )
    {
-      vecRetVal.push_back( Location(m_szMain, iComp) );
-      iComp = addr.PopFactor( iComp );
+      vecRetVal.push_back( Location(m_szMain, m_iAddress.GetPath(i)) );
    }
-   vecRetVal.push_back( Location( m_szMain, 1 ) );
 
    return vecRetVal;
 }
 
-unsigned int 
+SubAddress_t
 Location::GetSubAddress() const
 {
    return m_iAddress;

@@ -49,9 +49,7 @@ LedgerBook::AddResident( const Identifier& aAddrAddress )
    if( !AddedToRef )
    {
       m_vecResidentIn.push_back( aAddrAddress.ToAddress() );
-
    }
-
 }
 
 int 

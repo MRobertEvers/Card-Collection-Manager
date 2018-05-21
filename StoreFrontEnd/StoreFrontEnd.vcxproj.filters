@@ -179,13 +179,7 @@
     <ClCompile Include="StoreFrontEnd\Group.cpp">
       <Filter>StoreFrontEnd</Filter>
     </ClCompile>
-    <ClCompile Include="StoreFrontEnd\GroupItemData.cpp">
-      <Filter>StoreFrontEnd</Filter>
-    </ClCompile>
     <ClCompile Include="StoreFrontEnd\ImageFetcher.cpp">
-      <Filter>StoreFrontEnd</Filter>
-    </ClCompile>
-    <ClCompile Include="StoreFrontEnd\ImageHandler.cpp">
       <Filter>StoreFrontEnd</Filter>
     </ClCompile>
     <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp">
@@ -412,13 +406,7 @@
     <ClInclude Include="StoreFrontEnd\Group.h">
       <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="StoreFrontEnd\GroupItemData.h">
-      <Filter>StoreFrontEnd</Filter>
-    </ClInclude>
     <ClInclude Include="StoreFrontEnd\ImageFetcher.h">
-      <Filter>StoreFrontEnd</Filter>
-    </ClInclude>
-    <ClInclude Include="StoreFrontEnd\ImageHandler.h">
       <Filter>StoreFrontEnd</Filter>
     </ClInclude>
     <ClInclude Include="StoreFrontEnd\ScryFallAPI.h">

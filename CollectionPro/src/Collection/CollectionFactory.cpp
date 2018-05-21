@@ -313,12 +313,7 @@ CollectionFactory::performAction( const string& aszActionCmd,
 string 
 CollectionFactory::getNextChildName(string aszParentID) const
 {
-   Addresser addresser;
-   unsigned int iHighPrime, iHighPrimeIndex, iCurrentSA;
-
    Location currentName(aszParentID);
-   iCurrentSA = currentName.GetSubAddress();
-   iHighPrimeIndex = addresser.GetHighPrimeIndex(iCurrentSA);
 
    string szSubAddress;
    string szRetval = aszParentID;
@@ -326,10 +321,11 @@ CollectionFactory::getNextChildName(string aszParentID) const
    if (oCol.Good())
    {
       int iChildren = oCol->GetChildCount();
-      iHighPrimeIndex += iChildren + 1;
       
-      iHighPrime = addresser.GetPrime(iHighPrimeIndex);
-      szSubAddress = to_string(iCurrentSA*iHighPrime);
+      auto sub = currentName.GetSubAddress();
+      sub.Push( iChildren );
+
+      szSubAddress = sub.ToString();
       szRetval = currentName.GetMain() + "-" + szSubAddress;
    }
 

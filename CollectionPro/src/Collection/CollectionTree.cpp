@@ -299,7 +299,7 @@ CollectionTree::RemoveNode( const Location& aNode )
       else
       {
          auto ptParent = ptNode->GetParent();
-         ptNode->RemoveNode( ptNode );
+         ptParent->RemoveNode( ptNode );
          if( ptParent != nullptr && ptParent->IsVirtual() )
          {
             RemoveNode( ptParent->GetLocation() );
