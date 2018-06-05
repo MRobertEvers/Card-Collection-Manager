@@ -12,6 +12,8 @@ private:
    static unsigned int ms_iRandom;
 };
 
+// Maintains a list of numbers indicating which child of the parent it refers to
+// E.g. Name-0101 is the first child of the first child of name. 0101 = [01,01]
 class SubAddress
 {
 public:
