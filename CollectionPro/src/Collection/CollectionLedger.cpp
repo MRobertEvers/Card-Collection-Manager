@@ -66,15 +66,15 @@ CollectionLedger::buildTree()
    auto iter_node = iter_FamilyFind->second->FindCollectionNode( m_locParent );
    if( iter_node.Good() )
    {
-      auto ptNode = *iter_node.Value();
+      auto ptNode = iter_node.Value();
       ptNode->OverrideLedger( this );
    }
    else
    {
       // Build it up.
-      for( auto& potentialNode : m_locParent.GetLocationsSpecified() )
+      for( auto& potentialNode : m_locParent.GetRootPath() )
       {
-         if( potentialNode != m_locParent )
+         if( potentialNode.Compare( m_locParent ) != 0)
          {
             iter_FamilyFind->second->AddCollectionNode( potentialNode, nullptr );
          }
@@ -94,7 +94,7 @@ CollectionLedger::GetFamilyNode( const Location& aszLocation )
       auto iter_node = iter_Family->second->FindCollectionNode( aszLocation );
       if( iter_node.Good() )
       {
-         ptRetVal.Set( *iter_node.Value() );
+         ptRetVal.Set( iter_node.Value() );
       }
    }
 

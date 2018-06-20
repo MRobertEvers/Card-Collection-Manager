@@ -481,25 +481,25 @@ StringInterface::FindTagInList(const vector<Tag>& aszVector, const string& aszKe
 string 
 StringInterface::GetUIDKey()
 {
-   return CopyItem::GetUIDKey();
+   return MetaTag::GetUIDKey();
 }
 
 string 
 StringInterface::GetSessionKey()
 {
-   return CopyItem::GetSessionKey();
+   return MetaTag::GetSessionKey();
 }
 
 string 
 StringInterface::GetHashKey()
 {
-   return CopyItem::GetHashKey();
+   return MetaTag::GetHashKey();
 }
 
 string 
 StringInterface::GetAddressKey()
 {
-   return CopyItem::GetAddressKey();
+   return MetaTag::GetAddressKey();
 }
 
 bool 

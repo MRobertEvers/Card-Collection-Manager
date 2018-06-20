@@ -48,7 +48,7 @@ LedgerBook::AddResident( const Identifier& aAddrAddress )
 
    if( !AddedToRef )
    {
-      m_vecResidentIn.push_back( aAddrAddress.ToAddress() );
+      m_vecResidentIn.push_back( aAddrAddress.ToString() );
    }
 }
 
@@ -56,10 +56,10 @@ int
 LedgerBook::RemoveResident( const Identifier& aAddrAddress,
                             RemoveAddressType aiRemoveType )
 {
-   Location removeAddress( aAddrAddress.GetFullAddress() );
+   Location removeAddress( aAddrAddress.ToString() );
    if( aiRemoveType == 1 )
    {
-      removeAddress = aAddrAddress.GetBase();
+      removeAddress = aAddrAddress.GetMain();
    }
 
    if( m_Address.ExtractIdentifier( removeAddress ) )
@@ -104,7 +104,7 @@ LedgerBook::ledgerOwned( const Identifier& aOwned )
       auto node = CollectionLedger::GetFamilyNode( loc );
       if( node.Good() )
       {
-         auto colNode = *node.Value();
+         auto colNode = node.Value();
          while( colNode != nullptr )
          {
             if( !colNode->IsVirtual() )
@@ -145,7 +145,7 @@ LedgerBook::ledgerPresent( const Identifier& aOwned )
       auto node = CollectionLedger::GetFamilyNode( loc );
       if( node.Good() )
       {
-         auto colNode = *node.Value();
+         auto colNode = node.Value();
          while( colNode != nullptr )
          {
             if( !colNode->IsVirtual() )
@@ -177,7 +177,7 @@ LedgerBook::unledgerOwned( const Identifier& aOwned )
       auto node = CollectionLedger::GetFamilyNode( loc );
       if( node.Good() )
       {
-         auto colNode = *node.Value();
+         auto colNode = node.Value();
          unledger( colNode, false );
       }
    }
@@ -213,7 +213,7 @@ LedgerBook::unledgerPresent( const Identifier& aOwned )
       auto node = CollectionLedger::GetFamilyNode( loc );
       if( node.Good() )
       {
-         auto colNode = *node.Value();
+         auto colNode = node.Value();
          unledger( colNode, true );
       }
    }

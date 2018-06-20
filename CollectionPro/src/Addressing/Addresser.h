@@ -1,42 +1,54 @@
 #pragma once
 #include<vector>
 #include<string>
+#include<set>
 
 class Addresser
 {
 public:
    // TODO: move this somewhere more appropriate.
-   int GetRandom();
+   static int GetRandom();
 
 private:
    static unsigned int ms_iRandom;
 };
 
+class ISubAddress
+{
+public:
+   // -2 not related, -1 this is a subset, 0 same, 1 this is a superset.
+   virtual int Compare( const ISubAddress& other ) const = 0;
+   virtual std::string ToString() const = 0;
+   virtual void Push( const std::string& aszNextStep ) = 0;
+   virtual std::string Pop( ) = 0;
+   // Required by std::set
+   virtual bool operator<( const ISubAddress& rhs ) const = 0;
+};
+
 // Maintains a list of numbers indicating which child of the parent it refers to
 // E.g. Name-0101 is the first child of the first child of name. 0101 = [01,01]
-class SubAddress
+class SubAddress : public ISubAddress
 {
 public:
    SubAddress() {}
-   SubAddress( unsigned char aiAddress );
-   SubAddress( std::vector<unsigned char> avecAdressPath );
-   SubAddress( std::string aszPath );
+   SubAddress( const std::string& aszBranch );
    ~SubAddress() {};
 
-   unsigned char GetLeastSignificantValue() { return Size() == 0 ? 0 : m_vecPath.back(); }
-   bool IsSuperSetOf( const SubAddress& rhs );
+   // -2 not related, -1 this is a subset, 0 same, 1 this is a superset.
+   int Compare( const ISubAddress& other ) const;
+   std::string ToString() const;
+   virtual void Push( const std::string& aszNextStep );
+   virtual std::string Pop( );
 
-   std::vector<unsigned char> GetPath( int aiStop = -1 ) const;
-   std::string ToString();
-   void Push( unsigned char aiNode );
-   size_t Size() const { return m_vecPath.size(); }
-
-   bool operator==( const SubAddress& rhs ) const;
-   bool operator!=( const SubAddress& rhs ) const;
-   bool operator<( const SubAddress& rhs ) const;
-
+   // Required by std::set
+   bool operator<( const ISubAddress& rhs ) const;
 private:
-   std::vector<unsigned char> m_vecPath;
+   std::string m_szBranch;
+
+public:
+   static std::vector<std::string> ParseLeafString( const std::string& aszTree );
+   static std::string ToLeafString( const std::vector<std::string>& aszSubAddresses );
+   static std::string CleanLeafString( const std::string& aszTree );
 };
 typedef SubAddress SubAddress_t;
 
@@ -49,32 +61,33 @@ public:
    Identifier(const std::string& aszId);
    ~Identifier();
 
-   virtual bool IsEmpty() const;
-   virtual std::vector<SubAddress_t> GetSubAddresses() const;
-   virtual std::vector<Location> GetLocations() const;
+   virtual std::string GetLeafString() const = 0;
+   virtual std::set<SubAddress_t> GetLeaves() const = 0;
 
-   std::string GetMain() const;
-   std::string GetFullAddress() const;
-   Location GetBase() const;
-
-   virtual Address ToAddress() const;
+   // TODO: Get rid of this function
+   std::set<Location> GetLocations() const;
    
-   bool operator==(const Identifier& rhs) const;
-   bool operator!=(const Identifier& rhs) const;
-   bool operator<(const Identifier& rhs) const;
+   // TODO: Id like to get rid of this function too!
+   bool IsEmpty() const;
+   // -2 not related, -1 this is a subset, 0 same, 1 this is a superset.
+   int Compare( const Identifier& other ) const;
+   std::string GetMain() const;
+   void SetMain( const std::string& aszMain );
+   std::string ToString() const;
+
+   // Returns true if the input set is a superset of ANY
+   // of the sets held by this class.
+   bool IsSuperset( const Identifier& aSet ) const;
+   // See above.
+   bool IsPartOfRootPath( const Identifier& aSet ) const;
+
+   // Required by std::set
+   bool operator<( const Identifier& rhs ) const;
 
 protected:
    std::string m_szMain;
-   std::vector<SubAddress_t> m_veciSubAddresses;
 
-   void parseIdName(const std::string& aszID);
-   int addSubAddress(std::vector<SubAddress_t>& avecSAs, SubAddress_t aiSA);
-   bool isSuperSet( SubAddress_t aiSuper,
-                    SubAddress_t aiSub ) const;
-
-private:
-   int compareSubAddress( SubAddress_t aiSOne,
-                          SubAddress_t aiSTwo ) const;
+   virtual void parseIdentifierString( const std::string& aszString );
 };
 
 class Location;
@@ -85,16 +98,17 @@ public:
    Address(const std::string& aszId);
    ~Address();
 
-   std::vector<SubAddress_t> GetSubAddresses() const override;
+   std::string GetLeafString() const override;
+   std::set<SubAddress_t> GetLeaves() const override;
 
-   bool ContainsLocation(const Location& aLoc) const;
-   bool AddSubAddress( SubAddress_t aiSub);
-   int RemoveSubAddress( SubAddress_t aiSub);
+   bool AddLeaf( SubAddress_t aiSub);
+   int RemoveLeaf( SubAddress_t aiSub);
+
    int SetSubAddress( SubAddress_t aiAlreadySub, SubAddress_t aiSub);
    bool MergeIdentifier(const Identifier& aID);
    bool ExtractIdentifier(const Identifier& aID);
 private:
-
+   std::set<SubAddress_t> m_setLeaves;
 };
 
 class Location : public Identifier
@@ -102,16 +116,15 @@ class Location : public Identifier
 public:
    Location();
    Location(const std::string& aszId);
-   Location(const std::string& aszMain, SubAddress_t aiSA);
+   Location( const std::string& aszId, SubAddress_t aSub );
    ~Location();
 
-   bool IsSpecifiedBy(const Address& aAddr) const;
-   std::vector<SubAddress_t> GetSubAddresses() const override;
-   std::vector<Location> GetLocationsSpecified() const;
-   SubAddress_t GetSubAddress() const;
+   std::set<Location> GetRootPath() const;
+   std::string GetLeafString() const override;
+   std::set<SubAddress_t> GetLeaves() const override;
 
-   Address ToAddress() const;
+   SubAddress_t GetLeaf() const;
 
 private:
-   SubAddress_t m_iAddress;
+   SubAddress_t m_Leaf;
 };

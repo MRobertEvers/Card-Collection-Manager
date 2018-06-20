@@ -194,6 +194,7 @@ Collection::addItem( const string& aszName,
       return;
    }
    
+   // TODO:
    item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags );
    InvalidateState();
 }
@@ -234,8 +235,16 @@ Collection::changeItem( const string& aszName,
       return false;
    }
 
-   item->SetIdentifyingTraits( *cItem.Value(), alstChanges, alstMetaChanges );
-   InvalidateState();
+   for( auto& attr : alstChanges )
+   {
+      cItem.Value()->SetAttribute( attr.first, attr.second );
+   }
+   
+   for( auto& attr : alstMetaChanges )
+   {
+      cItem.Value()->SetMetaTag( attr.first, attr.second );
+   }
+   
    return true;
 }
 
@@ -303,12 +312,12 @@ Collection::loadAdditionLine( const string& aszLine )
 
    CollectionObject::ParseCardLine( szLine, sudoItem );
 
-   auto szAddr = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetAddressKey() );
+   auto szAddr = StringInterface::FindTagInList( sudoItem.MetaTags, MetaTag::GetAddressKey() );
    if( szAddr != "" )
    {
       aParentAddress = Address( szAddr );
-      szID = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetHashKey() );
-      bThisIsParent = !(aParentAddress == GetIdentifier());
+      szID = StringInterface::FindTagInList( sudoItem.MetaTags, MetaTag::GetHashKey() );
+      bThisIsParent = (0 == GetIdentifier().Compare( aParentAddress ));
    }
 
    // If the ID is specified, then we assume the card already exists.
@@ -338,7 +347,7 @@ Collection::loadRemoveLine( const string& aszLine )
    CollectionObject::PseudoIdentifier sudoItem;
    CollectionObject::ParseCardLine( aszLine, sudoItem );
 
-   string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetUIDKey() );;
+   string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, MetaTag::GetUIDKey() );;
    for( size_t i = 0; i < sudoItem.Count; i++ )
    {
       if( szUID != "" )
@@ -366,7 +375,7 @@ Collection::loadDeltaLine( const string& aszLine )
       return;
    }
    
-   string szUID  = StringInterface::FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );
+   string szUID  = StringInterface::FindTagInList( sudoOldItem.MetaTags, MetaTag::GetUIDKey() );
    auto cItem = oldItem->FindCopy( szUID );
    if( !cItem.Good() )
    {

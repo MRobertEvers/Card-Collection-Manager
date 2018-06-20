@@ -14,13 +14,13 @@ AddressBook::~AddressBook()
 void 
 AddressBook::SetParent( const Identifier& aAddrTestAddress )
 {
-   std::string szParent = aAddrTestAddress.GetFullAddress();
+   std::string szParent = aAddrTestAddress.ToString();
    setParent( szParent );
 
    int iFamily = findFamilyMember( aAddrTestAddress );
    if( iFamily != -1 )
    {
-      m_vecResidentIn[iFamily] = aAddrTestAddress.ToAddress();
+      m_vecResidentIn[iFamily] = aAddrTestAddress.ToString();
    }
    else
    {
@@ -37,13 +37,13 @@ AddressBook::IsParent( const Location& aAddrParent ) const
    // in this result.
    // If the location is designated by this copies address,
    // this copies lies within that location.
-   return aAddrParent.IsSpecifiedBy( m_Address );
+   return aAddrParent.IsSuperset( m_Address );
 }
 
 std::string 
 AddressBook::GetParent() const
 {
-   return m_Address.GetFullAddress();
+   return m_Address.ToString();
 }
 
 void 
@@ -61,7 +61,7 @@ AddressBook::AddResident( const Identifier& aAddrAddress )
 
    if( !AddedToRef )
    {
-      m_vecResidentIn.push_back( aAddrAddress.ToAddress() );
+      m_vecResidentIn.push_back( aAddrAddress.ToString() );
 
    }
 }
@@ -70,10 +70,10 @@ int
 AddressBook::RemoveResident( const Identifier& aAddrAddress,
                              RemoveAddressType aiRemoveType )
 {
-   Location removeAddress( aAddrAddress.GetFullAddress() );
+   Location removeAddress( aAddrAddress.ToString() );
    if( aiRemoveType == 1 )
    {
-      removeAddress = aAddrAddress.GetBase();
+      removeAddress = aAddrAddress.GetMain();
    }
 
    m_Address.ExtractIdentifier( removeAddress );
@@ -105,7 +105,7 @@ AddressBook::RemoveResident( const Identifier& aAddrAddress,
 bool 
 AddressBook::IsResidentIn( const Location& aAddrTest ) const
 {
-   bool isResident = aAddrTest.IsSpecifiedBy( m_Address );
+   bool isResident = m_Address.IsSuperset(aAddrTest);
 
    if( !isResident )
    {
@@ -123,7 +123,7 @@ AddressBook::IsReferencedBy( const Location& aAddrTest ) const
 
    for( auto resident : m_vecResidentIn )
    {
-      isResident |= aAddrTest.IsSpecifiedBy( resident );
+      isResident |= aAddrTest.IsSuperset( resident );
       if( isResident ) { break; }
    }
 
@@ -164,7 +164,7 @@ AddressBook::findFamilyMember( const Identifier& aId ) const
 bool
 AddressBook::IsVirtual() const
 {
-   return m_Address.GetFullAddress() == "";
+   return m_Address.ToString() == "";
 }
 
 Address 

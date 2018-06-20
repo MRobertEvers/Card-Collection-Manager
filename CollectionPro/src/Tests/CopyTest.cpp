@@ -29,25 +29,25 @@ CopyTest::CreateCopy_Test()
    auto ptTestCopy = testItem.AddCopy(testAddr, vecAttrs, vecMeta);
    
    bResult &= ptTestCopy->GetIdentifyingAttribute("Collar")=="red";
-   bResult &= ptTestCopy->GetParent()==testAddr.GetFullAddress();
+   bResult &= ptTestCopy->GetParent()==testAddr.ToString();
    bResult &= ptTestCopy->GetUID() != ""; // Should have create a UID.
    bResult &= ptTestCopy->GetResidentIn().size() == 1 &&
-              ptTestCopy->GetResidentIn()[0].GetFullAddress() == testAddr.GetFullAddress();
+              ptTestCopy->GetResidentIn()[0].ToString() == testAddr.ToString();
 
    /***************************************/
    /*Test 2: Parent Overridden at creation*/
    /***************************************/
    // Perform create with "Parent" overriden in the metatags.
    Location testAddr2("IDTest2-1");
-   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(),testAddr2.GetFullAddress()));
+   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(),testAddr2.ToString()));
    vecMeta.push_back(make_pair("test","val"));
    vecMeta.push_back(make_pair("test2","val2"));
    ptTestCopy = testItem.AddCopy(testAddr, vecAttrs, vecMeta);
 
    // Overriding the parent in construction does NOT add to resident.
-   bResult &= ptTestCopy->GetParent()==testAddr2.GetFullAddress();
+   bResult &= ptTestCopy->GetParent()==testAddr2.ToString();
    bResult &= ptTestCopy->GetResidentIn().size() == 1 &&
-              ptTestCopy->GetResidentIn()[0].GetFullAddress() == testAddr.GetFullAddress();
+              ptTestCopy->GetResidentIn()[0].ToString() == testAddr.ToString();
    bResult &= ptTestCopy->GetMetaTag("test", Public) == "val";
    bResult &= ptTestCopy->GetMetaTag("tests", MetaTagType::Any) == Config::NotFoundString;
    bResult &= ptTestCopy->GetMetaTag("test", Hidden) == ""; // "" indicates that we are not allowed to view the tag.
@@ -75,7 +75,7 @@ CopyTest::SetMetaTag_Test()
    std::vector<Tag> vecAttrs;
    vecAttrs.push_back(make_pair("Collar", "red"));
    std::vector<Tag> vecMeta;
-   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(),testAddr.GetFullAddress()));
+   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(),testAddr.ToString()));
    vecMeta.push_back(make_pair("test","val"));
    vecMeta.push_back(make_pair("test2","val2"));
    vecMeta.push_back(make_pair(CopyItem::MakeIgnoredTag("beat"),"val"));
@@ -131,7 +131,7 @@ CopyTest::Hash_Test()
    vecMeta.clear();
    vecMeta.push_back(make_pair("test2","val2"));
    // This line tests whether overriding a parent with itself does anything.
-   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(),testAddr.GetFullAddress()));
+   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(),testAddr.ToString()));
    vecMeta.push_back(make_pair("test","val"));
    auto ptTestCopy2 = testItem.AddCopy(testAddr, vecAttrs, vecMeta);
 
@@ -151,16 +151,16 @@ CopyTest::SetParent_Test()
    auto ptTestCopy = getTestCopy();
    Address testAddr = ptTestCopy->GetAddress();
 
-   bResult &= ptTestCopy->GetParent()==testAddr.GetFullAddress();
+   bResult &= ptTestCopy->GetParent()==testAddr.ToString();
    bResult &= ptTestCopy->GetResidentIn().size() == 1 &&
-              ptTestCopy->GetResidentIn()[0].GetFullAddress() == testAddr.GetFullAddress();
+              ptTestCopy->GetResidentIn()[0].ToString() == testAddr.ToString();
 
    Location testAddr2("IDTest2-9");
    ptTestCopy->SetParent(testAddr2);
-   bResult &= ptTestCopy->GetParent()==testAddr2.GetFullAddress();
+   bResult &= ptTestCopy->GetParent()==testAddr2.ToString();
    bResult &= ptTestCopy->GetResidentIn().size() == 2 &&
-              ptTestCopy->GetResidentIn()[0].GetFullAddress() == testAddr.GetFullAddress() &&
-              ptTestCopy->GetResidentIn()[1].GetFullAddress() == testAddr2.GetFullAddress();
+              ptTestCopy->GetResidentIn()[0].ToString() == testAddr.ToString() &&
+              ptTestCopy->GetResidentIn()[1].ToString() == testAddr2.ToString();
 
    return bResult;
 }
@@ -170,7 +170,7 @@ CopyTest::IsParent_Test()
 {
    bool bResult = true;
    auto ptTestCopy = getTestCopy();
-   Location testAddr(ptTestCopy->GetAddress().GetFullAddress());
+   Location testAddr(ptTestCopy->GetAddress().ToString());
 
    // The parent should be the parent...
    bResult &= ptTestCopy->IsParent(testAddr);
@@ -195,7 +195,7 @@ CopyTest::ResidentIn_Parent_ParentIsResident_Test()
 {
    bool bResult = true;
    auto ptTestCopy = getTestCopy();
-   Location parentAddress(ptTestCopy->GetAddress().GetFullAddress());
+   Location parentAddress(ptTestCopy->GetAddress().ToString());
 
    // Check we are both referenced by and resident in the parent.
    bResult &= ptTestCopy->IsResidentIn(parentAddress);
@@ -208,7 +208,7 @@ CopyTest::ResidentIn_Parent_ParentIsNotResident_Test()
 {
    bool bResult = true;
    auto ptTestCopy = getTestCopy();
-   Location parentAddress(ptTestCopy->GetAddress().GetFullAddress());
+   Location parentAddress(ptTestCopy->GetAddress().ToString());
 
    // Check we are both referenced by and resident in the parent.
    bResult &= ptTestCopy->IsResidentIn(parentAddress);
@@ -331,7 +331,7 @@ CopyTest::AddResident_InResidentNotParent_AlreadyDesignated_Test()
 
    bResult &= iNewResidentCount == iResidentCount;
    bResult &= ptTestCopy->GetResidentIn().size() == 2 &&
-              ptTestCopy->GetResidentIn()[1].GetFullAddress() == "ResTest-9";
+              ptTestCopy->GetResidentIn()[1].ToString() == "ResTest-9";
    return bResult;
 }
 
@@ -353,7 +353,7 @@ CopyTest::AddResident_InResidentNotParent_ExistingChain_NotDesignated_Test()
 
    bResult &= iNewResidentCount == iResidentCount;
    bResult &= ptTestCopy->GetResidentIn().size() == 2 &&
-              ptTestCopy->GetResidentIn()[1].GetFullAddress() == "ResTest-27";
+              ptTestCopy->GetResidentIn()[1].ToString() == "ResTest-27";
    return bResult;
 }
 
@@ -375,7 +375,7 @@ CopyTest::AddResident_InResidentNotParent_NewChain_NotDesignated_Test()
 
    bResult &= iNewResidentCount == iResidentCount;
    bResult &= ptTestCopy->GetResidentIn().size() == 2 &&
-              ptTestCopy->GetResidentIn()[1].GetFullAddress() == "ResTest-9,15";
+              ptTestCopy->GetResidentIn()[1].ToString() == "ResTest-9,15";
    return bResult;
 }
 
@@ -397,7 +397,7 @@ CopyTest::RemoveResident_NotParent_InChainOfResident_NotEntireChain_Test()
 
    bResult &= iNewResidentCount == iResidentCount;
    bResult &= ptTestCopy->GetResidentIn().size() == 2 &&
-              ptTestCopy->GetResidentIn()[1].GetFullAddress() == "ResTest-3";
+              ptTestCopy->GetResidentIn()[1].ToString() == "ResTest-3";
    return bResult;
 }
 
@@ -440,7 +440,7 @@ CopyTest::RemoveResident_NotParent_NotInChainOfResident_Test()
 
    bResult &= iNewResidentCount == iResidentCount;
    bResult &= ptTestCopy->GetResidentIn().size() == 2 &&
-              ptTestCopy->GetResidentIn()[1].GetFullAddress() == "ResTest-9";
+              ptTestCopy->GetResidentIn()[1].ToString() == "ResTest-9";
    return bResult;
 }
 
@@ -459,7 +459,7 @@ CopyTest::RemoveResident_Parent_InChainOfParent_NotEntireChain()
 
    bResult &= iNewResidentCount == iResidentCount;
    bResult &= ptTestCopy->GetResidentIn().size() == 1 &&
-              ptTestCopy->GetResidentIn()[0].GetFullAddress() == "IDTest-2";
+              ptTestCopy->GetResidentIn()[0].ToString() == "IDTest-2";
    return bResult;
 }
 

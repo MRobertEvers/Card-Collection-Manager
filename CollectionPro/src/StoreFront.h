@@ -54,7 +54,6 @@ public:
    // Source Accessors
    //
    vector<string> GetAllCardsStartingWith(const Query& aszSearch);
-   string GetCardPrototype(const string& aszCardName);
    void ImportCollectionSource();
 
    // Config accessors

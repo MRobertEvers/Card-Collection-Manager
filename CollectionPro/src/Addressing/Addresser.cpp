@@ -1,12 +1,13 @@
 #include "../stdafx.h"
 #include "Addresser.h"
+#include "../Config.h"
+#include "../Support/StringHelper.h"
 
 #include <time.h>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include "../Config.h"
-#include "../Support/StringHelper.h"
+#include <stack>
 
 using namespace std;
 
@@ -23,153 +24,206 @@ Addresser::GetRandom()
    return rand();
 }
 
-SubAddress::SubAddress( unsigned char aiAddress )
+SubAddress::SubAddress( const std::string& aszBranch )
+   : m_szBranch( aszBranch )
 {
-   m_vecPath.push_back( aiAddress );
 }
 
-SubAddress::SubAddress( std::vector<unsigned char> avecAdressPath )
+// -2 not related, -1 this is a subset, 0 same, 1 this is a superset.
+int 
+SubAddress::Compare( const ISubAddress & other ) const
 {
-   m_vecPath = avecAdressPath;
-}
-
-SubAddress::SubAddress( std::string aszPath )
-{
-   string szSubAddress = aszPath;
-   char iSubAddress;
-   int iStart = 0;
-   while( iStart <= szSubAddress.size() - 2 )
+   if( m_szBranch == "" )
    {
-      string szSubByte = szSubAddress.substr( iStart, 2 );
+      return -1;
+   }
 
-      // Convert hex string to int.
-      unsigned int iNumChars;
-      iSubAddress = stoi( szSubAddress, &iNumChars, 16 );
-      if( iNumChars > 0 )
+   std::string szLeft = m_szBranch;
+   std::string szRight = other.ToString();
+   size_t iLeft = szLeft.size();
+   size_t iRight = szRight.size();
+   if( iLeft < iRight )
+   {
+      if( szRight.substr( 0, iLeft ) == szLeft )
       {
-         // Reverses order.
-         m_vecPath.push_back( iSubAddress );
+         return 1;
       }
-
-      iStart += 2;
+      else
+      {
+         return -2;
+      }
    }
-}
-
-bool 
-SubAddress::IsSuperSetOf( const SubAddress& rhs )
-{
-   bool bIsSuper = true;
-   int i;
-   for( i = 0; i < Size() && i < rhs.Size(); i++ )
+   else if( iRight < iLeft )
    {
-      bIsSuper &= m_vecPath[i] == rhs.m_vecPath[i];
+      if( szLeft.substr( 0, iRight ) == szRight )
+      {
+         return -1;
+      }
+      else
+      {
+         return -2;
+      }
    }
-
-   bIsSuper &= i == Size();
-
-   return bIsSuper;
-}
-
-vector<unsigned char> 
-SubAddress::GetPath( int aiStop ) const
-{
-   if( aiStop == -1 )
+   else if( szLeft == szRight )
    {
-      return m_vecPath;
-   }
-   else if( aiStop < (int)Size() )
-   {
-      return vector<unsigned char>( m_vecPath.begin(), m_vecPath.begin() + aiStop );
+      return 0;
    }
    else
    {
-      return m_vecPath;
+      return -2;
    }
 }
 
-string
-SubAddress::ToString()
+std::string 
+SubAddress::ToString() const
 {
-   stringstream ss;
-   for( auto node : m_vecPath )
-   {
-      ss << std::setfill('0') << std::setw(2) << std::hex << (int)node;
-   }
-   return ss.str();
+   return std::string();
 }
 
 void 
-SubAddress::Push( unsigned char aiNode )
+SubAddress::Push( const std::string & aszNextStep )
 {
-   m_vecPath.insert( m_vecPath.begin(), aiNode );
+   m_szBranch += aszNextStep;
 }
 
-
-bool
-SubAddress::operator==( const SubAddress& rhs ) const
+std::string 
+SubAddress::Pop( )
 {
-   if( m_vecPath.size() != rhs.m_vecPath.size() )
+   if( m_szBranch.size() <= 1 )
    {
-      return false;
+      m_szBranch = "";
    }
    else
    {
-      for( int i = 0; i < m_vecPath.size(); i++ )
-      {
-         if( m_vecPath[i] != rhs.m_vecPath[i] )
-         {
-            return false;
-         }
-      }
-
-      return true;
+      m_szBranch = m_szBranch.substr( 0, m_szBranch.size() - 1 );
    }
+   return m_szBranch;
 }
 
-bool
-SubAddress::operator!=( const SubAddress& rhs ) const
+bool 
+SubAddress::operator<( const ISubAddress& rhs ) const
 {
-   return !(*this == rhs);
+   return Compare( rhs ) == -1;
 }
 
-bool
-SubAddress::operator<( const SubAddress& rhs ) const
+std::vector<std::string>
+SubAddress::ParseLeafString( const std::string & aszTree )
 {
-   if( m_vecPath.size() < rhs.m_vecPath.size() )
+   std::vector<std::string> vecParsed;
+
+   // Default to nothing or just empty vec?
+   vecParsed.push_back( "" );
+
+   size_t index = 0;
+   std::string szCurrentBase = "";
+   std::string szCurrentBranch = "";
+   std::stack<std::string> stackChar;
+   while( index < aszTree.size() )
    {
-      return true;
-   }
-   else if( m_vecPath.size() > rhs.m_vecPath.size() )
-   {
-      return false;
-   }
-   else
-   {
-      for( int i = 0; i < m_vecPath.size(); i++ )
+      char cCurrentChar = aszTree[index];
+      if( cCurrentChar == '<' )
       {
-         if( m_vecPath[i] < rhs.m_vecPath[i] )
+         // Append to current base and continue
+         szCurrentBase = szCurrentBase + szCurrentBranch;
+         szCurrentBranch = "";
+         // Push current base onto stack
+         stackChar.push( szCurrentBase );
+      }
+      else if( cCurrentChar == ')' )
+      {
+         // Append to current base and continue
+         if( szCurrentBranch.size() > 0 )
          {
-            return true;
+            vecParsed.push_back( szCurrentBase + szCurrentBranch );
          }
-         else if( m_vecPath[i] > rhs.m_vecPath[i] )
+         szCurrentBranch = "";
+
+         if( stackChar.size() > 0 )
          {
-            return false;
+            szCurrentBase = stackChar.top();
+            stackChar.pop();
+         }
+         else
+         {
+            // Malformed!!
+            return vecParsed;
          }
       }
+      else
+      {
+         szCurrentBranch += cCurrentChar;
+      }
 
-      // They are equal
-      return false;
+      if( ++index == aszTree.size() && szCurrentBranch.size() > 0 )
+      {
+         vecParsed.push_back( szCurrentBase + szCurrentBranch );
+      }
    }
+
+   return vecParsed;
+}
+
+std::string
+SubAddress::ToLeafString( const std::vector<std::string>& aszSubAddresses )
+{
+   if( aszSubAddresses.size() == 0 )
+   {
+      return std::string();
+   }
+   std::string szRetval;
+
+
+   std::map<std::string, std::vector<std::string>> myMap;
+   for( auto string : aszSubAddresses )
+   {
+      if( string.size() < 1 )
+      {
+         continue;
+      }
+      myMap[string.substr( 0, 1 )].push_back( string.substr( 1 ) );
+   }
+
+
+   for( auto branch : myMap )
+   {
+      szRetval += "<";
+      szRetval += branch.first;
+      szRetval += ToLeafString( branch.second );
+      szRetval += ")";
+   }
+
+   // String < and )
+   if( myMap.size() == 1 )
+   {
+      szRetval = szRetval.substr( 1, szRetval.size() - 2 );
+   }
+
+   return szRetval;
+}
+
+std::string
+SubAddress::CleanLeafString( const std::string & aszTree )
+{
+   return ToLeafString( ParseLeafString( aszTree ) );
 }
 
 Identifier::Identifier()
 {
-
+   // Create random identifier
+   // TODO: Random here
 }
 
 Identifier::Identifier(const string& aszId)
 {
-   parseIdName(aszId);
+   auto vecIdSplit = StringHelper::Str_Split( aszId, "-" );
+   if( vecIdSplit.size() > 0 )
+   {
+      m_szMain = vecIdSplit[0];
+   }
+   else
+   {
+      m_szMain = aszId;
+   }
 }
 
 Identifier::~Identifier()
@@ -177,236 +231,122 @@ Identifier::~Identifier()
 
 }
 
+std::set<Location> 
+Identifier::GetLocations() const
+{
+   std::set<Location> leaves;
+   leaves.insert( Location( m_szMain ) );
+   for( auto leaf : GetLeaves() )
+   {
+      leaves.insert( Location( m_szMain, leaf.ToString() ) );
+   }
+   return leaves;
+}
+
 bool 
 Identifier::IsEmpty() const
 {
-   return m_veciSubAddresses.size()==0;
+   return (ToString() == "");
 }
 
-vector<SubAddress>
-Identifier::GetSubAddresses() const
+int
+Identifier::Compare( const Identifier & other ) const
 {
-   return m_veciSubAddresses;
-}
-
-vector<Location> 
-Identifier::GetLocations() const
-{
-   vector<Location> vecRetVal;
-   for( auto iSub : m_veciSubAddresses )
+   if( GetMain() != other.GetMain() )
    {
-      vecRetVal.push_back( Location( m_szMain, iSub ) );
+      return -2;
    }
-   return vecRetVal;
+
+   if( ToString() == other.ToString() )
+   {
+      return 0;
+   }
+
+   if( IsSuperset( other ) )
+   {
+      return 1;
+   }
+   else if( other.IsSuperset( *this ) )
+   {
+      return -1;
+   }
+   else
+   {
+      return -2;
+   }
 }
 
-string 
+string
 Identifier::GetMain() const
 {
    return m_szMain;
 }
 
-string 
-Identifier::GetFullAddress() const
+void
+Identifier::SetMain( const std::string & aszMain )
 {
-   string szFullString = GetMain();
-   bool first = true;
-   for( SubAddress_t subAddr : m_veciSubAddresses)
+   m_szMain = aszMain;
+}
+
+string 
+Identifier::ToString() const
+{
+   if( m_szMain == "" )
    {
-      if (!first) { szFullString += ","; }
-      else { szFullString += "-"; }
-      szFullString += subAddr.ToString();
-      first = false;
+      return "";
+   }
+   else if( GetLeafString() == "" )
+   {
+      return m_szMain;
    }
 
-   return szFullString;
-}
-
-Location
-Identifier::GetBase() const
-{
-   return Location(GetMain());
-}
-
-Address 
-Identifier::ToAddress() const
-{
-   return Address(GetFullAddress());
-}
-   
-bool 
-Identifier::operator==( const Identifier& rhs ) const
-{
-   return GetFullAddress()==rhs.GetFullAddress();
+   return m_szMain + "-" + GetLeafString();
 }
 
 bool 
-Identifier::operator!=( const Identifier& rhs ) const
+Identifier::IsSuperset( const Identifier & aSet ) const
 {
-   return !(*this == rhs);
+   return IsPartOfRootPath( aSet );
 }
 
 bool 
-Identifier::operator<( const Identifier& rhs ) const
+Identifier::IsPartOfRootPath( const Identifier& aSet ) const
 {
+   if( GetMain() != aSet.GetMain() )
+   {
+      return false;
+   }
+
+   for( auto oTargetNode : aSet.GetLeaves() )
+   {
+      for( auto oLeafNode : GetLeaves() )
+      {
+         int iComp = oTargetNode.Compare( oLeafNode );
+         if( iComp == -2 || iComp == -1 )
+         {
+            continue;
+         }
+         else
+         {
+            // If the target node is a superset (part of root path) or equal
+            return true;
+         }
+      }
+   }
+
+   // If we haven't found a match
    return false;
 }
 
+bool 
+Identifier::operator<( const Identifier & rhs ) const
+{
+   return Compare( rhs ) == -1;
+}
+
 void 
-Identifier::parseIdName( const string& aszID )
+Identifier::parseIdentifierString( const std::string & aszString )
 {
-   string szSubAddress; 
-   unsigned int iNumChars; 
-   unsigned int iSubAddress;
-   vector<string> lstUIandPF;
-   vector<string> lstSubAddresses;
-
-   // Record the family name.
-   lstUIandPF = StringHelper::Str_Split(aszID, string("-"));
-   if( lstUIandPF.size() > 0 )
-   {
-      m_szMain = lstUIandPF[0];
-   }
-   else
-   {
-      m_szMain = Config::NotFoundString;
-   }
-   //TODO
-
-   // Add the parsed sub-addresses, no subaddresses defaults to 0 meaning root.
-   if( lstUIandPF.size() == 1 )
-   {
-      lstUIandPF.push_back("00");
-   }
-   
-   if( lstUIandPF.size() > 1 )
-   {
-      lstSubAddresses = StringHelper::Str_Split( lstUIandPF[1], string( "," ) );
-      size_t iSAC = lstSubAddresses.size();
-      for (size_t i = 0; i < iSAC; i++)
-      {
-         szSubAddress = lstSubAddresses[i];
-         if( szSubAddress.size() % 2 == 0 && szSubAddress.size() >= 2 )
-         {
-            int iStart = 0;
-            while( iStart <= szSubAddress.size()-2 )
-            {
-               string szSubByte = szSubAddress.substr( iStart, 2 );
-
-               // Convert hex string to int.
-               iSubAddress = stoi( szSubAddress, &iNumChars, 16 );
-               if( iNumChars > 0 )
-               {
-                  addSubAddress( m_veciSubAddresses, iSubAddress );
-               }
-
-               iStart += 2;
-            }
-
-         }
-
-      }
-   }
-   else
-   {
-      // Root collection
-   }
-
-   //// Add the parsed subAddresses, default to 1 if none named.
-   //lstUIandPF.push_back("1");
-   //if( lstUIandPF.size() > 1 )
-   //{
-   //   lstSubAddresses = StringHelper::Str_Split(lstUIandPF[1], string(","));
-   //   size_t iSAC = lstSubAddresses.size();
-   //   for (size_t i = 0; i < iSAC; i++)
-   //   {
-   //      szSubAddress = lstSubAddresses[i];
-   //      iSubAddress = stoi(szSubAddress, &iNumChars);
-   //      if (iNumChars > 0)
-   //      {
-   //         addSubAddress(m_veciSubAddresses, iSubAddress);
-   //      }
-   //   }
-   //}
-
-   //// Remove the default if this address is empty
-   //if( aszID == "" )
-   //{
-   //    m_veciSubAddresses.clear();
-   //}
-}
-
-// Returns
-// -1 := Did not add b/c it is already specified.
-// 0 := Failed to Add
-// 1 := Replaced Exisiting aisa
-// 2 := Inserted ordered
-int 
-Identifier::addSubAddress(vector<SubAddress_t>& avecSAs, SubAddress_t aiSA)
-{
-   int iAdded = 0;
-
-   // Replace a less specific set with this more
-   // general set.
-   // or do nothing because this SA is less specific.
-   for( size_t i = 0; i < avecSAs.size(); i++ )
-   {
-      SubAddress SA = avecSAs[i];
-      if( isSuperSet( SA, aiSA ) )
-      {
-         avecSAs[i] = aiSA;
-         iAdded = 1;
-         break;
-      }
-
-      if( isSuperSet( aiSA, SA ) )
-      {
-         iAdded = -1;
-         break;
-      }
-   }
-   
-   // Add the sub address in an ordered manner.
-   if( iAdded == 0 )
-   {
-      int iCmp = 0;
-      auto iter = avecSAs.begin();
-      for(; iter != avecSAs.end(); ++iter)
-      {
-         iCmp = compareSubAddress(aiSA, *iter);
-         if (iCmp <= 0) { break; }
-      }
-   
-      if( ( iter == avecSAs.begin() ) || 
-          ( iCmp != 0               ) )
-      {
-         avecSAs.insert(iter, aiSA);
-      }
-
-      iAdded = 2;
-   }
-
-   return iAdded;
-}
-
-bool
-Identifier::isSuperSet(SubAddress_t aiSuperSet, SubAddress_t aiSubSet) const
-{
-   return aiSuperSet.IsSuperSetOf( aiSubSet );
-}
-
-int 
-Identifier::compareSubAddress( SubAddress_t aiSOne,
-                               SubAddress_t aiSTwo ) const
-{
-   if( aiSOne == aiSTwo )
-   {
-      return 0;
-   }
-   else
-   {
-      return aiSOne < aiSTwo ? 1 : -1;
-   }
 }
 
 Address::Address()
@@ -414,8 +354,26 @@ Address::Address()
 
 }
 
-Address::Address(const string& aszId) : Identifier(aszId)
+Address::Address(const string& aszId)
 {
+   auto vecIdSplit = StringHelper::Str_Split( aszId, "-" );
+   if( vecIdSplit.size() > 0 )
+   {
+      m_szMain = vecIdSplit[0];
+
+      if( vecIdSplit.size() > 1 )
+      {
+         auto vecLeaves = SubAddress::ParseLeafString( SubAddress::CleanLeafString(vecIdSplit[1]) );
+         for( auto leaf : vecLeaves )
+         {
+            m_setLeaves.insert( leaf );
+         }
+      }
+   }
+   else
+   {
+
+   }
 
 }
 
@@ -424,57 +382,33 @@ Address::~Address()
 
 }
 
-vector<SubAddress> 
-Address::GetSubAddresses() const
+std::string 
+Address::GetLeafString() const
 {
-   return m_veciSubAddresses;
-}
-
-
-// Returns true if ANY of the subaddresses of this address
-// is a superset of the location.
-// There should only ever be exactly 1 subaddress in the found address.
-bool 
-Address::ContainsLocation( const Location& aLoc ) const
-{
-   if( GetMain() != aLoc.GetMain() ){ return false; }
-
-   bool bContains = false;
-   for( auto iSub : m_veciSubAddresses )
+   std::string szRetval = "";
+   for( auto sub : GetLeaves() )
    {
-      if( isSuperSet( iSub, aLoc.GetSubAddress() ) )
-      {
-         bContains = true;
-         break;
-      }
+      szRetval += sub.ToString() + ",";
    }
+   return szRetval.substr( 0, szRetval.size() - 1 );
+}
 
-   return bContains;
+std::set<SubAddress_t> 
+Address::GetLeaves() const
+{
+   return m_setLeaves;
 }
 
 bool 
-Address::AddSubAddress( SubAddress aiSub )
+Address::AddLeaf( SubAddress_t aiSub )
 {
-   return addSubAddress(m_veciSubAddresses, aiSub) > 0;
+   return false;
 }
 
-// TODO: This will completely remove all matchin addresses
-// instead of pithing the subset subaddresses.
 int 
-Address::RemoveSubAddress( SubAddress aiSub )
+Address::RemoveLeaf( SubAddress_t aiSub )
 {
-   int iResult = 0;
-   int iSetVal = aiSub.GetLeastSignificantValue();
-
-   for( auto iSub : GetSubAddresses() )
-   {
-      if( isSuperSet( aiSub, iSub ) )
-      {
-         SetSubAddress(iSub, iSetVal);
-         iResult = 1;
-      }
-   }
-   return iResult;
+   return 0;
 }
 
 // Inputting aiSub = 1 will remove that item.
@@ -487,110 +421,48 @@ Address::RemoveSubAddress( SubAddress aiSub )
 int 
 Address::SetSubAddress(SubAddress_t aiAlreadySub, SubAddress_t aiSub)
 {
-   int iResult = 0;
-   auto iter_found = find( m_veciSubAddresses.begin(),
-                           m_veciSubAddresses.end(),
-                           aiAlreadySub );
-
-   if( iter_found != m_veciSubAddresses.end() )
-   {
-      vector<SubAddress_t> vecAddTest(m_veciSubAddresses);
-      vecAddTest.erase(vecAddTest.begin() + 
-                       distance(m_veciSubAddresses.begin(), iter_found));
-
-      // Now we want the subaddress to be added new
-      int iAdded = addSubAddress(vecAddTest, aiSub);
-      if( aiSub == 0 )
-      {
-         // Set iAdded to -1 so we can remove the value.
-         iAdded = -1;
-      }
-
-      if( iAdded == 2 )
-      {
-         // aiSub is specified by no other SA.
-         *iter_found = aiSub;
-         iResult = 1;
-      }
-      else if( iAdded == 1 )
-      {
-         // aiSub more specific than another SA.
-         // (i.e. specifies MORE sets)
-         m_veciSubAddresses.erase(iter_found);
-         addSubAddress(m_veciSubAddresses, aiSub);
-         iResult = 2;
-      }
-      else if( iAdded == -1 )
-      {
-         // aiSub is less specific
-         // (i.e. specifies fewer sets)
-         m_veciSubAddresses.erase(iter_found);
-         iResult = 3;
-      }
-      else
-      {
-         iResult = 4;
-      }
-   }
-
-   return iResult;
+   return 1;
 }
 
 bool 
 Address::MergeIdentifier( const Identifier& aID )
 {
-   if( GetMain() != aID.GetMain() ){ return false; }
-
-   for( auto iSub : aID.GetSubAddresses() )
-   {
-      return AddSubAddress(iSub);
-   }
-
    return true;
 }
 
 bool
 Address::ExtractIdentifier( const Identifier& aID )
 {
-   if( GetMain() != aID.GetMain() ){ return false; }
-
-   bool bResult = false;
-
-   // This tries to remove all the addresses,
-   // regardless of whether they are present or not.
-   for( auto iSub : aID.GetSubAddresses() )
-   {
-      bool bSub = RemoveSubAddress( iSub ) != 0;
-      bResult |= bSub;
-   }
-
-   return bResult;
+   return true;
 }
 
 Location::Location()
 {
-
+   m_szMain = std::to_string( Addresser::GetRandom() % 1000000 );
 }
 
-Location::Location(const string& aszId) : Identifier(aszId)
+Location::Location( const string& aszId ) : Location()
 {
-   if( m_veciSubAddresses.size() > 0 )
+   auto vecIdSplit = StringHelper::Str_Split( aszId, "-" );
+   if( vecIdSplit.size() > 0 )
    {
-      m_iAddress = m_veciSubAddresses.at(0);
+      m_szMain = vecIdSplit[0];
+
+      if( vecIdSplit.size() > 1 )
+      {
+         m_Leaf = vecIdSplit[1];
+      }
    }
    else
    {
-      m_iAddress = 1;
+         m_szMain = std::to_string( Addresser::GetRandom() % 1000000 );
    }
 }
 
-Location::Location( const string& aszMain, SubAddress_t aiSA )
+Location::Location( const std::string & aszId, SubAddress_t aSub ) : Location()
 {
-   m_iAddress = aiSA;
-   m_szMain = aszMain;
-
-   // Add the address to this vector so the "IsEmpty" function works.
-   m_veciSubAddresses.push_back(m_iAddress);
+   m_szMain = aszId;
+   m_Leaf = aSub;
 }
 
 Location::~Location()
@@ -598,57 +470,38 @@ Location::~Location()
 
 }
 
-// Returns true if this location is a super set of ANY of the
-// subaddresses in aAddress.
-bool 
-Location::IsSpecifiedBy( const Address& aAddress ) const
+std::set<Location> 
+Location::GetRootPath() const
 {
-   //rAddrIn = Address(aAddress.GetMain());
+   std::set<Location> setRet;
+   Location tmpLoc( *this );
+   setRet.insert( tmpLoc );
 
-   if (aAddress.GetMain() != GetMain()) { return false; }
-
-   bool bFoundSubAddressMatch = false;
-   auto vecSAs = aAddress.GetSubAddresses();
-   for( auto iSub : vecSAs )
+   while( tmpLoc.GetLeafString() != "" )
    {
-      bool bIsSuper = isSuperSet(GetSubAddress(), iSub);
-      if( bIsSuper ) 
-      {
-         //rAddrIn.AddSubAddress(iSub);
-      } 
-      bFoundSubAddressMatch |= bIsSuper;
+      tmpLoc.m_Leaf.Pop();
+      setRet.insert( tmpLoc );
    }
 
-   return bFoundSubAddressMatch;
+   return setRet;
 }
 
-vector<SubAddress_t>
-Location::GetSubAddresses() const
+std::string 
+Location::GetLeafString() const
 {
-   return vector<SubAddress_t>(1, m_iAddress);
+   return m_Leaf.ToString();
 }
 
-vector<Location> 
-Location::GetLocationsSpecified() const
+std::set<SubAddress_t> 
+Location::GetLeaves() const
 {
-   vector<Location> vecRetVal;
-   vecRetVal.push_back( *this );
-   for( int i = 0; i < m_iAddress.Size(); i++ )
-   {
-      vecRetVal.push_back( Location(m_szMain, m_iAddress.GetPath(i)) );
-   }
-
-   return vecRetVal;
+   std::set<SubAddress> set;
+   set.insert( m_Leaf );
+   return set;
 }
 
 SubAddress_t
-Location::GetSubAddress() const
+Location::GetLeaf() const
 {
-   return m_iAddress;
-}
-
-Address 
-Location::ToAddress() const
-{
-   return Address(GetFullAddress());
+   return m_Leaf;
 }

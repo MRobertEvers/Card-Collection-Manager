@@ -64,7 +64,7 @@ CollectionQueryHelper::createHashToItemMap(const Query& aiQueryParms)
       {
          auto copy = copyW;
          // Look for copies that match.
-         cardData.Hash = copy->GetHash(aiQueryParms.GetHashType());
+         cardData.Hash = copy->GetHash();
 
          auto iter_Counted = mapCardHashes.find(cardData.Hash);
          if( ( aiQueryParms.GetCollapsed() )       &&
@@ -175,7 +175,7 @@ CollectionQueryHelper::performQuery( const Query& aiQueryParms,
       {
          for( auto& szUID : cardData.Groups )
          {
-            vecMeta.push_back( make_pair( CopyItem::GetUIDKey(), szUID ) );
+            vecMeta.push_back( make_pair( MetaTag::GetUIDKey(), szUID ) );
          }
       }
       else

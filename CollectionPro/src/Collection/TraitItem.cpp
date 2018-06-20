@@ -4,58 +4,103 @@
 
 using namespace std;
 
-TraitItem::TraitItem( const string& aszKeyname,
-                      const vector<string>& alstKeyVals, 
-                      const vector<Tag>& alstPairedTraits )
+CardVariantField::CardVariantField( const string& aszKeyname,
+                                    const vector<string>& alstKeyVals, 
+                                    const vector<Tag>& alstPairedTraits )
 {
    Config* config = Config::Instance();
    m_szKeyName = aszKeyname;
-   m_lstPossibleValues = vector<string>( alstKeyVals.begin(), 
-                                         alstKeyVals.end() );
+   m_setPossibleValues = set<string>( alstKeyVals.begin(), 
+                                      alstKeyVals.end() );
 
-   if (m_lstPossibleValues.size() == 0)
+   if (m_setPossibleValues.size() == 0)
    {
-      m_lstPossibleValues.push_back("");
+      m_setPossibleValues.insert("");
    }
 
-   vector<Tag>::const_iterator iter_Tags = alstPairedTraits.cbegin();
-   for (; iter_Tags != alstPairedTraits.cend(); ++iter_Tags)
+   for( auto tag : alstPairedTraits )
    {
-      if (aszKeyname == iter_Tags->first)
+      if( tag.first == m_szKeyName )
       {
-         m_lstPairedValues.push_back(iter_Tags->first);
+         m_setLinkedFields.insert( tag.second );
       }
-      else if (aszKeyname == iter_Tags->second)
+      else if( tag.second == m_szKeyName )
       {
-         m_lstPairedValues.push_back(iter_Tags->second);
+         m_setLinkedFields.insert( tag.first );
       }
    }
 }
 
-TraitItem::~TraitItem()
+CardVariantField::~CardVariantField()
 {
 }
 
-string TraitItem::GetKeyName() const
+string 
+CardVariantField::GetKeyName() const
 {
    return m_szKeyName;
 }
 
-string TraitItem::GetDefaultValue() const
+string 
+CardVariantField::GetDefaultValue() const
 {
-   return *m_lstPossibleValues.begin();
+   return *m_setPossibleValues.begin();
 }
 
-vector<string> TraitItem::GetAllowedValues()
+set<string> 
+CardVariantField::GetAllowedValues() const
 {
-   return vector<string>( m_lstPossibleValues.begin(), 
-                          m_lstPossibleValues.end() );
+   return m_setPossibleValues;
 }
 
-bool TraitItem::IsAllowedValue(string aszTestVal)
+bool 
+CardVariantField::IsAllowedValue(string aszTestVal) const
 {
-   auto iter_find = find( m_lstPossibleValues.begin(), 
-                          m_lstPossibleValues.end(), 
+   auto iter_find = find( m_setPossibleValues.begin(), 
+                          m_setPossibleValues.end(), 
                           aszTestVal );
-   return iter_find != m_lstPossibleValues.end();
+   return iter_find != m_setPossibleValues.end();
+}
+
+CardInstanceField 
+CardVariantField::GetInstanceField( const std::string aszValue ) const
+{
+   return CardInstanceField(this, aszValue);
+}
+
+CardInstanceField::CardInstanceField( CardVariantField const* m_pBase, const std::string& aszValue )
+{
+   SetValue( aszValue );
+}
+
+CardInstanceField::~CardInstanceField()
+{
+
+}
+
+std::string
+CardInstanceField::GetKey() const
+{
+   return m_pBase->GetKeyName();
+}
+
+std::string
+CardInstanceField::GetValue() const
+{
+   return m_szValue;
+}
+
+bool
+CardInstanceField::SetValue( const std::string aszNewValue )
+{
+   if( m_pBase->IsAllowedValue( aszNewValue ) )
+   {
+      m_szValue = aszNewValue;
+      return true;
+   }
+   else
+   {
+      m_szValue = m_pBase->GetDefaultValue();
+      return false;
+   }
 }

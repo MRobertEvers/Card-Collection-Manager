@@ -1,28 +1,48 @@
 #pragma once
-#include<string>
-#include<vector>
-#include<set>
 #include "../Support/TypeDefs.h"
 
-class TraitItem
+#include <string>
+#include <vector>
+#include <set>
+
+class CardInstanceField;
+class CardVariantField
 {
 public:
-   TraitItem( const std::string& aszKeyname,
-              const std::vector<std::string>& alstKeyVals, 
-              const std::vector<Tag>& alstPairedTraits = std::vector<Tag>() );
-   ~TraitItem();
+   CardVariantField( const std::string& aszKeyname,
+                     const std::vector<std::string>& alstKeyVals, 
+                     const std::vector<Tag>& alstPairedTraits = std::vector<Tag>() );
+   ~CardVariantField();
    
    std::string GetKeyName() const;
    std::string GetDefaultValue() const;
-   std::vector<std::string> GetAllowedValues();
+   std::set<std::string> GetAllowedValues() const;
 
-   bool IsAllowedValue(std::string aszTestVal);
+   bool IsAllowedValue(std::string aszTestVal) const;
+
+   CardInstanceField GetInstanceField( const std::string aszValue ) const;
 
 private:
-   std::vector<std::string> m_lstPairedValues;
+   std::set<std::string> m_setLinkedFields;
 
    // This must be a vector to maintain ordering.
-   std::vector<std::string> m_lstPossibleValues;
+   std::set<std::string> m_setPossibleValues;
    std::string m_szKeyName;
 };
 
+class CardInstanceField
+{
+public:
+   CardInstanceField( CardVariantField const* m_pBase, 
+                      const std::string& aszValue );
+   ~CardInstanceField();
+
+   std::string GetKey() const;
+
+   std::string GetValue() const;
+   bool SetValue( const std::string aszNewValue );
+
+private:
+   std::string m_szValue;
+   CardVariantField* m_pBase;
+};

@@ -250,7 +250,7 @@ CollectionIO::ConsolodateItems()
          auto tgExistingCopy = item->FindCopy( ptNewCopy->GetUID() );
          if( tgExistingCopy.Good() )
          {
-            auto ptExistingCopy = *tgExistingCopy.Value();
+            auto ptExistingCopy = tgExistingCopy.Value();
 
             // Some other collection loaded this item already.
             // See if the already loaded item was changed more
@@ -272,7 +272,7 @@ CollectionIO::ConsolodateItems()
                itemLoadToken.ConfirmedCopyItems.push_back( ptNewCopy );
             }
          }
-         else if( !ptNewCopy->IsParent(newColAddr) )
+         else if( !ptNewCopy->GetAddress().IsSuperset(newColAddr) )
          {
             // Special case if its a borrowed copy not already loaded.
             // Check if its parent is loaded.
@@ -308,7 +308,8 @@ CollectionIO::ConsolodateItems()
 
       // Handle all copies that were not specified in the collection file
       // but say there are in this collection.
-      auto vecCopiesReferencingThisCol = item->FindCopies( newColAddr, CollectionObjectType::Local );
+      // TODO: Only local
+      auto vecCopiesReferencingThisCol = item->FindCopies( newColAddr );
       for( auto& ptAlreadyLoadedCopy : vecCopiesReferencingThisCol )
       {
          // Only keep these copies if they are more recently editted than this collection
@@ -415,7 +416,7 @@ CollectionIO::loadOverheadFile()
    // TODO: Do this for the other special values.
    if( m_ptLoadToken->CollectionAddress == "" )
    {
-      m_ptLoadToken->CollectionAddress = m_ptCollection->GetIdentifier().GetFullAddress();
+      m_ptLoadToken->CollectionAddress = m_ptCollection->GetIdentifier().ToString();
    }
 
    return true;
@@ -503,7 +504,7 @@ CollectionIO::loadOverheadPropertyLine(const std::string& aszLine)
 
       // TODO: This might be weird. Maybe 'details' should be allowed to interact with
       // multiple systems.
-      if( m_ptCollection->m_ptrCollectionLedger->GetLocation() != *ptDetails->GetAddress() )
+      if( m_ptCollection->m_ptrCollectionLedger->GetLocation().Compare( *ptDetails->GetAddress()) == 0 )
       {
          delete m_ptCollection->m_ptrCollectionLedger;
          m_ptCollection->m_ptrCollectionLedger = new CollectionLedger( *ptDetails->GetAddress() );
@@ -569,7 +570,7 @@ CollectionIO::loadPotentialItem( const string& aszName,
 
    if( item.Good() )
    {
-      auto cItem = item->CreateCopy( Address(m_ptLoadToken->CollectionAddress),
+      auto cItem = item->CreateCopy( Location(m_ptLoadToken->CollectionAddress),
                                      alstAttrs, alstMetaTags );
 
       m_ptLoadToken->CardItems[aszName].push_back( cItem );
@@ -608,28 +609,27 @@ CollectionIO::bindMetaTagLine( const std::string& aszLine )
    auto item = ptSource->GetCardPrototype( sudoItem.Name );
    if( item.Good() )
    {
-      auto szPlainHash = item->GenerateHash( Address( m_ptLoadToken->CollectionAddress ),
+      auto szPlainHash = item->GenerateHash( Location( m_ptLoadToken->CollectionAddress ),
                                              sudoItem.Identifiers,
                                              vecMetaTags );
       for( size_t i = 0; i < sudoItem.Count; i++ )
       {
-         auto matchingCopy = item->FindCopy( szPlainHash, Hash,
-                                             m_ptLoadToken->CardItems[sudoItem.Name] );
+         //auto matchingCopy = item->FindCopy( szPlainHash, Hash,
+         //                                    m_ptLoadToken->CardItems[sudoItem.Name] );
 
-         if( matchingCopy.Good() )
-         {
-            // Bind the tags.
-            for( auto& Tag : vecMetaTags )
-            {
-               (*matchingCopy.Value())->SetMetaTag( Tag.first, Tag.second,
-                                                    CopyItem::DetermineMetaTagType( Tag.first ),
-                                                    false );
-            }
-         }
-         else
-         {
-            // There should really be no dangling tags.. TODO: ERROR
-         }
+         //if( matchingCopy.Good() )
+         //{
+         //   // Bind the tags.
+         //   for( auto& Tag : vecMetaTags )
+         //   {
+         //      matchingCopy.Value()->SetMetaTag( Tag.first, Tag.second,
+         //                                        CopyItem::DetermineMetaTagType( Tag.first ) );
+         //   }
+         //}
+         //else
+         //{
+         //   // There should really be no dangling tags.. TODO: ERROR
+         //}
       }
    }
    else
@@ -664,10 +664,11 @@ bool
 CollectionIO::transferCopyFirstToSecond( const std::shared_ptr<CopyItem>& aA,
                                          const std::shared_ptr<CopyItem>& aB )
 {
-   for( auto& aAResis : aA->GetResidentIn() )
-   {
-      aB->AddResident( aAResis );
-   }
+   // TODO:
+   //for( auto& aAResis : aA->GetResidentIn() )
+   //{
+   //   aB->AddResident( aAResis );
+   //}
 
    return true;
 }
@@ -743,7 +744,6 @@ CollectionIO::saveMeta()
 
    ofstream oMetaFile;
    Query listQuery( true );
-   listQuery.IncludeMetaType( Persistent );
    vector<string> lstMetaLines = m_ptCollection->QueryCollection( listQuery );
 
    oMetaFile.open( GetMetaFile( ptCollectionDetails->GetFileName() ) );
@@ -775,7 +775,7 @@ CollectionIO::saveOverhead()
    string szTime = StringInterface::ToTimeString( ptCollectionDetails->GetTimeStamp(), "%F_%T" );
 
    oColFile << Config::CollectionDefinitionKey
-      << " ID=\"" << m_ptCollection->GetIdentifier().GetFullAddress() << "\"" << endl;
+      << " ID=\"" << m_ptCollection->GetIdentifier().ToString() << "\"" << endl;
 
    oColFile << Config::CollectionDefinitionKey
       << " CC=\"" << ptCollectionDetails->GetChildrenCount() << "\"" << endl;
@@ -811,7 +811,7 @@ CollectionIO::saveRequiredPeekValues( ofstream& aFile )
    iter_find = mapPeek.find( "Id" );
    if( iter_find == mapPeek.end() )
    {
-      aFile << "Peek " << "Id \"" << ptDetails->GetAddress()->GetFullAddress() << "\"" << endl;
+      aFile << "Peek " << "Id \"" << ptDetails->GetAddress()->ToString() << "\"" << endl;
    }
 
    iter_find = mapPeek.find( "Icon" );
@@ -832,8 +832,8 @@ CollectionIO::saveCollection()
    // used to create a template card. We only need the base details.
    Query listQuery( true );
    listQuery.Short();
-   listQuery.IncludeMetaType( None );
-   listQuery.HashType( CopyItem::HashType::Ids );
+   listQuery.IncludeMetaType( MetaTag::None );
+   // listQuery.HashType( CopyItem::HashType::Ids );
    
    exportCollection( listQuery );
 }

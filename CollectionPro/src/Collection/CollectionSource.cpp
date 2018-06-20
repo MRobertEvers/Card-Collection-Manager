@@ -114,52 +114,27 @@ CollectionSource::LoadCard( string aszCardName )
    return iCacheLocation;
 }
 
-
 TryGet<CollectionObject>
-CollectionSource::GetCardPrototype( int aiCacheIndex )
+CollectionSource::GetCardPrototype( string aszCardName )
 {
+   int iCacheIndex = LoadCard( aszCardName );
    TryGet<CollectionObject> ColRetVal;
-   if( aiCacheIndex < m_vecCardCache.size() )
+   if( iCacheIndex < m_vecCardCache.size() && iCacheIndex > 0)
    {
-      ColRetVal.Set( m_vecCardCache.at( aiCacheIndex ) );
+      ColRetVal.Set( m_vecCardCache.at( iCacheIndex ) );
    }
 
    return ColRetVal;
 }
 
-TryGet<CollectionObject>
-CollectionSource::GetCardPrototype( string aszCardName )
-{
-   int iCacheIndex = LoadCard( aszCardName );
-   return GetCardPrototype( iCacheIndex );
-}
-
-vector<int>
-CollectionSource::GetCollectionCache( Location aAddrColID,
-                                      CollectionObjectType aColItemType )
-{
-   vector<int> lstRetVal;
-
-   for( size_t i = 0; i < m_vecCardCache.size(); i++ )
-   {
-      if( m_vecCardCache[i]->FindCopies( aAddrColID, aColItemType ).size() > 0 )
-      {
-         lstRetVal.push_back( i );
-      }
-   }
-
-   return lstRetVal;
-}
-
 vector<shared_ptr<CopyItem>>
-CollectionSource::GetCollection( Location aAddrColID,
-                                 CollectionObjectType aColItemType )
+CollectionSource::GetCollection( Location aAddrColID )
 {
    vector<shared_ptr<CopyItem>> lstRetVal;
 
    for( auto& item : m_vecCardCache )
    {
-      auto lstCopies = item->FindCopies( aAddrColID, aColItemType );
+      auto lstCopies = item->FindCopies( aAddrColID );
 
       auto iter_Copy = lstCopies.begin();
       for( ; iter_Copy != lstCopies.end(); ++iter_Copy )
@@ -442,7 +417,8 @@ CollectionSource::ExpandAdditionLine( string& rszLine )
          {
             if( card.Good() )
             {
-               bGoodVal = card->MatchIdentifyingTrait( szPair, szKey );
+               // TODO:
+               //bGoodVal = card->MatchIdentifyingTrait( szPair, szKey );
             }
 
             if( bGoodVal )
@@ -515,11 +491,11 @@ CollectionSource::loadCardToCache( unsigned int iDataBuffInd )
    // allowed values.
    auto lstAttrRestrictions = oSource->GetIDAttrRestrictions( m_AllCharBuff );
 
-   vector<TraitItem> lstIdentifyingTraits;
+   vector<CardVariantField> lstIdentifyingTraits;
    auto iter_Traits = lstAttrRestrictions.begin();
    for( ; iter_Traits != lstAttrRestrictions.end(); ++iter_Traits )
    {
-      TraitItem newTrait( iter_Traits->first,
+      CardVariantField newTrait( iter_Traits->first,
                           iter_Traits->second,
                           config->GetPairedKeysList() );
       lstIdentifyingTraits.push_back( newTrait );

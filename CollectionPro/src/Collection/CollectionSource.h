@@ -41,13 +41,9 @@ public:
    //  -1 otherwise. Loads a card into the cache if not already loaded.
    int LoadCard(string aszCardName);
 
-   TryGet<CollectionObject> GetCardPrototype(int aiCacheIndex);
    TryGet<CollectionObject> GetCardPrototype(string aszCardName);
 
-   vector<int> GetCollectionCache( Location aAddrColID,
-                                   CollectionObjectType aColItemType );
-   vector<shared_ptr<CopyItem>> GetCollection( Location aAddrColID,
-                                               CollectionObjectType aColItemType );
+   vector<shared_ptr<CopyItem>> GetCollection( Location aAddrColID );
 
    vector<string> GetAllCardsStartingWith(const Query& aszText);
 

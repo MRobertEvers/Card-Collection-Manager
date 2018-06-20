@@ -41,7 +41,10 @@ CCollectionView::SetCubeRenderer()
    m_ptView->SetRenderer( new CubeRenderer( m_ptView, wxID_ANY ) );
    uiShowCardViewer();
 
-   m_ptCardViewer->GetController()->SetModel( pFirst );
+   if( pFirst != nullptr )
+   {
+      m_ptCardViewer->GetController()->SetModel( pFirst );
+   }
    m_ptView->Draw( vecItems );
 }
 
@@ -78,8 +81,7 @@ void
 CCollectionView::OnExportXMage()
 {
    Query listQuery( true );
-   listQuery.IncludeMetaType( None );
-   listQuery.HashType( CopyItem::HashType::Ids );
+   listQuery.IncludeMetaType( MetaTag::None );
    listQuery.SetIncludeMeta( false );
    listQuery.SetIncludeIDs( false );
 
