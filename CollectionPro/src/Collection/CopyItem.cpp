@@ -248,9 +248,15 @@ CopyItem::SetAddressBook( shared_ptr<AddressBook> aptBook )
    m_ptAddressBook = aptBook;
 }
 
-std::string CopyItem::ToString()
+string 
+CopyItem::ToString()
 {
-   return std::string();
+   return CollectionObject::ToCardLine(
+      GetAddress(),
+      GetObject()->GetName(),
+      GetIdentifyingAttributes(),
+      GetMetaTags(MetaTag::Any)
+   );
 }
 
 void 
