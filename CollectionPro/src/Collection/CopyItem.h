@@ -33,6 +33,7 @@ public:
    void SetUID( const std::string& aszUID );
    CollectionObject* GetObject() const;
 
+   bool IsVirtual();
    void AddResident( const Identifier& aAddrAddress );
    int RemoveResident( const Identifier& aAddrAddress,
                        unsigned int aiRemoveType = 0 );
@@ -52,6 +53,8 @@ public:
    std::vector<Tag> GetIdentifyingAttributes() const;
 
    void SetAddressBook( std::shared_ptr<AddressBook> aptBook );
+
+   std::string ToString();
 
 private:
    bool m_bNeedHash;

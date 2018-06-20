@@ -288,10 +288,10 @@ StoreFront::GetIdentifyingAttributeOptions(const string& aszCardName)
       auto vecAttrID = card->GetIdentifyingTraits();
       for( auto& trait : vecAttrID )
       {
-         // TODO:
-         //vector<string> vecOptions = trait.second.GetAllowedValues();
-         //auto pairItem = make_pair(trait.first, vecOptions);
-         //mapRetVal.insert(pairItem);
+         vector<string> vecOptions = vector<string>( trait.second.GetAllowedValues().begin(), 
+                                                     trait.second.GetAllowedValues().end() );
+         auto pairItem = make_pair(trait.first, vecOptions);
+         mapRetVal.insert(pairItem);
       }
    }
    return mapRetVal;
@@ -323,7 +323,7 @@ StoreFront::GetCardString(const string& aszCardname, const string& aszUID)
       if( copy.Good() )
       {
          // TODO:
-         //return copy->ToString();
+         return copy->ToString();
       }
    }
 

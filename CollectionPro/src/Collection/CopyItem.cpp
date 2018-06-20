@@ -47,31 +47,31 @@ CopyItem::GetHash() const
 {
    if( m_bNeedHash )
    {
-      //CopyItem* self = const_cast<CopyItem*> (this);
-      //string szHashString = m_ptAddressBook->GetParent();
+      CopyItem* self = const_cast<CopyItem*> (this);
+      string szHashString = m_ptAddressBook->GetParent();
 
-      //auto iter_Tags = m_mapIdentifyingTraits.begin();
-      //for (; iter_Tags != m_mapIdentifyingTraits.end(); ++iter_Tags)
-      //{
-      //   // This requires that the tags have an ordering.
-      //   // This ordering can be determined, by the order
-      //   // of the MetaTag object in the collection object.
-      //   szHashString += iter_Tags->second.GetValue();
-      //}
-      //
-      //vector<Tag> lstMetaList = this->GetMetaTags( MetaTag::Public );
-      //vector<Tag>::iterator iter_MetaTags = lstMetaList.begin();
-      //for (; iter_MetaTags != lstMetaList.end(); ++iter_MetaTags)
-      //{
-      //   szHashString += iter_MetaTags->first + iter_MetaTags->second;
-      //}
-      //   
-      //// Calculate the hash.
-      //string szHash = Config::Instance()->GetHash(szHashString);
-      //self->SetMetaTag(MetaTag::GetHashKey(), szHash, MetaTag::Tracking );
+      auto iter_Tags = m_mapIdentifyingTraits.begin();
+      for (; iter_Tags != m_mapIdentifyingTraits.end(); ++iter_Tags)
+      {
+         // This requires that the tags have an ordering.
+         // This ordering can be determined, by the order
+         // of the MetaTag object in the collection object.
+         szHashString += iter_Tags->second.GetValue();
+      }
+      
+      vector<Tag> lstMetaList = this->GetMetaTags( MetaTag::Public );
+      vector<Tag>::iterator iter_MetaTags = lstMetaList.begin();
+      for (; iter_MetaTags != lstMetaList.end(); ++iter_MetaTags)
+      {
+         szHashString += iter_MetaTags->first + iter_MetaTags->second;
+      }
+         
+      // Calculate the hash.
+      string szHash = Config::Instance()->GetHash(szHashString);
+      self->SetMetaTag(MetaTag::GetHashKey(), szHash, MetaTag::Tracking );
    }
 
-   return GetMetaTag( MetaTag::GetUIDKey(), MetaTag::Tracking );
+   return GetMetaTag( MetaTag::GetHashKey(), MetaTag::Tracking );
 }
 
 string 
@@ -104,6 +104,12 @@ CopyItem::GetAddress() const
    return m_ptAddressBook->GetAddress();
 }
 
+bool 
+CopyItem::IsVirtual()
+{
+   return m_ptAddressBook->IsVirtual();
+}
+
 // This will detect if the adding 'resident' is a subset of the parent,
 // if so, it will adjust the parent address.
 void CopyItem::AddResident(const Identifier& aAddrAddress)
@@ -129,11 +135,11 @@ CopyItem::SetMetaTag( const string& aszKey,
    auto iter_tag = m_mapMetaTags.find( aszKey );
    if( iter_tag == m_mapMetaTags.end() )
    {
-      // m_mapMetaTags[aszKey] = MetaTag(aszKey, aszVal, atagType);
+      m_mapMetaTags.emplace( aszKey, MetaTag( aszKey, aszVal, atagType ));
    }
    else
    {
-      // m_mapMetaTags[aszKey].SetVal( aszVal );
+      iter_tag->second.SetVal( aszVal );
    }
 
    if( MetaTag::DetermineMetaTagType( aszKey ) == MetaTag::Public )
@@ -240,6 +246,11 @@ void
 CopyItem::SetAddressBook( shared_ptr<AddressBook> aptBook )
 {
    m_ptAddressBook = aptBook;
+}
+
+std::string CopyItem::ToString()
+{
+   return std::string();
 }
 
 void 

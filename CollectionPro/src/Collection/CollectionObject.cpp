@@ -90,23 +90,25 @@ bool
 CollectionObject::RemoveCopy( const Location& aAddrColID,
                               const string aszUniqueID )
 {
-   return false;
+   auto copy = FindCopy( aszUniqueID );
+   bool bRes = copy->RemoveResident( aAddrColID );
+   if( copy->IsVirtual() )
+   {
+      DeleteCopy( copy.Value() );
+   }
+
+   return bRes;
 }
 
 string 
 CollectionObject::GenerateHash( const Identifier& aAddrIdentifier,
-                              const vector<Tag>& alstAttrs,
-                              const vector<Tag>& alstMetaTags )
+                                const vector<Tag>& alstAttrs,
+                                const vector<Tag>& alstMetaTags )
 {
    auto hashCopy = CreateCopy( aAddrIdentifier, alstAttrs, alstMetaTags );
    return hashCopy->GetHash();
 }
 
-void 
-CollectionObject::DeleteCopy( const string& aszUniqueHash )
-{
-
-}
 
 void 
 CollectionObject::DeleteCopy( shared_ptr<CopyItem> aptCopy )

@@ -56,8 +56,7 @@ public:
                         const vector<Tag>& alstAttrs,
                         const vector<Tag>& alstMetaTags );
 
-   // Deletes an item from the list of copies.
-   void DeleteCopy(const string& aszUniqueHash);
+   void DeleteCopy( shared_ptr<CopyItem> aptCopy );
 
    TryGetCopy<shared_ptr<CopyItem>> FindCopy( const string& aszUniqueID ) const;
 
@@ -79,8 +78,6 @@ private:
    //
 public:
    map<string, CardVariantField> GetIdentifyingTraits();
-
-   void DeleteCopy( shared_ptr<CopyItem> aptCopy );
 
 public:
    static bool ParseCardLine(const string& aszLine, PseudoIdentifier& rPIdentifier);
