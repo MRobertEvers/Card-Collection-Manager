@@ -614,22 +614,30 @@ CollectionIO::bindMetaTagLine( const std::string& aszLine )
                                              vecMetaTags );
       for( size_t i = 0; i < sudoItem.Count; i++ )
       {
-         //auto matchingCopy = item->FindCopy( szPlainHash, Hash,
-         //                                    m_ptLoadToken->CardItems[sudoItem.Name] );
+         // Look for a copy with a matchin hash
+         TryGetCopy<std::shared_ptr<CopyItem>> matchingCopy;
+         for( auto& hashCopy : m_ptLoadToken->CardItems[sudoItem.Name] )
+         {
+            if( hashCopy->GetHash() == szPlainHash )
+            {
+               matchingCopy.Set( hashCopy );
+               break;
+            }
+         }
 
-         //if( matchingCopy.Good() )
-         //{
-         //   // Bind the tags.
-         //   for( auto& Tag : vecMetaTags )
-         //   {
-         //      matchingCopy.Value()->SetMetaTag( Tag.first, Tag.second,
-         //                                        CopyItem::DetermineMetaTagType( Tag.first ) );
-         //   }
-         //}
-         //else
-         //{
-         //   // There should really be no dangling tags.. TODO: ERROR
-         //}
+         if( matchingCopy.Good() )
+         {
+            // Bind the tags.
+            for( auto& Tag : vecMetaTags )
+            {
+               matchingCopy.Value()->SetMetaTag( Tag.first, Tag.second,
+                                                 MetaTag::DetermineMetaTagType( Tag.first ) );
+            }
+         }
+         else
+         {
+            // There should really be no dangling tags.. TODO: ERROR
+         }
       }
    }
    else
