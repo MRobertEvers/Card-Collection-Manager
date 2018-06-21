@@ -128,3 +128,9 @@ public:
 private:
    SubAddress_t m_Leaf;
 };
+
+class AddresserTest
+{
+public:
+   static bool Test();
+};

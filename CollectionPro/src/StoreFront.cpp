@@ -14,6 +14,8 @@
 
 StoreFront::StoreFront()
 {
+   AddresserTest::Test();
+
    //SelfTest();
    // No Server for now
    m_ColSource = new CollectionSource();
