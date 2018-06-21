@@ -86,8 +86,6 @@ public:
 
 protected:
    std::string m_szMain;
-
-   virtual void parseIdentifierString( const std::string& aszString );
 };
 
 class Location;

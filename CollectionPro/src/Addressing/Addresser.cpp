@@ -121,7 +121,7 @@ SubAddress::operator<( const ISubAddress& rhs ) const
    {
       auto szLeft = m_szBranch;
       auto szRight = rhs.ToString();
-      if( szLeft.size() == szRight.size() )
+      if( szLeft.size() == szRight.size() && szRight.size() > 0 )
       {
          bRetVal = szLeft.back() < szRight.back();
       }
@@ -130,6 +130,10 @@ SubAddress::operator<( const ISubAddress& rhs ) const
          bRetVal = szLeft.size() < szRight.size();
       }
    }
+   else if( rhs.ToString() == ToString() )
+   {
+      bRetVal = false;
+   }
    return bRetVal;
 }
 
@@ -137,9 +141,6 @@ std::vector<std::string>
 SubAddress::ParseLeafString( const std::string & aszTree )
 {
    std::vector<std::string> vecParsed;
-
-   // Default to nothing or just empty vec?
-   vecParsed.push_back( "" );
 
    size_t index = 0;
    std::string szCurrentBase = "";
@@ -377,11 +378,6 @@ Identifier::operator<( const Identifier & rhs ) const
    return Compare( rhs ) == -1;
 }
 
-void 
-Identifier::parseIdentifierString( const std::string & aszString )
-{
-}
-
 Address::Address()
 {
 
@@ -501,6 +497,12 @@ Address::ExtractIdentifier( const Identifier& aID )
       return false;
    }
 
+   if( aID.GetLeaves().size() == 0 )
+   {
+      m_setLeaves.clear();
+      return true;
+   }
+
    std::set<SubAddress_t> setNewSubs;
    for( auto& sub : GetLeaves() )
    {
@@ -535,9 +537,9 @@ Address::ExtractIdentifier( const Identifier& aID )
    for( auto& newSub : setNewSubs )
    {
       bool bIsCounted = false;
-      for( auto& sub : setSubs )
+      for( auto& sub : setNewSubs )
       {
-         if( newSub.Compare( sub ) == -1 )
+         if( newSub.Compare( sub ) == 1 )
          {
             bIsCounted = true;
             break;
@@ -550,6 +552,7 @@ Address::ExtractIdentifier( const Identifier& aID )
       }
    }
 
+   m_setLeaves = setSubs;
    return true;
 }
 
@@ -628,12 +631,16 @@ AddresserTest::Test()
 {
    Address addr1( "Cat-2<3)<4)" );
    Address addr2( "Cat-2" );
-
    addr1.ExtractIdentifier( addr2 );
+
+   addr1 = Address( "Cat-2<3)<4)" );
+   addr2 = Address( "Cat-2" );
    addr2.ExtractIdentifier( addr1 );
+
    addr1 = Address( "Cat-<1)<2<3))" );
    addr2 = Address( "Cat-123" );
    addr1.ExtractIdentifier( addr2 );
+
    addr1 = Address( "Cat-2<3<1)<2))<4)" );
    addr2 = Address( "Cat-23" );
    addr1.ExtractIdentifier( addr2 );
