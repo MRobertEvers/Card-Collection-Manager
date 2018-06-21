@@ -476,12 +476,16 @@ Address::MergeIdentifier( const Identifier& aID )
 
             iter_leaf = setLeaves.erase( iter_leaf );
          }
+         else
+         {
+            iter_leaf++;
+         }
       }
 
       if( !bAdded )
       {
          // We won't have to remove duplicates because the set wont add it if its already added.
-         setNewSubs.insert( *iter_leaf );
+         setNewSubs.insert( sub );
       }
    }
 
@@ -644,6 +648,14 @@ AddresserTest::Test()
    addr1 = Address( "Cat-2<3<1)<2))<4)" );
    addr2 = Address( "Cat-23" );
    addr1.ExtractIdentifier( addr2 );
+
+   addr1 = Address( "Cat-2<3<1)<2))<4)" );
+   addr2 = Address( "Cat-23" );
+   addr1.MergeIdentifier( addr2 );
+
+   addr1 = Address( "Cat-<1)<2<3))" );
+   addr2 = Address( "Cat-123" );
+   addr1.MergeIdentifier( addr2 );
 
    return true;
 }
