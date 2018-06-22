@@ -44,7 +44,7 @@ CCollectionView::SetCubeRenderer()
 
    if( pFirst != nullptr )
    {
-      m_ptCardViewer->GetController()->SetModel( pFirst );
+      uiShowNewestCard( pFirst );
    }
    m_ptView->Draw( vecItems );
 }

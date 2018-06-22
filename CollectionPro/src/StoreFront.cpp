@@ -290,8 +290,9 @@ StoreFront::GetIdentifyingAttributeOptions(const string& aszCardName)
       auto vecAttrID = card->GetIdentifyingTraits();
       for( auto& trait : vecAttrID )
       {
-         vector<string> vecOptions = vector<string>( trait.second.GetAllowedValues().begin(), 
-                                                     trait.second.GetAllowedValues().end() );
+         auto setAllowed = trait.second.GetAllowedValues();
+         vector<string> vecOptions = vector<string>( setAllowed.begin(),
+                                                     setAllowed.end() );
          auto pairItem = make_pair(trait.first, vecOptions);
          mapRetVal.insert(pairItem);
       }

@@ -58,6 +58,6 @@ CollectionInterface::Refresh()
    m_vecCopies.clear();
    for( auto& szItem : lstCol )
    {
-      m_vecCopies.push_back( CardInterface( szItem ) );
+      m_vecCopies.push_back( CardInterface( szItem, this ) );
    }
 }

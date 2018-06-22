@@ -86,6 +86,6 @@ public:
                              const string& aszName,
                              const vector<Tag>& alstAttrs = vector<Tag>(),
                              const vector<Tag>& alstMetaTags = vector<Tag>(),
-                             const Identifier& aAddrCompareID = Location(),
+                             const Identifier& aAddrCompareID = Address(),
                              const unsigned int aiCount = 0 );
 };                                                                                                                                                                                                                                                                                                                                

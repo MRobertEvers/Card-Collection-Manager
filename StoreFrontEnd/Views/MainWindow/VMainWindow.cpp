@@ -5,6 +5,7 @@
 #include "../CollectionsOverview/VCollectionsOverview.h"
 #include "../ViewTemplates/IMenuEventHandler.h"
 
+
 wxBEGIN_EVENT_TABLE( VMainWindow, wxFrame )
 EVT_BUTTON(VCollectionsOverview::View_Collection, VMainWindow::OnViewCollection)
 EVT_MENU( MainFrame::Menu_Quit, VMainWindow::OnQuit)
@@ -17,16 +18,14 @@ wxEND_EVENT_TABLE()
 VMainWindow::VMainWindow( const wxString& title )
    : wxFrame( NULL, sfMAIN_WINDOW, title )
 {
-   wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
-   this->SetSizer( boxSizer );
-
+   m_mgr.SetManagedWindow( this );
    uiBuildDefaultMenus();
 }
 
 
 VMainWindow::~VMainWindow()
 {
-
+   m_mgr.UnInit();
 }
 
 void 
@@ -91,15 +90,21 @@ VMainWindow::SetView( wxPanel* aptEVTHandler )
 {
    if( m_CurrentPanel != nullptr )
    {
-      this->GetSizer()->Detach( m_CurrentPanel );
-      m_CurrentPanel->Destroy();
+      m_mgr.ClosePane( m_mgr.GetPane(m_CurrentPanel) );
+      //this->GetSizer()->Detach( m_CurrentPanel );
+      //m_CurrentPanel->Destroy();
    }
 
    m_CurrentPanel = aptEVTHandler;
-   this->GetSizer()->Add( aptEVTHandler, wxSizerFlags( 1 ).Expand() );
+   //m_mgr.AddPane( aptEVTHandler,
+   //   wxAuiPaneInfo().Resizable(false).Floatable(false).CloseButton( false ).CaptionVisible(false) );
+   m_mgr.AddPane( aptEVTHandler,
+      wxAuiPaneInfo().CenterPane());
+   m_mgr.Update();
+   //this->GetSizer()->Add( aptEVTHandler, wxSizerFlags( 1 ).Expand() );
 
-   // Causes the children to calculate sizes.
-   Layout();
+   //// Causes the children to calculate sizes.
+   //Layout();
 }
 
 void 

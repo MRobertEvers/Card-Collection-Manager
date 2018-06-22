@@ -1,11 +1,13 @@
 #include "CardInterface.h"
 #include "StoreFrontEnd.h"
+#include "CollectionInterface.h"
 #include <algorithm>
 
 using namespace std;
 
 
-CardInterface::CardInterface( const string& aszCardLine )
+CardInterface::CardInterface( const string& aszCardLine, CollectionInterface* apParent )
+   : m_pCollection(apParent)
 {
    vector<pair<string, string>> vecIDs;
    vector<pair<string, string>> vecMeta;
@@ -121,4 +123,9 @@ CardInterface::GetAttribute( const string& aszKey ) const
 {
    auto ptSF = StoreFrontEnd::Server();
    return ptSF->GetCommonAttribute( m_szName, aszKey );
+}
+
+CollectionInterface * CardInterface::GetCollection()
+{
+   return m_pCollection;
 }

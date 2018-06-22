@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
-
+class CollectionInterface;
 class CardInterface
 {
 public:
    CardInterface() {};
-   CardInterface(const std::string& aszCardLine);
+   CardInterface(const std::string& aszCardLine, CollectionInterface* apParent);
    ~CardInterface();
 
    int GetNumber() const;
@@ -21,9 +21,12 @@ public:
    std::string GetMetaTag( const std::string& aszKey, const std::string& aszUID = "" ) const;
    std::string GetAttribute( const std::string& aszKey ) const;
 
+   CollectionInterface* GetCollection();
+
 private:
    std::vector<std::string> m_vecRepresentingUIDs;
    std::string m_szName;
    unsigned int m_iCount;
+   CollectionInterface* m_pCollection;
 };
 

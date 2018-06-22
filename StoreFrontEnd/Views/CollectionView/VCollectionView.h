@@ -5,6 +5,7 @@
 #include <wx/wxprec.h>
 #include <wx/object.h> 
 #include <wx/grid.h>
+#include <wx/aui/framemanager.h>
 #include <memory>
 #include <map>
 
@@ -44,10 +45,9 @@ private:
 
    CCollectionView* m_ptController;
    GroupRenderer* m_ptRenderer;
-   wxPanel* m_ptSidePanel;
+   wxAuiManager m_mgr;
 
    void onCollectionEditorAccept( wxCommandEvent& awxEvt );
    void onItemClicked( wxGridEvent& awxEvt );
 
-   void uiPrepareSidePanel();
 };

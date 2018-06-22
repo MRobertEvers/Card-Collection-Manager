@@ -1,6 +1,8 @@
 #pragma once
 #include <wx/wxprec.h>
 
+#include <wx/aui/framemanager.h>
+
 class CMainWindow;
 
 class VMainWindow : public wxFrame
@@ -28,6 +30,7 @@ private:
    wxMenuBar* m_wxMenuBar;
    CMainWindow* m_Controller;
    wxPanel* m_CurrentPanel;
+   wxAuiManager m_mgr;
 
    void uiBuildDefaultMenus();
 };
