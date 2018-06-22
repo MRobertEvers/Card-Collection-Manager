@@ -183,7 +183,7 @@ StoreFront::GetPeekValues( const string& aszColID )
    return m_ColFactory->PeekCollection( aszColID );
 }
 
-void
+string
 StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
                           const string& aszKey, const string& aszVal )
 {
@@ -193,9 +193,29 @@ StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
       auto copy = item->FindCopy(aszUID);
       if( copy.Good() )
       {
-         copy.Value()->SetAttribute( aszKey, aszVal );
+         copy->SetAttribute( aszKey, aszVal );
+         return copy->GetUID();
       }
    }
+
+   return "";
+}
+
+string 
+StoreFront::SetMetaTag( const string & aszCardName, const string & aszUID, const string & aszKey, const string & aszVal )
+{
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         copy->SetMetaTag( aszKey, aszVal, MetaTag::DetermineMetaTagType( aszKey ) );
+         return copy->GetUID();
+      }
+   }
+
+   return "";
 }
 
 vector<pair<string, string>>
@@ -442,14 +462,16 @@ StoreFront::CollapseCardLine(const string& aszCard, bool abIncludeCount)
    return szCard;
 }
 
-void 
+vector<string> 
 StoreFront::SubmitBulkChanges( const string& aszCollection,
                                vector<string> alstChanges )
 {
    if( m_ColFactory->CollectionExists(aszCollection) )
    {
-      m_ColFactory->GetCollection(aszCollection)->LoadChanges(alstChanges);
+      return m_ColFactory->GetCollection(aszCollection)->LoadChanges(alstChanges);
    }
+
+   return vector<string>();
 }
 
 void 

@@ -396,19 +396,22 @@ StringInterface::ParseInterfaceLine( string& rszLine )
 }
 
 string
-StringInterface::CmdCreateAddition(const string& aszName, const string& aszSet)
+StringInterface::CmdCreateAddition(const string& aszName, const string& aszSet, int aiCount)
 {
    // TODO: This should not be a string literal.
    vector<Tag> pairvec = { make_pair("set", aszSet) };
    string szRetVal;
    PairListToTagStr(pairvec.begin(), pairvec.end(), szRetVal);
- 
-   szRetVal = "+ " + GetNameFromCardLine(aszName) + " " + szRetVal;
+   szRetVal = "+ " + std::to_string( aiCount ) + " " + GetNameFromCardLine( aszName ) + " " + szRetVal;
+   if( aiCount > 1 )
+   {
+      CmdAppendCount( szRetVal, aiCount );
+   }
    return szRetVal;
 }
 
 string
-StringInterface::CmdCreateRemove(const string& aszLongName, const string& aszUID)
+StringInterface::CmdCreateRemove(const string& aszLongName, const string& aszUID, int aiCount )
 {
    StringInterface szIface;
    // TODO: Factor this these cmds better.
@@ -416,27 +419,32 @@ StringInterface::CmdCreateRemove(const string& aszLongName, const string& aszUID
    string szRetVal;
    PairListToTagStr(pairvec.begin(), pairvec.end(), szRetVal);
 
-   szRetVal = "- " + GetNameFromCardLine(aszLongName) + " : " + szRetVal;
+   szRetVal +="- " + GetNameFromCardLine( aszLongName ) + " : " + szRetVal;
+   if( aiCount > 1 )
+   {
+      CmdAppendCount( szRetVal, aiCount );
+   }
+
    return szRetVal;
 }
 
 string
 StringInterface::CmdCreateReplace(const string& aszLongNameRemove, const string& aszUID,
-                                  const string& aszNameAddition, const string& aszSet)
+                                  const string& aszNameAddition, const string& aszSet, int aiCount )
 {
-   string szRetVal = CmdCreateRemove(aszLongNameRemove, aszUID);
+   string szRetVal = CmdCreateRemove(aszLongNameRemove, aszUID, aiCount );
    szRetVal[0] = '%';
    szRetVal += " -> ";
-   szRetVal += CmdCreateAddition(aszNameAddition, aszSet).substr(1);
+   szRetVal += CmdCreateAddition(aszNameAddition, aszSet, 1).substr(1);
    return szRetVal;
 }
 
 string 
 StringInterface::CmdCreateModify( const string& aszLongName, const string& aszUID,
                                   const vector<Tag>& alstAttrs,
-                                  const vector<Tag>& alstMetaTags )
+                                  const vector<Tag>& alstMetaTags, int aiCount )
 {
-   string szRetVal = CmdCreateRemove(aszLongName, aszUID);
+   string szRetVal = CmdCreateRemove(aszLongName, aszUID, aiCount );
    szRetVal[0] = '%';
    szRetVal += " -> ";
    string szTags;

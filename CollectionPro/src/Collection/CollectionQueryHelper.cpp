@@ -66,22 +66,29 @@ CollectionQueryHelper::createHashToItemMap(const Query& aiQueryParms)
          // Look for copies that match.
          cardData.Hash = copy->GetHash();
 
-         auto iter_Counted = mapCardHashes.find(cardData.Hash);
-         if( ( aiQueryParms.GetCollapsed() )       &&
-             ( iter_Counted != mapCardHashes.end() ) )
+         // If we are trying to collapse entries, check here if we have
+         // already seen a valid entry;
+         bool bAddNewEntry = true;
+         if( aiQueryParms.GetCollapsed() )
          {
-            // If we are collapsing, and there is a match, count it. Otherwise, add card data.
-            iter_Counted->second.Count++;
-            iter_Counted->second.Groups.insert(copy->GetUID());
+            auto iter_Counted = mapCardHashes.find(cardData.Hash);
+            if( iter_Counted != mapCardHashes.end() )
+            {
+               // If we are collapsing, and there is a match, count it. Otherwise, add card data.
+               iter_Counted->second.Count++;
+               iter_Counted->second.Groups.insert( copy->GetUID() );
+               bAddNewEntry = false;
+            }
          }
-         else
+         
+         if( bAddNewEntry )
          {
             // Add the card as an additional entry.
             cardData.Copy = copy;
             cardData.Groups.clear();
             cardData.Count = 1;
-            cardData.Groups.insert(copy->GetUID());
-            mapCardHashes.insert(make_pair(cardData.Hash, cardData));
+            cardData.Groups.insert( copy->GetUID() );
+            mapCardHashes.insert( make_pair( cardData.Hash, cardData ) );
          }
       }
 
@@ -180,6 +187,9 @@ CollectionQueryHelper::performQuery( const Query& aiQueryParms,
       }
       else
       {
+         // If we are looking at a collapsed list, then the meta tags are the first
+         // meta tags we encountered. Since this is based on hash, the metatags should
+         // be the same for each copy except the Tracking/Hidden Meta.
          vecMeta = cardData.Copy->GetMetaTags( aiQueryParms.GetMetaType() );
       }
 
@@ -196,12 +206,12 @@ CollectionQueryHelper::performQuery( const Query& aiQueryParms,
       }
 
       szLine = CollectionObject::ToCardLine(
-         cardData.Copy->GetAddress(),
-         cardData.Name,
-         vecIDs,
-         vecMeta,
-         *ptColDetails->GetAddress(),
-         cardData.Count
+         cardData.Copy->GetAddress(), // Parent Address
+         cardData.Name,               // Name field
+         vecIDs,                      // Attributes field
+         vecMeta,                     // Meta Field
+         *ptColDetails->GetAddress(), // Compare address
+         cardData.Count               // Count field
       );
 
       if( aiQueryParms.GetIsShort() )

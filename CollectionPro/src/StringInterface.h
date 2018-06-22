@@ -61,13 +61,13 @@ public:
 
    static InterfaceLineType ParseInterfaceLine( string& rszLine );
 
-   static string CmdCreateAddition(const string& aszName, const string& aszSet);
-   static string CmdCreateRemove(const string& aszLongName, const string& aszUID);
+   static string CmdCreateAddition(const string& aszName, const string& aszSet, int aiCount );
+   static string CmdCreateRemove(const string& aszLongName, const string& aszUID, int aiCount );
    static string CmdCreateReplace( const string& aszLongNameRemove, const string& aszUID,
-                                   const string& aszNameAddition, const string& aszSet );
+                                   const string& aszNameAddition, const string& aszSet, int aiCount );
    static string CmdCreateModify( const string& aszLongName, const string& aszUID,
                                   const vector<Tag>& alstAttrs = vector<Tag>(),
-                                  const vector<Tag>& alstMetaTags = vector<Tag>() );
+                                  const vector<Tag>& alstMetaTags = vector<Tag>(), int aiCount = 1 );
 
    static string CmdAppendCount(const string& aszCmd, int Count);
    static string GetNameFromCardLine(const string& aszLongIdentifier);

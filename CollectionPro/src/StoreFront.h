@@ -30,7 +30,8 @@ public:
    //
    void SaveCollection(const string& aszCollectionName);
    void ExportCollection( const string& aszCollectionName, Query aQuery );
-   void SubmitBulkChanges(const string& aszCollection, vector<string> alstChanges);
+   // Returns a list of all the affected UIDs. See Collection for details.
+   vector<string> SubmitBulkChanges(const string& aszCollection, vector<string> alstChanges);
    string GetCollectionName(const string& aszCollectionID);
    string GetCollectionID(const string& aszCollectionName);
    vector<string> GetAllCardsStartingWith(const string& aszColID, const Query& aszSearch);
@@ -40,7 +41,10 @@ public:
 
    // Card Accessors
    //
-   void SetAttribute(const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal);
+   // Return UID of modified copy.
+   std::string  SetAttribute(const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal);
+   std::string  SetMetaTag( const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal );
+
    vector<pair<string, string>> GetMetaTags(const string& aszCardName, const string& aszUID);
    string GetMetaTag( const string& aszCardName, const string& aszUID, const string& aszTagKey );
    string GetCommonAttribute(const string& aszCardName, const string& aszAttribute);

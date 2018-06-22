@@ -226,14 +226,16 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
          // Its an addition.
          szCmd =
             StringInterface::CmdCreateAddition( deltaItem.DisplayOne.ToStdString(),
-                                                deltaItem.SelectionOne.ToStdString());
+                                                deltaItem.SelectionOne.ToStdString(),
+                                                deltaItem.Count );
       }
       else if(deltaItem.DisplayTwo == "")
       {
          // Its a remove
          szCmd =
             StringInterface::CmdCreateRemove( deltaItem.DisplayOne.ToStdString(),
-                                              deltaItem.SelectionOne.ToStdString());
+                                              deltaItem.SelectionOne.ToStdString(),
+                                              deltaItem.Count );
       }
       else
       {
@@ -242,15 +244,18 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
             StringInterface::CmdCreateReplace( deltaItem.DisplayOne.ToStdString(),
                                                deltaItem.SelectionOne.ToStdString(),
                                                deltaItem.DisplayTwo.ToStdString(),
-                                               deltaItem.SelectionTwo.ToStdString() );
+                                               deltaItem.SelectionTwo.ToStdString(),
+                                               deltaItem.Count );
       }
-      szCmd = StringInterface::CmdAppendCount(szCmd, deltaItem.Count);
+
       vecCmds.push_back(szCmd);
    }
-
-   StoreFrontEnd::Server()->
-      SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
-   m_vListView->ClearList();
+   if( vecCmds.size() > 0 )
+   {
+      StoreFrontEnd::Server()->
+         SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
+      m_vListView->ClearList();
+   }
    m_vAddSelector->ResetOption();
    m_vRemSelector->ResetOption();
    awxEvt.Skip();

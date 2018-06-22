@@ -125,7 +125,22 @@ CardInterface::GetAttribute( const string& aszKey ) const
    return ptSF->GetCommonAttribute( m_szName, aszKey );
 }
 
-CollectionInterface * CardInterface::GetCollection()
+string 
+CardInterface::SetMetaTag( const string & aszKey, const std::string& aszVal, const string & aszUID ) const
+{
+   auto ptSF = StoreFrontEnd::Server();
+   return ptSF->SetMetaTag( m_szName, aszUID, aszKey, aszVal );
+}
+
+string 
+CardInterface::SetAttribute( const string & aszKey, const std::string& aszVal, const string & aszUID ) const
+{
+   auto ptSF = StoreFrontEnd::Server();
+   return ptSF->SetAttribute( m_szName, aszUID, aszKey, aszVal );
+}
+
+CollectionInterface* 
+CardInterface::GetCollection()
 {
    return m_pCollection;
 }

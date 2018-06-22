@@ -80,38 +80,38 @@ Collection::GetHistoryLines( unsigned int aiStart, unsigned int aiEnd )
    return io.GetHistoryTransactions(aiStart, aiEnd);
 }
 
-void
+string
 Collection::AddItem( string aszName,
                      vector<Tag> alstAttrs,
                      vector<Tag> alstMetaTags )
 {
-   addItem( aszName, alstAttrs, alstMetaTags );
+   return addItem( aszName, alstAttrs, alstMetaTags );
 }
 
-void
+string
 Collection::RemoveItem( string aszName,
                         string aszUID )
 {
-   removeItem( aszName, aszUID );
+   return removeItem( aszName, aszUID );
 }
 
-void
+Tag
 Collection::ChangeItem( string aszName,
                         string aszUID,
                         vector<Tag> alstChanges,
                         vector<Tag> alstMetaChanges )
 {
-   changeItem( aszName, aszUID, alstChanges, alstMetaChanges );
+   return changeItem( aszName, aszUID, alstChanges, alstMetaChanges );
 }
 
-void
+Tag
 Collection::ReplaceItem( string aszName,
                          string aszIdentifyingHash,
                          string aszNewName,
                          vector<Tag> alstIdChanges,
                          vector<Tag> alstMetaChanges )
 {
-   replaceItem( aszName, aszIdentifyingHash, aszNewName, alstIdChanges, alstMetaChanges );
+   return replaceItem( aszName, aszIdentifyingHash, aszNewName, alstIdChanges, alstMetaChanges );
 }
 
 void
@@ -153,13 +153,20 @@ Collection::LoadCollection( const string& aszFileName,
 }
 
 // Returns all the copies impacted by this function.
-void
+vector<string>
 Collection::LoadChanges( vector<string> lstLines )
 {
+   vector<string> vecRetVal;
    for( auto& szLine : lstLines )
    {
-      loadInterfaceLine( szLine );
+      auto vecRes= loadInterfaceLine( szLine );
+      for( auto& item : vecRes )
+      {
+         vecRetVal.push_back( item );
+      }
    }
+
+   return vecRetVal;
 }
 
 vector<string>
@@ -183,7 +190,8 @@ Collection::InvalidateState()
    m_ptrCollectionQueryHelper->InvalidateState();
 }
 
-void 
+// Returns UID of newly created item
+string 
 Collection::addItem( const string& aszName,
                      const vector<Tag>& alstAttrs,
                      const vector<Tag>& alstMetaTags )
@@ -191,33 +199,37 @@ Collection::addItem( const string& aszName,
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    if( !item.Good() )
    {
-      return;
+      return "";
    }
    
    // TODO:
-   item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags );
+   auto copy = item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags );
    InvalidateState();
+
+   return copy->GetUID();
 }
 
-bool
+string
 Collection::removeItem( const string& aszName,
                         const string& aszUID )
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    if( !item.Good() )
    {
-      return false;
+      return "";
    }
 
    bool bSuccess = item->RemoveCopy( GetIdentifier(), aszUID );
    if( bSuccess )
    {
       InvalidateState();
+      return aszUID;
    }
-   return bSuccess;
+
+   return "";
 }
 
-bool
+Tag
 Collection::changeItem( const string& aszName,
                         const string& aszUID,
                         const vector<Tag>& alstChanges,
@@ -226,15 +238,16 @@ Collection::changeItem( const string& aszName,
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    if( !item.Good() )
    {
-      return false;
+      return Tag();
    }
 
    auto cItem = item->FindCopy( aszUID );
    if( !cItem.Good() ) 
    { 
-      return false;
+      return Tag();
    }
-
+   
+   auto szBefore = cItem->GetUID();
    for( auto& attr : alstChanges )
    {
       cItem.Value()->SetAttribute( attr.first, attr.second );
@@ -244,12 +257,15 @@ Collection::changeItem( const string& aszName,
    {
       cItem.Value()->SetMetaTag( attr.first, attr.second );
    }
+   auto szAfter = cItem->GetUID();
+
+   InvalidateState();
    
-   return true;
+   return Tag(szBefore, szAfter);
 }
 
 
-bool
+Tag
 Collection::replaceItem( const string& aszName,
                          const string& aszUID,
                          const string& aszNewName,
@@ -259,46 +275,78 @@ Collection::replaceItem( const string& aszName,
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    if( !item.Good() )
    {
-      return false;
+      return Tag();
    }
 
    auto newItem = m_ptrCollectionSource->GetCardPrototype( aszNewName );
    if( !newItem.Good() )
    {
-      return false;
+      return Tag();
    }
 
-   if( removeItem( item->GetName(), aszUID ) )
+   string szBefore = "";
+   string szAfter = "";
+   if( removeItem( item->GetName(), aszUID ) != "" )
    {
-      addItem( newItem->GetName(), alstIdChanges, alstMetaChanges );
+      szBefore = aszUID;
+      szAfter = addItem( newItem->GetName(), alstIdChanges, alstMetaChanges );
       InvalidateState();
-      return true;
+
+      return Tag( szBefore, szAfter );
    }
 
-   return false;
+   return Tag();
 }
 
-void
+// Returns -> { uid } for addition
+// Returns { uid } -> for removal
+// Returns { uid } -> { uid2 } for delta (they can be the same)
+vector<string>
 Collection::loadInterfaceLine( const string& aszLine )
 {
    string szLine = aszLine;
    auto iLineType = StringInterface::ParseInterfaceLine( szLine );
 
+   vector<string> vecRetval;
    if( iLineType == StringInterface::AddLine )
    {
-      loadAdditionLine( szLine );
+      auto res = loadAdditionLine( szLine );
+      for( auto& resLine : res )
+      {
+         if( resLine != "" )
+         {
+            vecRetval.push_back( "-> {" + resLine + "}");
+         }
+      }
    }
    else if( iLineType == StringInterface::RemoveLine )
    {
-      loadRemoveLine( szLine );
+      auto res = loadRemoveLine( szLine );
+      for( auto& resLine : res )
+      {
+         if( resLine != "" )
+         {
+            vecRetval.push_back( "{" + resLine + "} ->");
+         }
+      }
    }
    else if( iLineType == StringInterface::ChangeLine )
    {
-      loadDeltaLine( szLine );
+      auto res = loadDeltaLine( szLine );
+      vector<string> vecVals;
+      for( auto& resLine : res )
+      {
+         if( resLine != Tag() )
+         {
+            vecRetval.push_back( string( "{ " + resLine.first + "} -> {" + resLine.second + "}" ) );
+         }
+      }
    }
+
+   return vecRetval;
 }
 
-void 
+vector<string>
 Collection::loadAdditionLine( const string& aszLine )
 {
    string szID = "";
@@ -320,6 +368,7 @@ Collection::loadAdditionLine( const string& aszLine )
       bThisIsParent = (0 == GetIdentifier().Compare( aParentAddress ));
    }
 
+   vector<string> vecRetval;
    // If the ID is specified, then we assume the card already exists.
    if( (!bThisIsParent) && // This is not the parent
        (szID != "") )       // and the id was specified.
@@ -335,29 +384,35 @@ Collection::loadAdditionLine( const string& aszLine )
    {
       for( size_t i = 0; i < sudoItem.Count; i++ )
       {
-         AddItem( sudoItem.Name, sudoItem.Identifiers, sudoItem.MetaTags );
+         auto evt = AddItem( sudoItem.Name, sudoItem.Identifiers, sudoItem.MetaTags );
+         vecRetval.push_back( evt );
       }
    }
+
+   return vecRetval;
 }
 
 // This needs "Card Name : { __hash="hashval" }" All other values are irrelevant.
-void 
+vector<string>
 Collection::loadRemoveLine( const string& aszLine )
 {
    CollectionObject::PseudoIdentifier sudoItem;
    CollectionObject::ParseCardLine( aszLine, sudoItem );
 
-   string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, MetaTag::GetUIDKey() );;
-   for( size_t i = 0; i < sudoItem.Count; i++ )
+   vector<string> vecRetval;
+   string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, MetaTag::GetUIDKey() );
+   if( szUID != "" )
    {
-      if( szUID != "" )
+      for( size_t i = 0; i < sudoItem.Count; i++ )
       {
-         RemoveItem( sudoItem.Name, szUID );
+         auto evt = RemoveItem( sudoItem.Name, szUID );
+         vecRetval.push_back( evt );
       }
-      else { break; }
    }
+   return vecRetval;
 }
-void 
+
+vector<Tag>
 Collection::loadDeltaLine( const string& aszLine )
 {
    vector<string> lstOldNew = StringHelper::Str_Split( aszLine, "->" );
@@ -372,7 +427,7 @@ Collection::loadDeltaLine( const string& aszLine )
    if( !oldItem.Good() )
    {
       // TODO: Log this.
-      return;
+      return vector<Tag>();
    }
    
    string szUID  = StringInterface::FindTagInList( sudoOldItem.MetaTags, MetaTag::GetUIDKey() );
@@ -380,29 +435,33 @@ Collection::loadDeltaLine( const string& aszLine )
    if( !cItem.Good() )
    {
       // TODO: Error.
-      return;
+      return vector<Tag>();
    }
-
+   vector<Tag> vecRetval;
    for( size_t i = 0; i < sudoOldItem.Count; i++ )
    {
       if( sudoOldItem.Name == sudoNewItem.Name )
       {
-         ChangeItem( sudoOldItem.Name,
-                     szUID,
-                     sudoNewItem.Identifiers,
-                     sudoNewItem.MetaTags );
+         auto evt = ChangeItem( sudoOldItem.Name,
+                            szUID,
+                            sudoNewItem.Identifiers,
+                            sudoNewItem.MetaTags );
+         vecRetval.push_back( evt );
       }
       else
       {
          auto newItem = m_ptrCollectionSource->GetCardPrototype( sudoNewItem.Name );
          if( newItem.Good() )
          {
-            ReplaceItem( sudoOldItem.Name,
-                           szUID,
-                           sudoNewItem.Name,
-                           sudoNewItem.Identifiers,
-                           sudoNewItem.MetaTags );
+            auto evt = ReplaceItem( sudoOldItem.Name,
+                                szUID,
+                                sudoNewItem.Name,
+                                sudoNewItem.Identifiers,
+                                sudoNewItem.MetaTags );
+            vecRetval.push_back( evt );
          }
       }
    }
+
+   return vecRetval;
 }

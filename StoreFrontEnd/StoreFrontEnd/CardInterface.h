@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 class CollectionInterface;
+
+// This should only ever represent cards of the same hash!
+// GetMetaTag offers a UID field if you want to see Tracking/Hidden Uids.
 class CardInterface
 {
 public:
@@ -20,6 +23,10 @@ public:
    std::string GetSet() const;
    std::string GetMetaTag( const std::string& aszKey, const std::string& aszUID = "" ) const;
    std::string GetAttribute( const std::string& aszKey ) const;
+
+   // These modify the collection interface to add a new CardInterface to represent it.
+   std::string SetMetaTag( const std::string& aszKey, const std::string& aszVal, const std::string& aszUID = "" ) const;
+   std::string SetAttribute( const std::string& aszKey, const std::string& aszVal, const std::string& aszUID = "" ) const;
 
    CollectionInterface* GetCollection();
 

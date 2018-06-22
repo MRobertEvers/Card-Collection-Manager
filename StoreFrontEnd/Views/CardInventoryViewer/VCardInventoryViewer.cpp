@@ -3,6 +3,7 @@
 #include "../StoreFrontEnd/CardInterface.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
 #include "../StoreFrontEnd/CollectionInterface.h"
+#include <algorithm>
 
 
 VCardInventoryViewer::VCardInventoryViewer( wxWindow* aptParent, wxWindowID aiWID )
@@ -36,17 +37,33 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
       {
          m_mgr.ClosePane( m_mgr.GetPane( existPane ) );
       }
+
+      m_vecItems.clear();
    }
 
    auto szName = apInterface->GetName();
+
+   auto ptSF = StoreFrontEnd::Server();
+   Query query;
+   query.UIDs();
+   query.SearchFor( szName );
+
+   auto vecItems = ptSF->GetAllCardsStartingWith( apInterface->GetCollection()->GetColId(), query );
+   int layer = 0;
+   for( auto& item : vecItems )
+   {
+      // We don't need permanent copies
+      CardInterface tmpIFace = CardInterface( item, apInterface->GetCollection() );
+
+      VCardInventoryViewer::SetDisplay* newDisp = new VCardInventoryViewer::SetDisplay( this, wxID_ANY, &tmpIFace );
+      m_vecItems.push_back( newDisp );
+
+      m_mgr.AddPane( newDisp, GetPlainPane().Top().Layer(layer++).BestSize( newDisp->GetBestSize() ) );
+   }
+
    m_pTitle = new wxTextCtrl( this, wxID_ANY, szName, wxDefaultPosition, wxDefaultSize, wxTE_CENTER );
    m_pTitle->SetEditable( false );
-   m_mgr.AddPane( m_pTitle, GetPlainPane().Top().Layer( 1 ).BestSize(wxSize(300,-1 )) );
-
-   VCardInventoryViewer::SetDisplay* newDisp = new VCardInventoryViewer::SetDisplay( this, wxID_ANY, apInterface );
-   m_vecItems.push_back( newDisp );
-
-   m_mgr.AddPane( newDisp, GetPlainPane().Top().BestSize( newDisp->GetBestSize() ) );
+   m_mgr.AddPane( m_pTitle, GetPlainPane().Top().Layer( layer ).BestSize( wxSize( 300, -1 ) ) );
 
    m_mgr.Update();
 
@@ -87,7 +104,15 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
             cmbBox->Append( opt );
          }
 
-         cmbBox->Select( 0 );
+         auto iter_findPick = std::find( iter_set->second.begin(), iter_set->second.end(), szSet );
+         if( iter_findPick != iter_set->second.end() )
+         {
+            cmbBox->Select( std::distance(iter_set->second.begin(), iter_findPick ));
+         }
+         else
+         {
+            cmbBox->Select( 0 );
+         }
          m_mgr.AddPane( cmbBox, auiMidSettings.BestSize( wxSize( 75, cmbBox->GetBestHeight( 75 ) )) );
       }
       else
