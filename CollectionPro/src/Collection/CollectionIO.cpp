@@ -752,6 +752,7 @@ CollectionIO::saveMeta()
 
    ofstream oMetaFile;
    Query listQuery( true );
+   listQuery.TrackingMeta();
    vector<string> lstMetaLines = m_ptCollection->QueryCollection( listQuery );
 
    oMetaFile.open( GetMetaFile( ptCollectionDetails->GetFileName() ) );

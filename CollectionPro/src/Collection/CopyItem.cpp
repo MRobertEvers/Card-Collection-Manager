@@ -73,7 +73,7 @@ CopyItem::GetHash() const
          
       // Calculate the hash.
       string szHash = Config::Instance()->GetHash(szHashString);
-      self->SetMetaTag(MetaTag::GetHashKey(), szHash, MetaTag::Tracking );
+      self->SetMetaTag(MetaTag::GetHashKey(), szHash, MetaTag::Hidden );
    }
 
    return GetMetaTag( MetaTag::GetHashKey(), MetaTag::Tracking );
