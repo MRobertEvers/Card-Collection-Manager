@@ -99,10 +99,6 @@ public:
    std::string GetLeafString() const override;
    std::set<SubAddress_t> GetLeaves() const override;
 
-   bool AddLeaf( SubAddress_t aiSub);
-   int RemoveLeaf( SubAddress_t aiSub);
-
-   int SetSubAddress( SubAddress_t aiAlreadySub, SubAddress_t aiSub);
    bool MergeIdentifier(const Identifier& aID);
    bool ExtractIdentifier(const Identifier& aID);
 private:

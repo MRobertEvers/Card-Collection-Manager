@@ -91,4 +91,5 @@ VCollectionView::onItemClicked( wxGridEvent& awxEvt )
    {
       m_ptController->ViewItem( pItem );
    }
+   awxEvt.Skip();
 }

@@ -365,11 +365,12 @@ ColoredGroupColumnRenderer::onResize( wxSizeEvent& awxEvt )
 void 
 ColoredGroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
 {
-   auto arrCells = this->GetSelectedCells();
-   for( size_t i = 0; i < GetNumberRows(); i++ )
-   {
-      this->DeselectCell( i, 0 );
-   }
+   //auto arrCells = this->GetSelectedCells();
+   //for( size_t i = 0; i < GetNumberRows(); i++ )
+   //{
+   //   this->DeselectCell( i, 0 );
+   //}
+   awxEvt.Skip();
 }
 
 DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSource, wxString aszGroupName, Group aGroup,

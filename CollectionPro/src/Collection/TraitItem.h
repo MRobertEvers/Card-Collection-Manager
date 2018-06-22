@@ -20,7 +20,7 @@ public:
 
    bool IsAllowedValue(std::string aszTestVal) const;
 
-   CardInstanceField GetInstanceField( const std::string aszValue ) const;
+   CardInstanceField GetInstanceField( const std::string aszValue = "" ) const;
 
 private:
    std::set<std::string> m_setLinkedFields;

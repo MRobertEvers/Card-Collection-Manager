@@ -119,7 +119,7 @@ CollectionSource::GetCardPrototype( string aszCardName )
 {
    int iCacheIndex = LoadCard( aszCardName );
    TryGet<CollectionObject> ColRetVal;
-   if( iCacheIndex < m_vecCardCache.size() && iCacheIndex > 0)
+   if( iCacheIndex < m_vecCardCache.size() && iCacheIndex >= 0)
    {
       ColRetVal.Set( m_vecCardCache.at( iCacheIndex ) );
    }

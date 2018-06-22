@@ -17,6 +17,11 @@ CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, CollectionObject* a
    // If one is set later, it will just overwrite this...
    Config* config = Config::Instance();
    SetUID(config->GetHexID( Addresser::GetRandom() ));
+
+   for( auto& item : m_pBase->GetIdentifyingTraits() )
+   {
+      m_mapIdentifyingTraits.insert( std::make_pair( item.first, item.second.GetInstanceField() ) );
+   }
    
    itemChanged(); // called by setParent.
 

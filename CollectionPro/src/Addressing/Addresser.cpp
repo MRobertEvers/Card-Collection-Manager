@@ -429,31 +429,6 @@ Address::GetLeaves() const
 }
 
 bool 
-Address::AddLeaf( SubAddress_t aiSub )
-{
-   return false;
-}
-
-int 
-Address::RemoveLeaf( SubAddress_t aiSub )
-{
-   return 0;
-}
-
-// Inputting aiSub = 1 will remove that item.
-// Returns
-// 0 := Item doesn't exist
-// 1 := Perfect Replace
-// 2 := Replaced another and removed old.
-// 3 := Another already specifies, removed old.
-// 4 := Error
-int 
-Address::SetSubAddress(SubAddress_t aiAlreadySub, SubAddress_t aiSub)
-{
-   return 1;
-}
-
-bool 
 Address::MergeIdentifier( const Identifier& aID )
 {
    if( GetMain() != aID.GetMain() )
