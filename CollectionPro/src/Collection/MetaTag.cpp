@@ -32,9 +32,10 @@ MetaTag::GetVal(const MetaTag::Type& atagType) const
 }
 
 void 
-MetaTag::SetVal(std::string aszVal)
+MetaTag::SetVal( const std::string& aszVal, const Type& atagType )
 {
    m_Tag.second = aszVal;
+   m_Type = atagType;
 }
 
 bool 

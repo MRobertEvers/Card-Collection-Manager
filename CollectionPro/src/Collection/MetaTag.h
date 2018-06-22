@@ -23,7 +23,7 @@ public:
 
    std::string GetKey() const;
    std::string GetVal( const Type& atagType = Any) const;
-   void SetVal(std::string aszVal);
+   void SetVal(const std::string& aszVal, const Type& atagType = Public );
 
    bool CanView(const Type& atagType) const;
 

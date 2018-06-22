@@ -611,7 +611,7 @@ CollectionIO::bindMetaTagLine( const std::string& aszLine )
    {
       auto szPlainHash = item->GenerateHash( Location( m_ptLoadToken->CollectionAddress ),
                                              sudoItem.Identifiers,
-                                             vecMetaTags );
+                                             vector<Tag>() );
       for( size_t i = 0; i < sudoItem.Count; i++ )
       {
          // Look for a copy with a matchin hash

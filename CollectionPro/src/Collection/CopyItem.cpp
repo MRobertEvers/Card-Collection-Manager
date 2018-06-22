@@ -74,9 +74,10 @@ CopyItem::GetHash() const
       // Calculate the hash.
       string szHash = Config::Instance()->GetHash(szHashString);
       self->SetMetaTag(MetaTag::GetHashKey(), szHash, MetaTag::Hidden );
+      self->m_bNeedHash = false;
    }
 
-   return GetMetaTag( MetaTag::GetHashKey(), MetaTag::Tracking );
+   return GetMetaTag( MetaTag::GetHashKey(), MetaTag::Hidden );
 }
 
 string 
@@ -144,7 +145,7 @@ CopyItem::SetMetaTag( const string& aszKey,
    }
    else
    {
-      iter_tag->second.SetVal( aszVal );
+      iter_tag->second.SetVal( aszVal, atagType );
    }
 
    if( MetaTag::DetermineMetaTagType( aszKey ) == MetaTag::Public )

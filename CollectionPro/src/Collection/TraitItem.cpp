@@ -62,6 +62,7 @@ CardVariantField::IsAllowedValue(string aszTestVal) const
    return iter_find != m_setPossibleValues.end();
 }
 
+// DO NOT CALL THIS FUNCTION ON A VARIANT FIELD THAT IS A COPY!
 CardInstanceField 
 CardVariantField::GetInstanceField( const std::string aszValue ) const
 {

@@ -77,7 +77,7 @@ private:
    // Copy Item Interface
    //
 public:
-   map<string, CardVariantField> GetIdentifyingTraits();
+   const map<string, CardVariantField>& GetIdentifyingTraits() const;
 
 public:
    static bool ParseCardLine(const string& aszLine, PseudoIdentifier& rPIdentifier);

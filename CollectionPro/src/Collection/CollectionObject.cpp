@@ -187,8 +187,8 @@ CollectionObject::ledgerCopy( shared_ptr<CopyItem> aptCopy )
    aptCopy->SetAddressBook( ptLedger );
 }
 
-std::map<string, CardVariantField>
-CollectionObject::GetIdentifyingTraits()
+const std::map<string, CardVariantField>& 
+CollectionObject::GetIdentifyingTraits() const
 {
    return m_lstIdentifyingTraits;
 }
