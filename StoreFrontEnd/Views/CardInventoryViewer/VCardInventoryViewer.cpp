@@ -5,6 +5,13 @@
 #include "../StoreFrontEnd/CollectionInterface.h"
 #include <algorithm>
 
+wxBEGIN_EVENT_TABLE( VCardInventoryViewer, wxPanel )
+//EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
+//EVT_BUTTON( viCardEditor::Image_Changed, vCollectionCube::onNewItemSelectView )
+EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_OPEN_EDITOR, VCardInventoryViewer::onOpenEditor )
+EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_RESET_COPY, VCardInventoryViewer::onReset )
+EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_SAVE_COPY, VCardInventoryViewer::onSave )
+wxEND_EVENT_TABLE()
 
 VCardInventoryViewer::VCardInventoryViewer( wxWindow* aptParent, wxWindowID aiWID )
    : wxPanel( aptParent, aiWID )
@@ -69,11 +76,31 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
 
 }
 
-wxAuiPaneInfo 
+void
+VCardInventoryViewer::onSave( wxCommandEvent & awxEvt )
+{
+
+}
+
+void 
+VCardInventoryViewer::onReset( wxCommandEvent & awxEvt )
+{
+}
+
+void 
+VCardInventoryViewer::onOpenEditor( wxCommandEvent & awxEvt )
+{
+}
+
+wxAuiPaneInfo
 VCardInventoryViewer::GetPlainPane()
 {
    return wxAuiPaneInfo().CaptionVisible( false ).CloseButton( false ).Floatable( false ).Fixed();
 }
+
+wxBEGIN_EVENT_TABLE( VCardInventoryViewer::SetDisplay, wxPanel )
+EVT_COMBOBOX( VCardInventoryViewer::INV_VIEWER_PREVIEWED_COPY, VCardInventoryViewer::SetDisplay::onPreview )
+wxEND_EVENT_TABLE()
 
 VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID aiWID, CardInterface* apInterface )
    : wxPanel(aptParent, aiWID)
@@ -84,6 +111,7 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
 
    auto iCount = apInterface->GetNumber();
    auto szSet = apInterface->GetSet();
+   m_szDefault = szSet;
 
    wxTextCtrl* txtCount = new wxTextCtrl( this, wxID_ANY, "x" + std::to_string(iCount), wxDefaultPosition,
                                           wxDefaultSize, wxTE_CENTER | wxTE_READONLY );
@@ -97,11 +125,13 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
    {
       if( iter_set->second.size() > 1 )
       {
-         wxComboBox* cmbBox = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                                              wxDefaultSize, 0, NULL, wxCB_DROPDOWN | wxTE_READONLY );
+         wxComboBox* cmbBox = new wxComboBox( this, Buttons::INV_VIEWER_PREVIEWED_COPY, wxEmptyString, wxDefaultPosition,
+                                              wxDefaultSize, 0, NULL, wxCB_DROPDOWN | wxCB_READONLY );
+         m_pCombo = cmbBox;
          for( auto& opt : iter_set->second )
          {
             cmbBox->Append( opt );
+            m_vecOpts.push_back( opt );
          }
 
          auto iter_findPick = std::find( iter_set->second.begin(), iter_set->second.end(), szSet );
@@ -123,18 +153,16 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
       }
    }
 
-
    // Eye button
-   wxButton* viewButton = new wxButton( this, wxID_ANY, "View" );
+   wxButton* viewButton = new wxButton( this, Buttons::INV_VIEWER_OPEN_EDITOR, "..." );
    m_mgr.AddPane( viewButton, GetPlainPane().Center().Layer(2).BestSize( wxSize( -1, txtCount->GetBestHeight( 50 ) ) ) );
 
    // Save
-
    // Reset
    wxPanel* tpanel = new wxPanel( this, wxID_ANY );
    tpanel->SetSizer( new wxGridSizer( 2, 0, 0 ) );
-   tpanel->GetSizer()->Add( new wxButton( tpanel, wxID_ANY, "Save" ), wxSizerFlags(1).Left().Expand() );
-   tpanel->GetSizer()->Add( new wxButton( tpanel, wxID_ANY, "Reset" ), wxSizerFlags( 1 ).Right().Expand() );
+   tpanel->GetSizer()->Add( new wxButton( tpanel, Buttons::INV_VIEWER_SAVE_COPY, "Save" ), wxSizerFlags(1).Left().Expand() );
+   tpanel->GetSizer()->Add( new wxButton( tpanel, Buttons::INV_VIEWER_RESET_COPY, "Reset" ), wxSizerFlags( 1 ).Right().Expand() );
    m_mgr.AddPane( tpanel, GetPlainPane().Bottom().BestSize( wxSize(300, txtCount->GetBestHeight( 50 ) ) ) );
 
    m_mgr.Update();
@@ -143,4 +171,58 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
 VCardInventoryViewer::SetDisplay::~SetDisplay()
 {
    m_mgr.UnInit();
+}
+
+void 
+VCardInventoryViewer::SetDisplay::onPreview( wxCommandEvent& awxEvt )
+{
+   auto newVal = awxEvt.GetString();
+   if( newVal.size() == 0 )
+   {
+      return;
+   }
+   else if( newVal[0] == '*' )
+   {
+      newVal = newVal.substr( 1 );
+   }
+
+   if( m_pCombo != nullptr )
+   {
+      for( int i = 0; i < m_vecOpts.size(); i++ )
+      {
+         m_pCombo->Delete( 0 );
+      }
+
+      int iTarg = 0;
+      if( newVal != m_szDefault )
+      {
+         for( int i = 0; i < m_vecOpts.size(); i++ )
+         {
+            auto& opt = m_vecOpts[i];
+            if( opt == newVal )
+            {
+               iTarg = i;
+               m_pCombo->Append( "*" + newVal );
+            }
+            else
+            {
+               m_pCombo->Append( opt );
+            }
+         }
+         m_pCombo->Select( iTarg );
+      }
+      else
+      {
+         for( int i = 0; i < m_vecOpts.size(); i++ )
+         {
+            auto& opt = m_vecOpts[i];
+            if( opt == newVal )
+            {
+               iTarg = i;
+            }
+            m_pCombo->Append( opt );
+         }
+         m_pCombo->Select( iTarg );
+      }
+   }
 }

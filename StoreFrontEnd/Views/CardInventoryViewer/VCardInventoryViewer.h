@@ -11,13 +11,26 @@ class CCardInventoryViewer;
 class VCardInventoryViewer : public wxPanel
 {
 public:
+   enum Buttons
+   {
+      INV_VIEWER_SAVE_COPY = 0,
+      INV_VIEWER_PREVIEWED_COPY = 1,
+      INV_VIEWER_RESET_COPY = 2,
+      INV_VIEWER_OPEN_EDITOR = 3
+   };
+   
    class SetDisplay : public wxPanel
    {
    public:
       SetDisplay( wxWindow* aptParent, wxWindowID aiWID, CardInterface* apInterface );
       ~SetDisplay( );
-
+      void onPreview( wxCommandEvent& awxEvt ); // Combobox event
    private:
+      wxDECLARE_EVENT_TABLE();
+
+      std::string m_szDefault;
+      std::vector<std::string> m_vecOpts;
+      wxComboBox* m_pCombo;
       wxAuiManager m_mgr;
    };
 public:
@@ -29,11 +42,21 @@ public:
    void ViewCard( CardInterface* apInterface );
 
 private:
+   wxDECLARE_EVENT_TABLE();
+
    CCardInventoryViewer* m_pController;
    wxAuiManager m_mgr;
 
    wxTextCtrl* m_pTitle;
    std::vector<SetDisplay*> m_vecItems;
+   //INV_VIEWER_SAVE_COPY = 0,
+   //   INV_VIEWER_PREVIEWED_COPY = 1,
+   //   INV_VIEWER_RESET_COPY = 2,
+   //   INV_VIEWER_SAVE_COPY = 3,
+   //   INV_VIEWER_OPEN_EDITOR = 4
+   void onSave( wxCommandEvent& awxEvt );
+   void onReset( wxCommandEvent& awxEvt );
+   void onOpenEditor( wxCommandEvent& awxEvt ); //
 
    // TODO: Put this somewhere esle
 public:
