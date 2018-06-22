@@ -68,7 +68,8 @@ CardVariantField::GetInstanceField( const std::string aszValue ) const
    return CardInstanceField(this, aszValue);
 }
 
-CardInstanceField::CardInstanceField( CardVariantField const* m_pBase, const std::string& aszValue )
+CardInstanceField::CardInstanceField( CardVariantField const* apBase, const std::string& aszValue )
+   : m_pBase( apBase )
 {
    SetValue( aszValue );
 }

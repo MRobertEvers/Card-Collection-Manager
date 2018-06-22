@@ -504,7 +504,7 @@ CollectionIO::loadOverheadPropertyLine(const std::string& aszLine)
 
       // TODO: This might be weird. Maybe 'details' should be allowed to interact with
       // multiple systems.
-      if( m_ptCollection->m_ptrCollectionLedger->GetLocation().Compare( *ptDetails->GetAddress()) == 0 )
+      if( m_ptCollection->m_ptrCollectionLedger->GetLocation().Compare( *ptDetails->GetAddress()) == -2 )
       {
          delete m_ptCollection->m_ptrCollectionLedger;
          m_ptCollection->m_ptrCollectionLedger = new CollectionLedger( *ptDetails->GetAddress() );
@@ -854,7 +854,7 @@ CollectionIO::exportCollection( Query aQuery )
    vector<string> lstLines = m_ptCollection->QueryCollection( aQuery );
 
    ofstream oColFile;
-   oColFile.open( ptCollectionDetails->GetFileDirectory() + ptCollectionDetails->GetName() + ".export.txt" );
+   oColFile.open( ptCollectionDetails->GetFileDirectory() + ptCollectionDetails->GetName() + ".txt" );
 
    oColFile << "\"" << ptCollectionDetails->GetName() << "\"" << endl;
 

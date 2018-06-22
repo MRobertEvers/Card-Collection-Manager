@@ -44,5 +44,5 @@ public:
 
 private:
    std::string m_szValue;
-   CardVariantField* m_pBase;
+   CardVariantField const* m_pBase;
 };
