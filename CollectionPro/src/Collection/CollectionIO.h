@@ -99,7 +99,7 @@ private:
    void saveOverhead();
    void saveRequiredPeekValues( ofstream& aFile );
    void saveCollection();
-   void exportCollection(Query aQuery);
+   void exportCollection(Query aQuery, const std::string& aszExt );
 
 public:
    static bool CollectionFileExists( std::string aszFileName );

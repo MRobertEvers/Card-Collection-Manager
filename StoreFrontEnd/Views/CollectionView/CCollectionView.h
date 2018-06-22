@@ -28,6 +28,7 @@ public:
 private:
    
    void uiShowCardViewer();
+   void uiShowNewestCard( CardInterface* apItem );
 
    std::shared_ptr<CardView> m_ptCardViewer;
    std::shared_ptr<CardInventoryViewer> m_ptInventoryEditor;

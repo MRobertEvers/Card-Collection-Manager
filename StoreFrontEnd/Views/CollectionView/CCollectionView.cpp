@@ -54,6 +54,9 @@ CCollectionView::ViewItem( CardInterface* apItem )
 {
    auto pCardViewer = m_ptCardViewer->GetController();
    pCardViewer->SetModel( apItem );
+
+   auto pCardInv = m_ptInventoryEditor->GetController();
+   pCardInv->SetModel( apItem );
 }
 
 void 
@@ -115,7 +118,7 @@ CCollectionView::OnCollectionEdited()
    }
 
    m_ptView->Draw( vecItems );
-   m_ptCardViewer->GetController()->SetModel( pFirst );
+   uiShowNewestCard( pFirst );
 }
 
 void 
@@ -132,4 +135,10 @@ CCollectionView::uiShowCardViewer()
       m_ptInventoryEditor = std::shared_ptr<CardInventoryViewer>( new CardInventoryViewer() );
       m_ptView->ShowCardInventoryViewer( m_ptInventoryEditor.get() );
    }
+}
+
+void CCollectionView::uiShowNewestCard( CardInterface * apItem )
+{
+   m_ptCardViewer->GetController()->SetModel( apItem );
+   m_ptInventoryEditor->GetController()->SetModel( apItem );
 }

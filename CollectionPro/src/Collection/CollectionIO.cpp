@@ -60,7 +60,7 @@ CollectionIO::SaveCollection()
 void 
 CollectionIO::ExportCollection( Query aQuery )
 {
-   exportCollection( aQuery );
+   exportCollection( aQuery, ".export" );
 }
 
 map<unsigned long, vector<string>> 
@@ -844,18 +844,18 @@ CollectionIO::saveCollection()
    listQuery.IncludeMetaType( MetaTag::None );
    // listQuery.HashType( CopyItem::HashType::Ids );
    
-   exportCollection( listQuery );
+   exportCollection( listQuery, "" );
 }
 
 void 
-CollectionIO::exportCollection( Query aQuery )
+CollectionIO::exportCollection( Query aQuery, const std::string& aszExt )
 {
    auto ptCollectionDetails = m_ptCollection->m_ptrCollectionDetails;
 
    vector<string> lstLines = m_ptCollection->QueryCollection( aQuery );
 
    ofstream oColFile;
-   oColFile.open( ptCollectionDetails->GetFileDirectory() + ptCollectionDetails->GetName() + ".txt" );
+   oColFile.open( ptCollectionDetails->GetFileDirectory() + ptCollectionDetails->GetName() + aszExt + ".txt" );
 
    oColFile << "\"" << ptCollectionDetails->GetName() << "\"" << endl;
 

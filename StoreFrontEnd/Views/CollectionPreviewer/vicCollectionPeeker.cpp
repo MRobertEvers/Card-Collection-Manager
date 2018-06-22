@@ -30,9 +30,11 @@ vicCollectionPeeker::SetPeek( const wxString& aszColName,
       m_Viewer = new ImageViewer( this, 1 );
       this->GetSizer()->Add( m_Viewer, wxSizerFlags( 1 ).Expand() );
    }
-   auto szSetImage = ptSF->GetDefaultIdentifyingAttributeValue( aszIconName.ToStdString(), "set" );
-   auto szMUDImage = ptSF->GetDefaultIdentifyingAttributeValue( aszIconName.ToStdString(), "multiverseid" );
-   //m_Viewer->DisplayImage(aszIconName, szMUDImage, szSetImage);
+   auto szSet = ptSF->GetDefaultIdentifyingAttributeValue( aszIconName.ToStdString(), "set" );
+
+   auto ptse = StoreFrontEnd::Server();
+   auto szPath = ptse->GetImageFilePath( aszIconName.ToStdString(), szSet );
+   m_Viewer->DisplayImage( szPath );
 
    setPeek( aszColName, amapPeekVals );
 }

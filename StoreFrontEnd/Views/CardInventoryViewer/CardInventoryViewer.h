@@ -1,10 +1,13 @@
 #pragma once
+
+#include "CCardInventoryViewer.h"
 #include "../ViewTemplates/IViewFactory.h"
 #include <wx/wxprec.h>
 
 class CCardInventoryViewer;
 class VCardInventoryViewer;
 
+// TODO: This control currently does nothing.
 class CardInventoryViewer : public IViewFactory
 {
 public:
