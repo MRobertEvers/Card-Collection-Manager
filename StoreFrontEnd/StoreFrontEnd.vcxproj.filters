@@ -81,6 +81,9 @@
     <Filter Include="Views\CollectionView\Menus">
       <UniqueIdentifier>{0e16539d-c9ba-4387-838c-4a58d1bad37b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\Interfaces\CardInventoryViewer">
+      <UniqueIdentifier>{880075fa-debe-465e-975e-6194f20d53c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Views\MainWindow\CMainWindow.cpp">
@@ -229,6 +232,15 @@
     </ClCompile>
     <ClCompile Include="Views\CollectionView\CollectionViewMenu.cpp">
       <Filter>Views\CollectionView\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardInventoryViewer\CardInventoryViewer.cpp">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardInventoryViewer\CCardInventoryViewer.cpp">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardInventoryViewer\VCardInventoryViewer.cpp">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -456,6 +468,18 @@
     </ClInclude>
     <ClInclude Include="Views\CollectionView\CollectionViewMenu.h">
       <Filter>Views\CollectionView\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardInventoryViewer\CardInventoryViewer.h">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardInventoryViewer\CCardInventoryViewer.h">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardInventoryViewer\VCardInventoryViewer.h">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\ViewTemplates\IViewFactory.h">
+      <Filter>Views\Template</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

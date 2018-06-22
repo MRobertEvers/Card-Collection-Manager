@@ -6,6 +6,7 @@
 #include "../Views/CollectionEditor/viCollectionEditor.h"
 #include "../Views/CollectionHistory/viHistoryViewer.h"
 #include "../Views/CollectionStats/vStatsViewer.h"
+#include "../Views/CardInventoryViewer/CardInventoryViewer.h"
 
 CCollectionView::CCollectionView( VCollectionView* aptView,
                                   std::shared_ptr<CollectionInterface> aptModel )
@@ -120,9 +121,15 @@ CCollectionView::OnCollectionEdited()
 void 
 CCollectionView::uiShowCardViewer()
 {
+   // Need to think of a better way to do submodules
    if( m_ptCardViewer == nullptr )
    {
-      m_ptCardViewer = std::shared_ptr<CardView>( new CardView( m_ptView ) );
-      m_ptView->ShowCardViewer( m_ptCardViewer->GetView() );
+      m_ptCardViewer = std::shared_ptr<CardView>( new CardView(  ) );
+      m_ptView->ShowCardViewer( m_ptCardViewer.get() );
+   }
+   if( m_ptInventoryEditor == nullptr )
+   {
+      m_ptInventoryEditor = std::shared_ptr<CardInventoryViewer>( new CardInventoryViewer() );
+      m_ptView->ShowCardInventoryViewer( m_ptInventoryEditor.get() );
    }
 }

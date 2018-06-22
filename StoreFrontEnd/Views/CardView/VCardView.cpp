@@ -20,7 +20,7 @@ VCardView::VCardView( wxWindow* aptParent, wxWindowID aiWID )
 
 VCardView::~VCardView()
 {
-
+   delete m_pController;
 }
 
 void 

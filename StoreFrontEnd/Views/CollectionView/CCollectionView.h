@@ -4,6 +4,7 @@
 #include <memory>
 
 class CardView;
+class CardInventoryViewer;
 class IMenuEventSource;
 class VCollectionView;
 
@@ -29,6 +30,7 @@ private:
    void uiShowCardViewer();
 
    std::shared_ptr<CardView> m_ptCardViewer;
+   std::shared_ptr<CardInventoryViewer> m_ptInventoryEditor;
 
    VCollectionView* m_ptView;
    std::shared_ptr<CollectionInterface> m_ptModel;

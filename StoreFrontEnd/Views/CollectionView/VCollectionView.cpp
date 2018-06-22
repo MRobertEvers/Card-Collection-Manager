@@ -24,7 +24,7 @@ VCollectionView::VCollectionView( wxFrame* aParent, wxWindowID aiWID )
 
    auto pTargetFrame = this->GetParent();
    if( pTargetFrame->GetSize().GetWidth() < pTargetFrame->GetMinSize().GetWidth() ||
-      pTargetFrame->GetSize().GetHeight() < pTargetFrame->GetMinSize().GetHeight() )
+       pTargetFrame->GetSize().GetHeight() < pTargetFrame->GetMinSize().GetHeight() )
    {
       pTargetFrame->SetSize( pTargetFrame->GetMinSize() );
    }
@@ -55,6 +55,9 @@ VCollectionView::SetRenderer( GroupRenderer* aptRenderer )
    if( panel != nullptr )
    {
       GetSizer()->Add( panel, wxSizerFlags( 1 ).Expand() );
+
+      uiPrepareSidePanel();
+
       this->Layout();
    }
 }
@@ -69,9 +72,16 @@ VCollectionView::Draw( std::vector<CardInterface*> avecItemData )
 }
 
 void 
-VCollectionView::ShowCardViewer( wxPanel* aptViewer )
+VCollectionView::ShowCardViewer( IViewFactory* aptViewer )
 {
-   GetSizer()->Add( aptViewer, wxSizerFlags( 1 ).Expand() );
+   m_ptSidePanel->GetSizer()->Add( aptViewer->GetView( m_ptSidePanel ), wxSizerFlags( 0 ).Align(wxTOP | wxCenter) );
+   this->Layout();
+}
+
+void 
+VCollectionView::ShowCardInventoryViewer( IViewFactory* aptViewer )
+{
+   m_ptSidePanel->GetSizer()->Add( aptViewer->GetView(m_ptSidePanel), wxSizerFlags( 1 ).Expand() );
    this->Layout();
 }
 
@@ -92,4 +102,15 @@ VCollectionView::onItemClicked( wxGridEvent& awxEvt )
       m_ptController->ViewItem( pItem );
    }
    awxEvt.Skip();
+}
+
+void 
+VCollectionView::uiPrepareSidePanel()
+{
+   m_ptSidePanel = new wxPanel( this, wxID_ANY );
+   wxFlexGridSizer* sideSizer = new wxFlexGridSizer( 2, 1, 0, 0 );
+   sideSizer->AddGrowableCol( 0 );
+   sideSizer->AddGrowableRow( 1 );
+   m_ptSidePanel->SetSizer( sideSizer );
+   this->GetSizer()->Add( m_ptSidePanel, wxSizerFlags( 1 ).Border( wxALL, 3 ).Expand() );
 }
