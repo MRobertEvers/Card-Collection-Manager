@@ -22,6 +22,10 @@ CollectionQueryHelper::QueryCollection(Query aiQueryParms)
       // Fast Search
       return queryMemoList( aiQueryParms );
    }
+   else if( aiQueryParms.GetSearch() != "" )
+   {
+
+   }
    else
    {
       // Full Search
@@ -107,6 +111,13 @@ CollectionQueryHelper::memoizeHashToCollapsedItemMap()
    Query qAllItems(true);
    auto multiMap = createHashToItemMap( qAllItems );
    m_mapFastSearchCache.insert( multiMap.begin(), multiMap.end() );
+}
+
+// TODO:
+vector<string> 
+CollectionQueryHelper::queryByNameList( const Query & aiQueryParms )
+{
+   return vector<string>();
 }
 
 vector<string> 

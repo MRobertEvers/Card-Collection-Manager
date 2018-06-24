@@ -9,6 +9,10 @@ public:
 
    void SetModel( CardInterface* apModel );
 
+   void OnSave( CardInterface* apModel, const wxString& aszNewVal );
+   void OnReset( CardInterface* apModel );
+   void OnOpenEditor( CardInterface* apModel ); //
+
 private:
    VCardInventoryViewer * m_pView;
    CardInterface* m_pModel;

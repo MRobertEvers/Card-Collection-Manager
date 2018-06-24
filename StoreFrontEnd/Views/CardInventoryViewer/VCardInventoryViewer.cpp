@@ -1,9 +1,10 @@
 #include "VCardInventoryViewer.h"
-#include "wx/richtext/richtextctrl.h"
+#include "CCardInventoryViewer.h"
 #include "../StoreFrontEnd/CardInterface.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
 #include "../StoreFrontEnd/CollectionInterface.h"
 #include <algorithm>
+#include <wx/richtext/richtextctrl.h>
 
 wxBEGIN_EVENT_TABLE( VCardInventoryViewer, wxPanel )
 //EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
@@ -43,6 +44,7 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
    {
       m_mgr.ClosePane( m_mgr.GetPane( m_pOptions ) );
    }
+   m_mapShownInterfaces.clear();
 
    m_pOptions = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL );
    m_pOptions->SetSizer( new wxBoxSizer( wxVERTICAL ) );
@@ -60,6 +62,7 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
 
    auto vecItems = ptSF->GetAllCardsStartingWith( apInterface->GetCollection()->GetColId(), query );
    int layer = 0;
+   // TODO: Use a pool for these, this is slow.
    for( auto& item : vecItems )
    {
       // We don't need permanent copies
@@ -67,6 +70,7 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
 
       VCardInventoryViewer::SetDisplay* newDisp = new VCardInventoryViewer::SetDisplay( m_pOptions, wxID_ANY, &tmpIFace );
       m_pOptions->GetSizer()->Add( newDisp, wxSizerFlags( 0 ).Top() );
+      m_mapShownInterfaces.insert( std::make_pair( tmpIFace.GetSet(), tmpIFace ) );
    }
    m_mgr.AddPane( m_pOptions, GetPlainPane().CenterPane() );
 
@@ -82,17 +86,21 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
 void
 VCardInventoryViewer::onSave( wxCommandEvent & awxEvt )
 {
-
+   auto newe = dynamic_cast<SetDisplay*>((SetDisplay*)awxEvt.GetClientData());
+   auto szCal = newe->GetCurrentValue();
+   m_pController->OnSave( m_mapShownInterfaces[awxEvt.GetString()], szCal );
 }
 
 void 
 VCardInventoryViewer::onReset( wxCommandEvent & awxEvt )
 {
+   m_pController->OnReset( m_mapShownInterfaces[awxEvt.GetString()] );
 }
 
 void 
 VCardInventoryViewer::onOpenEditor( wxCommandEvent & awxEvt )
 {
+  // m_pController->OnSave( m_mapShownInterfaces[awxEvt.GetString()] );
 }
 
 wxAuiPaneInfo
@@ -176,6 +184,20 @@ VCardInventoryViewer::SetDisplay::~SetDisplay()
    m_mgr.UnInit();
 }
 
+wxString 
+VCardInventoryViewer::SetDisplay::GetCurrentValue()
+{
+   auto szVal = m_pCombo->GetValue();
+   if( szVal != m_szDefault )
+   {
+      return szVal.substr( 1 );
+   }
+   else
+   {
+      return szVal;
+   }
+}
+
 void 
 VCardInventoryViewer::SetDisplay::onPreview( wxCommandEvent& awxEvt )
 {
@@ -228,5 +250,29 @@ VCardInventoryViewer::SetDisplay::onPreview( wxCommandEvent& awxEvt )
          m_pCombo->Select( iTarg );
       }
    }
+}
+
+void 
+VCardInventoryViewer::SetDisplay::onSave( wxCommandEvent & awxEvt )
+{
+   awxEvt.SetString( m_szDefault );
+   awxEvt.SetClientData( this );
+   awxEvt.Skip();
+}
+
+void 
+VCardInventoryViewer::SetDisplay::onReset( wxCommandEvent & awxEvt )
+{
+   awxEvt.SetString( m_szDefault );
+   awxEvt.SetClientData( this );
+   awxEvt.Skip();
+}
+
+void 
+VCardInventoryViewer::SetDisplay::onOpenEditor( wxCommandEvent & awxEvt )
+{
+   awxEvt.SetString( m_szDefault );
+   awxEvt.SetClientData( this );
+   awxEvt.Skip();
 }
 

@@ -45,6 +45,7 @@ public:
    Query& SetIncludeMeta( bool abInclude ) { m_bIncludeMetaString = abInclude; return *this; }
 
    // Adding a string here indicates that the query will only return items with matching names.
+   // TODO: Make this searchable for a few
    Query& SearchFor(const std::string& Search) { m_szSearch = Search; return *this; }
 
    // Any of the following indicate which type of metatags should be included in the query return.
