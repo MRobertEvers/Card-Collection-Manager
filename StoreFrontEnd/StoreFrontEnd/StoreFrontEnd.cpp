@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include <Shlobj.h>
 #include <fstream>
+#include <chrono>
 
 StoreFront* StoreFrontEnd::m_ptInstance = nullptr;
 StoreFrontEnd* StoreFrontEnd::m_ptClient = nullptr;
@@ -189,4 +190,18 @@ StoreFrontEnd::GetCollection( const wxString& aszID )
       auto pair = std::make_pair( aszID, new CollectionInterface( aszID.ToStdString() ) );
       return m_mapCollections.insert( pair ).first->second;
    }
+}
+
+long long
+StoreFrontEnd::StartStopWatch()
+{
+   m_now = std::chrono::system_clock::now();
+   return std::chrono::duration_cast<std::chrono::milliseconds>(m_now.time_since_epoch()).count();
+}
+
+long long 
+StoreFrontEnd::EndStopWatch()
+{
+   auto now = std::chrono::system_clock::now();
+   return std::chrono::duration_cast<std::chrono::milliseconds>(now-m_now).count();
 }

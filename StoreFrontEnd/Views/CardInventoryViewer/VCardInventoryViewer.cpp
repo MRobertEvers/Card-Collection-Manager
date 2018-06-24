@@ -34,6 +34,7 @@ VCardInventoryViewer::SetController( CCardInventoryViewer* apController )
 void
 VCardInventoryViewer::ViewCard( CardInterface* apInterface )
 {
+   this->Freeze();
    if( m_pTitle != nullptr )
    {
       m_mgr.ClosePane( m_mgr.GetPane( m_pTitle ) );
@@ -48,6 +49,8 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
    m_pOptions->SetAutoLayout( true );
    m_pOptions->SetScrollRate( 0, 10 );
 
+   auto ptSFE = StoreFrontEnd::Client();
+   auto lChangeTime = ptSFE->StartStopWatch();
    auto szName = apInterface->GetName();
 
    auto ptSF = StoreFrontEnd::Server();
@@ -71,6 +74,9 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
    m_pTitle->SetEditable( false );
    m_mgr.AddPane( m_pTitle, GetPlainPane().Top().BestSize( wxSize( 300, -1 ) ) );
    m_mgr.Update();
+
+   lChangeTime = ptSFE->EndStopWatch();
+   this->Thaw();
 }
 
 void
