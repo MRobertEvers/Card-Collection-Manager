@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <map>
 
 class CardInstanceField;
 class CardVariantField
@@ -16,8 +17,8 @@ public:
    
    std::string GetKeyName() const;
    std::string GetDefaultValue() const;
-   std::set<std::string> GetAllowedValues() const;
-   std::set<std::string> GetPairedTraits( const std::string& aszTrait );
+   std::vector<std::string> GetAllowedValues() const;
+   std::set<std::string> GetPairedTraits() const;
 
    bool IsAllowedValue(std::string aszTestVal) const;
 
@@ -27,7 +28,7 @@ private:
    std::set<std::string> m_setLinkedFields;
 
    // This must be a vector to maintain ordering.
-   std::set<std::string> m_setPossibleValues;
+   std::vector<std::string> m_vecPossibleValues;
    std::string m_szKeyName;
 };
 
@@ -43,7 +44,35 @@ public:
    std::string GetValue() const;
    bool SetValue( const std::string aszNewValue );
 
+   CardVariantField const* GetBase() const;
+
 private:
    std::string m_szValue;
    CardVariantField const* m_pBase;
+};
+
+class CardFieldCollection
+{
+public:
+   CardFieldCollection( const std::map<std::string, CardVariantField>& amapParent );
+   ~CardFieldCollection();
+
+   bool SetAttributes( const std::vector<Tag>& avecAttrs );
+
+   bool SetAttribute( const std::string& aszKey,
+                      const std::string& aszValue );
+
+   std::string GetAttribute( const std::string& aszKey ) const;
+   std::vector<Tag> GetIdentifyingAttributes() const;
+
+   std::map<std::string, CardInstanceField>::const_iterator begin() const;
+   std::map<std::string, CardInstanceField>::const_iterator end() const;
+private:
+   std::map<std::string, CardInstanceField> m_mapIdentifyingTraits;
+
+   bool trySet( const std::string& aszKey,
+                const std::string& aszValue );
+
+   std::string getPairedValueEquivalent( const std::string& aszSource,
+                                         const std::string& aszTarget );
 };

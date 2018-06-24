@@ -18,11 +18,8 @@ CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, CollectionObject* a
    Config* config = Config::Instance();
    SetUID(config->GetHexID( Addresser::GetRandom() ));
 
-   for( auto& item : m_pBase->GetIdentifyingTraits() )
-   {
-      m_mapIdentifyingTraits.insert( std::make_pair( item.first, item.second.GetInstanceField() ) );
-   }
-   
+   m_Fields = std::make_unique<CardFieldCollection>( m_pBase->GetIdentifyingTraits() );
+
    itemChanged(); // called by setParent.
 
    m_bNeedHash = true;
@@ -34,16 +31,22 @@ CopyItem::~CopyItem()
    m_mapMetaTags.clear();
 }
 
-
-CopyItem::CopyItem( const CopyItem& aCopy )
+CopyItem& 
+CopyItem::operator =( const CopyItem & aCopy )
 {
-   this->m_mapIdentifyingTraits = aCopy.m_mapIdentifyingTraits;
    this->m_mapMetaTags = aCopy.m_mapMetaTags;
    this->m_pBase = aCopy.m_pBase;
    this->m_bNeedHash = aCopy.m_bNeedHash;
 
-   AddressBook* addrBook = new AddressBook(aCopy.m_ptAddressBook->GetAddress());
+   AddressBook* addrBook = new AddressBook( aCopy.m_ptAddressBook->GetAddress() );
    this->m_ptAddressBook = shared_ptr<AddressBook>( addrBook );
+   this->m_Fields = std::make_unique<CardFieldCollection>( *aCopy.m_Fields.get() );
+   return *this;
+}
+
+CopyItem::CopyItem( const CopyItem& aCopy )
+{
+   *this = aCopy;
 }
 
 // Returns the hash. Hashes on parent, PUBLIC (so not the parent TAG) metatags, and the idattrs.
@@ -55,8 +58,8 @@ CopyItem::GetHash() const
       CopyItem* self = const_cast<CopyItem*> (this);
       string szHashString = m_ptAddressBook->GetParent();
 
-      auto iter_Tags = m_mapIdentifyingTraits.begin();
-      for (; iter_Tags != m_mapIdentifyingTraits.end(); ++iter_Tags)
+      auto iter_Tags = m_Fields->begin();
+      for (; iter_Tags != m_Fields->end(); ++iter_Tags)
       {
          // This requires that the tags have an ordering.
          // This ordering can be determined, by the order
@@ -190,40 +193,14 @@ CopyItem::GetMetaTags( MetaTag::Type atagType ) const
 bool 
 CopyItem::SetAttributes( const std::vector<Tag>& avecAttrs )
 {
-   set<string> setNeedSet;
-   for( auto& attr : avecAttrs )
-   {
-      auto iter_realAttr = m_mapIdentifyingTraits.find( attr.first );
-      if( iter_realAttr != m_mapIdentifyingTraits.end() )
-      {
-         auto pairs = iter_realAttr->second;
-         for( auto& attr2 : avecAttrs )
-         {
-            if( attr2 != attr )
-            {
-
-            }
-         }
-      }
-   }
-   return false;
+   return m_Fields->SetAttributes( avecAttrs );
 }
 
 bool
 CopyItem::SetAttribute( const string& aszKey,
                         const string& aszValue )
 {
-   // Change if key is ! session
-   auto oFound = m_mapIdentifyingTraits.find(aszKey);
-   if( oFound != m_mapIdentifyingTraits.end() )
-   {
-      m_bNeedHash = true;
-      return oFound->second.SetValue(aszValue);
-   }
-   else
-   {
-      return false;
-   }
+   return m_Fields->SetAttribute( aszKey, aszValue );
 }
 
 shared_ptr<CopyItem>
@@ -249,26 +226,13 @@ CopyItem::GetAttribute(const string& aszKey)
       return szAttr;
    }
 
-   auto oFound = m_mapIdentifyingTraits.find(aszKey);
-   if( oFound != m_mapIdentifyingTraits.end() )
-   {
-      return oFound->second.GetValue();
-   }
-   else
-   {
-      return Config::NotFoundString;
-   }
+   return m_Fields->GetAttribute( aszKey );
 }
 
 vector<Tag>
 CopyItem::GetIdentifyingAttributes() const
 {
-   vector<Tag> vecRetval;
-   for( auto& tag : m_mapIdentifyingTraits )
-   {
-      vecRetval.push_back( make_pair( tag.first, tag.second.GetValue() ) );
-   }
-   return vecRetval;
+   return m_Fields->GetIdentifyingAttributes();
 }
 
 void 

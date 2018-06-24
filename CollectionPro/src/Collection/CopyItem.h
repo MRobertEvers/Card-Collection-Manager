@@ -26,6 +26,8 @@ public:
    CopyItem( const CopyItem& aCopy );
    ~CopyItem();
 
+   CopyItem& operator=( const CopyItem& aCopy );
+
    std::string GetHash() const;
    std::string GetSession() const;
    Address GetAddress() const;
@@ -67,7 +69,8 @@ private:
    void itemChanged();
 
    std::map<std::string, MetaTag> m_mapMetaTags;
-   std::map<std::string, CardInstanceField> m_mapIdentifyingTraits;
+   //std::map<std::string, CardInstanceField> m_mapIdentifyingTraits;
+   std::unique_ptr<CardFieldCollection> m_Fields;
 public:
    static std::shared_ptr<CopyItem> CreateCopyItem( CollectionObject* aoConstructor,
                                                     const Identifier& aAddrParentIdentifier );

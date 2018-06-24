@@ -183,6 +183,25 @@ StoreFront::GetPeekValues( const string& aszColID )
    return m_ColFactory->PeekCollection( aszColID );
 }
 
+string 
+StoreFront::SetAttributes( const string & aszCardName, const string & aszUID,
+                           const vector<pair<string, string>>& avecAttrs )
+{
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         copy->SetAttributes( avecAttrs );
+         return copy->GetUID();
+      }
+   }
+
+   return "";
+}
+
+// If setting more than one attribute, SetAttributes should be used
 string
 StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
                           const string& aszKey, const string& aszVal )

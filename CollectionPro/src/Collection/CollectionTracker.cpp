@@ -33,7 +33,7 @@ CollectionTracker::Track()
             iter_Copy++ )
       {
          // Map a copy of the current state so that it may be used to track.
-         CopyItem copyOfCopy = CopyItem(**iter_Copy);
+         CopyItem copyOfCopy(**iter_Copy);
          
          // This points to the actual copy. When we come back to track changes,
          // if the item at the pointer is different from the copy of it, then it

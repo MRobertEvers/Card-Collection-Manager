@@ -42,6 +42,8 @@ public:
    // Card Accessors
    //
    // Return UID of modified copy.
+   std::string  SetAttributes( const string& aszCardName, const string& aszUID,
+                               const vector<pair<string, string>>& avecAttrs );
    std::string  SetAttribute(const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal);
    std::string  SetMetaTag( const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal );
 

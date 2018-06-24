@@ -126,14 +126,22 @@ CardInterface::GetAttribute( const string& aszKey ) const
 }
 
 string 
-CardInterface::SetMetaTag( const string & aszKey, const std::string& aszVal, const string & aszUID ) const
+CardInterface::SetMetaTag( const string & aszKey, const string& aszVal, const string & aszUID ) const
 {
    auto ptSF = StoreFrontEnd::Server();
    return ptSF->SetMetaTag( m_szName, aszUID, aszKey, aszVal );
 }
 
+string
+CardInterface::SetAttributes( const string & aszKey, const string& aszUID,
+                              const vector<pair<string, string>>& avecAttrs ) const
+{
+   auto ptSF = StoreFrontEnd::Server();
+   return ptSF->SetAttributes( m_szName, aszUID, avecAttrs );
+}
+
 string 
-CardInterface::SetAttribute( const string & aszKey, const std::string& aszVal, const string & aszUID ) const
+CardInterface::SetAttribute( const string & aszKey, const string& aszVal, const string & aszUID ) const
 {
    auto ptSF = StoreFrontEnd::Server();
    return ptSF->SetAttribute( m_szName, aszUID, aszKey, aszVal );

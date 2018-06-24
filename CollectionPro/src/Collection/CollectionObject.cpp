@@ -57,11 +57,8 @@ CollectionObject::CreateCopy( const Identifier& aAddrColID,
 {
    auto pCopy = CopyItem::CreateCopyItem( this, aAddrColID );
 
-   for( auto& attr : alstAttrs )
-   {
-      pCopy->SetAttribute( attr.first, attr.second );
-   }
-
+   pCopy->SetAttributes( alstAttrs );
+  
    for( auto& attr : alstMetaTags )
    {
       pCopy->SetMetaTag( attr.first, attr.second );

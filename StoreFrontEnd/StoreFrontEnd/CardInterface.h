@@ -26,6 +26,8 @@ public:
 
    // These modify the collection interface to add a new CardInterface to represent it.
    std::string SetMetaTag( const std::string& aszKey, const std::string& aszVal, const std::string& aszUID = "" ) const;
+   std::string SetAttributes( const std::string& aszKey, const std::string& aszUID,
+                              const std::vector<std::pair<std::string, std::string>>& avecAttrs ) const;
    std::string SetAttribute( const std::string& aszKey, const std::string& aszVal, const std::string& aszUID = "" ) const;
 
    CollectionInterface* GetCollection();

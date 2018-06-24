@@ -94,6 +94,8 @@ private:
    void resetBuffer();
    void finalizeBuffer();
 
+   // Since collapse cardline removes information, we use this function to reconstruct it.
+
 private:
    static const unsigned int ms_iMaxBufferSize = 5000000;
 };

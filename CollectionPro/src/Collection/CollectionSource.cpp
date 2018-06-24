@@ -417,8 +417,17 @@ CollectionSource::ExpandAdditionLine( string& rszLine )
          {
             if( card.Good() )
             {
-               // TODO:
-               //bGoodVal = card->MatchIdentifyingTrait( szPair, szKey );
+               // Look for any trait that this is an allowed value.
+               auto setTraits = card->GetIdentifyingTraits();
+               for( auto& trait : setTraits )
+               {
+                  if( trait.second.IsAllowedValue( szPair ) )
+                  {
+                     szKey = trait.first;
+                     bGoodVal = true;
+                     break;
+                  }
+               }
             }
 
             if( bGoodVal )

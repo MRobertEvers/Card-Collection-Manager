@@ -248,10 +248,7 @@ Collection::changeItem( const string& aszName,
    }
    
    auto szBefore = cItem->GetUID();
-   for( auto& attr : alstChanges )
-   {
-      cItem.Value()->SetAttribute( attr.first, attr.second );
-   }
+   cItem.Value()->SetAttributes( alstChanges );
    
    for( auto& attr : alstMetaChanges )
    {
