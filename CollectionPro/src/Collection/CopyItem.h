@@ -44,8 +44,8 @@ public:
    std::string GetMetaTag(const std::string& aszKey, MetaTag::Type atagType) const;
    std::vector<Tag> GetMetaTags(MetaTag::Type atagType) const;
 
-   // This expects that the input is valid. Does not verify that
-   // the value is an allowed value.
+   bool SetAttributes( const std::vector<Tag>& avecAttrs );
+
    bool SetAttribute( const std::string& aszKey,
                       const std::string& aszValue );
 

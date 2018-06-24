@@ -21,6 +21,7 @@ public:
    ~vimCMCModule();
 
    wxString GetColorID( CardInterface& item );
+   wxColour GetColorFromColorID( const wxString& aszColor );
 
 private:
    wxDECLARE_EVENT_TABLE();

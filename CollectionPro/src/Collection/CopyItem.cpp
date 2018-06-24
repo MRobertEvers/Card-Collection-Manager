@@ -187,17 +187,26 @@ CopyItem::GetMetaTags( MetaTag::Type atagType ) const
    return lstRetVal;
 }
 
-shared_ptr<CopyItem>
-CopyItem::CreateCopyItem( CollectionObject* aoConstructor,
-                          const Identifier& aAddrParentIdentifier )
+bool 
+CopyItem::SetAttributes( const std::vector<Tag>& avecAttrs )
 {
-   auto newCopy = shared_ptr<CopyItem>(new CopyItem( aAddrParentIdentifier, aoConstructor ));
+   set<string> setNeedSet;
+   for( auto& attr : avecAttrs )
+   {
+      auto iter_realAttr = m_mapIdentifyingTraits.find( attr.first );
+      if( iter_realAttr != m_mapIdentifyingTraits.end() )
+      {
+         auto pairs = iter_realAttr->second;
+         for( auto& attr2 : avecAttrs )
+         {
+            if( attr2 != attr )
+            {
 
-   newCopy->SetAddressBook( shared_ptr<AddressBook>( 
-      new AddressBook( aAddrParentIdentifier ) )
-   );
-
-   return newCopy;
+            }
+         }
+      }
+   }
+   return false;
 }
 
 bool
@@ -216,6 +225,20 @@ CopyItem::SetAttribute( const string& aszKey,
       return false;
    }
 }
+
+shared_ptr<CopyItem>
+CopyItem::CreateCopyItem( CollectionObject* aoConstructor,
+                          const Identifier& aAddrParentIdentifier )
+{
+   auto newCopy = shared_ptr<CopyItem>(new CopyItem( aAddrParentIdentifier, aoConstructor ));
+
+   newCopy->SetAddressBook( shared_ptr<AddressBook>( 
+      new AddressBook( aAddrParentIdentifier ) )
+   );
+
+   return newCopy;
+}
+
 
 string 
 CopyItem::GetAttribute(const string& aszKey)

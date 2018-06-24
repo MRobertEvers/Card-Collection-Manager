@@ -17,6 +17,7 @@ public:
    std::string GetKeyName() const;
    std::string GetDefaultValue() const;
    std::set<std::string> GetAllowedValues() const;
+   std::set<std::string> GetPairedTraits( const std::string& aszTrait );
 
    bool IsAllowedValue(std::string aszTestVal) const;
 

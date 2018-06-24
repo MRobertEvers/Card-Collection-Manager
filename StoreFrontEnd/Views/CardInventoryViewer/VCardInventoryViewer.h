@@ -24,13 +24,14 @@ public:
    public:
       SetDisplay( wxWindow* aptParent, wxWindowID aiWID, CardInterface* apInterface );
       ~SetDisplay( );
-      void onPreview( wxCommandEvent& awxEvt ); // Combobox event
    private:
       wxDECLARE_EVENT_TABLE();
 
+      void onPreview( wxCommandEvent& awxEvt ); // Combobox event
       std::string m_szDefault;
       std::vector<std::string> m_vecOpts;
       wxComboBox* m_pCombo;
+
       wxAuiManager m_mgr;
    };
 public:
@@ -48,6 +49,8 @@ private:
    wxAuiManager m_mgr;
 
    wxTextCtrl* m_pTitle;
+   wxScrolledWindow* m_pOptions;
+   wxAuiManager* m_scrollmgr;
    std::vector<SetDisplay*> m_vecItems;
    //INV_VIEWER_SAVE_COPY = 0,
    //   INV_VIEWER_PREVIEWED_COPY = 1,
@@ -57,6 +60,7 @@ private:
    void onSave( wxCommandEvent& awxEvt );
    void onReset( wxCommandEvent& awxEvt );
    void onOpenEditor( wxCommandEvent& awxEvt ); //
+   void onResize( wxSizeEvent& awxEvt );
 
    // TODO: Put this somewhere esle
 public:

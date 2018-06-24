@@ -53,6 +53,12 @@ CardVariantField::GetAllowedValues() const
    return m_setPossibleValues;
 }
 
+set<string>
+CardVariantField::GetPairedTraits( const string & aszTrait )
+{
+   return m_setLinkedFields;
+}
+
 bool 
 CardVariantField::IsAllowedValue(string aszTestVal) const
 {
@@ -64,12 +70,12 @@ CardVariantField::IsAllowedValue(string aszTestVal) const
 
 // DO NOT CALL THIS FUNCTION ON A VARIANT FIELD THAT IS A COPY!
 CardInstanceField 
-CardVariantField::GetInstanceField( const std::string aszValue ) const
+CardVariantField::GetInstanceField( const string aszValue ) const
 {
    return CardInstanceField(this, aszValue);
 }
 
-CardInstanceField::CardInstanceField( CardVariantField const* apBase, const std::string& aszValue )
+CardInstanceField::CardInstanceField( CardVariantField const* apBase, const string& aszValue )
    : m_pBase( apBase )
 {
    SetValue( aszValue );
@@ -80,20 +86,20 @@ CardInstanceField::~CardInstanceField()
 
 }
 
-std::string
+string
 CardInstanceField::GetKey() const
 {
    return m_pBase->GetKeyName();
 }
 
-std::string
+string
 CardInstanceField::GetValue() const
 {
    return m_szValue;
 }
 
 bool
-CardInstanceField::SetValue( const std::string aszNewValue )
+CardInstanceField::SetValue( const string aszNewValue )
 {
    if( m_pBase->IsAllowedValue( aszNewValue ) )
    {

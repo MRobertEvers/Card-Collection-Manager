@@ -116,12 +116,10 @@ vimCMCModule::vimCMCModule( wxWindow* aptParent,
    // Create dataset
    CategorySimpleDataset *dataset = new CategorySimpleDataset( vecCategories.data(), vecCategories.size() );//WXSIZEOF( names ) );
 
-   // add two series to it
    for( auto& serie : SerieArray )
    {
       dataset->AddSerie( serie.first, serie.second.data(), serie.second.size() );//WXSIZEOF( values1 ) );
    }
-   //dataset->AddSerie( wxT( "Serie 2" ), values2, WXSIZEOF( values2 ) );
 
 
    unsigned int barSize = 360 / (vecCategories.size()+3);
@@ -136,25 +134,15 @@ vimCMCModule::vimCMCModule( wxWindow* aptParent,
    // Set bar renderer for it, with stacked bar type
    ClickableBarRenderer *renderer = new ClickableBarRenderer( barType );
 
-   std::vector<wxColour> colors
-      = std::vector<wxColour>({
-      DEFAULT_BAR_FILL_COLOUR_0,
-      DEFAULT_BAR_FILL_COLOUR_1,
-      DEFAULT_BAR_FILL_COLOUR_2,
-      DEFAULT_BAR_FILL_COLOUR_3,
-      DEFAULT_BAR_FILL_COLOUR_4,
-      DEFAULT_BAR_FILL_COLOUR_5,
-      DEFAULT_BAR_FILL_COLOUR_6
-   });
-   
-   for( size_t i = 0; i < SerieArray.size(); i++ )
+   int index = 0;
+   for( auto& serie : SerieArray )
    {
-      renderer->SetBarDraw( i, new ClickableGradientAreaDraw( colors[i], colors[i],
-                                                              colors[i].ChangeLightness( 150 ), wxNORTH,
-                                                              new ClickableCategoryData( dataset ) ) );
+      auto color = GetColorFromColorID( serie.first );
+      renderer->SetBarDraw( index, new ClickableGradientAreaDraw( color.ChangeLightness(75), color,
+                                                                  color, wxNORTH,
+                                                                  new ClickableCategoryData( dataset ) ) );
+      index++;
    }
-   //renderer->SetBarDraw( 1, new GradientAreaDraw( *wxTRANSPARENT_PEN, DEFAULT_BAR_FILL_COLOUR_1,
-   //   DEFAULT_BAR_FILL_COLOUR_1.ChangeLightness( 50 ), wxSOUTH ) );
 
    // assign renderer to dataset - necessary step
    dataset->SetRenderer( (BarRenderer*)renderer );
@@ -236,5 +224,38 @@ vimCMCModule::GetColorID( CardInterface& item )
    else
    {
       return "Colorless";
+   }
+}
+
+wxColour
+vimCMCModule::GetColorFromColorID( const wxString & aszColor )
+{
+   if( aszColor == "Gold" )
+   {
+      return wxColour( 237, 207, 94 );
+   }
+   else if( aszColor == "Blue" )
+   {
+      return wxColour( 91, 94, 247 );
+   }
+   else if( aszColor == "White" )
+   {
+      return wxColour( 249, 252, 207 );
+   }
+   else if( aszColor == "Black" )
+   {
+      return wxColour( 75, 75, 79 );
+   }
+   else if( aszColor == "Red" )
+   {
+      return wxColour( 232, 53, 53 );
+   }
+   else if( aszColor == "Green" )
+   {
+      return wxColour( 82, 186, 40 );
+   }
+   else // Colorless
+   {
+      return wxColour( 161, 165, 159 );
    }
 }

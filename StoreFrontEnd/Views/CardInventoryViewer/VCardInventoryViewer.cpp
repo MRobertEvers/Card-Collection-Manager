@@ -38,15 +38,15 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
    {
       m_mgr.ClosePane( m_mgr.GetPane( m_pTitle ) );
    }
-   if( m_vecItems.size() > 0 )
+   if( m_pOptions != nullptr )
    {
-      for( auto& existPane : m_vecItems )
-      {
-         m_mgr.ClosePane( m_mgr.GetPane( existPane ) );
-      }
-
-      m_vecItems.clear();
+      m_mgr.ClosePane( m_mgr.GetPane( m_pOptions ) );
    }
+
+   m_pOptions = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL );
+   m_pOptions->SetSizer( new wxBoxSizer( wxVERTICAL ) );
+   m_pOptions->SetAutoLayout( true );
+   m_pOptions->SetScrollRate( 0, 10 );
 
    auto szName = apInterface->GetName();
 
@@ -62,18 +62,15 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
       // We don't need permanent copies
       CardInterface tmpIFace = CardInterface( item, apInterface->GetCollection() );
 
-      VCardInventoryViewer::SetDisplay* newDisp = new VCardInventoryViewer::SetDisplay( this, wxID_ANY, &tmpIFace );
-      m_vecItems.push_back( newDisp );
-
-      m_mgr.AddPane( newDisp, GetPlainPane().Top().Layer(layer++).BestSize( newDisp->GetBestSize() ) );
+      VCardInventoryViewer::SetDisplay* newDisp = new VCardInventoryViewer::SetDisplay( m_pOptions, wxID_ANY, &tmpIFace );
+      m_pOptions->GetSizer()->Add( newDisp, wxSizerFlags( 0 ).Top() );
    }
+   m_mgr.AddPane( m_pOptions, GetPlainPane().CenterPane() );
 
    m_pTitle = new wxTextCtrl( this, wxID_ANY, szName, wxDefaultPosition, wxDefaultSize, wxTE_CENTER );
    m_pTitle->SetEditable( false );
-   m_mgr.AddPane( m_pTitle, GetPlainPane().Top().Layer( layer ).BestSize( wxSize( 300, -1 ) ) );
-
+   m_mgr.AddPane( m_pTitle, GetPlainPane().Top().BestSize( wxSize( 300, -1 ) ) );
    m_mgr.Update();
-
 }
 
 void
@@ -106,7 +103,7 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
    : wxPanel(aptParent, aiWID)
 {
    m_mgr.SetManagedWindow( this );
-
+   this->SetMaxSize( wxSize( 223, -1 ) );
    auto ptSF = StoreFrontEnd::Server();
 
    auto iCount = apInterface->GetNumber();
@@ -155,7 +152,7 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
 
    // Eye button
    wxButton* viewButton = new wxButton( this, Buttons::INV_VIEWER_OPEN_EDITOR, "..." );
-   m_mgr.AddPane( viewButton, GetPlainPane().Center().Layer(2).BestSize( wxSize( -1, txtCount->GetBestHeight( 50 ) ) ) );
+   m_mgr.AddPane( viewButton, GetPlainPane().Center().Layer(2).BestSize( wxSize( 223-125, txtCount->GetBestHeight( 50 ) ) ) );
 
    // Save
    // Reset
@@ -163,8 +160,8 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
    tpanel->SetSizer( new wxGridSizer( 2, 0, 0 ) );
    tpanel->GetSizer()->Add( new wxButton( tpanel, Buttons::INV_VIEWER_SAVE_COPY, "Save" ), wxSizerFlags(1).Left().Expand() );
    tpanel->GetSizer()->Add( new wxButton( tpanel, Buttons::INV_VIEWER_RESET_COPY, "Reset" ), wxSizerFlags( 1 ).Right().Expand() );
-   m_mgr.AddPane( tpanel, GetPlainPane().Bottom().BestSize( wxSize(300, txtCount->GetBestHeight( 50 ) ) ) );
-
+   m_mgr.AddPane( tpanel, GetPlainPane().Bottom().BestSize( wxSize(223, txtCount->GetBestHeight( 50 ) ) ) );
+   
    m_mgr.Update();
 }
 
@@ -226,3 +223,4 @@ VCardInventoryViewer::SetDisplay::onPreview( wxCommandEvent& awxEvt )
       }
    }
 }
+
