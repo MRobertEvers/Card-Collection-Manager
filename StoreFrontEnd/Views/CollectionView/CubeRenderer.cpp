@@ -81,6 +81,7 @@ CubeRenderer::Draw( std::vector<CardInterface*> avecItemData )
    {
       existing.second->Destroy();
    }
+   m_mapColumns.clear();
 
    uiBuildColumns( avecItemData );
    this->Thaw();

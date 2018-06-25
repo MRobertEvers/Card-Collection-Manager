@@ -461,7 +461,91 @@ StringInterface::CmdAppendCount(const string& aszCmd, int Count)
    return aszCmd.substr(0,1) + " x" + std::to_string(Count) + " " + aszCmd.substr(1);
 }
 
+string
+StringInterface::DeltaRemovedUID( const string & aszUID )
+{
+   return "{ " + aszUID + "} ->";
+}
+
+string
+StringInterface::DeltaAddUID( const string & aszUID )
+{
+   return "-> { " +aszUID+ "}";
+}
+
+string
+StringInterface::DeltaChangeUIDs( const string & aszUID, const string & aszUID2 )
+{
+   return "{ " + aszUID + " } -> { " + aszUID2 + " }";
+}
+
+Tag 
+StringInterface::DeltaChangedToUID( const string & aszDelta )
+{
+   string szFirst;
+   string szSecond;
+
+   auto vecSplit = StringHelper::Str_Split( aszDelta, "->" );
+   if( vecSplit.size() == 2 )
+   {
+      szFirst = vecSplit[0];
+      szSecond = vecSplit[1];
+
+      szFirst = StringHelper::Str_Trim( szFirst, ' ' );
+      szSecond = StringHelper::Str_Trim( szSecond, ' ' );
+
+      szFirst = StringHelper::Str_Trim( szFirst, '{' );
+      szSecond = StringHelper::Str_Trim( szSecond, '{' );
+
+      szFirst = StringHelper::Str_Trim( szFirst, '}' );
+      szSecond = StringHelper::Str_Trim( szSecond, '}' );
+
+      szFirst = StringHelper::Str_Trim( szFirst, ' ' );
+      szSecond = StringHelper::Str_Trim( szSecond, ' ' );
+
+      return Tag( szFirst, szSecond );
+   }
+   else
+   {
+      return Tag();
+   }
+}
+
 string 
+StringInterface::DeltaRemoveToUID( const string & aszDelta )
+{
+   int iFirst = aszDelta.find_first_of( '{' );
+   int iSecond = aszDelta.find_first_of( '}' );
+   if( iFirst >= 0 && iSecond > 0 )
+   {
+      auto szRetval = aszDelta.substr( iFirst, iFirst - iSecond );
+      szRetval = StringHelper::Str_Trim( szRetval, ' ' );
+      return szRetval;
+   }
+   else
+   {
+      return "";
+   }
+}
+
+string
+StringInterface::DeltaAddToUID( const string & aszDelta )
+{
+   int iFirst = aszDelta.find_first_of( '{' );
+   int iSecond = aszDelta.find_first_of( '}' );
+   if( iFirst >= 0 && iSecond > 0 )
+   {
+      auto szRetval = aszDelta.substr( iFirst, iFirst - iSecond );
+      szRetval = StringHelper::Str_Trim( szRetval, ' ' );
+      return szRetval;
+   }
+   else
+   {
+      return "";
+   }
+}
+
+string
 StringInterface::GetNameFromCardLine(const string& aszLongIdentifier)
 {
    int iLoseAfter = aszLongIdentifier.find_first_of("[{");

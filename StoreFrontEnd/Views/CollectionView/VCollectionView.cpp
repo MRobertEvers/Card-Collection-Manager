@@ -7,6 +7,7 @@ wxBEGIN_EVENT_TABLE( VCollectionView, wxPanel )
 //EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
 //EVT_BUTTON( viCardEditor::Image_Changed, vCollectionCube::onNewItemSelectView )
 EVT_GRID_CELL_LEFT_CLICK( VCollectionView::onItemClicked )
+EVT_BUTTON( VCollectionView::COLLECTION_EDITED, VCollectionView::onCollectionEditorAccept )
 EVT_BUTTON( viCollectionEditor::Changes_Accept, VCollectionView::onCollectionEditorAccept )
 wxEND_EVENT_TABLE()
 

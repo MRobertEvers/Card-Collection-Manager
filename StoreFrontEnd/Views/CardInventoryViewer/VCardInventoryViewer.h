@@ -31,6 +31,7 @@ public:
 
       void onPreview( wxCommandEvent& awxEvt ); // Combobox event
       std::string m_szDefault;
+      wxString m_szHashRepresenting;
       std::vector<std::string> m_vecOpts;
       wxComboBox* m_pCombo;
 
@@ -61,7 +62,6 @@ private:
    std::map<std::string, CardInterface> m_mapShownInterfaces;
 
    void onSave( wxCommandEvent& awxEvt );
-   void onReset( wxCommandEvent& awxEvt );
    void onOpenEditor( wxCommandEvent& awxEvt ); //
 
    // TODO: Put this somewhere esle

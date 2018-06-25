@@ -6,6 +6,18 @@
 #include <list>
 #include <map>
 
+class CollectionDelta
+{
+public:
+   CollectionDelta( const std::vector<std::string>& avecChangedUIDs );
+   ~CollectionDelta();
+
+private:
+   std::vector<std::string> m_vecAdded;
+   std::vector<std::string> m_vecRemoved;
+   std::vector<std::pair<std::string, std::string>> m_vecChanged;
+};
+
 class CollectionInterface
 {
 public:

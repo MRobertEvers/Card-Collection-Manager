@@ -10,7 +10,6 @@ wxBEGIN_EVENT_TABLE( VCardInventoryViewer, wxPanel )
 //EVT_BUTTON( viCardEditor::Changes_Submit, vCollectionCube::onCardChanged )
 //EVT_BUTTON( viCardEditor::Image_Changed, vCollectionCube::onNewItemSelectView )
 EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_OPEN_EDITOR, VCardInventoryViewer::onOpenEditor )
-EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_RESET_COPY, VCardInventoryViewer::onReset )
 EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_SAVE_COPY, VCardInventoryViewer::onSave )
 wxEND_EVENT_TABLE()
 
@@ -70,7 +69,7 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
 
       VCardInventoryViewer::SetDisplay* newDisp = new VCardInventoryViewer::SetDisplay( m_pOptions, wxID_ANY, &tmpIFace );
       m_pOptions->GetSizer()->Add( newDisp, wxSizerFlags( 0 ).Top() );
-      m_mapShownInterfaces.insert( std::make_pair( tmpIFace.GetSet(), tmpIFace ) );
+      m_mapShownInterfaces.insert( std::make_pair( tmpIFace.GetHash(), tmpIFace ) );
    }
    m_mgr.AddPane( m_pOptions, GetPlainPane().CenterPane() );
 
@@ -86,15 +85,13 @@ VCardInventoryViewer::ViewCard( CardInterface* apInterface )
 void
 VCardInventoryViewer::onSave( wxCommandEvent & awxEvt )
 {
+   // Notify collection view. It will update the view.
    auto newe = dynamic_cast<SetDisplay*>((SetDisplay*)awxEvt.GetClientData());
    auto szCal = newe->GetCurrentValue();
-   m_pController->OnSave( m_mapShownInterfaces[awxEvt.GetString()], szCal );
-}
 
-void 
-VCardInventoryViewer::onReset( wxCommandEvent & awxEvt )
-{
-   m_pController->OnReset( m_mapShownInterfaces[awxEvt.GetString()] );
+   auto szHash = awxEvt.GetString();
+   auto& iFace = m_mapShownInterfaces[szHash.ToStdString()];
+   m_pController->OnSave( iFace, szCal );
 }
 
 void 
@@ -110,6 +107,9 @@ VCardInventoryViewer::GetPlainPane()
 }
 
 wxBEGIN_EVENT_TABLE( VCardInventoryViewer::SetDisplay, wxPanel )
+EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_OPEN_EDITOR, VCardInventoryViewer::SetDisplay::onOpenEditor )
+EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_RESET_COPY, VCardInventoryViewer::SetDisplay::onReset )
+EVT_BUTTON( VCardInventoryViewer::INV_VIEWER_SAVE_COPY, VCardInventoryViewer::SetDisplay::onSave )
 EVT_COMBOBOX( VCardInventoryViewer::INV_VIEWER_PREVIEWED_COPY, VCardInventoryViewer::SetDisplay::onPreview )
 wxEND_EVENT_TABLE()
 
@@ -122,6 +122,8 @@ VCardInventoryViewer::SetDisplay::SetDisplay( wxWindow* aptParent, wxWindowID ai
 
    auto iCount = apInterface->GetNumber();
    auto szSet = apInterface->GetSet();
+   m_szHashRepresenting = apInterface->GetHash();
+
    m_szDefault = szSet;
 
    wxTextCtrl* txtCount = new wxTextCtrl( this, wxID_ANY, "x" + std::to_string(iCount), wxDefaultPosition,
@@ -255,7 +257,7 @@ VCardInventoryViewer::SetDisplay::onPreview( wxCommandEvent& awxEvt )
 void 
 VCardInventoryViewer::SetDisplay::onSave( wxCommandEvent & awxEvt )
 {
-   awxEvt.SetString( m_szDefault );
+   awxEvt.SetString( m_szHashRepresenting );
    awxEvt.SetClientData( this );
    awxEvt.Skip();
 }
@@ -263,15 +265,15 @@ VCardInventoryViewer::SetDisplay::onSave( wxCommandEvent & awxEvt )
 void 
 VCardInventoryViewer::SetDisplay::onReset( wxCommandEvent & awxEvt )
 {
-   awxEvt.SetString( m_szDefault );
-   awxEvt.SetClientData( this );
-   awxEvt.Skip();
+   wxCommandEvent wxEvt;
+   wxEvt.SetString( m_szDefault );
+   onPreview( wxEvt );
 }
 
 void 
 VCardInventoryViewer::SetDisplay::onOpenEditor( wxCommandEvent & awxEvt )
 {
-   awxEvt.SetString( m_szDefault );
+   awxEvt.SetString( m_szHashRepresenting );
    awxEvt.SetClientData( this );
    awxEvt.Skip();
 }

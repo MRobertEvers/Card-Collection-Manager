@@ -193,14 +193,14 @@ CopyItem::GetMetaTags( MetaTag::Type atagType ) const
 bool 
 CopyItem::SetAttributes( const std::vector<Tag>& avecAttrs )
 {
-   return m_Fields->SetAttributes( avecAttrs );
+   return m_bNeedHash = m_Fields->SetAttributes( avecAttrs );
 }
 
 bool
 CopyItem::SetAttribute( const string& aszKey,
                         const string& aszValue )
 {
-   return m_Fields->SetAttribute( aszKey, aszValue );
+   return m_bNeedHash = m_Fields->SetAttribute( aszKey, aszValue );
 }
 
 shared_ptr<CopyItem>

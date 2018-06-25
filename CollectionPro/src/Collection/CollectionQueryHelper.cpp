@@ -22,10 +22,6 @@ CollectionQueryHelper::QueryCollection(Query aiQueryParms)
       // Fast Search
       return queryMemoList( aiQueryParms );
    }
-   else if( aiQueryParms.GetSearch() != "" )
-   {
-
-   }
    else
    {
       // Full Search

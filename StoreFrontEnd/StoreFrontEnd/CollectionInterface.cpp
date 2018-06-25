@@ -61,3 +61,15 @@ CollectionInterface::Refresh()
       m_vecCopies.push_back( CardInterface( szItem, this ) );
    }
 }
+
+CollectionDelta::CollectionDelta( const std::vector<std::string>& avecChangedUIDs )
+{
+   for( auto& delta : avecChangedUIDs )
+   {
+
+   }
+}
+
+CollectionDelta::~CollectionDelta()
+{
+}

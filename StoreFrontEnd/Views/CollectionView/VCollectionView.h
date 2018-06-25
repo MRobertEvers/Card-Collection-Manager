@@ -27,6 +27,12 @@ public:
 class VCollectionView : public wxPanel
 {
 public:
+   enum 
+   {
+      COLLECTION_EDITED = 3044
+   };
+
+public:
    VCollectionView( wxFrame* aParent, wxWindowID aiWID );
    ~VCollectionView();
 

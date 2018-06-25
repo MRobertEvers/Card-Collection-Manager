@@ -1,4 +1,6 @@
 #pragma once
+#include <wx/wxprec.h>
+
 class CardInterface;
 class VCardInventoryViewer;
 class CCardInventoryViewer
@@ -9,7 +11,7 @@ public:
 
    void SetModel( CardInterface* apModel );
 
-   void OnSave( CardInterface* apModel, const wxString& aszNewVal );
+   void OnSave( const CardInterface& aszColID, const wxString& aszNewVal );
    void OnReset( CardInterface* apModel );
    void OnOpenEditor( CardInterface* apModel ); //
 

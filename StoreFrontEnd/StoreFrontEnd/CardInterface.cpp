@@ -65,6 +65,12 @@ CardInterface::GetFirstUID() const
    }
 }
 
+std::vector<std::string>
+CardInterface::GetRepresentingUIDs() const
+{
+   return m_vecRepresentingUIDs;
+}
+
 string
 CardInterface::GetName() const
 {

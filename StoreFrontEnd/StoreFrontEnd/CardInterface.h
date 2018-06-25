@@ -15,6 +15,7 @@ public:
    int GetNumber() const;
    std::string GetHash() const;
    std::string GetFirstUID() const;
+   std::vector<std::string> GetRepresentingUIDs() const;
    std::string GetName() const;
    std::string GetMultiverseID() const;
    std::string GetManaCost() const;
