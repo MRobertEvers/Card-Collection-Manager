@@ -101,11 +101,12 @@ private:
                     const vector<Tag>& alstChanges,
                     const vector<Tag>& alstMetaChanges );
 
+   // Returns + name : { uids } and/or - name : { uids }
    vector<string> loadInterfaceLine(const string& aszLine);
 
-   vector<string> loadAdditionLine(const string& aszLine);
-   vector<string> loadRemoveLine(const string& aszLine);
-   vector<Tag> loadDeltaLine(const string& aszLine);
+   string loadAdditionLine(const string& aszLine);
+   string loadRemoveLine(const string& aszLine);
+   vector<string> loadDeltaLine(const string& aszLine);
 };
 
 

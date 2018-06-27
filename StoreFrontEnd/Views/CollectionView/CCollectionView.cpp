@@ -121,6 +121,12 @@ CCollectionView::OnCollectionEdited()
    uiShowNewestCard( pFirst );
 }
 
+CollectionResolved 
+CCollectionView::Resolve( CollectionDelta * apDelta )
+{
+   return m_ptModel->ReflectDelta( std::shared_ptr<CollectionDelta>(apDelta) );
+}
+
 void 
 CCollectionView::uiShowCardViewer()
 {

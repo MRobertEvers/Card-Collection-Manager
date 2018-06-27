@@ -10,6 +10,7 @@ class CardInterface
 public:
    CardInterface() {};
    CardInterface(const std::string& aszCardLine, CollectionInterface* apParent);
+   CardInterface( const std::string& aszCardName, const std::vector<std::string>& aszUIDs, CollectionInterface* apParent );
    ~CardInterface();
 
    int GetNumber() const;
@@ -31,6 +32,7 @@ public:
                               const std::vector<std::pair<std::string, std::string>>& avecAttrs ) const;
    std::string SetAttribute( const std::string& aszKey, const std::string& aszVal, const std::string& aszUID = "" ) const;
 
+   void IncludeUID( const std::string& aszUID );
    CollectionInterface* GetCollection();
 
 private:

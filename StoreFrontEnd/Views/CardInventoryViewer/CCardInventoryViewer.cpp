@@ -2,6 +2,7 @@
 #include "VCardInventoryViewer.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
 #include "../StoreFrontEnd/CardInterface.h"
+#include "../StoreFrontEnd/CollectionInterface.h"
 #include "../Views//CollectionView/VCollectionView.h"
 
 CCardInventoryViewer::CCardInventoryViewer( VCardInventoryViewer * apView )
@@ -38,6 +39,7 @@ CCardInventoryViewer::OnSave( const CardInterface& aIface, const wxString& aszNe
    updateEvt.SetId( VCollectionView::COLLECTION_EDITED );
 
    // Data used in the callback.
+   updateEvt.SetClientData( new CollectionDelta( vecChanges ) );
 
    ::wxPostEvent( m_pView->GetParent(), updateEvt );
 }

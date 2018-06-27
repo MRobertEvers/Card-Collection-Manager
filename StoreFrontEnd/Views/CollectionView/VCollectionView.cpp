@@ -1,6 +1,7 @@
 #include "VCollectionView.h"
 #include "CCollectionView.h"
 #include "../Views/CardView/VCardView.h"
+#include "../StoreFrontEnd/CollectionInterface.h"
 #include "../Views/CollectionEditor/viCollectionEditor.h"
 
 wxBEGIN_EVENT_TABLE( VCollectionView, wxPanel )
@@ -94,7 +95,19 @@ VCollectionView::ShowCardInventoryViewer( IViewFactory* aptViewer )
 void 
 VCollectionView::onCollectionEditorAccept( wxCommandEvent& awxEvt )
 {
-   m_ptController->OnCollectionEdited();
+   //auto delta = dynamic_cast<CollectionDelta*>((CollectionDelta*)awxEvt.GetClientData());
+   //if( delta != nullptr )
+   //{
+   //   auto resolve = m_ptController->Resolve( delta );
+   //   for( auto& rem : resolve.GetRemoved() )
+   //   {
+   //      m_ptRenderer->RemoveItem( rem );
+   //   }
+   //}
+   //else
+   {
+      m_ptController->OnCollectionEdited();
+   }
 }
 
 

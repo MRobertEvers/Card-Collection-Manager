@@ -16,7 +16,7 @@ CopyItem::CopyItem( const Identifier& aAddrParentIdentifier, CollectionObject* a
    // Set the chain ID and session here. 
    // If one is set later, it will just overwrite this...
    Config* config = Config::Instance();
-   SetUID(config->GetHexID( Addresser::GetRandom() ));
+   SetUID( config->GetHexID( Addresser::GetRandom() ));
 
    m_Fields = std::make_unique<CardFieldCollection>( m_pBase->GetIdentifyingTraits() );
 

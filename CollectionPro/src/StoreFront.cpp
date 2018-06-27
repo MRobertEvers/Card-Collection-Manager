@@ -1,16 +1,16 @@
 #include "StoreFront.h"
+#include "StringInterface.h"
+#include "Support/JSONImporter.h"
+#include "Config.h"
+#include "../src/Tests/AddressTest.h"
+#include "../src/Tests/CollectionTest.h"
+#include "../src/Tests/CollectionItemTest.h"
+#include "../src/Tests/CopyTest.h"
 
 #include <iostream>
 #include <fstream>
 #include <iterator>
 #include <process.h>
-
-#include "../src/Tests/AddressTest.h"
-#include "../src/Tests/CollectionTest.h"
-#include "../src/Tests/CollectionItemTest.h"
-#include "../src/Tests/CopyTest.h"
-#include "Support/JSONImporter.h"
-#include "Config.h"
 
 StoreFront::StoreFront()
 {
@@ -143,12 +143,13 @@ vector<string>
 StoreFront::GetAllCardsStartingWith( const string& aszColID, 
                                      const Query& aszSearch )
 {
+   vector<string> vecRetval;
    if( m_ColFactory->CollectionExists(aszColID) )
    {
-      return m_ColFactory->GetCollection(aszColID)->
+      vecRetval = m_ColFactory->GetCollection(aszColID)->
          QueryCollection(aszSearch);
    }
-   return vector<string>();
+   return vecRetval;
 }
 
 map<unsigned long, vector<string>>
@@ -193,8 +194,12 @@ StoreFront::SetAttributes( const string & aszCardName, const string & aszUID,
       auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         copy->SetAttributes( avecAttrs );
-         return copy->GetUID();
+         if( copy->SetAttributes( avecAttrs ) )
+         {
+            auto szUID = copy->GetUID();
+            return StringInterface::DeltaRemoveCmdString( aszCardName,
+                                                          vector<Tag>(1, make_pair(MetaTag::GetUIDKey(), szUID)) );
+         }
       }
    }
 
@@ -212,8 +217,12 @@ StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
       auto copy = item->FindCopy(aszUID);
       if( copy.Good() )
       {
-         copy->SetAttribute( aszKey, aszVal );
-         return copy->GetUID();
+         if( copy->SetAttribute( aszKey, aszVal ) )
+         {
+            auto szUID = copy->GetUID();
+            return StringInterface::DeltaAddCmdString( aszCardName,
+                                                       vector<Tag>(1, make_pair(MetaTag::GetUIDKey(), szUID)) );
+         }
       }
    }
 
@@ -230,7 +239,9 @@ StoreFront::SetMetaTag( const string & aszCardName, const string & aszUID, const
       if( copy.Good() )
       {
          copy->SetMetaTag( aszKey, aszVal, MetaTag::DetermineMetaTagType( aszKey ) );
-         return copy->GetUID();
+         auto szUID = copy->GetUID();
+         return StringInterface::DeltaAddCmdString( aszCardName,
+            vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
       }
    }
 

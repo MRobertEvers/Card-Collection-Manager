@@ -25,6 +25,8 @@ public:
 
    void OnCollectionEdited();
 
+   CollectionResolved Resolve( CollectionDelta* apDelta );
+
 private:
    
    void uiShowCardViewer();

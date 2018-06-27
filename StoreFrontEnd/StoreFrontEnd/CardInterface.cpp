@@ -32,6 +32,13 @@ CardInterface::CardInterface( const string& aszCardLine, CollectionInterface* ap
    }
 }
 
+CardInterface::CardInterface( const std::string & aszCardName, const std::vector<std::string>& aszUIDs, CollectionInterface * apParent )
+   : m_pCollection(apParent)
+{
+   m_szName = aszCardName;
+   m_vecRepresentingUIDs = aszUIDs;
+}
+
 
 CardInterface::~CardInterface()
 {
@@ -153,7 +160,13 @@ CardInterface::SetAttribute( const string & aszKey, const string& aszVal, const 
    return ptSF->SetAttribute( m_szName, aszUID, aszKey, aszVal );
 }
 
-CollectionInterface* 
+void 
+CardInterface::IncludeUID( const std::string & aszUID )
+{
+   m_vecRepresentingUIDs.push_back( aszUID );
+}
+
+CollectionInterface*
 CardInterface::GetCollection()
 {
    return m_pCollection;

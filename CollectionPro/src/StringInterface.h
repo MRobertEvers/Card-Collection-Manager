@@ -71,13 +71,9 @@ public:
 
    static string CmdAppendCount(const string& aszCmd, int Count);
 
-   static string DeltaRemovedUID( const string& aszUID );
-   static string DeltaAddUID( const string& aszUID );
-   static string DeltaChangeUIDs( const string& aszUID, const string& aszUID2 );
-
-   static Tag DeltaChangedToUID( const string& aszDelta );
-   static string DeltaRemoveToUID( const string& aszDelta );
-   static string DeltaAddToUID( const string& aszDelta );
+   static string DeltaRemoveCmdString( const string& aszCardName, const vector<Tag>& avecUIDs );
+   static string DeltaAddCmdString( const string& aszCardName, const vector<Tag>& avecUIDs );
+   static string DeltaCmdString( const string& aszCmd, const string& aszCardName, const vector<Tag>& avecUIDs );
 
    static string GetNameFromCardLine(const string& aszLongIdentifier);
    static string FindTagInList(const vector<Tag>& avecList, const string& aszKey);

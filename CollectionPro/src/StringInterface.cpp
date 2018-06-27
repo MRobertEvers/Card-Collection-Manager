@@ -462,87 +462,21 @@ StringInterface::CmdAppendCount(const string& aszCmd, int Count)
 }
 
 string
-StringInterface::DeltaRemovedUID( const string & aszUID )
+StringInterface::DeltaRemoveCmdString( const string & aszCardName, const vector<Tag>& avecUIDs )
 {
-   return "{ " + aszUID + "} ->";
+   return DeltaCmdString( "-", aszCardName, avecUIDs );
 }
 
 string
-StringInterface::DeltaAddUID( const string & aszUID )
+StringInterface::DeltaAddCmdString( const string & aszCardName, const vector<Tag>& avecUIDs )
 {
-   return "-> { " +aszUID+ "}";
-}
-
-string
-StringInterface::DeltaChangeUIDs( const string & aszUID, const string & aszUID2 )
-{
-   return "{ " + aszUID + " } -> { " + aszUID2 + " }";
-}
-
-Tag 
-StringInterface::DeltaChangedToUID( const string & aszDelta )
-{
-   string szFirst;
-   string szSecond;
-
-   auto vecSplit = StringHelper::Str_Split( aszDelta, "->" );
-   if( vecSplit.size() == 2 )
-   {
-      szFirst = vecSplit[0];
-      szSecond = vecSplit[1];
-
-      szFirst = StringHelper::Str_Trim( szFirst, ' ' );
-      szSecond = StringHelper::Str_Trim( szSecond, ' ' );
-
-      szFirst = StringHelper::Str_Trim( szFirst, '{' );
-      szSecond = StringHelper::Str_Trim( szSecond, '{' );
-
-      szFirst = StringHelper::Str_Trim( szFirst, '}' );
-      szSecond = StringHelper::Str_Trim( szSecond, '}' );
-
-      szFirst = StringHelper::Str_Trim( szFirst, ' ' );
-      szSecond = StringHelper::Str_Trim( szSecond, ' ' );
-
-      return Tag( szFirst, szSecond );
-   }
-   else
-   {
-      return Tag();
-   }
+   return DeltaCmdString("+", aszCardName, avecUIDs);
 }
 
 string 
-StringInterface::DeltaRemoveToUID( const string & aszDelta )
+StringInterface::DeltaCmdString( const string & aszCmd, const string & aszCardName, const vector<Tag>& avecUIDs )
 {
-   int iFirst = aszDelta.find_first_of( '{' );
-   int iSecond = aszDelta.find_first_of( '}' );
-   if( iFirst >= 0 && iSecond > 0 )
-   {
-      auto szRetval = aszDelta.substr( iFirst, iFirst - iSecond );
-      szRetval = StringHelper::Str_Trim( szRetval, ' ' );
-      return szRetval;
-   }
-   else
-   {
-      return "";
-   }
-}
-
-string
-StringInterface::DeltaAddToUID( const string & aszDelta )
-{
-   int iFirst = aszDelta.find_first_of( '{' );
-   int iSecond = aszDelta.find_first_of( '}' );
-   if( iFirst >= 0 && iSecond > 0 )
-   {
-      auto szRetval = aszDelta.substr( iFirst, iFirst - iSecond );
-      szRetval = StringHelper::Str_Trim( szRetval, ' ' );
-      return szRetval;
-   }
-   else
-   {
-      return "";
-   }
+   return aszCmd + " " + ToCardLine(aszCardName, vector<Tag>(), avecUIDs);
 }
 
 string
