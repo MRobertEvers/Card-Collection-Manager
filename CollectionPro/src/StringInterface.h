@@ -20,39 +20,39 @@ public:
 
 public:
    static bool ParseCardLine( const string& aszLine,
-                              unsigned int& riCount,
-                              string& rszName,
-                              string& rszDetails,
-                              string& rszMeta );
+      unsigned int& riCount,
+      string& rszName,
+      string& rszDetails,
+      string& rszMeta );
 
    static bool ParseCardLine( const string& aszLine,
-                              unsigned int& riCount,
-                              string& rszName,
-                              vector<Tag>& rszDetails,
-                              vector<Tag>& rszMeta );
+      unsigned int& riCount,
+      string& rszName,
+      vector<Tag>& rszDetails,
+      vector<Tag>& rszMeta );
 
    static bool ParseInterfaceLine( const string& aszLine,
-                                   unsigned int& riCount,
-                                   string& rszName,
-                                   vector<Tag>& rszDetails,
-                                   vector<Tag>& rszMeta,
-                                   unsigned int& riCount2,
-                                   string& rszName2,
-                                   vector<Tag>& rszDetails2,
-                                   vector<Tag>& rszMeta2,
-                                   StringInterface::InterfaceLineType& riType );
+      unsigned int& riCount,
+      string& rszName,
+      vector<Tag>& rszDetails,
+      vector<Tag>& rszMeta,
+      unsigned int& riCount2,
+      string& rszName2,
+      vector<Tag>& rszDetails2,
+      vector<Tag>& rszMeta2,
+      StringInterface::InterfaceLineType& riType );
 
    static bool ParseTagString( const string& aszDetails,
-                               vector<Tag>& rlstTags );
+      vector<Tag>& rlstTags );
 
    static bool ParseListDelimString( const string& aszDelimStr,
-                                     vector<string>& rlstStrings,
-                                     const string& aszIndicatorString = "*",
-                                     const string& aszDelim = "::");
+      vector<string>& rlstStrings,
+      const string& aszIndicatorString = "*",
+      const string& aszDelim = "::" );
 
    static string ToCardLine( const string& aszName,
-                             const vector<Tag>& alstAttrs    = vector<Tag>(),
-                             const vector<Tag>& alstMetaTags = vector<Tag>() );
+      const vector<Tag>& alstAttrs = vector<Tag>(),
+      const vector<Tag>& alstMetaTags = vector<Tag>() );
 
    static unsigned long GetCurrentTimeCount();
    static unsigned long ToTimeValue( const string& aszTime, const string& aszParse );
@@ -61,26 +61,22 @@ public:
 
    static InterfaceLineType ParseInterfaceLine( string& rszLine );
 
-   static string CmdCreateAddition(const string& aszName, const string& aszSet, int aiCount );
-   static string CmdCreateRemove(const string& aszLongName, const string& aszUID, int aiCount );
+   static string CmdCreateAddition( const string& aszName, const string& aszSet, int aiCount );
+   static string CmdCreateRemove( const string& aszLongName, const string& aszUID, int aiCount );
    static string CmdCreateReplace( const string& aszLongNameRemove, const string& aszUID,
-                                   const string& aszNameAddition, const string& aszSet, int aiCount );
+      const string& aszNameAddition, const string& aszSet, int aiCount );
    static string CmdCreateModify( const string& aszLongName, const string& aszUID,
-                                  const vector<Tag>& alstAttrs = vector<Tag>(),
-                                  const vector<Tag>& alstMetaTags = vector<Tag>(), int aiCount = 1 );
+      const vector<Tag>& alstAttrs = vector<Tag>(),
+      const vector<Tag>& alstMetaTags = vector<Tag>(), int aiCount = 1 );
 
-   static string CmdAppendCount(const string& aszCmd, int Count);
+   static string CmdAppendCount( const string& aszCmd, int Count );
 
-   static string DeltaRemovedUID( const string& aszUID );
-   static string DeltaAddUID( const string& aszUID );
-   static string DeltaChangeUIDs( const string& aszUID, const string& aszUID2 );
+   static string DeltaRemoveCmdString( const string& aszCardName, const vector<Tag>& avecUIDs );
+   static string DeltaAddCmdString( const string& aszCardName, const vector<Tag>& avecUIDs );
+   static string DeltaCmdString( const string& aszCmd, const string& aszCardName, const vector<Tag>& avecUIDs );
 
-   static Tag DeltaChangedToUID( const string& aszDelta );
-   static string DeltaRemoveToUID( const string& aszDelta );
-   static string DeltaAddToUID( const string& aszDelta );
-
-   static string GetNameFromCardLine(const string& aszLongIdentifier);
-   static string FindTagInList(const vector<Tag>& avecList, const string& aszKey);
+   static string GetNameFromCardLine( const string& aszLongIdentifier );
+   static string FindTagInList( const vector<Tag>& avecList, const string& aszKey );
 
    static string GetUIDKey();
    static string GetSessionKey();
@@ -90,11 +86,11 @@ public:
    static bool IsCollectionOverheadPropertyLine( const string& aszLine );
 public:
    template<class Iter> static
-   bool ListToDelimStr( const Iter aptBegin,
-                        const Iter aptEnd,
-                        string& rszResult,
-                        const string& aszIndicatorString = "*",
-                        const string& aszDelim = "::" )
+      bool ListToDelimStr( const Iter aptBegin,
+         const Iter aptEnd,
+         string& rszResult,
+         const string& aszIndicatorString = "*",
+         const string& aszDelim = "::" )
    {
       string szResult = aszIndicatorString;
       Iter iter = aptBegin;
@@ -103,14 +99,14 @@ public:
          szResult += *iter;
          szResult += aszDelim;
       }
-      rszResult = szResult.substr(0, szResult.size()-aszDelim.size());
+      rszResult = szResult.substr( 0, szResult.size() - aszDelim.size() );
       return true;
    }
 
    template<class Iter> static
-   bool PairListToTagStr( const Iter aptBegin,
-                          const Iter aptEnd,
-                          string& rszResult )
+      bool PairListToTagStr( const Iter aptBegin,
+         const Iter aptEnd,
+         string& rszResult )
    {
       string szResult = "{ ";
       Iter iter = aptBegin;
@@ -126,4 +122,3 @@ public:
       return true;
    }
 };
-
