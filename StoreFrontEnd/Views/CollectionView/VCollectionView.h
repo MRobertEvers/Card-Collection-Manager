@@ -13,14 +13,39 @@ class VCardView;
 class CardInterface;
 class CCollectionView;
 
+class IRendererItem : public IGroupItem
+{
+public:
+   virtual std::string GetHash() const = 0;
+
+   // Supports multiple UIDs per hash or name.
+   virtual bool RepresentsUID( const std::string& aszKey ) const = 0 ;
+
+   // IGroupItem
+   virtual std::string GetName() const = 0;
+   virtual std::string GetMetaTag( const std::string& aszKey ) const = 0;
+   virtual std::string GetAttribute( const std::string& aszKey ) const = 0;
+};
+
 class GroupRenderer
 {
 public:
    // Returns true if the item was successfully removed.
-   virtual void Draw( std::vector<CardInterface*> avecItemData ) = 0;
+   virtual void Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData ) = 0;
 
-   virtual bool RemoveItem( CardInterface* aptItem ) = 0;
-   virtual void AddItem( CardInterface* aptItem ) = 0;
+   virtual bool RemoveItem( std::shared_ptr<IRendererItem> aptItem ) = 0;
+   virtual void AddItem( std::shared_ptr<IRendererItem> aptItem ) = 0;
+};
+
+class FlexibleGroupRenderer : public GroupRenderer
+{
+public:
+   // Default Item lookup provided here.
+   virtual void InitRenderer( std::vector<std::shared_ptr<IRendererItem>> avecItemData );
+   virtual std::shared_ptr<IRendererItem> LookupItem( const std::string& aszDisplay, const std::string& aszUID );
+
+private:
+   std::multimap<std::string, std::shared_ptr<IRendererItem>> m_mapLookup;
 };
 
 // The renderer must be set before trying to show cardviewer etc.

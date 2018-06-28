@@ -1,5 +1,5 @@
 #include "CubeRenderer.h"
-#include "..\StoreFrontEnd\CardInterface.h"
+#include "../StoreFrontEnd/CardInterface.h"
 #include <algorithm>
 
 using namespace std;
@@ -74,7 +74,7 @@ CubeRenderer::~CubeRenderer()
 }
 
 void
-CubeRenderer::Draw( std::vector<CardInterface*> avecItemData )
+CubeRenderer::Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData )
 {
    this->Freeze();
    for( auto& existing : m_mapColumns )
@@ -84,12 +84,14 @@ CubeRenderer::Draw( std::vector<CardInterface*> avecItemData )
    m_mapColumns.clear();
 
    uiBuildColumns( avecItemData );
+  
+   InitRenderer( avecItemData );
    this->Thaw();
 }
 
 // Returns true if the item was successfully removed.
 bool
-CubeRenderer::RemoveItem( CardInterface* aptItem )
+CubeRenderer::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
    auto szGroup = GetGrouping().GetGroup( *aptItem );
    auto iter_findgroup = m_mapColumns.find( szGroup );
@@ -104,7 +106,7 @@ CubeRenderer::RemoveItem( CardInterface* aptItem )
 }
 
 void
-CubeRenderer::AddItem( CardInterface* aptItem )
+CubeRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
    auto szGroup = GetGrouping().GetGroup( *aptItem );
    auto iter_findgroup = m_mapColumns.find( szGroup );
@@ -149,9 +151,9 @@ CubeRenderer::uiGetColumnRenderer( const wxString& aszGroupName, const Group& aG
 }
 
 void
-CubeRenderer::uiBuildColumns( vector<CardInterface*> avecItems )
+CubeRenderer::uiBuildColumns( vector<std::shared_ptr<IRendererItem>> avecItems )
 {
-   map<wxString, vector<CardInterface*>, Group::Sorting> mapGroups( *GetGrouping().GetSortingFunctor() );
+   map<wxString, vector<std::shared_ptr<IRendererItem>>, Group::Sorting> mapGroups( *GetGrouping().GetSortingFunctor() );
 
    for( auto& data : avecItems )
    {
@@ -168,7 +170,7 @@ CubeRenderer::uiBuildColumns( vector<CardInterface*> avecItems )
 }
 
 void 
-CubeRenderer::uiAddColumn( const wxString& aszColumnName, vector<CardInterface*> avecItemData )
+CubeRenderer::uiAddColumn( const wxString& aszColumnName, vector<std::shared_ptr<IRendererItem>> avecItemData )
 {
    auto grouping = GetGrouping();
    auto ptColumn = uiGetColumnRenderer( aszColumnName, grouping.GetSubGroup(aszColumnName) );
@@ -265,6 +267,7 @@ CubeRenderer::uiGetColumnColor( const wxString& aszColumnName )
 
    return wxColour();
 }
+
 
 wxBEGIN_EVENT_TABLE( ColoredGroupColumnRenderer, wxInfiniteGrid )
 EVT_SIZE( ColoredGroupColumnRenderer::onResize )
@@ -375,12 +378,12 @@ ColoredGroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
 }
 
 DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSource, wxString aszGroupName, Group aGroup,
-                            std::vector<CardInterface*> avecItems, DisplayGroup* aParent )
+                            std::vector<std::shared_ptr<IRendererItem>> avecItems, DisplayGroup* aParent )
    : m_pRenderer( apRenderer ), m_pSource(apSource), m_Group(aGroup), m_Parent(aParent), m_szGroupName(aszGroupName)
 {
    if( !aGroup.IsEmpty() )
    {
-      auto tmpMap = std::map<wxString, std::vector<CardInterface*>, Group::Sorting>( *aGroup.GetSortingFunctor() );
+      auto tmpMap = std::map<wxString, std::vector<std::shared_ptr<IRendererItem>>, Group::Sorting>( *aGroup.GetSortingFunctor() );
       m_mapChildren = std::map<wxString, DisplayGroup*, Group::Sorting>( *aGroup.GetSortingFunctor() );
 
       for( auto& data : avecItems )
@@ -423,7 +426,7 @@ DisplayGroup::~DisplayGroup()
 }
 
 bool 
-DisplayGroup::RemoveItem( CardInterface* aptItem )
+DisplayGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
    if( m_setItems.size() > 0 )
    {
@@ -476,7 +479,7 @@ DisplayGroup::RemoveItem( CardInterface* aptItem )
 }
 
 void 
-DisplayGroup::AddItem( CardInterface* aptItem )
+DisplayGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
    auto szGroup = m_Group.GetGroup( *aptItem );
    auto subGroup = m_Group.GetSubGroup( szGroup );
@@ -496,7 +499,7 @@ DisplayGroup::AddItem( CardInterface* aptItem )
    }
 }
 
-CardInterface* 
+std::shared_ptr<IRendererItem> 
 DisplayGroup::GetItem( unsigned int auiItemRow )
 {
    auto iFirstItem = (unsigned int)GetFirstItemRow();
@@ -656,7 +659,7 @@ TypeGroup::TypeGroup( ColumnRenderer* apRenderer,
                       DisplayNodeSource* apSource,
                       wxString aszGroupName,
                       Group aGroup,
-                      vector<CardInterface*> avecItems,
+                      vector<std::shared_ptr<IRendererItem>> avecItems,
                       DisplayGroup* aParent )
    : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent), m_bHasDrawnLast(false), m_bHasDrawnHeader(false)
 {
@@ -786,7 +789,7 @@ CMCGroup::CMCGroup( ColumnRenderer* apRenderer,
                     DisplayNodeSource* apSource,
                     wxString aszGroupName,
                     Group aGroup,
-                    vector<CardInterface*> avecItems,
+                    vector<std::shared_ptr<IRendererItem>> avecItems,
                     DisplayGroup* aParent )
    : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent), m_bHasDrawnFirst(false)
 {
@@ -891,7 +894,7 @@ OrderedSubgroupColumnRenderer::~OrderedSubgroupColumnRenderer()
 }
 
 void 
-OrderedSubgroupColumnRenderer::Draw( vector<CardInterface*> avecItemData )
+OrderedSubgroupColumnRenderer::Draw( vector<std::shared_ptr<IRendererItem>> avecItemData )
 {
    m_Root = new RootGroup( this, this, m_Group, avecItemData );
 
@@ -902,7 +905,7 @@ OrderedSubgroupColumnRenderer::Draw( vector<CardInterface*> avecItemData )
 }
 
 bool 
-OrderedSubgroupColumnRenderer::RemoveItem( CardInterface* aptItem )
+OrderedSubgroupColumnRenderer::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
    if( m_Root->RemoveItem( aptItem ) )
    {
@@ -913,7 +916,7 @@ OrderedSubgroupColumnRenderer::RemoveItem( CardInterface* aptItem )
 }
 
 void 
-OrderedSubgroupColumnRenderer::AddItem( CardInterface* aptItem )
+OrderedSubgroupColumnRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
    m_Root->AddItem( aptItem );
    this->SetColLabelValue( 0, uiGetDisplayTitle() );
@@ -923,7 +926,7 @@ DisplayGroup*
 OrderedSubgroupColumnRenderer::GetDisplayGroup( int aiType,
                                                 wxString aszGroupName,
                                                 Group aGroup,
-                                                std::vector<CardInterface*> avecItems,
+                                                std::vector<std::shared_ptr<IRendererItem>> avecItems,
                                                 DisplayGroup* aParent )
 {
    if( aiType == 1 )
@@ -944,7 +947,7 @@ OrderedSubgroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
    auto pClickedItem = m_Root->GetItem( iSelectedRow );
    if( pClickedItem != nullptr )
    {
-      awxEvt.SetClientData( pClickedItem );
+      awxEvt.SetClientData( &*pClickedItem );
       awxEvt.Skip();
    }
 }
@@ -968,7 +971,7 @@ MultiDistinctGroupColumnRenderer::~MultiDistinctGroupColumnRenderer()
 
 // ColoredGroupColumnRenderer
 void 
-MultiDistinctGroupColumnRenderer::Draw( std::vector<CardInterface*> avecItemData )
+MultiDistinctGroupColumnRenderer::Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData )
 {
    m_Root = new RootGroup( this, this, m_Group, avecItemData );
 
@@ -979,7 +982,7 @@ MultiDistinctGroupColumnRenderer::Draw( std::vector<CardInterface*> avecItemData
 }
 
 bool 
-MultiDistinctGroupColumnRenderer::RemoveItem( CardInterface* aptItem )
+MultiDistinctGroupColumnRenderer::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
    if( m_Root->RemoveItem( aptItem ) )
    {
@@ -990,7 +993,7 @@ MultiDistinctGroupColumnRenderer::RemoveItem( CardInterface* aptItem )
 }
 
 void 
-MultiDistinctGroupColumnRenderer::AddItem( CardInterface* aptItem )
+MultiDistinctGroupColumnRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
    m_Root->AddItem( aptItem );
    this->SetColLabelValue( 0, uiGetDisplayTitle() );
@@ -999,7 +1002,7 @@ MultiDistinctGroupColumnRenderer::AddItem( CardInterface* aptItem )
 // DisplayNodeSource
 DisplayGroup* 
 MultiDistinctGroupColumnRenderer::GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
-                                                   std::vector<CardInterface*> avecItems,
+                                                   std::vector<std::shared_ptr<IRendererItem>> avecItems,
                                                    DisplayGroup* aParent )
 {
    if( aiType == 1 )
@@ -1015,7 +1018,7 @@ MultiDistinctGroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
    auto pClickedItem = m_Root->GetItem( iSelectedRow );
    if( pClickedItem != nullptr )
    {
-      awxEvt.SetClientData( pClickedItem );
+      awxEvt.SetClientData( &*pClickedItem );
       awxEvt.Skip();
    }
    ColoredGroupColumnRenderer::onItemClicked( awxEvt );
@@ -1032,7 +1035,7 @@ GuildGroup::GuildGroup( ColumnRenderer* apRenderer,
                         DisplayNodeSource* apSource,
                         wxString aszGroupName,
                         Group aGroup,
-                        std::vector<CardInterface*> avecItems,
+                        std::vector<std::shared_ptr<IRendererItem>> avecItems,
                         DisplayGroup* aParent )
    : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent ), 
    m_bHasDrawnHeader( false ),
@@ -1137,4 +1140,61 @@ GuildGroup::GetTotalOverhead()
    }
 
    return iSize;
+}
+
+// Make a copy... TODO: Something better.
+RendererItem::RendererItem( CardInterface * apIFace )
+   : m_pCard( std::shared_ptr<CardInterface>( new CardInterface(*apIFace) ) ) 
+{
+
+}
+
+RendererItem::~RendererItem()
+{
+}
+
+CardInterface *
+RendererItem::GetBase()
+{
+   return m_pCard.get();
+}
+
+std::string
+RendererItem::GetHash() const
+{
+   return m_pCard->GetHash();
+}
+
+bool 
+RendererItem::RepresentsUID(const std::string& aszUID) const
+{
+   bool bMatch = false;
+   for( auto& szUID : m_pCard->GetRepresentingUIDs() )
+   {
+      if( szUID == aszUID )
+      {
+         bMatch = true;
+         break;
+      }
+   }
+
+   return bMatch;
+}
+
+std::string
+RendererItem::GetName() const
+{
+   return m_pCard->GetName();
+}
+
+std::string
+RendererItem::GetMetaTag( const std::string & aszKey ) const
+{
+   return m_pCard->GetMetaTag( aszKey );
+}
+
+std::string
+RendererItem::GetAttribute( const std::string & aszKey ) const
+{
+   return m_pCard->GetAttribute( aszKey );
 }

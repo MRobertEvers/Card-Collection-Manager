@@ -1,15 +1,17 @@
 #pragma once
+#include "Group.h"
 #include <string>
 #include <vector>
 class CollectionInterface;
 
 // This should only ever represent cards of the same hash!
 // GetMetaTag offers a UID field if you want to see Tracking/Hidden Uids.
-class CardInterface
+class CardInterface : public IGroupItem
 {
 public:
    CardInterface() {};
    CardInterface(const std::string& aszCardLine, CollectionInterface* apParent);
+   CardInterface( const std::string& aszName, const std::string& aszUID, CollectionInterface* apParent );
    ~CardInterface();
 
    int GetNumber() const;
@@ -22,7 +24,8 @@ public:
    std::string GetCMC() const;
    std::string GetCardType() const;
    std::string GetSet() const;
-   std::string GetMetaTag( const std::string& aszKey, const std::string& aszUID = "" ) const;
+   std::string GetMetaTag( const std::string& aszKey ) const;
+   std::string GetMetaTag( const std::string& aszKey, const std::string& aszUID) const;
    std::string GetAttribute( const std::string& aszKey ) const;
 
    // These modify the collection interface to add a new CardInterface to represent it.

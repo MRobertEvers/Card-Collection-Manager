@@ -2,8 +2,15 @@
 #include <wx/wxprec.h>
 #include <map>
 #include <memory>
+#include <string>
 
-class CardInterface;
+class IGroupItem
+{
+public:
+   virtual std::string GetName() const = 0;
+   virtual std::string GetMetaTag( const std::string& aszKey ) const = 0;
+   virtual std::string GetAttribute( const std::string& aszKey ) const = 0;
+};
 
 class Group
 {
@@ -29,7 +36,13 @@ public:
    public:
       ItemSorting();
       ItemSorting( SortingOperator* aptSorting );
-      virtual bool operator()( const CardInterface* agrpLeft, const CardInterface* agrpRight ) const;
+
+      template<typename T>
+      bool operator()( const T agrpLeft, const T agrpRight ) const
+      {
+         return (*m_ptSorter)(agrpLeft->GetName(), agrpRight->GetName());
+      }
+
    private:
       std::shared_ptr<SortingOperator> m_ptSorter;
    };
@@ -52,7 +65,7 @@ public:
    Group& SetGroupSortingFunctor( SortingOperator* aptFunctor );
    Group& SetItemSortingFunctor( SortingOperator* aptFunctor );
 
-   wxString GetGroup( const CardInterface& aData ) const;
+   wxString GetGroup( const IGroupItem& aData ) const;
    Group GetSubGroup( const wxString& aszGroup ) const;
    std::shared_ptr<Sorting> GetSortingFunctor() const;
    std::shared_ptr<ItemSorting> GetItemSortingFunctor() const;

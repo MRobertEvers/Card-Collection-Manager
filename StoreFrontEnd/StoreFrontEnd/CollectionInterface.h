@@ -5,17 +5,23 @@
 #include <vector>
 #include <list>
 #include <map>
-
-class CollectionDelta
+class CollectionInterface;
+class CollectionInterfaceSet
 {
 public:
-   CollectionDelta( const std::vector<std::string>& avecChangedUIDs );
-   ~CollectionDelta();
+   CollectionInterfaceSet( CollectionInterface* apParent );
+   ~CollectionInterfaceSet();
 
+   void BulkLoad( const std::vector<std::string>& avecNew );
+   std::pair<std::string, std::string> AddItem( const std::string& aszName, const std::string& aszUID );
+   std::pair<std::string, std::string> RemoveItem( const std::string& aszName, const std::string& aszUID );
+
+   std::list<CardInterface>& GetItemInterfaces();
 private:
-   std::vector<std::string> m_vecAdded;
-   std::vector<std::string> m_vecRemoved;
-   std::vector<std::pair<std::string, std::string>> m_vecChanged;
+   CollectionInterface* m_pParent;
+   std::list<CardInterface> m_lstCopies;
+   std::map<std::string, std::map<std::string, std::list<CardInterface>::iterator>> m_mapUIDName;
+   std::multimap<std::string, std::list<CardInterface>::iterator> m_mapHash;
 };
 
 class CollectionInterface
@@ -33,7 +39,7 @@ public:
 
 private:
    std::string m_szColId;
-   std::list<CardInterface> m_vecCopies;
+   CollectionInterfaceSet m_Set;
    Query m_LastQuery;
 };
 

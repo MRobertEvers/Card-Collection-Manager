@@ -197,9 +197,6 @@
     <ClCompile Include="include\json\jsoncpp.cpp">
       <Filter>Libraries</Filter>
     </ClCompile>
-    <ClCompile Include="Views\CollectionView\CCollectionView.cpp">
-      <Filter>Views\CollectionView</Filter>
-    </ClCompile>
     <ClCompile Include="Views\CollectionView\CollectionView.cpp">
       <Filter>Views\CollectionView</Filter>
     </ClCompile>
@@ -241,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="Views\CardInventoryViewer\VCardInventoryViewer.cpp">
       <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionView\CCollectionView.cpp">
+      <Filter>Views\CollectionView</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

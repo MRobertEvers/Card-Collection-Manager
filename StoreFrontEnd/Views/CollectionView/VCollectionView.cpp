@@ -1,5 +1,6 @@
 #include "VCollectionView.h"
 #include "CCollectionView.h"
+#include "CubeRenderer.h"
 #include "../Views/CardView/VCardView.h"
 #include "../Views/CollectionEditor/viCollectionEditor.h"
 
@@ -64,7 +65,12 @@ VCollectionView::Draw( std::vector<CardInterface*> avecItemData )
 {
    if( m_ptRenderer != nullptr )
    {
-      m_ptRenderer->Draw( avecItemData );
+      std::vector<std::shared_ptr<IRendererItem>> vecItems;
+      for( auto& ptr : avecItemData )
+      {
+         vecItems.push_back( std::shared_ptr<IRendererItem>(new RendererItem(ptr) ) );
+      }
+      m_ptRenderer->Draw( vecItems );
    }
 }
 
@@ -101,10 +107,36 @@ VCollectionView::onCollectionEditorAccept( wxCommandEvent& awxEvt )
 void 
 VCollectionView::onItemClicked( wxGridEvent& awxEvt )
 {
-   auto pItem = dynamic_cast<CardInterface*>((CardInterface*)awxEvt.GetClientData());
+   auto pItem = dynamic_cast<RendererItem*>((RendererItem*)awxEvt.GetClientData());
    if( pItem != nullptr )
    {
-      m_ptController->ViewItem( pItem );
+      m_ptController->ViewItem( pItem->GetBase() );
    }
    awxEvt.Skip();
+}
+
+void
+FlexibleGroupRenderer::InitRenderer( std::vector<std::shared_ptr<IRendererItem>> avecItemData )
+{
+   for( auto& item : avecItemData )
+   {
+      m_mapLookup.insert( std::make_pair( item->GetName(), item ) );
+   }
+}
+
+std::shared_ptr<IRendererItem> 
+FlexibleGroupRenderer::LookupItem( const std::string & aszDisplay, const std::string & aszUID )
+{
+   auto pair_item_range = m_mapLookup.equal_range( aszDisplay );
+   for( auto iter_named = pair_item_range.first;
+        iter_named != pair_item_range.second;
+        iter_named++ )
+   {
+      if( iter_named->second->RepresentsUID( aszUID ) )
+      {
+         return iter_named->second;
+      }
+   }
+
+   return std::shared_ptr<IRendererItem>();
 }

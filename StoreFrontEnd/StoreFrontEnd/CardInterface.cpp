@@ -32,6 +32,14 @@ CardInterface::CardInterface( const string& aszCardLine, CollectionInterface* ap
    }
 }
 
+CardInterface::CardInterface( const std::string & aszName, const std::string & aszUID, CollectionInterface * apParent )
+   : m_pCollection(apParent)
+{
+   m_iCount = 1;
+   m_szName = aszName;
+   m_vecRepresentingUIDs.push_back( aszUID );
+}
+
 
 CardInterface::~CardInterface()
 {
@@ -115,6 +123,12 @@ CardInterface::GetSet() const
 {
    auto ptSF = StoreFrontEnd::Server();
    return ptSF->GetIdentifyingAttribute( m_szName, GetFirstUID(), "set" );
+}
+
+string 
+CardInterface::GetMetaTag( const string & aszKey ) const
+{
+   return GetMetaTag(aszKey, "");
 }
 
 string

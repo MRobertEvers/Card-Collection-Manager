@@ -9,20 +9,42 @@
 #include <map>
 #include <set>
 
-class CardInterface;
 class ColoredGroupColumnRenderer;
 
-class CubeRenderer : public wxScrolledWindow, public GroupRenderer
+class RendererItem : public IRendererItem
+{
+public:
+   RendererItem( CardInterface* apIFace );
+   ~RendererItem();
+
+   CardInterface* GetBase();
+
+   // Inherited via IRendererItem
+   virtual std::string GetHash() const override;
+
+   virtual bool RepresentsUID( const std::string& aszKey ) const override;
+
+   virtual std::string GetName() const override;
+
+   virtual std::string GetMetaTag( const std::string & aszKey ) const override;
+
+   virtual std::string GetAttribute( const std::string & aszKey ) const override;
+
+private:
+   std::shared_ptr<CardInterface> m_pCard;
+};
+
+class CubeRenderer : public wxScrolledWindow, public FlexibleGroupRenderer
 {
 public:
    CubeRenderer( wxPanel* aParent, wxWindowID aiWID );
    virtual ~CubeRenderer();
 
-   void Draw( std::vector<CardInterface*> avecItemData );
+   void Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData );
 
    // Returns true if the item was successfully removed.
-   virtual bool RemoveItem( CardInterface* aptItem );
-   virtual void AddItem( CardInterface* aptItem );
+   virtual bool RemoveItem( std::shared_ptr<IRendererItem> aptItem );
+   virtual void AddItem( std::shared_ptr<IRendererItem> aptItem );
 
    Group GetGrouping();
 
@@ -30,9 +52,9 @@ protected:
    virtual ColoredGroupColumnRenderer* uiGetColumnRenderer( const wxString& aszColumnName, const Group& aGroup );
 
 private:
-   void uiBuildColumns( std::vector<CardInterface*> avecItemData );
+   void uiBuildColumns( std::vector<std::shared_ptr<IRendererItem>> avecItemData );
    void uiAddColumn( const wxString& aszColumnName,
-                     std::vector<CardInterface*> avecItemData );
+                     std::vector<std::shared_ptr<IRendererItem>> avecItemData );
    void uiBuildGrouping();
    wxColour uiGetColumnColor( const wxString& aszColumnName );
 
@@ -43,7 +65,7 @@ private:
 class ColumnRenderer
 {
 public:
-   virtual void Draw( std::vector<CardInterface*> avecItemData ) = 0;
+   virtual void Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData ) = 0;
 
    virtual int DisplayItem( const wxString& buf, const wxString& aszHash,
                             const wxFont& awxFont,
@@ -67,15 +89,15 @@ public:
                                const Group& aGroup );
    virtual ~ColoredGroupColumnRenderer();
 
-   virtual bool RemoveItem( CardInterface* aptItem ) = 0;
-   virtual void AddItem( CardInterface* aptItem ) = 0;
+   virtual bool RemoveItem( std::shared_ptr<IRendererItem> aptItem ) = 0;
+   virtual void AddItem( std::shared_ptr<IRendererItem> aptItem ) = 0;
 
    void SetTitle( const wxString& aszTitle );
    void SetBackgroundColor( const wxColour& aColour );
    void SetFontColor( const wxColour& aColour );
 
    /* ColumnRenderer */
-   void Draw( std::vector<CardInterface*> avecItemData ) = 0;
+   void Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData ) = 0;
    virtual int DisplayItem( const wxString& buf, const wxString& aszHash,
                             const wxFont& awxFont, 
                             bool abAlignCenter = false, 
@@ -104,7 +126,7 @@ class DisplayNodeSource
 {
 public:
    virtual DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
-                                          std::vector<CardInterface*> avecItems,
+                                          std::vector<std::shared_ptr<IRendererItem>> avecItems,
                                           DisplayGroup* aParent ) = 0;
 };
 
@@ -115,13 +137,13 @@ public:
                  DisplayNodeSource* apSource,
                  wxString aszGroupName,
                  Group aGroup,
-                 std::vector<CardInterface*> avecItems,
+                 std::vector<std::shared_ptr<IRendererItem>> avecItems,
                  DisplayGroup* aParent = nullptr );
    virtual ~DisplayGroup();
 
-   bool RemoveItem( CardInterface* aptItem );
-   void AddItem( CardInterface* aptItem );
-   CardInterface* GetItem( unsigned int auiItemRow );
+   bool RemoveItem( std::shared_ptr<IRendererItem> aptItem );
+   void AddItem( std::shared_ptr<IRendererItem> aptItem );
+   std::shared_ptr<IRendererItem> GetItem( unsigned int auiItemRow );
 
    // Returns all overhead plus the size of children.
    virtual int GetTotalOverhead() = 0;
@@ -145,8 +167,8 @@ public:
    ColumnRenderer* m_pRenderer;
    DisplayGroup* m_Parent;
    DisplayNodeSource* m_pSource;
-   std::map<CardInterface*, bool> m_mapDrawnItems;
-   std::multiset<CardInterface*, Group::ItemSorting> m_setItems;
+   std::map<std::shared_ptr<IRendererItem>, bool> m_mapDrawnItems;
+   std::multiset<std::shared_ptr<IRendererItem>, Group::ItemSorting> m_setItems;
 
    // Delete the groups when done.
    std::map<wxString, DisplayGroup*, Group::Sorting> m_mapChildren;
@@ -158,7 +180,7 @@ public:
    RootGroup( ColumnRenderer* apRenderer,
               DisplayNodeSource* apSource,
               Group aGroup,
-              std::vector<CardInterface*> avecItems,
+              std::vector<std::shared_ptr<IRendererItem>> avecItems,
               wxString aszGroupName = "",
               DisplayGroup* aParent = nullptr )
       : DisplayGroup(apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent) {}
@@ -176,13 +198,13 @@ public:
    virtual ~OrderedSubgroupColumnRenderer();
 
    // ColoredGroupColumnRenderer
-   void Draw( std::vector<CardInterface*> avecItemData ) override;
-   virtual bool RemoveItem( CardInterface* aptItem ) override;
-   virtual void AddItem( CardInterface* aptItem ) override;
+   void Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData ) override;
+   virtual bool RemoveItem( std::shared_ptr<IRendererItem> aptItem ) override;
+   virtual void AddItem( std::shared_ptr<IRendererItem> aptItem ) override;
 
    // DisplayNodeSource
    DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
-                                  std::vector<CardInterface*> avecItems,
+                                  std::vector<std::shared_ptr<IRendererItem>> avecItems,
                                   DisplayGroup* aParent ) override;
    
 protected:
@@ -193,7 +215,7 @@ protected:
                  DisplayNodeSource* apSource,
                  wxString aszGroupName,
                  Group aGroup,
-                 std::vector<CardInterface*> avecItems,
+                 std::vector<std::shared_ptr<IRendererItem>> avecItems,
                  DisplayGroup* aParent = nullptr );
 
       virtual ~TypeGroup();
@@ -218,7 +240,7 @@ protected:
                 DisplayNodeSource* apSource,
                 wxString aszGroupName,
                 Group aGroup,
-                std::vector<CardInterface*> avecItems,
+                std::vector<std::shared_ptr<IRendererItem>> avecItems,
                 DisplayGroup* aParent = nullptr );
 
       virtual ~CMCGroup();
@@ -248,13 +270,13 @@ public:
    ~MultiDistinctGroupColumnRenderer();
 
    // ColoredGroupColumnRenderer
-   void Draw( std::vector<CardInterface*> avecItemData ) override;
-   virtual bool RemoveItem( CardInterface* aptItem ) override;
-   virtual void AddItem( CardInterface* aptItem ) override;
+   void Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData ) override;
+   virtual bool RemoveItem( std::shared_ptr<IRendererItem> aptItem ) override;
+   virtual void AddItem( std::shared_ptr<IRendererItem> aptItem ) override;
 
    // DisplayNodeSource
    DisplayGroup* GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
-                                  std::vector<CardInterface*> avecItems,
+                                  std::vector<std::shared_ptr<IRendererItem>> avecItems,
                                   DisplayGroup* aParent ) override;
 
 protected:
@@ -265,7 +287,7 @@ protected:
                   DisplayNodeSource* apSource,
                   wxString aszGroupName,
                   Group aGroup,
-                  std::vector<CardInterface*> avecItems,
+                  std::vector<std::shared_ptr<IRendererItem>> avecItems,
                   DisplayGroup* aParent = nullptr );
 
       virtual ~GuildGroup();
