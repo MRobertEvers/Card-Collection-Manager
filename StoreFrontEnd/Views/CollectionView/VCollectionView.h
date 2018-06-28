@@ -68,6 +68,9 @@ public:
 
    void Draw( std::vector<CardInterface*> avecItemData );
 
+   void Undraw( const wxString& aszDisplay, const wxString& aszUID );
+   void Draw( CardInterface* apNew );
+
    void ShowCardViewer( IViewFactory* aptViewer );
    void ShowCardInventoryViewer( IViewFactory* aptViewer );
 

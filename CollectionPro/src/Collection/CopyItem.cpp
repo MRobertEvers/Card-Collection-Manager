@@ -166,6 +166,10 @@ CopyItem::GetMetaTag( const string& aszKey, MetaTag::Type atagType ) const
    {
       return oFound->second.GetVal( atagType );
    }
+   else if( aszKey == MetaTag::GetHashKey() )
+   {
+      return GetHash();
+   }
    else
    {
       return Config::NotFoundString;

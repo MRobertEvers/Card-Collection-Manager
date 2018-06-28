@@ -125,12 +125,17 @@ CCollectionView::OnCollectionEdited()
 void 
 CCollectionView::OnCollectionEdited( std::shared_ptr<CollectionDelta> apDelta )
 {
-   for( auto& item : apDelta->GetAdded() )
+   auto resolution = m_ptModel->Refresh( apDelta );
+
+   // TODO: Check if last query collapsed.
+   for( auto& item : resolution->GetAdded() )
    {
-      for( auto& uid : item.second )
-      {
-         //m_ptView->RemoveI
-      }
+      m_ptView->Draw( &*item );
+   }
+
+   for( auto& item : resolution->GetRemoved() )
+   {
+      m_ptView->Undraw( item.first, item.second );
    }
 }
 

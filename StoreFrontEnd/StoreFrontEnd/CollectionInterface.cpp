@@ -59,6 +59,12 @@ CollectionInterface::Refresh()
    m_Set.BulkLoad( lstCol );
 }
 
+std::shared_ptr<CollectionDeltaResolution>
+CollectionInterface::Refresh( std::shared_ptr<CollectionDelta> apDelta )
+{
+   return m_Set.Refresh( apDelta );
+}
+
 CollectionInterfaceSet::CollectionInterfaceSet( CollectionInterface* apParent )
    : m_pParent(apParent)
 {
@@ -68,7 +74,61 @@ CollectionInterfaceSet::~CollectionInterfaceSet()
 {
 }
 
-void 
+std::shared_ptr<CollectionDeltaResolution>
+CollectionInterfaceSet::Refresh( std::shared_ptr<CollectionDelta> apDelta )
+{
+   auto ret = std::shared_ptr<CollectionDeltaResolution>( new CollectionDeltaResolution() );
+
+   // TODO: Handle if collapsed or not...
+   for( auto& added : apDelta->GetAdded() )
+   {
+      auto iter_name = m_mapUIDName.find( added.first );
+      if( iter_name != m_mapUIDName.end() )
+      {
+         // Check if we have it first.
+         for( auto& uid : added.second )
+         {
+            auto iter_uid = iter_name->second.find( uid );
+            if( iter_uid == iter_name->second.end() )
+            {
+               auto iter_added = AddItem( added.first, uid );
+               ret->AddAdd( iter_added );
+            }
+         }
+      }
+      else
+      {
+         // Add all of them
+         for( auto& uid : added.second )
+         {
+            auto iter_added = AddItem( added.first, uid );
+            ret->AddAdd( iter_added );
+         }
+      }
+   }
+
+   for( auto& removed : apDelta->GetRemoved() )
+   {
+      auto iter_name = m_mapUIDName.find( removed.first );
+      if( iter_name != m_mapUIDName.end() )
+      {
+         // Check if we have it first.
+         for( auto& uid : removed.second )
+         {
+            auto iter_uid = iter_name->second.find( uid );
+            if( iter_uid == iter_name->second.end() )
+            {
+               auto iter_rem = RemoveItem( removed.first, uid );
+               ret->AddRemove( iter_rem.first, iter_rem.second );
+            }
+         }
+      }
+   }
+
+   return ret;
+}
+
+void
 CollectionInterfaceSet::BulkLoad( const std::vector<std::string>& avecNew )
 {
    m_lstCopies.clear();
@@ -87,20 +147,20 @@ CollectionInterfaceSet::BulkLoad( const std::vector<std::string>& avecNew )
    }
 }
 
-std::pair<std::string, std::string>
+std::list<CardInterface>::iterator
 CollectionInterfaceSet::AddItem( const std::string & aszName, const std::string & aszUID )
 {
    CardInterface tmp( aszName, aszUID, m_pParent );
 
    bool bNeedAdd = false;
-   std::pair<std::string, std::string> pairRetval;
+   std::list<CardInterface>::iterator iter_add;
    auto iter_name = m_mapUIDName.find( aszName );
    if( iter_name != m_mapUIDName.end() )
    {
       auto iter_uid = iter_name->second.find( aszUID );
       if( iter_uid != iter_name->second.end() )
       {
-         return pairRetval;
+         return iter_add;
       }
       else
       {
@@ -126,11 +186,10 @@ CollectionInterfaceSet::AddItem( const std::string & aszName, const std::string 
          m_mapUIDName[aszName][aszUID] = iter_insert;
       }
 
-      pairRetval.first = aszName;
-      pairRetval.second = aszUID;
+      iter_add = iter_insert;
    }
 
-   return pairRetval;
+   return iter_add;
 }
 
 std::pair<std::string, std::string>
@@ -242,4 +301,28 @@ CollectionDelta::GetRemoved()
 {
    // TODO: insert return statement here
    return m_mapRemoved;
+}
+
+void 
+CollectionDeltaResolution::AddRemove( const std::string & aszName, const std::string & aszUID )
+{
+   m_vecRemoved.push_back( std::make_pair( aszName, aszUID ) );
+}
+
+void 
+CollectionDeltaResolution::AddAdd( std::list<CardInterface>::iterator aIter )
+{
+   m_vecAdded.push_back( aIter );
+}
+
+std::vector<std::list<CardInterface>::iterator>& 
+CollectionDeltaResolution::GetAdded()
+{
+   return m_vecAdded;
+}
+
+std::vector<std::pair<std::string, std::string>>& 
+CollectionDeltaResolution::GetRemoved()
+{
+   return m_vecRemoved;
 }

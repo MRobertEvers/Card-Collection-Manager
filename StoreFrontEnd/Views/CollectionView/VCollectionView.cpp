@@ -74,6 +74,26 @@ VCollectionView::Draw( std::vector<CardInterface*> avecItemData )
    }
 }
 
+void
+VCollectionView::Undraw( const wxString & aszDisplay, const wxString & aszUID )
+{
+   auto iter_item = m_ptRenderer->LookupItem( aszDisplay.ToStdString(), aszUID.ToStdString() );
+   if( iter_item != nullptr )
+   {
+      m_ptRenderer->RemoveItem( iter_item );
+   }
+}
+
+void
+VCollectionView::Draw( CardInterface* apNew )
+{
+   for( auto& uid : apNew->GetRepresentingUIDs() )
+   {
+      Undraw( apNew->GetName(), uid );
+   }
+   m_ptRenderer->AddItem( std::shared_ptr<IRendererItem>( new RendererItem( apNew ) ) );
+}
+
 void 
 VCollectionView::ShowCardViewer( IViewFactory* aptViewer )
 {
@@ -111,16 +131,6 @@ VCollectionView::onCollectionEditorAccept( wxCommandEvent& awxEvt )
       auto myDelta = std::shared_ptr<CollectionDelta>( delta );
       // Take ownership of the data.
       m_ptController->OnCollectionEdited( myDelta );
-
-      // Todo extract
-      for( auto& item : delta->GetAdded() )
-      {
-         for( auto& uid : item.second )
-         {
-            auto iter_item = m_ptRenderer->LookupItem( item.first, uid );
-            m_ptRenderer->RemoveItem( iter_item );
-         }
-      }
    }
 }
 

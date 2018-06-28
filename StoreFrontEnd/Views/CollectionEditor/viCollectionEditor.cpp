@@ -1,6 +1,7 @@
 #include "viCollectionEditor.h"
 #include "vicCollectionEditorList.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
+#include "../StoreFrontEnd/CollectionInterface.h"
 #include <chrono>
 
 #define TIMER_ID 5
@@ -252,9 +253,11 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
    }
    if( vecCmds.size() > 0 )
    {
-      StoreFrontEnd::Server()->
+      auto vecChanges = StoreFrontEnd::Server()->
          SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
       m_vListView->ClearList();
+
+      awxEvt.SetClientData( new CollectionDelta( vecChanges ) );
    }
    m_vAddSelector->ResetOption();
    m_vRemSelector->ResetOption();

@@ -112,7 +112,7 @@ CubeRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
    auto iter_findgroup = m_mapColumns.find( szGroup );
    if( iter_findgroup != m_mapColumns.end() )
    {
-      //iter_findgroup->second->AddItem( aptItem );
+      iter_findgroup->second->AddItem( aptItem );
    }
    else
    {
