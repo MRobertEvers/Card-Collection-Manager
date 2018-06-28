@@ -53,7 +53,8 @@ CopyItem::CopyItem( const CopyItem& aCopy )
 string 
 CopyItem::GetHash() const
 {
-   if( m_bNeedHash )
+   if( ( m_bNeedHash ) ||
+       ( m_mapMetaTags.find(MetaTag::GetHashKey()) == m_mapMetaTags.end() ) )
    {
       CopyItem* self = const_cast<CopyItem*> (this);
       string szHashString = m_ptAddressBook->GetParent();

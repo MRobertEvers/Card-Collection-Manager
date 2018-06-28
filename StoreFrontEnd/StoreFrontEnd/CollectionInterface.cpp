@@ -116,7 +116,7 @@ CollectionInterfaceSet::Refresh( std::shared_ptr<CollectionDelta> apDelta )
          for( auto& uid : removed.second )
          {
             auto iter_uid = iter_name->second.find( uid );
-            if( iter_uid == iter_name->second.end() )
+            if( iter_uid != iter_name->second.end() )
             {
                auto iter_rem = RemoveItem( removed.first, uid );
                ret->AddRemove( iter_rem.first, iter_rem.second );
@@ -220,13 +220,20 @@ CollectionInterfaceSet::RemoveItem( const std::string & aszName, const std::stri
       auto iter_hrange = m_mapHash.equal_range( iter_found->GetHash() );
       for( auto iter_item = iter_hrange.first; iter_item != iter_hrange.second; iter_item++ )
       {
+         bool bBreak = false;
          for( auto& has_uid : iter_item->second->GetRepresentingUIDs() )
          {
             if( has_uid == aszUID )
             {
                m_mapHash.erase( iter_item );
+               bBreak = true;
                break;
             }
+         }
+
+         if( bBreak = true )
+         {
+            break;
          }
       }
 

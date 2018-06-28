@@ -481,21 +481,28 @@ DisplayGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 void 
 DisplayGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
-   auto szGroup = m_Group.GetGroup( *aptItem );
-   auto subGroup = m_Group.GetSubGroup( szGroup );
-   if( !subGroup.IsEmpty() )
+   if( !m_Group.IsEmpty() )
    {
-      // Do we have a group for this?
-      auto iter_sub = m_mapChildren.find( szGroup );
-      if( iter_sub != m_mapChildren.end() )
+      auto szGroup = m_Group.GetGroup( *aptItem );
+      if( !szGroup.IsEmpty() )
       {
-         iter_sub->second->AddItem( aptItem );
+         // Do we have a group for this?
+         auto iter_sub = m_mapChildren.find( szGroup );
+         if( iter_sub != m_mapChildren.end() )
+         {
+            iter_sub->second->AddItem( aptItem );
+         }
+         else
+         {
+            auto subGroup = m_Group.GetSubGroup( szGroup );
+            DisplayGroup* node = m_pSource->GetDisplayGroup( GetLevel(), szGroup, subGroup, { aptItem }, this );
+            m_mapChildren[szGroup] = node;
+         }
       }
-      else
-      {
-         DisplayGroup* node = m_pSource->GetDisplayGroup( GetLevel(), szGroup, subGroup, {aptItem}, this );
-         m_mapChildren[szGroup] = node;
-      }
+   }
+   else
+   {
+      m_setItems.insert( aptItem );
    }
 }
 

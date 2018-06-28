@@ -416,10 +416,11 @@ StringInterface::CmdCreateRemove( const string& aszLongName, const string& aszUI
    StringInterface szIface;
    // TODO: Factor this these cmds better.
    vector<Tag> pairvec = { make_pair( szIface.GetUIDKey(), aszUID ) };
-   string szRetVal;
-   PairListToTagStr( pairvec.begin(), pairvec.end(), szRetVal );
+   string szMeta;
+   PairListToTagStr( pairvec.begin(), pairvec.end(), szMeta );
 
-   szRetVal += "- " + GetNameFromCardLine( aszLongName ) + " : " + szRetVal;
+   string szRetVal;
+   szRetVal += "- " + GetNameFromCardLine( aszLongName ) + " : " + szMeta;
    if( aiCount > 1 )
    {
       CmdAppendCount( szRetVal, aiCount );

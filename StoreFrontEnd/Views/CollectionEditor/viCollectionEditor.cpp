@@ -230,7 +230,7 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
                                                 deltaItem.SelectionOne.ToStdString(),
                                                 deltaItem.Count );
       }
-      else if(deltaItem.DisplayTwo == "")
+      else if(deltaItem.DisplayTwo.IsEmpty())
       {
          // Its a remove
          szCmd =
