@@ -1,5 +1,6 @@
 #include "CollectionInterface.h"
 #include "StoreFrontEnd.h"
+#include <wx/wxprec.h>
 
 
 CollectionInterface::CollectionInterface( const std::string& aszColdID )
@@ -183,4 +184,62 @@ std::list<CardInterface>&
 CollectionInterfaceSet::GetItemInterfaces()
 {
    return m_lstCopies;
+}
+
+CollectionDelta::CollectionDelta( const std::vector<std::string>& avecChangedUIDs )
+{
+   for( auto& delta : avecChangedUIDs )
+   {
+      std::string szName;
+      unsigned int iCount;
+      std::vector<std::pair<std::string, std::string>> vecAttrs;
+      std::vector<std::pair<std::string, std::string>> vecUids;
+
+      int iCmd = delta.find_first_of( "+-" );
+      if( iCmd < 0 )
+      {
+         continue;
+      }
+
+      std::string szBase = delta.substr( iCmd+1 );
+      wxString base( szBase );
+      base.Trim();
+      szBase = base.ToStdString();
+
+      StringInterface::ParseCardLine( szBase, iCount, szName, vecAttrs, vecUids );
+
+      if( delta[iCmd] == '+' )
+      {
+         for( auto& uid : vecUids )
+         {
+            m_mapAdded[szName].push_back( uid.second );
+         }
+      }
+      else
+      {
+         for( auto& uid : vecUids )
+         {
+            m_mapRemoved[szName].push_back( uid.second );
+         }
+      }
+   }
+}
+
+CollectionDelta::~CollectionDelta()
+{
+}
+
+// Cardname, uids
+std::map<std::string, std::vector<std::string>>&
+CollectionDelta::GetAdded()
+{
+   // TODO: insert return statement here
+   return m_mapAdded;
+}
+
+std::map<std::string, std::vector<std::string>>&
+CollectionDelta::GetRemoved()
+{
+   // TODO: insert return statement here
+   return m_mapRemoved;
 }

@@ -43,7 +43,7 @@ VCollectionView::SetController( CCollectionView* aptController )
 
 // Takes ownership
 void 
-VCollectionView::SetRenderer( GroupRenderer* aptRenderer )
+VCollectionView::SetRenderer( FlexibleGroupRenderer* aptRenderer )
 {
    m_ptRenderer = aptRenderer;
 
@@ -100,7 +100,28 @@ VCollectionView::ShowCardInventoryViewer( IViewFactory* aptViewer )
 void 
 VCollectionView::onCollectionEditorAccept( wxCommandEvent& awxEvt )
 {
-   m_ptController->OnCollectionEdited();
+   // m_ptController->OnCollectionEdited();
+   CollectionDelta* delta = dynamic_cast<CollectionDelta*>((CollectionDelta*)awxEvt.GetClientData());
+   if( delta == nullptr )
+   {
+      m_ptController->OnCollectionEdited();
+   }
+   else
+   {
+      auto myDelta = std::shared_ptr<CollectionDelta>( delta );
+      // Take ownership of the data.
+      m_ptController->OnCollectionEdited( myDelta );
+
+      // Todo extract
+      for( auto& item : delta->GetAdded() )
+      {
+         for( auto& uid : item.second )
+         {
+            auto iter_item = m_ptRenderer->LookupItem( item.first, uid );
+            m_ptRenderer->RemoveItem( iter_item );
+         }
+      }
+   }
 }
 
 

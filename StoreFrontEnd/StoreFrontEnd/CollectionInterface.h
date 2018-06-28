@@ -24,6 +24,20 @@ private:
    std::multimap<std::string, std::list<CardInterface>::iterator> m_mapHash;
 };
 
+class CollectionDelta
+{
+public:
+   CollectionDelta( const std::vector<std::string>& avecChangedUIDs );
+   ~CollectionDelta();
+
+   std::map<std::string, std::vector<std::string>>& GetAdded();
+   std::map<std::string, std::vector<std::string>>& GetRemoved();
+
+private:
+   std::map<std::string, std::vector<std::string>> m_mapAdded;
+   std::map<std::string, std::vector<std::string>> m_mapRemoved;
+};
+
 class CollectionInterface
 {
 public:

@@ -7,6 +7,7 @@
 #include "../Views/CollectionHistory/viHistoryViewer.h"
 #include "../Views/CollectionStats/vStatsViewer.h"
 #include "../Views/CardInventoryViewer/CardInventoryViewer.h"
+#include "../StoreFrontEnd/CollectionInterface.h"
 
 CCollectionView::CCollectionView( VCollectionView* aptView,
                                   std::shared_ptr<CollectionInterface> aptModel )
@@ -119,6 +120,18 @@ CCollectionView::OnCollectionEdited()
 
    m_ptView->Draw( vecItems );
    uiShowNewestCard( pFirst );
+}
+
+void 
+CCollectionView::OnCollectionEdited( std::shared_ptr<CollectionDelta> apDelta )
+{
+   for( auto& item : apDelta->GetAdded() )
+   {
+      for( auto& uid : item.second )
+      {
+         //m_ptView->RemoveI
+      }
+   }
 }
 
 void 

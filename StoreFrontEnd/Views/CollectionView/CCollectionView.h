@@ -7,6 +7,7 @@ class CardView;
 class CardInventoryViewer;
 class IMenuEventSource;
 class VCollectionView;
+class CollectionDelta;
 
 class CCollectionView
 {
@@ -24,6 +25,7 @@ public:
    void OnSave();
 
    void OnCollectionEdited();
+   void OnCollectionEdited( std::shared_ptr<CollectionDelta> apDelta );
 
 private:
    

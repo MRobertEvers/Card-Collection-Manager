@@ -1,16 +1,16 @@
 #include "StoreFront.h"
+#include "StringInterface.h"
+#include "Support/JSONImporter.h"
+#include "Config.h"
+#include "../src/Tests/AddressTest.h"
+#include "../src/Tests/CollectionTest.h"
+#include "../src/Tests/CollectionItemTest.h"
+#include "../src/Tests/CopyTest.h"
 
 #include <iostream>
 #include <fstream>
 #include <iterator>
 #include <process.h>
-
-#include "../src/Tests/AddressTest.h"
-#include "../src/Tests/CollectionTest.h"
-#include "../src/Tests/CollectionItemTest.h"
-#include "../src/Tests/CopyTest.h"
-#include "Support/JSONImporter.h"
-#include "Config.h"
 
 StoreFront::StoreFront()
 {
@@ -19,9 +19,9 @@ StoreFront::StoreFront()
    //SelfTest();
    // No Server for now
    m_ColSource = new CollectionSource();
-   m_ColSource->LoadLib(Config::Instance()->GetSourceFilePath());
+   m_ColSource->LoadLib( Config::Instance()->GetSourceFilePath() );
 
-   m_ColFactory = new CollectionFactory(m_ColSource);
+   m_ColFactory = new CollectionFactory( m_ColSource );
 }
 
 
@@ -88,44 +88,44 @@ StoreFront::ConfigIsLoaded()
    return Config::Instance()->IsLoaded();
 }
 
-void 
-StoreFront::SaveCollection(const string& aszCollectionID)
+void
+StoreFront::SaveCollection( const string& aszCollectionID )
 {
-   m_ColFactory->SaveCollection(aszCollectionID);
+   m_ColFactory->SaveCollection( aszCollectionID );
 }
 
-void 
+void
 StoreFront::ExportCollection( const string& aszCollectionName, Query aQuery )
 {
    m_ColFactory->ExportCollection( aszCollectionName, aQuery );
 }
 
-string 
-StoreFront::LoadCollection(const string& aszCollectionFile)
+string
+StoreFront::LoadCollection( const string& aszCollectionFile )
 {
-   return m_ColFactory->LoadCollectionFromFile(aszCollectionFile);
+   return m_ColFactory->LoadCollectionFromFile( aszCollectionFile );
 }
 
-string 
+string
 StoreFront::CreateNewCollection( const string& aszCollectionName,
-                                 const string& aszParent )
+   const string& aszParent )
 {
-   return m_ColFactory->CreateNewCollection(aszCollectionName, aszParent);
+   return m_ColFactory->CreateNewCollection( aszCollectionName, aszParent );
 }
 
-vector<string> 
+vector<string>
 StoreFront::GetLoadedCollections()
 {
    return m_ColFactory->GetLoadedCollections();
 }
 
 // Requires Collection ID
-string 
-StoreFront::GetCollectionName(const string& aszCollectionID)
+string
+StoreFront::GetCollectionName( const string& aszCollectionID )
 {
-   if( m_ColFactory->CollectionExists(aszCollectionID) )
+   if( m_ColFactory->CollectionExists( aszCollectionID ) )
    {
-      return m_ColFactory->GetCollection(aszCollectionID)->GetName();
+      return m_ColFactory->GetCollection( aszCollectionID )->GetName();
    }
    else
    {
@@ -133,22 +133,23 @@ StoreFront::GetCollectionName(const string& aszCollectionID)
    }
 }
 
-string 
-StoreFront::GetCollectionID(const string& aszCollectionName)
+string
+StoreFront::GetCollectionID( const string& aszCollectionName )
 {
-   return m_ColFactory->GetCollectionID(aszCollectionName);
+   return m_ColFactory->GetCollectionID( aszCollectionName );
 }
 
-vector<string> 
-StoreFront::GetAllCardsStartingWith( const string& aszColID, 
-                                     const Query& aszSearch )
+vector<string>
+StoreFront::GetAllCardsStartingWith( const string& aszColID,
+   const Query& aszSearch )
 {
-   if( m_ColFactory->CollectionExists(aszColID) )
+   vector<string> vecRetval;
+   if( m_ColFactory->CollectionExists( aszColID ) )
    {
-      return m_ColFactory->GetCollection(aszColID)->
-         QueryCollection(aszSearch);
+      vecRetval = m_ColFactory->GetCollection( aszColID )->
+         QueryCollection( aszSearch );
    }
-   return vector<string>();
+   return vecRetval;
 }
 
 map<unsigned long, vector<string>>
@@ -156,7 +157,7 @@ StoreFront::GetHistoryLines( const string& aszColID, unsigned int aiStart )
 {
    if( m_ColFactory->CollectionExists( aszColID ) )
    {
-      return m_ColFactory->GetCollection( aszColID )->GetHistoryLines(aiStart, -1);
+      return m_ColFactory->GetCollection( aszColID )->GetHistoryLines( aiStart, -1 );
    }
    else
    {
@@ -177,15 +178,15 @@ StoreFront::GetHistoryLines( const string& aszColID, unsigned int aiStart, unsig
    }
 }
 
-vector<pair<string, string>> 
+vector<pair<string, string>>
 StoreFront::GetPeekValues( const string& aszColID )
 {
    return m_ColFactory->PeekCollection( aszColID );
 }
 
-string 
+string
 StoreFront::SetAttributes( const string & aszCardName, const string & aszUID,
-                           const vector<pair<string, string>>& avecAttrs )
+   const vector<pair<string, string>>& avecAttrs )
 {
    auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
@@ -193,8 +194,12 @@ StoreFront::SetAttributes( const string & aszCardName, const string & aszUID,
       auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         copy->SetAttributes( avecAttrs );
-         return copy->GetUID();
+         if( copy->SetAttributes( avecAttrs ) )
+         {
+            auto szUID = copy->GetUID();
+            return StringInterface::DeltaRemoveCmdString( aszCardName,
+               vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
+         }
       }
    }
 
@@ -204,23 +209,27 @@ StoreFront::SetAttributes( const string & aszCardName, const string & aszUID,
 // If setting more than one attribute, SetAttributes should be used
 string
 StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
-                          const string& aszKey, const string& aszVal )
+   const string& aszKey, const string& aszVal )
 {
-   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
    {
-      auto copy = item->FindCopy(aszUID);
+      auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         copy->SetAttribute( aszKey, aszVal );
-         return copy->GetUID();
+         if( copy->SetAttribute( aszKey, aszVal ) )
+         {
+            auto szUID = copy->GetUID();
+            return StringInterface::DeltaAddCmdString( aszCardName,
+               vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
+         }
       }
    }
 
    return "";
 }
 
-string 
+string
 StoreFront::SetMetaTag( const string & aszCardName, const string & aszUID, const string & aszKey, const string & aszVal )
 {
    auto item = m_ColSource->GetCardPrototype( aszCardName );
@@ -230,7 +239,9 @@ StoreFront::SetMetaTag( const string & aszCardName, const string & aszUID, const
       if( copy.Good() )
       {
          copy->SetMetaTag( aszKey, aszVal, MetaTag::DetermineMetaTagType( aszKey ) );
-         return copy->GetUID();
+         auto szUID = copy->GetUID();
+         return StringInterface::DeltaAddCmdString( aszCardName,
+            vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
       }
    }
 
@@ -238,25 +249,25 @@ StoreFront::SetMetaTag( const string & aszCardName, const string & aszUID, const
 }
 
 vector<pair<string, string>>
-StoreFront::GetMetaTags(const string& aszCardName, const string& aszUID)
+StoreFront::GetMetaTags( const string& aszCardName, const string& aszUID )
 {
    vector<pair<string, string>> vecRetval;
-   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
    {
-      auto copy = item->FindCopy(aszUID);
+      auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         vecRetval = copy.Value()->GetMetaTags(MetaTag::Type::Any);
+         vecRetval = copy.Value()->GetMetaTags( MetaTag::Type::Any );
       }
    }
 
    return vecRetval;
 }
 
-string 
-StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID, 
-                        const string& aszTagKey )
+string
+StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID,
+   const string& aszTagKey )
 {
    auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
@@ -271,22 +282,22 @@ StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID,
    return "";
 }
 
-string 
-StoreFront::GetCommonAttribute(const string& aszCardName, const string& aszAttribute)
+string
+StoreFront::GetCommonAttribute( const string& aszCardName, const string& aszAttribute )
 {
-   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
    {
-      return item->GetCommonTrait(aszAttribute);
+      return item->GetCommonTrait( aszAttribute );
    }
 
    return "";
 }
 
-string 
-StoreFront::GetIdentifyingAttribute( const string& aszCardName, 
-                                     const string& aszUID, 
-                                     const string& aszTrait )
+string
+StoreFront::GetIdentifyingAttribute( const string& aszCardName,
+   const string& aszUID,
+   const string& aszTrait )
 {
    auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
@@ -294,7 +305,7 @@ StoreFront::GetIdentifyingAttribute( const string& aszCardName,
       auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         return copy->GetAttribute(aszTrait);
+         return copy->GetAttribute( aszTrait );
       }
    }
 
@@ -303,13 +314,13 @@ StoreFront::GetIdentifyingAttribute( const string& aszCardName,
 
 vector<pair<string, string>>
 StoreFront::GetIdentifyingAttributes( const string& aszCardName,
-                                      const string& aszUID )
+   const string& aszUID )
 {
    vector<pair<string, string>> vecRetval;
-   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
    {
-      auto copy = item->FindCopy(aszUID);
+      auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
          vecRetval = copy->GetIdentifyingAttributes();
@@ -319,11 +330,11 @@ StoreFront::GetIdentifyingAttributes( const string& aszCardName,
    return vecRetval;
 }
 
-map<string, vector<string>> 
-StoreFront::GetIdentifyingAttributeOptions(const string& aszCardName)
+map<string, vector<string>>
+StoreFront::GetIdentifyingAttributeOptions( const string& aszCardName )
 {
    map<string, vector<string>> mapRetVal;
-   auto card = m_ColSource->GetCardPrototype(aszCardName);
+   auto card = m_ColSource->GetCardPrototype( aszCardName );
    if( card.Good() )
    {
       auto vecAttrID = card->GetIdentifyingTraits();
@@ -331,15 +342,15 @@ StoreFront::GetIdentifyingAttributeOptions(const string& aszCardName)
       {
          auto setAllowed = trait.second.GetAllowedValues();
          vector<string> vecOptions = vector<string>( setAllowed.begin(),
-                                                     setAllowed.end() );
-         auto pairItem = make_pair(trait.first, vecOptions);
-         mapRetVal.insert(pairItem);
+            setAllowed.end() );
+         auto pairItem = make_pair( trait.first, vecOptions );
+         mapRetVal.insert( pairItem );
       }
    }
    return mapRetVal;
 }
 
-string 
+string
 StoreFront::GetDefaultIdentifyingAttributeValue( const string& aszCardName, const string aszKey )
 {
    auto card = m_ColSource->GetCardPrototype( aszCardName );
@@ -356,12 +367,12 @@ StoreFront::GetDefaultIdentifyingAttributeValue( const string& aszCardName, cons
 }
 
 string
-StoreFront::GetCardString(const string& aszCardname, const string& aszUID)
+StoreFront::GetCardString( const string& aszCardname, const string& aszUID )
 {
-   auto item = m_ColSource->GetCardPrototype(aszCardname);
+   auto item = m_ColSource->GetCardPrototype( aszCardname );
    if( item.Good() )
    {
-      auto copy = item->FindCopy(aszUID);
+      auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
          // TODO:
@@ -372,7 +383,7 @@ StoreFront::GetCardString(const string& aszCardname, const string& aszUID)
    return "";
 }
 
-string 
+string
 StoreFront::GetMetaTagHash( const string& aszCardName, const string& aszUID )
 {
    string szRetVal;
@@ -390,9 +401,9 @@ StoreFront::GetMetaTagHash( const string& aszCardName, const string& aszUID )
 }
 
 vector<string>
-StoreFront::GetAllCardsStartingWith(const Query& aszSearch)
+StoreFront::GetAllCardsStartingWith( const Query& aszSearch )
 {
-   return m_ColSource->GetAllCardsStartingWith(aszSearch);
+   return m_ColSource->GetAllCardsStartingWith( aszSearch );
 }
 
 vector<pair<string, string>>
@@ -401,102 +412,102 @@ StoreFront::GetPairedAttributes()
    return Config::Instance()->GetPairedKeysList();
 }
 
-string 
+string
 StoreFront::GetImagesDirectory()
 {
    return Config::Instance()->GetImagesDirectory();
 }
 
-string 
+string
 StoreFront::GetCollectionsDirectory()
 {
    return Config::Instance()->GetCollectionsDirectory();
 }
 
-string 
+string
 StoreFront::GetCollectionsMetaDirectory()
 {
    return Config::Instance()->GetCollectionsMetaDirectory();
 }
 
-string 
+string
 StoreFront::GetCollectionsHistoryDirectory()
 {
    return Config::Instance()->GetCollectionsHistoryDirectory();
 }
 
-string 
+string
 StoreFront::GetCollectionsOverheadDirectory()
 {
    return Config::Instance()->GetCollectionsOverheadDirectory();
 }
 
-string 
+string
 StoreFront::GetImportSourceFileName()
 {
    return Config::Instance()->GetImportSourceFileName();
 }
 
-string 
+string
 StoreFront::GetSourceDirectory()
 {
    return Config::Instance()->GetSourceDirectory();
 }
 
-string 
+string
 StoreFront::GetSourceFileName()
 {
    return Config::Instance()->GetSourceFileName();
 }
 
-string 
+string
 StoreFront::GetSourceFilePath()
 {
    return Config::Instance()->GetSourceFilePath();
 }
 
-string 
+string
 StoreFront::GetImportSourceFilePath()
 {
    return Config::Instance()->GetImportSourceFilePath();
 }
 
-string 
+string
 StoreFront::GetConfigDirectory()
 {
    return Config::Instance()->GetConfigDirectory();
 }
 
-string 
+string
 StoreFront::GetImageFilePath( const string& aszCardName, const string& aszSet )
 {
    return Config::Instance()->GetImageFilePath( aszCardName, aszSet );
 }
 
-string 
-StoreFront::CollapseCardLine(const string& aszCard, bool abIncludeCount)
+string
+StoreFront::CollapseCardLine( const string& aszCard, bool abIncludeCount )
 {
    string szCard = aszCard;
-   m_ColSource->CollapseCardLine(szCard, abIncludeCount);
+   m_ColSource->CollapseCardLine( szCard, abIncludeCount );
    return szCard;
 }
 
-vector<string> 
+vector<string>
 StoreFront::SubmitBulkChanges( const string& aszCollection,
-                               vector<string> alstChanges )
+   vector<string> alstChanges )
 {
-   if( m_ColFactory->CollectionExists(aszCollection) )
+   if( m_ColFactory->CollectionExists( aszCollection ) )
    {
-      return m_ColFactory->GetCollection(aszCollection)->LoadChanges(alstChanges);
+      return m_ColFactory->GetCollection( aszCollection )->LoadChanges( alstChanges );
    }
 
    return vector<string>();
 }
 
-void 
+void
 StoreFront::ImportCollectionSource()
 {
    JSONImporter JI;
-   JI.ImportJSON(Config::Instance()->GetImportSourceFilePath());
-   m_ColSource->HotSwapLib(Config::Instance()->GetSourceFilePath());
+   JI.ImportJSON( Config::Instance()->GetImportSourceFilePath() );
+   m_ColSource->HotSwapLib( Config::Instance()->GetSourceFilePath() );
 }

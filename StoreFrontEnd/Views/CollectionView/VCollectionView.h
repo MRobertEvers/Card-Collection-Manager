@@ -64,7 +64,7 @@ public:
    void SetController( CCollectionView* aptController );
 
    // Takes ownership
-   void SetRenderer( GroupRenderer* aptRenderer );
+   void SetRenderer( FlexibleGroupRenderer* aptRenderer );
 
    void Draw( std::vector<CardInterface*> avecItemData );
 
@@ -75,7 +75,7 @@ private:
    wxDECLARE_EVENT_TABLE();
 
    CCollectionView* m_ptController;
-   GroupRenderer* m_ptRenderer;
+   FlexibleGroupRenderer* m_ptRenderer;
    wxAuiManager m_mgr;
 
    void onCollectionEditorAccept( wxCommandEvent& awxEvt );
