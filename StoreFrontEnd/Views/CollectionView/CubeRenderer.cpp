@@ -449,6 +449,7 @@ DisplayGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
    else
    {
       bool bDidRemove = false;
+      bool bDidErase = false;
       wxString szBefore = "";
       wxString szAfter = "";
       auto iter_child = m_mapChildren.begin();
@@ -469,7 +470,7 @@ DisplayGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
                {
                   szAfter = next->first;
                }
-
+               bDidErase = true;
                m_mapChildren.erase( children.first );
             }
             bDidRemove = true;
@@ -478,13 +479,13 @@ DisplayGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
          szBefore = iter_child->first;
       }
 
-      if( szAfter == "" && szBefore != "" )
+      if( bDidErase && szAfter == "" && szBefore != "" )
       {
          m_mapChildren[szBefore]->UnDraw();
          m_mapChildren[szBefore]->Draw();
       }
 
-      if( szBefore == "" && szAfter != "" )
+      if( bDidErase && szBefore == "" && szAfter != "" )
       {
          m_mapChildren[szAfter]->UnDraw();
          m_mapChildren[szAfter]->Draw();
@@ -845,13 +846,17 @@ TypeGroup::UnDraw()
 
    if( m_bHasDrawnLast )
    {
-      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
+      // Subtract one because GetDrawSize() counts the footer too.
+      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() - 1);
       m_bHasDrawnLast = false;
    }
 
-   for( auto& child : m_mapChildren )
+   // Do these in reverse.
+   for( auto iter_child = m_mapChildren.rbegin(); 
+      iter_child != m_mapChildren.rend();
+      iter_child++ )
    {
-      child.second->UnDraw();
+      iter_child->second->UnDraw();
    }
 }
 
@@ -1166,6 +1171,48 @@ GuildGroup::~GuildGroup()
 
 }
 
+bool 
+MultiDistinctGroupColumnRenderer::GuildGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( DisplayGroup::RemoveItem( aptItem ) )
+   {
+      if( m_bHasDrawnHeader )
+      {
+         m_pRenderer->UndisplayItem( GetFirstRow() );
+         wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+         m_pRenderer->DisplayItem( buf, "",
+                                   wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                   true, wxColour( "BLACK" ),
+                                   m_pRenderer->GetBackgroundColor(), 
+                                   GetFirstRow() );
+         m_bHasDrawnHeader = true;
+      }
+      return true;
+   }
+   return false;
+}
+
+bool 
+MultiDistinctGroupColumnRenderer::GuildGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( DisplayGroup::AddItem( aptItem ) )
+   {
+      if( m_bHasDrawnHeader )
+      {
+         m_pRenderer->UndisplayItem( GetFirstRow() );
+         wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+         m_pRenderer->DisplayItem( buf, "",
+                                   wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                   true, wxColour( "BLACK" ),
+                                   m_pRenderer->GetBackgroundColor(), 
+                                   GetFirstRow() );
+         m_bHasDrawnHeader = true;
+      }
+      return true;
+   }
+   return false;
+}
+
 void 
 MultiDistinctGroupColumnRenderer::
 GuildGroup::Draw()
@@ -1220,11 +1267,14 @@ GuildGroup::UnDraw()
    if( m_bHasDrawnHeader )
    {
       m_pRenderer->UndisplayItem( GetFirstRow() );
+      m_bHasDrawnHeader = false;
    }
 
    if( m_bHasDrawnLastSpacer )
    {
-      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
+      // Subtract 1 because getDrawSize() includes the footer in the count.
+      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() - 1 );
+      m_bHasDrawnLastSpacer = false;
    }
 
    for( int i = 0; i < m_mapDrawnItems.size(); i++ )

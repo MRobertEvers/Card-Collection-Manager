@@ -295,6 +295,8 @@ protected:
 
       virtual ~GuildGroup();
 
+      virtual bool RemoveItem( std::shared_ptr<IRendererItem> aptItem );
+      virtual bool AddItem( std::shared_ptr<IRendererItem> aptItem );
       virtual void Draw();
       virtual void UnDraw();
       virtual int GetFirstItemRow();
