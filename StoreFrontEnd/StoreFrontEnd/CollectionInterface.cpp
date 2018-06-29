@@ -132,6 +132,8 @@ void
 CollectionInterfaceSet::BulkLoad( const std::vector<std::string>& avecNew )
 {
    m_lstCopies.clear();
+   m_mapHash.clear();
+   m_mapUIDName.clear();
    for( auto& szItem : avecNew )
    {
       auto tmp = CardInterface( szItem, m_pParent );
