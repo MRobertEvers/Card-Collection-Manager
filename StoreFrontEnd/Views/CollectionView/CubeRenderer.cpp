@@ -97,6 +97,7 @@ CubeRenderer::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
    auto iter_findgroup = m_mapColumns.find( szGroup );
    if( iter_findgroup != m_mapColumns.end() )
    {
+      ItemRemoved( aptItem );
       return iter_findgroup->second->RemoveItem( aptItem );
    }
    else
@@ -118,6 +119,7 @@ CubeRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
    {
       uiAddColumn( szGroup, { aptItem } );
    }
+   ItemAdded( aptItem );
 }
 
 Group 
@@ -434,6 +436,7 @@ DisplayGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
       if( iter_find != m_setItems.end() )
       {
          int iPos = distance( m_setItems.begin(), iter_find );
+         m_mapDrawnItems.erase( *iter_find );
          m_setItems.erase( iter_find );
          m_pRenderer->UndisplayItem( GetFirstItemRow() + iPos );
          return true;
@@ -446,39 +449,53 @@ DisplayGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
    else
    {
       bool bDidRemove = false;
-      wxString removeChild = "";
-      for( auto& children : m_mapChildren )
+      wxString szBefore = "";
+      wxString szAfter = "";
+      auto iter_child = m_mapChildren.begin();
+      for( ; iter_child != m_mapChildren.end(); iter_child++ )
       {
+         auto& children = *iter_child;
          if( children.second->RemoveItem( aptItem ) )
          {
             // TODO: Check for empty child
             if( children.second->IsEmpty() )
             {
                children.second->UnDraw();
-               removeChild = children.first;
+
+               // Store the following element
+               auto next = iter_child;
+               next++;
+               if( next != m_mapChildren.end() )
+               {
+                  szAfter = next->first;
+               }
+
+               m_mapChildren.erase( children.first );
             }
             bDidRemove = true;
             break;
          }
+         szBefore = iter_child->first;
       }
 
-      if( bDidRemove )
+      if( szAfter == "" && szBefore != "" )
       {
-         if( removeChild != "" )
-         {
-            m_mapChildren.erase( removeChild );
-         }
+         m_mapChildren[szBefore]->UnDraw();
+         m_mapChildren[szBefore]->Draw();
+      }
 
-         return true;
-      }
-      else
+      if( szBefore == "" && szAfter != "" )
       {
-         return false;
+         m_mapChildren[szAfter]->UnDraw();
+         m_mapChildren[szAfter]->Draw();
       }
+
+
+      return bDidRemove;
    }
 }
 
-void 
+bool 
 DisplayGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
    if( !m_Group.IsEmpty() )
@@ -490,19 +507,50 @@ DisplayGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
          auto iter_sub = m_mapChildren.find( szGroup );
          if( iter_sub != m_mapChildren.end() )
          {
-            iter_sub->second->AddItem( aptItem );
+            return iter_sub->second->AddItem( aptItem );
          }
          else
          {
             auto subGroup = m_Group.GetSubGroup( szGroup );
-            DisplayGroup* node = m_pSource->GetDisplayGroup( GetLevel(), szGroup, subGroup, { aptItem }, this );
-            m_mapChildren[szGroup] = node;
+            DisplayGroup* node = m_pSource->GetDisplayGroup( GetLevel()+1, szGroup, subGroup, { aptItem }, this );
+            auto iter_insert = m_mapChildren.insert( std::make_pair( szGroup, node ) );
+            node->Draw();
+            // Redo siblings.
+            // TODO: maybe we should just redraw adjacent siblings for generality...
+            if( iter_insert.first == m_mapChildren.begin() )
+            {
+               if( ++iter_insert.first != m_mapChildren.end() )
+               {
+                  iter_insert.first->second->UnDraw();
+                  iter_insert.first->second->Draw();
+               }
+            }
+            else if( iter_insert.first->first == m_mapChildren.rbegin()->first && m_mapChildren.size() > 1)
+            {
+               iter_insert.first--;
+               iter_insert.first->second->UnDraw();
+               iter_insert.first->second->Draw();
+            }
+            return true;
          }
+      }
+      else
+      {
+         return false;
       }
    }
    else
    {
-      m_setItems.insert( aptItem );
+      auto iter_insert = m_setItems.insert( aptItem );
+      int iPos = distance( m_setItems.begin(), iter_insert );
+      int iInsert = GetFirstItemRow() + iPos;
+      m_pRenderer->DisplayItem( aptItem->GetName(), aptItem->GetHash(),
+                                wxFont(), false, wxColour(),
+                                m_pRenderer->GetBackgroundColor(),
+                                iInsert );
+      m_mapDrawnItems[*iter_insert] = true;
+      // Redraw is not needed for a simple insert.
+      return true;
    }
 }
 
@@ -679,6 +727,48 @@ TypeGroup::~TypeGroup()
 
 }
 
+bool 
+OrderedSubgroupColumnRenderer::TypeGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( DisplayGroup::RemoveItem( aptItem ) )
+   {
+      if( m_bHasDrawnHeader )
+      {
+         m_pRenderer->UndisplayItem( GetFirstRow() );
+         wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+         m_pRenderer->DisplayItem( buf, "",
+                                   wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                   true, wxColour( "BLACK" ),
+                                   m_pRenderer->GetBackgroundColor(), 
+                                   GetFirstRow() );
+         m_bHasDrawnHeader = true;
+      }
+      return true;
+   }
+   return false;
+}
+
+bool 
+OrderedSubgroupColumnRenderer::TypeGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( DisplayGroup::AddItem( aptItem ) )
+   {
+      if( m_bHasDrawnHeader )
+      {
+         m_pRenderer->UndisplayItem( GetFirstRow() );
+         wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+         m_pRenderer->DisplayItem( buf, "",
+                                   wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                   true, wxColour( "BLACK" ),
+                                   m_pRenderer->GetBackgroundColor(), 
+                                   GetFirstRow() );
+         m_bHasDrawnHeader = true;
+      }
+      return true;
+   }
+   return false;
+}
+
 int 
 OrderedSubgroupColumnRenderer::
 TypeGroup::GetDrawSize()
@@ -757,6 +847,11 @@ TypeGroup::UnDraw()
    {
       m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
       m_bHasDrawnLast = false;
+   }
+
+   for( auto& child : m_mapChildren )
+   {
+      child.second->UnDraw();
    }
 }
 
@@ -850,6 +945,13 @@ CMCGroup::UnDraw()
       m_pRenderer->UndisplayItem( GetFirstRow() );
       m_bHasDrawnFirst = false;
    }
+
+   // Collapse it like a dominoe
+   for( int i = 0; i < m_mapDrawnItems.size(); i++ )
+   {
+      m_pRenderer->UndisplayItem( GetFirstRow() );
+   }
+   m_mapDrawnItems.clear();
 }
 
 int 
@@ -914,19 +1016,26 @@ OrderedSubgroupColumnRenderer::Draw( vector<std::shared_ptr<IRendererItem>> avec
 bool 
 OrderedSubgroupColumnRenderer::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
+   this->Freeze();
    if( m_Root->RemoveItem( aptItem ) )
    {
       this->SetColLabelValue( 0, uiGetDisplayTitle() );
+      this->Thaw();
       return true;
    }
+   this->Thaw();
    return false;
 }
 
 void 
 OrderedSubgroupColumnRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
-   m_Root->AddItem( aptItem );
-   this->SetColLabelValue( 0, uiGetDisplayTitle() );
+   this->Freeze();
+   if( m_Root->AddItem( aptItem ) )
+   {
+      this->SetColLabelValue( 0, uiGetDisplayTitle() );
+   }
+   this->Thaw();
 }
 
 DisplayGroup* 
@@ -1117,6 +1226,12 @@ GuildGroup::UnDraw()
    {
       m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
    }
+
+   for( int i = 0; i < m_mapDrawnItems.size(); i++ )
+   {
+      m_pRenderer->UndisplayItem( GetFirstRow() );
+   }
+   m_mapDrawnItems.clear();
 }
 
 int 

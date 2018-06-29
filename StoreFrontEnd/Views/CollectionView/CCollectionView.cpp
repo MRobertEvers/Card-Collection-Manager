@@ -128,6 +128,7 @@ CCollectionView::OnCollectionEdited( std::shared_ptr<CollectionDelta> apDelta )
    auto resolution = m_ptModel->Refresh( apDelta );
 
    // TODO: Check if last query collapsed.
+   m_ptView->Freeze();
    for( auto& item : resolution->GetAdded() )
    {
       m_ptView->Draw( &*item );
@@ -137,6 +138,8 @@ CCollectionView::OnCollectionEdited( std::shared_ptr<CollectionDelta> apDelta )
    {
       m_ptView->Undraw( item.first, item.second );
    }
+   m_ptView->Thaw();
+   m_ptView->PostSizeEvent();
 }
 
 void 

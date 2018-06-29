@@ -43,6 +43,8 @@ public:
    // Default Item lookup provided here.
    virtual void InitRenderer( std::vector<std::shared_ptr<IRendererItem>> avecItemData );
    virtual std::shared_ptr<IRendererItem> LookupItem( const std::string& aszDisplay, const std::string& aszUID );
+   virtual void ItemRemoved( std::shared_ptr<IRendererItem> apAdded );
+   virtual void ItemAdded( std::shared_ptr<IRendererItem> apAdded );
 
 private:
    std::multimap<std::string, std::shared_ptr<IRendererItem>> m_mapLookup;

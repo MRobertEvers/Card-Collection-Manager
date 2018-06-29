@@ -171,3 +171,25 @@ FlexibleGroupRenderer::LookupItem( const std::string & aszDisplay, const std::st
 
    return std::shared_ptr<IRendererItem>();
 }
+
+void
+FlexibleGroupRenderer::ItemRemoved( std::shared_ptr<IRendererItem> apAdded )
+{
+   auto pair_item_range = m_mapLookup.begin();
+   for( ;
+      pair_item_range != m_mapLookup.end();
+      pair_item_range++ )
+   {
+      if( pair_item_range->second == apAdded )
+      {
+         m_mapLookup.erase( pair_item_range );
+         break;
+      }
+   }
+}
+
+void
+FlexibleGroupRenderer::ItemAdded( std::shared_ptr<IRendererItem> apAdded )
+{
+   m_mapLookup.insert( std::make_pair( apAdded->GetName(), apAdded ) );
+}

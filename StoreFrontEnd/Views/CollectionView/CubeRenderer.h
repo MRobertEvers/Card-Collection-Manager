@@ -141,8 +141,8 @@ public:
                  DisplayGroup* aParent = nullptr );
    virtual ~DisplayGroup();
 
-   bool RemoveItem( std::shared_ptr<IRendererItem> aptItem );
-   void AddItem( std::shared_ptr<IRendererItem> aptItem );
+   virtual bool RemoveItem( std::shared_ptr<IRendererItem> aptItem );
+   virtual bool AddItem( std::shared_ptr<IRendererItem> aptItem );
    std::shared_ptr<IRendererItem> GetItem( unsigned int auiItemRow );
 
    // Returns all overhead plus the size of children.
@@ -219,6 +219,9 @@ protected:
                  DisplayGroup* aParent = nullptr );
 
       virtual ~TypeGroup();
+
+      virtual bool RemoveItem( std::shared_ptr<IRendererItem> aptItem );
+      virtual bool AddItem( std::shared_ptr<IRendererItem> aptItem );
 
       virtual int GetDrawSize();
       virtual void Draw();
