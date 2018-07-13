@@ -238,8 +238,10 @@ CubeRenderer::uiBuildGrouping()
       .AliasGroup( "Green", "G" )
       .BroadenGroup( "::" )
       .AliasGroup( "::", "Multicolor" );
-   metatagColorOverrideGroup.AddSubGroup( "Multicolor", subGroup );
-    
+   // TODO: Override subgroups have no good way to be chosen.
+   // Just add this subgroup to each
+   // metatagColorOverrideGroup.AddSubGroup( "Multicolor", subGroup );
+
    defaultGrp.OverrideGrouping( metatagColorOverrideGroup );
 
    defaultSubGroup.SetDefaultSubGroup( defaultSubGroupOrdering );

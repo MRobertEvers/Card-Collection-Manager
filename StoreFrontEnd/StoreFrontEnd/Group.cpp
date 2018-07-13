@@ -183,6 +183,20 @@ Group::GetSubGroup( const wxString& aszGroup ) const
    return *DefaultSubGroup;
 }
 
+Group
+Group::GetSubGroup( const IGroupItem & aData ) const
+{
+   for( auto& over : Overrides )
+   {
+      Group overSub = over.GetSubGroup( GetGroup( aData ) );
+      if( !overSub.IsEmpty() )
+      {
+         return overSub;
+      }
+   }
+   return GetSubGroup( GetGroup(aData) );
+}
+
 std::shared_ptr<Group::Sorting> 
 Group::GetSortingFunctor() const
 {

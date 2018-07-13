@@ -67,6 +67,8 @@ public:
 
    wxString GetGroup( const IGroupItem& aData ) const;
    Group GetSubGroup( const wxString& aszGroup ) const;
+   Group GetSubGroup( const IGroupItem& aData ) const;
+ 
    std::shared_ptr<Sorting> GetSortingFunctor() const;
    std::shared_ptr<ItemSorting> GetItemSortingFunctor() const;
    bool IsEmpty() const;
