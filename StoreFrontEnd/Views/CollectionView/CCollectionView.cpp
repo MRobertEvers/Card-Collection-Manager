@@ -141,10 +141,6 @@ CCollectionView::OnCollectionEdited( std::shared_ptr<CollectionDelta> apDelta )
 
    for( auto& item : resolution->GetChanged() )
    {
-      for( auto& uid : item->GetRepresentingUIDs() )
-      {
-         m_ptView->Undraw( item->GetName(), uid );
-      }
       m_ptView->Draw( &*item );
    }
 

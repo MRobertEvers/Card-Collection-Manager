@@ -173,7 +173,7 @@ CopyItem::GetMetaTag( const string& aszKey, MetaTag::Type atagType ) const
    }
    else
    {
-      return Config::NotFoundString;
+      return "";
    }
 }
 

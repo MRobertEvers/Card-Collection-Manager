@@ -152,6 +152,15 @@ CollectionFactory::GetLoadedCollections()
    return lstRetval;
 }
 
+void 
+CollectionFactory::InvalidateAllCaches()
+{
+   for( auto& col : m_lstCollections )
+   {
+      col->InvalidateState();
+   }
+}
+
 bool 
 CollectionFactory::CollectionExists(string aszCollectionID) const
 {

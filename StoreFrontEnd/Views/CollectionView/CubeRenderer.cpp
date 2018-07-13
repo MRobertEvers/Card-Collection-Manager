@@ -228,6 +228,20 @@ CubeRenderer::uiBuildGrouping()
    defaultSubGroupOrdering.GroupOn( "cmc", false )
       .SetGroupSortingFunctor( new CubeDisplayItemSorter() );
 
+   Group metatagColorOverrideGroup;
+   metatagColorOverrideGroup.GroupOn( "colors" )
+      .SetGroupSortingFunctor( new CubeDisplayColumnSorter() )
+      .AliasGroup( "White", "W" )
+      .AliasGroup( "Blue", "U" )
+      .AliasGroup( "Black", "B" )
+      .AliasGroup( "Red", "R" )
+      .AliasGroup( "Green", "G" )
+      .BroadenGroup( "::" )
+      .AliasGroup( "::", "Multicolor" );
+   metatagColorOverrideGroup.AddSubGroup( "Multicolor", subGroup );
+    
+   defaultGrp.OverrideGrouping( metatagColorOverrideGroup );
+
    defaultSubGroup.SetDefaultSubGroup( defaultSubGroupOrdering );
 
    defaultGrp.SetDefaultSubGroup( defaultSubGroup );
@@ -1334,23 +1348,37 @@ RendererItem::GetBase()
 std::string
 RendererItem::GetHash() const
 {
-   return m_pCard->GetHash();
+   if( m_hashMemo.IsEmpty() )
+   {
+      auto self = const_cast<RendererItem*>(this);
+      self->m_hashMemo = m_pCard->GetHash();
+   }
+   return m_hashMemo.ToStdString();
 }
 
 bool 
 RendererItem::RepresentsUID(const std::string& aszUID) const
 {
-   bool bMatch = false;
-   for( auto& szUID : m_pCard->GetRepresentingUIDs() )
+   auto iter_memo = m_mapUIDMemo.find( aszUID );
+   if( iter_memo != m_mapUIDMemo.end() )
    {
-      if( szUID == aszUID )
-      {
-         bMatch = true;
-         break;
-      }
+      return iter_memo->second;
    }
-
-   return bMatch;
+   else
+   {
+      bool bMatch = false;
+      for( auto& szUID : m_pCard->GetRepresentingUIDs() )
+      {
+         if( szUID == aszUID )
+         {
+            bMatch = true;
+            break;
+         }
+      }
+      auto self = const_cast<RendererItem*>(this);
+      self->m_mapUIDMemo[aszUID] = bMatch;
+      return bMatch;
+   }
 }
 
 std::string
@@ -1362,11 +1390,33 @@ RendererItem::GetName() const
 std::string
 RendererItem::GetMetaTag( const std::string & aszKey ) const
 {
-   return m_pCard->GetMetaTag( aszKey );
+   auto iter_memo = m_mapMetaMemo.find( aszKey );
+   if( iter_memo != m_mapMetaMemo.end() )
+   {
+      return iter_memo->second.ToStdString();
+   }
+   else
+   {
+      auto szVal = m_pCard->GetMetaTag( aszKey );
+      auto self = const_cast<RendererItem*>(this);
+      self->m_mapMetaMemo[aszKey] = szVal;
+      return szVal;
+   }
 }
 
 std::string
 RendererItem::GetAttribute( const std::string & aszKey ) const
 {
-   return m_pCard->GetAttribute( aszKey );
+   auto iter_memo = m_mapAttrMemo.find( aszKey );
+   if( iter_memo != m_mapAttrMemo.end() )
+   {
+      return iter_memo->second.ToStdString();
+   }
+   else
+   {
+      auto szVal = m_pCard->GetAttribute( aszKey );
+      auto self = const_cast<RendererItem*>(this);
+      self->m_mapAttrMemo[aszKey] = szVal;
+      return szVal;
+   }
 }

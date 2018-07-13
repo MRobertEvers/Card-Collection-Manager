@@ -90,7 +90,6 @@ LedgerBook::RemoveResident( const Identifier& aAddrAddress,
    return (m_Address.IsEmpty() ? 0 : 1) + m_vecResidentIn.size();
 }
 
-
 void
 LedgerBook::ledgerOwned( const Identifier& aOwned )
 {

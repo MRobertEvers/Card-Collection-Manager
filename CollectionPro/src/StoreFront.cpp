@@ -196,6 +196,9 @@ StoreFront::SetAttributes( const string & aszCardName, const string & aszUID,
       {
          if( copy->SetAttributes( avecAttrs ) )
          {
+            // TODO: See note in colfactory
+            m_ColFactory->InvalidateAllCaches();
+
             auto szUID = copy->GetUID();
             return StringInterface::DeltaChangeCmdString( aszCardName,
                vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
@@ -219,6 +222,9 @@ StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
       {
          if( copy->SetAttribute( aszKey, aszVal ) )
          {
+            // TODO: See note in colfactory
+            m_ColFactory->InvalidateAllCaches();
+
             auto szUID = copy->GetUID();
             return StringInterface::DeltaChangeCmdString( aszCardName,
                vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
@@ -242,7 +248,8 @@ StoreFront::SetMetaTags( const string & aszCardName, const string & aszUID, cons
          {
             copy->SetMetaTag( tag.first, tag.second );
          }
-
+         // TODO: See note in colfactory
+         m_ColFactory->InvalidateAllCaches();
          return StringInterface::DeltaChangeCmdString( aszCardName,
             vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), copy->GetUID() ) ) );
       }
@@ -260,6 +267,8 @@ StoreFront::SetMetaTag( const string & aszCardName, const string & aszUID, const
       auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
+         // TODO: See note in colfactory
+         m_ColFactory->InvalidateAllCaches();
          copy->SetMetaTag( aszKey, aszVal, MetaTag::DetermineMetaTagType( aszKey ) );
          auto szUID = copy->GetUID();
          return StringInterface::DeltaAddCmdString( aszCardName,

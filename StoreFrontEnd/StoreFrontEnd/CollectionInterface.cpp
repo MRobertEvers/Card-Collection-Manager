@@ -163,6 +163,7 @@ CollectionInterfaceSet::Refresh( std::shared_ptr<CollectionDelta> apDelta )
             auto iter_uid = iter_name->second.find( uid );
             if( iter_uid != iter_name->second.end() )
             {
+               // Readd to updat
                ret->AddChange( iter_uid->second );
             }
          }
@@ -401,11 +402,12 @@ CollectionDeltaResolution::AddAdd( std::list<CardInterface>::iterator aIter )
    m_vecAdded.push_back( aIter );
 }
 
-void 
+void
 CollectionDeltaResolution::AddChange( std::list<CardInterface>::iterator aIter )
 {
    m_vecChanged.push_back( aIter );
 }
+
 
 std::vector<std::list<CardInterface>::iterator>& 
 CollectionDeltaResolution::GetAdded()
@@ -419,7 +421,7 @@ CollectionDeltaResolution::GetRemoved()
    return m_vecRemoved;
 }
 
-std::vector<std::list<CardInterface>::iterator>&
+std::vector<std::list<CardInterface>::iterator>& 
 CollectionDeltaResolution::GetChanged()
 {
    return m_vecChanged;

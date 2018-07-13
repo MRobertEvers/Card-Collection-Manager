@@ -8,6 +8,7 @@
 #include <memory>
 #include <map>
 #include <set>
+#include <string>
 
 class ColoredGroupColumnRenderer;
 
@@ -32,6 +33,11 @@ public:
 
 private:
    std::shared_ptr<CardInterface> m_pCard;
+
+   std::map<wxString, wxString> m_mapMetaMemo;
+   std::map<wxString, wxString> m_mapAttrMemo;
+   std::map<wxString, bool> m_mapUIDMemo;
+   wxString m_hashMemo;
 };
 
 class CubeRenderer : public wxScrolledWindow, public FlexibleGroupRenderer

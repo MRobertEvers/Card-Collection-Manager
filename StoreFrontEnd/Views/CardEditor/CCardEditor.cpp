@@ -34,8 +34,12 @@ CCardEditor::SetModel( CollectionInterface* aptModel, std::vector<std::string> a
       m_pView->ShowCardViewer( m_ptCardViewer.get() );
    }
 
-   m_pLastDrawnVirtual = m_pModel->GetCollectionInterface()->GetVirtualItem( avecHashes.front() );
-   Draw( m_pLastDrawnVirtual.get() );
+   /*m_pLastDrawnVirtual = m_pModel->GetCollectionInterface()->GetVirtualItem( avecHashes.front() );
+   if( m_pLastDrawnVirtual != nullptr )
+   {
+      Draw( m_pLastDrawnVirtual.get() );
+   }*/
+   Draw( m_pModel->GetCollectionInterface()->GetItem( avecHashes.front() ) );
 }
 
 void 

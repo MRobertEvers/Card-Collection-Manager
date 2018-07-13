@@ -45,7 +45,7 @@ public:
 private:
    std::vector<std::list<CardInterface>::iterator> m_vecAdded;
    std::vector<std::pair<std::string, std::string>> m_vecRemoved;
-   std::vector<std::list<CardInterface>::iterator> m_vecChanged;
+   std::vector<std::list<CardInterface>::iterator>  m_vecChanged;
 };
 
 class CollectionDelta

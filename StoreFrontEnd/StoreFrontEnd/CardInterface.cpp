@@ -128,7 +128,7 @@ CardInterface::GetSet() const
 string 
 CardInterface::GetMetaTag( const string & aszKey ) const
 {
-   return GetMetaTag(aszKey, "");
+   return GetMetaTag(aszKey, GetFirstUID());
 }
 
 string
