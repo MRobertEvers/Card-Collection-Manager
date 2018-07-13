@@ -424,6 +424,7 @@ VCardAttributesEditor::onResetButton( wxCommandEvent & awxEvt )
          }
       }
    }
+   std::set<wxString> setHandled;
    auto tmpDef = m_mapMetaDefaults;
    tmpDef.erase( "*" );
    auto iter_tmp = tmpDef.begin();
@@ -437,6 +438,7 @@ VCardAttributesEditor::onResetButton( wxCommandEvent & awxEvt )
          {
             m_pMetaTable->SetRowLabelValue( i, def.first );
             m_pMetaTable->SetCellValue( i, 0, def.second );
+            setHandled.insert( setHandled.begin(), def.first );
             bErase = true;
             break;
          }
@@ -452,6 +454,30 @@ VCardAttributesEditor::onResetButton( wxCommandEvent & awxEvt )
       }
    }
 
+   for( int i = 0; i < m_pMetaTable->GetNumberRows(); i++ )
+   {
+      auto szRow = m_pMetaTable->GetRowLabelValue( i );
+      if( szRow.size() > 1 && szRow[szRow.size() - 1] == '*' )
+      {
+         szRow = szRow.substr( 0, szRow.size() - 1 );
+      }
+      else if( szRow == "*" )
+      {
+         continue;
+      }
+
+      if( setHandled.find( szRow ) == setHandled.end() )
+      {
+         int iRow = i;
+         for( int t = iRow; t < m_pMetaTable->GetNumberRows() - 1; t++ )
+         {
+            m_pMetaTable->SetRowLabelValue( t, m_pMetaTable->GetRowLabelValue( t + 1 ) );
+         }
+         m_pMetaTable->DeleteRows( iRow );
+         i--;
+      }
+   }
+
    for( auto addback : tmpDef )
    {
       int iRow = m_pMetaTable->GetNumberRows();
@@ -459,7 +485,11 @@ VCardAttributesEditor::onResetButton( wxCommandEvent & awxEvt )
       {
          iRow--;
       }
-      iRow = m_pMetaTable->InsertRows( iRow );
+      m_pMetaTable->InsertRows( iRow );
+      for( int i = m_pMetaTable->GetNumberRows()-1; i > iRow; i-- )
+      {
+         m_pMetaTable->SetRowLabelValue( i, m_pMetaTable->GetRowLabelValue( i - 1 ) );
+      }
       m_pMetaTable->SetRowLabelValue( iRow, addback.first );
       m_pMetaTable->SetCellValue( iRow, 0, addback.second );
    }
