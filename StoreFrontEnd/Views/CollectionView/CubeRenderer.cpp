@@ -212,7 +212,6 @@ CubeRenderer::uiBuildGrouping()
       .AliasGroup( "Black::Green", "Golgari" )
       .AliasGroup( "Red::Green", "Gruul" );
 
-   defaultGrp.AddSubGroup( "Multicolor", subGroup );
 
    Group defaultSubGroup;
    defaultSubGroup.GroupOn( "type", false )
@@ -242,6 +241,22 @@ CubeRenderer::uiBuildGrouping()
    // Just add this subgroup to each
    // metatagColorOverrideGroup.AddSubGroup( "Multicolor", subGroup );
 
+   Group subGroupOverride;
+   subGroupOverride.GroupOn( "colors" );
+   subGroupOverride.AliasGroup( "White::Blue", "Azorius" )
+      .AliasGroup( "White::Black", "Orzhov" )
+      .AliasGroup( "White::Red", "Boros" )
+      .AliasGroup( "White::Green", "Selesnya" )
+      .AliasGroup( "Blue::Black", "Dimir" )
+      .AliasGroup( "Blue::Red", "Izzet" )
+      .AliasGroup( "Blue::Green", "Simic" )
+      .AliasGroup( "Black::Red", "Rakdos" )
+      .AliasGroup( "Black::Green", "Golgari" )
+      .AliasGroup( "Red::Green", "Gruul" );
+
+   subGroup.OverrideGrouping( subGroupOverride );
+    
+   defaultGrp.AddSubGroup( "Multicolor", subGroup );
    defaultGrp.OverrideGrouping( metatagColorOverrideGroup );
 
    defaultSubGroup.SetDefaultSubGroup( defaultSubGroupOrdering );
@@ -517,6 +532,7 @@ DisplayGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
    if( !m_Group.IsEmpty() )
    {
+
       auto szGroup = m_Group.GetGroup( *aptItem );
       if( !szGroup.IsEmpty() )
       {
