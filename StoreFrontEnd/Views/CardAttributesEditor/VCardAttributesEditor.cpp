@@ -8,6 +8,7 @@
 
 wxBEGIN_EVENT_TABLE( VCardAttributesEditor, wxPanel )
 EVT_GRID_CELL_CHANGING( VCardAttributesEditor::onAttributeChanged )
+EVT_BUTTON( VCardAttributesEditor::NEED_CLEAR_ROW, VCardAttributesEditor::onClearRow )
 EVT_BUTTON( VCardAttributesEditor::SAVE_BUTTON, VCardAttributesEditor::onSaveButton )
 EVT_BUTTON( VCardAttributesEditor::RESET_BUTTON, VCardAttributesEditor::onResetButton )
 wxEND_EVENT_TABLE()
@@ -205,6 +206,8 @@ VCardAttributesEditor::GetNonDefaultAttributes()
 std::map<std::string, std::string>
 VCardAttributesEditor::GetNonDefaultMetaTags()
 {
+   auto mapRemed = m_mapMetaDefaults;
+   mapRemed.erase( "*" );
    std::map<std::string, std::string> mapRetval;
    for( int i = 0; i < m_pMetaTable->GetNumberRows(); i++ )
    {
@@ -213,8 +216,21 @@ VCardAttributesEditor::GetNonDefaultMetaTags()
       {
          auto szVal = m_pMetaTable->GetCellValue( i, 0 );
          mapRetval.emplace( szRow.substr( 0, szRow.size() - 1 ), szVal );
+         szRow = szRow.substr( 0, szRow.size() - 1 );
+      }
+
+      auto iter_didhave = mapRemed.find(szRow);
+      if( iter_didhave != mapRemed.end() )
+      {
+         mapRemed.erase( iter_didhave );
       }
    }
+
+   for( auto& erased : mapRemed )
+   {
+      mapRetval.emplace( erased.first, "" );
+   }
+
    return mapRetval;
 }
 
@@ -313,7 +329,7 @@ VCardAttributesEditor::onAttributeChanged( wxGridEvent& awxEvt )
       {
          if( szRow[szRow.size() - 1] == '*' )
          {
-            szRow = szRow( 0, szRow.size() - 2 );
+            szRow = szRow( 0, szRow.size() - 1 );
          }
 
          if( !szNewVal.IsEmpty() )
@@ -330,18 +346,25 @@ VCardAttributesEditor::onAttributeChanged( wxGridEvent& awxEvt )
                   m_pMetaTable->SetRowLabelValue( iRow, szRow );
                }
             }
+            else
+            {
+               m_pMetaTable->SetRowLabelValue( iRow, szRow + "*" );
+            }
          }
          else
          {
-            m_mapMetaDefaults.erase( szRow );
-            m_pMetaTable->DeleteRows( iRow );
+            wxCommandEvent updateEvt(wxEVT_BUTTON);
+            updateEvt.SetId( NEED_CLEAR_ROW );
+            updateEvt.SetInt( iRow );
+            // Data used in the callback.
+
+            ::wxPostEvent( this, updateEvt );
          }
       }
       else if( !szNewVal.IsEmpty() )
       {
-         m_pMetaTable->SetRowLabelValue( iRow, szNewVal );
+         m_pMetaTable->SetRowLabelValue( iRow, szNewVal + "*" );
          m_pMetaTable->SetCellValue( iRow, 0, "<value>" );
-         m_mapMetaDefaults.emplace( szNewVal, "<value>" );
 
          // Add another new row.
          int iRow = m_pMetaTable->GetNumberRows();
@@ -368,6 +391,18 @@ VCardAttributesEditor::onAttributeChanged( wxGridEvent& awxEvt )
    }
 }
 
+void
+VCardAttributesEditor::onClearRow( wxCommandEvent & awxEvt )
+{
+   int iRow = awxEvt.GetInt();
+   for( int i = iRow; i < m_pMetaTable->GetNumberRows()-1; i++ )
+   {
+      m_pMetaTable->SetRowLabelValue( i, m_pMetaTable->GetRowLabelValue( i + 1 ) );
+   }
+   m_pMetaTable->DeleteRows( iRow );
+   
+}
+
 void 
 VCardAttributesEditor::onSaveButton( wxCommandEvent & awxEvt )
 {
@@ -381,7 +416,7 @@ VCardAttributesEditor::onResetButton( wxCommandEvent & awxEvt )
    {
       for( int i = 0; i < m_pAttributesTable->GetNumberRows(); i++ )
       {
-         if( m_pAttributesTable->GetRowLabelValue( i ).find( def.first ) != string::npos )
+         if( m_pAttributesTable->GetRowLabelValue( i ).find( def.first ) == 0 )
          {
             m_pAttributesTable->SetRowLabelValue( i, def.first );
             m_pAttributesTable->SetCellValue( i, 0, def.second );
@@ -389,17 +424,44 @@ VCardAttributesEditor::onResetButton( wxCommandEvent & awxEvt )
          }
       }
    }
-   for( auto& def : m_mapMetaDefaults )
+   auto tmpDef = m_mapMetaDefaults;
+   tmpDef.erase( "*" );
+   auto iter_tmp = tmpDef.begin();
+   while( iter_tmp != tmpDef.end() )
    {
+      auto& def = *iter_tmp;
+      bool bErase = false;
       for( int i = 0; i < m_pMetaTable->GetNumberRows(); i++ )
       {
-         if( m_pMetaTable->GetRowLabelValue( i ).find( def.first ) != string::npos )
+         if( m_pMetaTable->GetRowLabelValue( i ).find( def.first ) == 0 )
          {
             m_pMetaTable->SetRowLabelValue( i, def.first );
             m_pMetaTable->SetCellValue( i, 0, def.second );
+            bErase = true;
             break;
          }
       }
+
+      if( bErase )
+      {
+         iter_tmp = tmpDef.erase( iter_tmp );
+      }
+      else
+      {
+         iter_tmp++;
+      }
+   }
+
+   for( auto addback : tmpDef )
+   {
+      int iRow = m_pMetaTable->GetNumberRows();
+      if( iRow > 0 )
+      {
+         iRow--;
+      }
+      iRow = m_pMetaTable->InsertRows( iRow );
+      m_pMetaTable->SetRowLabelValue( iRow, addback.first );
+      m_pMetaTable->SetCellValue( iRow, 0, addback.second );
    }
 }
 

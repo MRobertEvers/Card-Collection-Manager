@@ -23,6 +23,11 @@ public:
       ITEM_GRID = 47
    };
 
+   enum
+   {
+      NEED_CLEAR_ROW = 88
+   };
+
 public:
    VCardAttributesEditor( wxWindow* aptParent, wxWindowID aiWID );
    ~VCardAttributesEditor();
@@ -56,6 +61,7 @@ private:
    wxPanel* m_pButtonPanel;
 
    void onAttributeChanged( wxGridEvent& awxEvt );
+   void onClearRow( wxCommandEvent& awxEvt );
    void onSaveButton( wxCommandEvent& awxEvt );
    void onResetButton( wxCommandEvent& awxEvt );
 

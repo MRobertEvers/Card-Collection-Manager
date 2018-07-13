@@ -147,9 +147,13 @@ CopyItem::SetMetaTag( const string& aszKey,
    {
       m_mapMetaTags.emplace( aszKey, MetaTag( aszKey, aszVal, atagType ));
    }
-   else
+   else if( aszVal != "" )
    {
       iter_tag->second.SetVal( aszVal, atagType );
+   }
+   else
+   {
+      m_mapMetaTags.erase( iter_tag );
    }
 
    if( MetaTag::DetermineMetaTagType( aszKey ) == MetaTag::Public )
