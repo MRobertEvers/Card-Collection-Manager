@@ -99,7 +99,7 @@ VCardInventoryViewer::onSave( wxCommandEvent & awxEvt )
    auto szCal = newe->GetCurrentValue();
 
    auto szHash = awxEvt.GetString();
-   auto& iFace = m_mapShownInterfaces[szHash.ToStdString()];
+   auto iFace = m_mapShownInterfaces[szHash.ToStdString()];
    m_pController->OnSave( iFace, szCal );
 }
 

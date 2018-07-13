@@ -40,7 +40,7 @@ CCardInventoryViewer::OnSave( const CardInterface& aIface, const wxString& aszNe
    updateEvt.SetClientData( new CollectionDelta( vecChanges ) );
    // Data used in the callback.
 
-   ::wxPostEvent( m_pView->GetParent(), updateEvt );
+   ::wxPostEvent( m_pView, updateEvt );
 }
 
 void 
