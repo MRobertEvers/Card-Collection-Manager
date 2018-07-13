@@ -45,6 +45,8 @@ public:
    std::string  SetAttributes( const string& aszCardName, const string& aszUID,
                                const vector<pair<string, string>>& avecAttrs );
    std::string  SetAttribute(const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal);
+   std::string  SetMetaTags( const string& aszCardName, const string& aszUID,
+                             const vector<pair<string, string>>& avecMeta );
    std::string  SetMetaTag( const string& aszCardName, const string& aszUID, const string& aszKey, const string& aszVal );
 
    vector<pair<string, string>> GetMetaTags(const string& aszCardName, const string& aszUID);

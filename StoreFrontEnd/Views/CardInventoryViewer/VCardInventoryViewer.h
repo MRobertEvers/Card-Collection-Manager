@@ -3,10 +3,12 @@
 #include <wx/aui/framemanager.h>
 #include <vector>
 #include <map>
+#include <memory>
 
 class CardInterface;
 class wxRichTextCtrl;
 class CCardInventoryViewer;
+class CardEditor;
 
 class VCardInventoryViewer : public wxPanel
 {
@@ -60,6 +62,7 @@ private:
    wxAuiManager* m_scrollmgr;
    std::vector<SetDisplay*> m_vecItems;
    std::map<std::string, CardInterface> m_mapShownInterfaces;
+   std::shared_ptr<CardEditor> m_pEditor;
 
    void onSave( wxCommandEvent& awxEvt );
    void onOpenEditor( wxCommandEvent& awxEvt ); //

@@ -19,6 +19,33 @@ CollectionInterface::GetItemInterfaces()
    return m_Set.GetItemInterfaces();
 }
 
+CardInterface*
+CollectionInterface::GetItem( const std::string & aszHash )
+{
+   return m_Set.GetFirstItem(aszHash);
+}
+
+// Returns a cardInterface that is NOT drawn nor tracked by this interface.
+std::shared_ptr<CardInterface> 
+CollectionInterface::GetVirtualItem( const std::string & aszHash )
+{
+   std::shared_ptr<CardInterface> pRetval;
+
+   auto ptSF = StoreFrontEnd::Server();
+   Query hashQuery;
+   hashQuery.FindHash( aszHash );
+   hashQuery.UIDs();
+   hashQuery.SetCollapse( true );
+
+   auto vecCard = ptSF->GetAllCardsStartingWith( m_szColId, hashQuery );
+   if( vecCard.size() > 0 )
+   {
+      pRetval = std::shared_ptr<CardInterface>( new CardInterface( *vecCard.begin(), this ) );
+   }
+
+   return pRetval;
+}
+
 std::map<unsigned long, std::vector<std::string>>
 CollectionInterface::GetHistoryGroups()
 {
@@ -120,6 +147,23 @@ CollectionInterfaceSet::Refresh( std::shared_ptr<CollectionDelta> apDelta )
             {
                auto iter_rem = RemoveItem( removed.first, uid );
                ret->AddRemove( iter_rem.first, iter_rem.second );
+            }
+         }
+      }
+   }
+
+   for( auto& changed : apDelta->GetChanged() )
+   {
+      auto iter_name = m_mapUIDName.find( changed.first );
+      if( iter_name != m_mapUIDName.end() )
+      {
+         // Check if we have it first.
+         for( auto& uid : changed.second )
+         {
+            auto iter_uid = iter_name->second.find( uid );
+            if( iter_uid != iter_name->second.end() )
+            {
+               ret->AddChange( iter_uid->second );
             }
          }
       }
@@ -254,6 +298,25 @@ CollectionInterfaceSet::GetItemInterfaces()
    return m_lstCopies;
 }
 
+CardInterface*
+CollectionInterfaceSet::GetFirstItem( const std::string & aszHash )
+{
+   CardInterface* item = nullptr;
+   auto items = m_mapHash.find( aszHash );
+   if( items != m_mapHash.end() )
+   {
+      item = &*items->second;
+   }
+
+   return item;
+}
+
+std::vector<std::string>
+CollectionInterfaceSet::GetHashes( const std::string & aszName )
+{
+
+}
+
 CollectionDelta::CollectionDelta( const std::vector<std::string>& avecChangedUIDs )
 {
    for( auto& delta : avecChangedUIDs )
@@ -263,7 +326,7 @@ CollectionDelta::CollectionDelta( const std::vector<std::string>& avecChangedUID
       std::vector<std::pair<std::string, std::string>> vecAttrs;
       std::vector<std::pair<std::string, std::string>> vecUids;
 
-      int iCmd = delta.find_first_of( "+-" );
+      int iCmd = delta.find_first_of( "+-%" );
       if( iCmd < 0 )
       {
          continue;
@@ -283,11 +346,18 @@ CollectionDelta::CollectionDelta( const std::vector<std::string>& avecChangedUID
             m_mapAdded[szName].push_back( uid.second );
          }
       }
-      else
+      else if( delta[iCmd] == '-' )
       {
          for( auto& uid : vecUids )
          {
             m_mapRemoved[szName].push_back( uid.second );
+         }
+      }
+      else
+      {
+         for( auto& uid : vecUids )
+         {
+            m_mapChanged[szName].push_back( uid.second );
          }
       }
    }
@@ -312,6 +382,13 @@ CollectionDelta::GetRemoved()
    return m_mapRemoved;
 }
 
+std::map<std::string, std::vector<std::string>>& 
+CollectionDelta::GetChanged()
+{
+   // TODO: insert return statement here
+   return m_mapChanged;
+}
+
 void 
 CollectionDeltaResolution::AddRemove( const std::string & aszName, const std::string & aszUID )
 {
@@ -324,6 +401,12 @@ CollectionDeltaResolution::AddAdd( std::list<CardInterface>::iterator aIter )
    m_vecAdded.push_back( aIter );
 }
 
+void 
+CollectionDeltaResolution::AddChange( std::list<CardInterface>::iterator aIter )
+{
+   m_vecChanged.push_back( aIter );
+}
+
 std::vector<std::list<CardInterface>::iterator>& 
 CollectionDeltaResolution::GetAdded()
 {
@@ -334,4 +417,10 @@ std::vector<std::pair<std::string, std::string>>&
 CollectionDeltaResolution::GetRemoved()
 {
    return m_vecRemoved;
+}
+
+std::vector<std::list<CardInterface>::iterator>&
+CollectionDeltaResolution::GetChanged()
+{
+   return m_vecChanged;
 }

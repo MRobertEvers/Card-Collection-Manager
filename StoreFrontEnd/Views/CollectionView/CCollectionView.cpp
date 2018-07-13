@@ -129,14 +129,28 @@ CCollectionView::OnCollectionEdited( std::shared_ptr<CollectionDelta> apDelta )
 
    // TODO: Check if last query collapsed.
    m_ptView->Freeze();
+   for( auto& item : resolution->GetRemoved() )
+   {
+      m_ptView->Undraw( item.first, item.second );
+   }
+
    for( auto& item : resolution->GetAdded() )
    {
       m_ptView->Draw( &*item );
    }
 
-   for( auto& item : resolution->GetRemoved() )
+   for( auto& item : resolution->GetChanged() )
    {
-      m_ptView->Undraw( item.first, item.second );
+      for( auto& uid : item->GetRepresentingUIDs() )
+      {
+         m_ptView->Undraw( item->GetName(), uid );
+      }
+      m_ptView->Draw( &*item );
+   }
+
+   if( m_ptModel->GetItemInterfaces().size() > 0 )
+   {
+      uiShowNewestCard( &*m_ptModel->GetItemInterfaces().begin() );
    }
    m_ptView->Thaw();
    m_ptView->PostSizeEvent();

@@ -474,6 +474,12 @@ StringInterface::DeltaAddCmdString( const string & aszCardName, const vector<Tag
    return DeltaCmdString( "+", aszCardName, avecUIDs );
 }
 
+string 
+StringInterface::DeltaChangeCmdString( const string & aszCardName, const vector<Tag>& avecUIDs )
+{
+   return DeltaCmdString( "%", aszCardName, avecUIDs );
+}
+
 string
 StringInterface::DeltaCmdString( const string & aszCmd, const string & aszCardName, const vector<Tag>& avecUIDs )
 {

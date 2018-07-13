@@ -175,6 +175,12 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp" />
     <ClCompile Include="StoreFrontEnd\SourceDownloader.cpp" />
     <ClCompile Include="StoreFrontEnd\StoreFrontEnd.cpp" />
+    <ClCompile Include="Views\CardAttributesEditor\CardAttributesEditor.cpp" />
+    <ClCompile Include="Views\CardAttributesEditor\CCardAttributesEditor.cpp" />
+    <ClCompile Include="Views\CardAttributesEditor\VCardAttributesEditor.cpp" />
+    <ClCompile Include="Views\CardEditor\CardEditor.cpp" />
+    <ClCompile Include="Views\CardEditor\CCardEditor.cpp" />
+    <ClCompile Include="Views\CardEditor\VCardEditor.cpp" />
     <ClCompile Include="Views\CardInventoryViewer\CardInventoryViewer.cpp" />
     <ClCompile Include="Views\CardInventoryViewer\CCardInventoryViewer.cpp" />
     <ClCompile Include="Views\CardInventoryViewer\VCardInventoryViewer.cpp" />
@@ -253,6 +259,12 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="StoreFrontEnd\SourceDownloader.h" />
     <ClInclude Include="StoreFrontEnd\StorefrontConfig.h" />
     <ClInclude Include="StoreFrontEnd\StoreFrontEnd.h" />
+    <ClInclude Include="Views\CardAttributesEditor\CardAttributesEditor.h" />
+    <ClInclude Include="Views\CardAttributesEditor\CCardAttributesEditor.h" />
+    <ClInclude Include="Views\CardAttributesEditor\VCardAttributesEditor.h" />
+    <ClInclude Include="Views\CardEditor\CardEditor.h" />
+    <ClInclude Include="Views\CardEditor\CCardEditor.h" />
+    <ClInclude Include="Views\CardEditor\VCardEditor.h" />
     <ClInclude Include="Views\CardInventoryViewer\CardInventoryViewer.h" />
     <ClInclude Include="Views\CardInventoryViewer\CCardInventoryViewer.h" />
     <ClInclude Include="Views\CardInventoryViewer\VCardInventoryViewer.h" />

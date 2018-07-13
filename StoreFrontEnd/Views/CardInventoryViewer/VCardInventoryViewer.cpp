@@ -3,6 +3,8 @@
 #include "../StoreFrontEnd/CardInterface.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
 #include "../StoreFrontEnd/CollectionInterface.h"
+#include "../Views/CardEditor/CardEditor.h"
+#include "../Views/CardEditor/CCardEditor.h"
 #include <algorithm>
 #include <wx/richtext/richtextctrl.h>
 
@@ -35,6 +37,13 @@ void
 VCardInventoryViewer::ViewCard( CardInterface* apInterface )
 {
    this->Freeze();
+   if( m_pEditor != nullptr )
+   {
+      //apInterface->GetCollection()->Get
+      //m_pEditor->GetController()->SetModel(, m_p)
+      m_pEditor->GetView()->Destroy();
+      m_pEditor = nullptr;
+   }
    if( m_pTitle != nullptr )
    {
       m_mgr.ClosePane( m_mgr.GetPane( m_pTitle ) );
@@ -97,7 +106,15 @@ VCardInventoryViewer::onSave( wxCommandEvent & awxEvt )
 void 
 VCardInventoryViewer::onOpenEditor( wxCommandEvent & awxEvt )
 {
-  // m_pController->OnSave( m_mapShownInterfaces[awxEvt.GetString()] );
+   if( m_pEditor == nullptr )
+   {
+      m_pEditor = std::shared_ptr<CardEditor>( new CardEditor() );
+      m_pEditor->GetView( this );
+
+      auto pFirst = m_mapShownInterfaces[awxEvt.GetString().ToStdString()];
+      m_pEditor->GetController()->SetModel( pFirst.GetCollection(), { pFirst.GetHash() } );
+      m_pEditor->GetController()->ShowWindow();
+   }
 }
 
 wxAuiPaneInfo

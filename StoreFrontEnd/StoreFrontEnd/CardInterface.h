@@ -26,11 +26,17 @@ public:
    std::string GetSet() const;
    std::string GetMetaTag( const std::string& aszKey ) const;
    std::string GetMetaTag( const std::string& aszKey, const std::string& aszUID) const;
+   std::vector<std::pair<std::string, std::string>>  GetMetaTags() const;
    std::string GetAttribute( const std::string& aszKey ) const;
+   std::vector<std::string> GetAttributeOptions( const std::string& aszKey ) const;
+   std::vector<std::string> GetPairedAttributes( const std::string& aszKey ) const;
+   std::vector<std::pair<std::string, std::string>> GetAttributes() const;
 
    // These modify the collection interface to add a new CardInterface to represent it.
    std::string SetMetaTag( const std::string& aszKey, const std::string& aszVal, const std::string& aszUID = "" ) const;
-   std::string SetAttributes( const std::string& aszKey, const std::string& aszUID,
+   std::string SetMetaTags( const std::string& aszUID,
+                            const std::vector<std::pair<std::string, std::string>>& avecMeta ) const;
+   std::string SetAttributes( const std::string& aszUID,
                               const std::vector<std::pair<std::string, std::string>>& avecAttrs ) const;
    std::string SetAttribute( const std::string& aszKey, const std::string& aszVal, const std::string& aszUID = "" ) const;
 

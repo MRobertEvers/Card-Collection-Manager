@@ -13,8 +13,8 @@ CardInventoryViewer::~CardInventoryViewer()
 }
 
 // TODO: Right now this should only be called once.
-wxPanel* 
-CardInventoryViewer::GetView( wxPanel * aptParent )
+wxWindow*
+CardInventoryViewer::GetView( wxWindow * aptParent )
 {
    m_pView = new VCardInventoryViewer( aptParent, wxID_ANY );
 

@@ -13,7 +13,7 @@ public:
    CardView();
    ~CardView();
 
-   wxPanel* GetView( wxPanel* apParent );
+   wxWindow* GetView( wxWindow* apParent );
    CCardView* GetController();
 
 private:

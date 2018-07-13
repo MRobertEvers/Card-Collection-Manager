@@ -73,6 +73,7 @@ public:
 
    static string DeltaRemoveCmdString( const string& aszCardName, const vector<Tag>& avecUIDs );
    static string DeltaAddCmdString( const string& aszCardName, const vector<Tag>& avecUIDs );
+   static string DeltaChangeCmdString( const string& aszCardName, const vector<Tag>& avecUIDs );
    static string DeltaCmdString( const string& aszCmd, const string& aszCardName, const vector<Tag>& avecUIDs );
 
    static string GetNameFromCardLine( const string& aszLongIdentifier );

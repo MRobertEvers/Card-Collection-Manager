@@ -7,14 +7,13 @@
 class CCardInventoryViewer;
 class VCardInventoryViewer;
 
-// TODO: This control currently does nothing.
 class CardInventoryViewer : public IViewFactory
 {
 public:
    CardInventoryViewer(  );
    ~CardInventoryViewer();
 
-   wxPanel* GetView( wxPanel* aptParent );
+   wxWindow* GetView( wxWindow* aptParent );
    CCardInventoryViewer* GetController();
 
 private:

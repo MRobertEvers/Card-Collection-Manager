@@ -11,8 +11,8 @@ CardView::~CardView()
 {
 }
 
-wxPanel* 
-CardView::GetView(wxPanel* apParent)
+wxWindow*
+CardView::GetView( wxWindow* apParent)
 {
    m_pView = new VCardView( apParent, wxID_ANY );
 

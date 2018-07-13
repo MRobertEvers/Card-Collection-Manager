@@ -197,7 +197,7 @@ StoreFront::SetAttributes( const string & aszCardName, const string & aszUID,
          if( copy->SetAttributes( avecAttrs ) )
          {
             auto szUID = copy->GetUID();
-            return StringInterface::DeltaRemoveCmdString( aszCardName,
+            return StringInterface::DeltaChangeCmdString( aszCardName,
                vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
          }
       }
@@ -220,9 +220,31 @@ StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
          if( copy->SetAttribute( aszKey, aszVal ) )
          {
             auto szUID = copy->GetUID();
-            return StringInterface::DeltaAddCmdString( aszCardName,
+            return StringInterface::DeltaChangeCmdString( aszCardName,
                vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
          }
+      }
+   }
+
+   return "";
+}
+
+string 
+StoreFront::SetMetaTags( const string & aszCardName, const string & aszUID, const vector<pair<string, string>>& avecMeta )
+{
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         for( auto& tag : avecMeta )
+         {
+            copy->SetMetaTag( tag.first, tag.second );
+         }
+
+         return StringInterface::DeltaChangeCmdString( aszCardName,
+            vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), copy->GetUID() ) ) );
       }
    }
 

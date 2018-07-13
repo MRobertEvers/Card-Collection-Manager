@@ -1,7 +1,7 @@
 #pragma once
-class wxPanel;
+class wxWindow;
 class IViewFactory
 {
 public:
-   virtual wxPanel* GetView( wxPanel* aptParent ) = 0;
+   virtual wxWindow* GetView( wxWindow* aptParent ) = 0;
 };
