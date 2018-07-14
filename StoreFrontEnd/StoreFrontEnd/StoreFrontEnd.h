@@ -22,6 +22,10 @@ public:
                            std::shared_ptr<ImageFetcherCallback> aptCallback );
    bool DownloadCardImage( CardInterface* apCard,
                            std::shared_ptr<ImageFetcherCallback> aptCallback );
+
+   bool DownloadCardImage( const wxString& aszCardName,
+                           const wxString& aszSet,
+                           std::shared_ptr<ImageFetcherCallback> aptCallback );
    bool DownloadImportSourceFile();
 
    // System

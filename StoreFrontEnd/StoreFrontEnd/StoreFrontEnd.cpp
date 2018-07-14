@@ -70,6 +70,18 @@ StoreFrontEnd::DownloadCardImage( CardInterface* apCard,
 }
 
 bool 
+StoreFrontEnd::DownloadCardImage( const wxString & aszCardName, const wxString & aszSet, std::shared_ptr<ImageFetcherCallback> aptCallback )
+{
+   auto ptse = StoreFrontEnd::Server();
+   auto szFilePath = ptse->GetImageFilePath( aszCardName.ToStdString(), aszSet.ToStdString() );
+   auto szMUD = ptse->GetDefaultIdentifyingAttributeValue( aszCardName.ToStdString(), "multiverseid" );
+   ImageFetcher::Instance()->PDownloadImage( szFilePath, aszCardName.ToStdString(), aszSet.ToStdString(),
+                                             szMUD, aptCallback );
+
+   return true;
+}
+
+bool
 StoreFrontEnd::DownloadImportSourceFile()
 {
    SourceDownloader SD;
