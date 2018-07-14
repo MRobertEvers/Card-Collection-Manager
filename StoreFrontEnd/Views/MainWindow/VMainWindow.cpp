@@ -2,12 +2,13 @@
 #include "MainWindow.h"
 #include "CMainWindow.h"
 #include "../StoreFrontEnd/StorefrontConfig.h"
-#include "../CollectionsOverview/vCollectionsOverview.h"
+#include "../CollectionsOverview/VCollectionsOverview.h"
 #include "../ViewTemplates/IMenuEventHandler.h"
 
-wxBEGIN_EVENT_TABLE(VMainWindow, IMenuEventSource )
+
+wxBEGIN_EVENT_TABLE( VMainWindow, wxFrame )
 EVT_BUTTON(VCollectionsOverview::View_Collection, VMainWindow::OnViewCollection)
-EVT_MENU(MainFrame::Menu_Quit, VMainWindow::OnQuit)
+EVT_MENU( MainFrame::Menu_Quit, VMainWindow::OnQuit)
 EVT_MENU( MainFrame::Menu_About, VMainWindow::OnAbout)
 EVT_MENU( MainFrame::Menu_Main, VMainWindow::OnViewCollectionOverview)
 EVT_MENU( MainFrame::Menu_Import, VMainWindow::OnImportSource)
@@ -15,24 +16,28 @@ EVT_MENU( MainFrame::Menu_View_As, VMainWindow::OnViewCollectionAs)
 wxEND_EVENT_TABLE()
 
 VMainWindow::VMainWindow( const wxString& title )
-   : IMenuEventSource( sfMAIN_WINDOW, title )
+   : wxFrame( NULL, sfMAIN_WINDOW, title )
 {
-   wxBoxSizer* boxSizer = new wxBoxSizer( wxVERTICAL );
-   this->SetSizer( boxSizer );
-
+   m_mgr.SetManagedWindow( this );
    uiBuildDefaultMenus();
 }
 
 
 VMainWindow::~VMainWindow()
 {
-
+   m_mgr.UnInit();
 }
 
 void 
 VMainWindow::SetController( CMainWindow* aptController )
 {
    m_Controller = aptController;
+}
+
+wxMenuBar* 
+VMainWindow::GetMenu()
+{
+   return m_wxMenuBar;
 }
 
 void 
@@ -85,15 +90,21 @@ VMainWindow::SetView( wxPanel* aptEVTHandler )
 {
    if( m_CurrentPanel != nullptr )
    {
-      this->GetSizer()->Detach( m_CurrentPanel );
-      m_CurrentPanel->Destroy();
+      m_mgr.ClosePane( m_mgr.GetPane(m_CurrentPanel) );
+      //this->GetSizer()->Detach( m_CurrentPanel );
+      //m_CurrentPanel->Destroy();
    }
 
    m_CurrentPanel = aptEVTHandler;
-   this->GetSizer()->Add( aptEVTHandler, wxSizerFlags( 1 ).Expand() );
+   //m_mgr.AddPane( aptEVTHandler,
+   //   wxAuiPaneInfo().Resizable(false).Floatable(false).CloseButton( false ).CaptionVisible(false) );
+   m_mgr.AddPane( aptEVTHandler,
+      wxAuiPaneInfo().CenterPane());
+   m_mgr.Update();
+   //this->GetSizer()->Add( aptEVTHandler, wxSizerFlags( 1 ).Expand() );
 
-   // Causes the children to calculate sizes.
-   Layout();
+   //// Causes the children to calculate sizes.
+   //Layout();
 }
 
 void 
@@ -123,12 +134,4 @@ VMainWindow::uiBuildDefaultMenus()
    // create a status bar just for fun (by default with 1 pane only)
    CreateStatusBar( 2 );
    SetStatusText( "StoreFrontPro!" );
-
-   uiProtectMenus( 2 );
-}
-
-void 
-VMainWindow::uiSetView()
-{
-
 }

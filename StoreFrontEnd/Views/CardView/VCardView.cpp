@@ -11,7 +11,7 @@ VCardView::VCardView( wxWindow* aptParent, wxWindowID aiWID )
    // boxSizer->AddGrowableRow( 2 );
 
    this->SetSizer( boxSizer );
-   this->SetSizeHints( 250, 500 );
+   this->SetSizeHints( 223, 311 );
 
    m_pRenderer = new CardRenderer( this );
    boxSizer->Add( m_pRenderer, wxSizerFlags( 1 ).Expand() );
@@ -20,7 +20,7 @@ VCardView::VCardView( wxWindow* aptParent, wxWindowID aiWID )
 
 VCardView::~VCardView()
 {
-
+   delete m_pController;
 }
 
 void 

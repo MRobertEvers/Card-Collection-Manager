@@ -6,31 +6,18 @@
 #include "../Views/CollectionEditor/viCollectionEditor.h"
 #include "../Views/CollectionHistory/viHistoryViewer.h"
 #include "../Views/CollectionStats/vStatsViewer.h"
+#include "../Views/CardInventoryViewer/CardInventoryViewer.h"
+#include "../StoreFrontEnd/CollectionInterface.h"
 
 CCollectionView::CCollectionView( VCollectionView* aptView,
-                                  IMenuEventSource* apSource,
                                   std::shared_ptr<CollectionInterface> aptModel )
-   : IMenuEventHandler( apSource ), m_ptModel(aptModel), m_ptView(aptView)
+   : m_ptModel(aptModel), m_ptView(aptView)
 {
-   registerSendMenuEvents();
 }
 
 CCollectionView::~CCollectionView()
 {
 
-}
-
-
-void
-CCollectionView::BindEventHandler()
-{
-   prepareMenuItem( "Edit", Menu_Edit );
-   prepareMenuItem( "Save", Menu_Save );
-   prepareMenuItem( "Stats", Menu_Stats );
-   prepareMenuItem( "History", Menu_History );
-   prepareMenuItem( "Export As XMage", Menu_XMage );
-   //prepareMenuItem( "View As Cube", Menu_View_As_Cube );
-   registerMenu( "Collection" );
 }
 
 void 
@@ -56,7 +43,10 @@ CCollectionView::SetCubeRenderer()
    m_ptView->SetRenderer( new CubeRenderer( m_ptView, wxID_ANY ) );
    uiShowCardViewer();
 
-   m_ptCardViewer->GetController()->SetModel( pFirst );
+   if( pFirst != nullptr )
+   {
+      uiShowNewestCard( pFirst );
+   }
    m_ptView->Draw( vecItems );
 }
 
@@ -65,6 +55,50 @@ CCollectionView::ViewItem( CardInterface* apItem )
 {
    auto pCardViewer = m_ptCardViewer->GetController();
    pCardViewer->SetModel( apItem );
+
+   auto pCardInv = m_ptInventoryEditor->GetController();
+   pCardInv->SetModel( apItem );
+}
+
+void 
+CCollectionView::OnDoEdit()
+{
+   auto pEditor = new viCollectionEditor( m_ptView, wxID_ANY, m_ptModel->GetColId() );
+   pEditor->Show();
+}
+
+void 
+CCollectionView::OnViewStats()
+{
+   auto view = new vStatsViewer( m_ptView, wxID_ANY, m_ptModel );
+   view->SetFocus();
+   view->Show();
+}
+
+void 
+CCollectionView::OnViewHistory()
+{
+   auto view = new viHistoryViewer( m_ptView, wxID_ANY, m_ptModel );
+   view->Show();
+}
+
+void 
+CCollectionView::OnExportXMage()
+{
+   Query listQuery( true );
+   listQuery.IncludeMetaType( MetaTag::None );
+   listQuery.SetIncludeMeta( false );
+   listQuery.SetIncludeIDs( false );
+
+   auto ptSF = StoreFrontEnd::Server();
+   ptSF->ExportCollection( m_ptModel->GetColId(), listQuery );
+}
+
+void 
+CCollectionView::OnSave()
+{
+   auto ptSF = StoreFrontEnd::Server();
+   ptSF->SaveCollection( m_ptModel->GetColId() );
 }
 
 void 
@@ -85,61 +119,57 @@ CCollectionView::OnCollectionEdited()
    }
 
    m_ptView->Draw( vecItems );
-   m_ptCardViewer->GetController()->SetModel( pFirst );
+   uiShowNewestCard( pFirst );
 }
 
-void
-CCollectionView::handleEvent( unsigned int aiEvent )
+void 
+CCollectionView::OnCollectionEdited( std::shared_ptr<CollectionDelta> apDelta )
 {
-   if( aiEvent == Menu_Edit )
-   {
-      auto pEditor = new viCollectionEditor( m_ptView, wxID_ANY, m_ptModel->GetColId() );
-      pEditor->Show();
-      //m_wxDeckbox->ShowCollectionEditor();
-   }
-   else if( aiEvent == Menu_Save )
-   {
-      auto ptSF = StoreFrontEnd::Server();
-      ptSF->SaveCollection( m_ptModel->GetColId() );
-   }
-   else if( aiEvent == Menu_Stats )
-   {
-      auto view = new vStatsViewer( m_ptView, wxID_ANY, m_ptModel );
-      view->SetFocus();
-      view->Show();
-   }
-   else if( aiEvent == Menu_History )
-   {
-      auto view = new viHistoryViewer( m_ptView, wxID_ANY, m_ptModel );
-      view->Show();
-   }
-   else if( aiEvent == Menu_XMage )
-   {
-      Query listQuery( true );
-      listQuery.IncludeMetaType( None );
-      listQuery.HashType( CopyItem::HashType::Ids );
-      listQuery.SetIncludeMeta( false );
-      listQuery.SetIncludeIDs( false );
+   auto resolution = m_ptModel->Refresh( apDelta );
 
-      auto ptSF = StoreFrontEnd::Server();
-      ptSF->ExportCollection( m_ptModel->GetColId(), listQuery );
+   // TODO: Check if last query collapsed.
+   m_ptView->Freeze();
+   for( auto& item : resolution->GetRemoved() )
+   {
+      m_ptView->Undraw( item.first, item.second );
    }
-//   else if( aiEvent == cCollectionDeckBox::Menu_View_As_Cube )
-//   {
-//      wxCommandEvent updateEvt( wxEVT_MENU );
-//      updateEvt.SetId( MainFrame::Menu_View_As );
-//      updateEvt.SetString( m_ColID );
-//      updateEvt.SetInt( MainFrame::Menu_View_As_Cube );
-//      ::wxPostEvent( m_wxDeckbox, updateEvt );
-//   }
+
+   for( auto& item : resolution->GetAdded() )
+   {
+      m_ptView->Draw( &*item );
+   }
+
+   for( auto& item : resolution->GetChanged() )
+   {
+      m_ptView->Draw( &*item );
+   }
+
+   if( m_ptModel->GetItemInterfaces().size() > 0 )
+   {
+      uiShowNewestCard( &*m_ptModel->GetItemInterfaces().begin() );
+   }
+   m_ptView->Thaw();
+   m_ptView->PostSizeEvent();
 }
 
 void 
 CCollectionView::uiShowCardViewer()
 {
+   // Need to think of a better way to do submodules
    if( m_ptCardViewer == nullptr )
    {
-      m_ptCardViewer = std::shared_ptr<CardView>( new CardView( m_ptView ) );
-      m_ptView->ShowCardViewer( m_ptCardViewer->GetView() );
+      m_ptCardViewer = std::shared_ptr<CardView>( new CardView(  ) );
+      m_ptView->ShowCardViewer( m_ptCardViewer.get() );
    }
+   if( m_ptInventoryEditor == nullptr )
+   {
+      m_ptInventoryEditor = std::shared_ptr<CardInventoryViewer>( new CardInventoryViewer() );
+      m_ptView->ShowCardInventoryViewer( m_ptInventoryEditor.get() );
+   }
+}
+
+void CCollectionView::uiShowNewestCard( CardInterface * apItem )
+{
+   m_ptCardViewer->GetController()->SetModel( apItem );
+   m_ptInventoryEditor->GetController()->SetModel( apItem );
 }

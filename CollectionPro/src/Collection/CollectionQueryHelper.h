@@ -47,6 +47,7 @@ private:
 
    multimap<string, ItemData> createHashToItemMap(const Query& aiQueryParms);
    void memoizeHashToCollapsedItemMap();
+   vector<string> queryByNameList( const Query& aiQueryParms );
    vector<string> queryMemoList( const Query& aiQueryParms );
    vector<string> queryCompleteList( const Query& aiQueryParms );
    vector<string> performQuery( const Query& aiQueryParms, const multimap<string, ItemData>& amapSearch );

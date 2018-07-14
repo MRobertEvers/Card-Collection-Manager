@@ -13,38 +13,38 @@ using namespace std;
 
 // This can handle forms of
 // [[x]<#>] <name> [{<Dets>}] [: {<Meta>}]
-bool 
+bool
 StringInterface::ParseCardLine( const string& aszLine,
-                                unsigned int& riCount,
-                                string& rszName,
-                                string& rszDetails,
-                                string& rszMeta )
+   unsigned int& riCount,
+   string& rszName,
+   string& rszDetails,
+   string& rszMeta )
 {
    string szLine, szMeta, szDetails, szName;
-   
+
    // Start with a line with no spaces at the beginning nor end.
-   szLine = StringHelper::Str_Trim(aszLine, ' ');
+   szLine = StringHelper::Str_Trim( aszLine, ' ' );
 
    // STEP 1. Parse the number if there is one. It takes the form [x]<#>
    if( (szLine.size() > 0) && (szLine[0] == 'x') )
    {
-	   szLine = szLine.substr(1);
+      szLine = szLine.substr( 1 );
    }
 
    // Get every character up to the first space. Default 1.
    riCount = 1;
-   unsigned int iFirstBreak = szLine.find_first_of(' ');
+   unsigned int iFirstBreak = szLine.find_first_of( ' ' );
    if( iFirstBreak != string::npos )
    {
       // If that chunk is a number, then try to parse it.
       unsigned int iTryParse, iParseChars;
-      string szMaybeNum = szLine.substr(0, iFirstBreak);
+      string szMaybeNum = szLine.substr( 0, iFirstBreak );
 
       // An exception is thrown if there are 0 num chars.
-      if( ( szMaybeNum.size() > 0 ) && 
-          ( isdigit( szMaybeNum[0] ) ) )
+      if( (szMaybeNum.size() > 0) &&
+         (isdigit( szMaybeNum[0] )) )
       {
-         iTryParse = stoul(szMaybeNum, &iParseChars);
+         iTryParse = stoul( szMaybeNum, &iParseChars );
       }
       else
       {
@@ -52,7 +52,7 @@ StringInterface::ParseCardLine( const string& aszLine,
       }
 
       if( (iParseChars != iFirstBreak) &&
-          (iParseChars != 0) )
+         (iParseChars != 0) )
       {
          // There are non num chars mixed in the number.
          return false;
@@ -61,13 +61,13 @@ StringInterface::ParseCardLine( const string& aszLine,
       if( iParseChars > 0 )
       {
          riCount = iTryParse;
-         szLine = szLine.substr(iFirstBreak);
-         szLine = StringHelper::Str_Trim(szLine, ' ');
+         szLine = szLine.substr( iFirstBreak );
+         szLine = StringHelper::Str_Trim( szLine, ' ' );
       }
    }
 
-   if( ( ((int)riCount) < 0 ) || 
-       ( szLine.size() == 0 ) )
+   if( (((int)riCount) < 0) ||
+      (szLine.size() == 0) )
    {
       return false;
    }
@@ -75,8 +75,8 @@ StringInterface::ParseCardLine( const string& aszLine,
    // STEP 2. Determine if there are details/meta.
    //         We need to know which to parse the name.
    bool bHasDets, bHasMeta;
-   unsigned int iFirstBrace =  szLine.find_first_of('{');
-   unsigned int iColon = szLine.find_first_of(':');
+   unsigned int iFirstBrace = szLine.find_first_of( '{' );
+   unsigned int iColon = szLine.find_first_of( ':' );
    unsigned int iNameEnd = szLine.size();
    if( iFirstBrace == iColon )
    {
@@ -85,7 +85,7 @@ StringInterface::ParseCardLine( const string& aszLine,
       bHasDets = false;
       bHasMeta = false;
    }
-   else if ( iFirstBrace < iColon )
+   else if( iFirstBrace < iColon )
    {
       bHasDets = true;
       bHasMeta = iColon != string::npos;
@@ -105,11 +105,11 @@ StringInterface::ParseCardLine( const string& aszLine,
    }
 
    // STEP 3. Parse the name.
-   szName = szLine.substr(0, iNameEnd);
-   szName = StringHelper::Str_Trim(szName, ' ');
+   szName = szLine.substr( 0, iNameEnd );
+   szName = StringHelper::Str_Trim( szName, ' ' );
    rszName = szName;
 
-   szLine = szLine.substr(iNameEnd);
+   szLine = szLine.substr( iNameEnd );
    iColon = iColon - iNameEnd;
 
    // STEP 4. Get the details if there are any.
@@ -124,9 +124,9 @@ StringInterface::ParseCardLine( const string& aszLine,
       {
          iDetsEnd = szLine.size();
       }
-      
-      szDetails = szLine.substr(0, iDetsEnd);
-      szDetails = StringHelper::Str_Trim(szDetails, ' ');
+
+      szDetails = szLine.substr( 0, iDetsEnd );
+      szDetails = StringHelper::Str_Trim( szDetails, ' ' );
       rszDetails = szDetails;
 
       if( szDetails.front() != '{' && szDetails.back() != '}' )
@@ -138,12 +138,12 @@ StringInterface::ParseCardLine( const string& aszLine,
    // STEP 5. Get the metatags if there are any.
    if( bHasMeta )
    {
-      szLine = szLine.substr(iColon);
+      szLine = szLine.substr( iColon );
       // In case there is an erroneous colon at the end.
       if( szLine.size() > 0 )
       {
-         szLine = szLine.substr(1);
-         szLine = StringHelper::Str_Trim(szLine, ' ');
+         szLine = szLine.substr( 1 );
+         szLine = StringHelper::Str_Trim( szLine, ' ' );
       }
 
       szMeta = szLine;
@@ -158,37 +158,37 @@ StringInterface::ParseCardLine( const string& aszLine,
    return true;
 }
 
-bool 
+bool
 StringInterface::ParseCardLine( const string& aszLine,
-                                unsigned int& riCount,
-                                string& rszName,
-                                vector<Tag>& rszDetails,
-                                vector<Tag>& rszMeta )
+   unsigned int& riCount,
+   string& rszName,
+   vector<Tag>& rszDetails,
+   vector<Tag>& rszMeta )
 {
    string szDets, szMeta;
-   
+
    bool bGoodParse = ParseCardLine( aszLine, riCount, rszName, szDets, szMeta );
    if( bGoodParse )
    {
-      bGoodParse &= ParseTagString(szDets, rszDetails);
-      bGoodParse &= ParseTagString(szMeta, rszMeta);
+      bGoodParse &= ParseTagString( szDets, rszDetails );
+      bGoodParse &= ParseTagString( szMeta, rszMeta );
    }
 
    return bGoodParse;
 }
 
 
-bool 
+bool
 StringInterface::ParseInterfaceLine( const string& aszLine,
-                                     unsigned int& riCount,
-                                     string& rszName,
-                                     vector<Tag>& rszDetails,
-                                     vector<Tag>& rszMeta,
-                                     unsigned int& riCount2,
-                                     string& rszName2,
-                                     vector<Tag>& rszDetails2,
-                                     vector<Tag>& rszMeta2,
-                                     StringInterface::InterfaceLineType& riType )
+   unsigned int& riCount,
+   string& rszName,
+   vector<Tag>& rszDetails,
+   vector<Tag>& rszMeta,
+   unsigned int& riCount2,
+   string& rszName2,
+   vector<Tag>& rszDetails2,
+   vector<Tag>& rszMeta2,
+   StringInterface::InterfaceLineType& riType )
 {
    string szFixedLine = StringHelper::Str_Trim( aszLine, ' ' );
    if( szFixedLine.size() < 1 )
@@ -226,7 +226,7 @@ StringInterface::ParseInterfaceLine( const string& aszLine,
 
 bool
 StringInterface::ParseTagString( const string& aszDetails,
-                                 vector<Tag>& rlstTags )
+   vector<Tag>& rlstTags )
 {
    vector<Tag> lstKeyVals;
    vector<string> lstPairs, lstVal;
@@ -234,7 +234,7 @@ StringInterface::ParseTagString( const string& aszDetails,
    string szDetails = StringHelper::Str_Trim( aszDetails, '{' );
    szDetails = StringHelper::Str_Trim( szDetails, '}' );
    szDetails = StringHelper::Str_Trim( szDetails, ' ' );
-   vector<string> lstDetails = StringHelper::Str_Split( szDetails, "\"");
+   vector<string> lstDetails = StringHelper::Str_Split( szDetails, "\"" );
    //vector<string> lstDetails = StringHelper::Str_Split( aszDetails, " " );
    // { one="two" three=" four" }
    // one="two" three=" four"
@@ -243,13 +243,13 @@ StringInterface::ParseTagString( const string& aszDetails,
    string szKey;
    string szVal;
    vector<string>::iterator iter_attrs;
-   for (iter_attrs = lstDetails.begin(); 
-        iter_attrs != lstDetails.end(); 
-        ++iter_attrs)
+   for( iter_attrs = lstDetails.begin();
+      iter_attrs != lstDetails.end();
+      ++iter_attrs )
    {
-      if( iter_attrs->find_last_of( '=' ) == iter_attrs->size()-1 )
+      if( iter_attrs->find_last_of( '=' ) == iter_attrs->size() - 1 )
       {
-         szKey = iter_attrs->substr(0, iter_attrs->size()-1);
+         szKey = iter_attrs->substr( 0, iter_attrs->size() - 1 );
          szKey = StringHelper::Str_Trim( szKey, ' ' );
       }
       else
@@ -266,55 +266,55 @@ StringInterface::ParseTagString( const string& aszDetails,
    return true;
 }
 
-bool 
+bool
 StringInterface::ParseListDelimString( const string& aszDelimStr,
-                                       vector<string>& rlstStrings,
-                                       const string& aszIndicatorString,
-                                       const string& aszDelim )
+   vector<string>& rlstStrings,
+   const string& aszIndicatorString,
+   const string& aszDelim )
 {
    if( aszIndicatorString != aszDelimStr.substr( 0, aszIndicatorString.size() ) )
    {
       return false;
    }
 
-   string szParseStr = aszDelimStr.substr(aszIndicatorString.size());
-   rlstStrings = StringHelper::Str_Split(szParseStr, aszDelim);
+   string szParseStr = aszDelimStr.substr( aszIndicatorString.size() );
+   rlstStrings = StringHelper::Str_Split( szParseStr, aszDelim );
    return true;
 }
 
-string 
+string
 StringInterface::ToCardLine( const string& aszName,
-                             const vector<Tag>& alstAttrs,
-                             const vector<Tag>& alstMetaTags )
+   const vector<Tag>& alstAttrs,
+   const vector<Tag>& alstMetaTags )
 {
    string szTagline, szLine;
-   
+
    szLine = aszName;
 
    if( alstAttrs.size() > 0 )
    {
       szLine += " ";
-      PairListToTagStr(alstAttrs.cbegin(), alstAttrs.cend(), szTagline);
+      PairListToTagStr( alstAttrs.cbegin(), alstAttrs.cend(), szTagline );
       szLine += szTagline;
    }
 
    if( alstMetaTags.size() > 0 )
    {
       szLine += " : ";
-      PairListToTagStr(alstMetaTags.cbegin(), alstMetaTags.cend(), szTagline);
+      PairListToTagStr( alstMetaTags.cbegin(), alstMetaTags.cend(), szTagline );
       szLine += szTagline;
    }
 
    return szLine;
 }
 
-unsigned long 
+unsigned long
 StringInterface::GetCurrentTimeCount()
 {
    return time( 0 );
 }
 
-unsigned long 
+unsigned long
 StringInterface::ToTimeValue( const string& aszTime, const string& aszParse )
 {
    struct std::tm tm;
@@ -328,7 +328,7 @@ StringInterface::ToTimeValue( const string& aszTime, const string& aszParse )
    return mktime( &tm );
 }
 
-string 
+string
 StringInterface::ToTimeString( unsigned long aulTime )
 {
    // OLD WAY
@@ -341,10 +341,10 @@ StringInterface::ToTimeString( unsigned long aulTime )
    //return string( str )
 
    // This should be the same as the above.
-   return ToTimeString(aulTime, "%a %b %d %H:%M:%S %Y");
+   return ToTimeString( aulTime, "%a %b %d %H:%M:%S %Y" );
 }
 
-string 
+string
 StringInterface::ToTimeString( unsigned long aulTime, const string& aszFormat )
 {
    time_t timeType = aulTime;
@@ -353,7 +353,7 @@ StringInterface::ToTimeString( unsigned long aulTime, const string& aszFormat )
 
    stringstream ss;
    ss << put_time( &tmStruct, aszFormat.c_str() );//"%F_%T" );
-   
+
    return ss.str();
 }
 
@@ -361,7 +361,7 @@ StringInterface::InterfaceLineType
 StringInterface::ParseInterfaceLine( string& rszLine )
 {
    if( rszLine.size() <= 2 )
-   { 
+   {
       return Corrupt;
    }
 
@@ -396,47 +396,56 @@ StringInterface::ParseInterfaceLine( string& rszLine )
 }
 
 string
-StringInterface::CmdCreateAddition(const string& aszName, const string& aszSet)
+StringInterface::CmdCreateAddition( const string& aszName, const string& aszSet, int aiCount )
 {
    // TODO: This should not be a string literal.
-   vector<Tag> pairvec = { make_pair("set", aszSet) };
+   vector<Tag> pairvec = { make_pair( "set", aszSet ) };
    string szRetVal;
-   PairListToTagStr(pairvec.begin(), pairvec.end(), szRetVal);
- 
-   szRetVal = "+ " + GetNameFromCardLine(aszName) + " " + szRetVal;
+   PairListToTagStr( pairvec.begin(), pairvec.end(), szRetVal );
+   szRetVal = "+ " + std::to_string( aiCount ) + " " + GetNameFromCardLine( aszName ) + " " + szRetVal;
+   if( aiCount > 1 )
+   {
+      CmdAppendCount( szRetVal, aiCount );
+   }
    return szRetVal;
 }
 
 string
-StringInterface::CmdCreateRemove(const string& aszLongName, const string& aszUID)
+StringInterface::CmdCreateRemove( const string& aszLongName, const string& aszUID, int aiCount )
 {
    StringInterface szIface;
    // TODO: Factor this these cmds better.
-   vector<Tag> pairvec = { make_pair( szIface.GetUIDKey(), aszUID) };
-   string szRetVal;
-   PairListToTagStr(pairvec.begin(), pairvec.end(), szRetVal);
+   vector<Tag> pairvec = { make_pair( szIface.GetUIDKey(), aszUID ) };
+   string szMeta;
+   PairListToTagStr( pairvec.begin(), pairvec.end(), szMeta );
 
-   szRetVal = "- " + GetNameFromCardLine(aszLongName) + " : " + szRetVal;
+   string szRetVal;
+   szRetVal += "- " + GetNameFromCardLine( aszLongName ) + " : " + szMeta;
+   if( aiCount > 1 )
+   {
+      CmdAppendCount( szRetVal, aiCount );
+   }
+
    return szRetVal;
 }
 
 string
-StringInterface::CmdCreateReplace(const string& aszLongNameRemove, const string& aszUID,
-                                  const string& aszNameAddition, const string& aszSet)
+StringInterface::CmdCreateReplace( const string& aszLongNameRemove, const string& aszUID,
+   const string& aszNameAddition, const string& aszSet, int aiCount )
 {
-   string szRetVal = CmdCreateRemove(aszLongNameRemove, aszUID);
+   string szRetVal = CmdCreateRemove( aszLongNameRemove, aszUID, aiCount );
    szRetVal[0] = '%';
    szRetVal += " -> ";
-   szRetVal += CmdCreateAddition(aszNameAddition, aszSet).substr(1);
+   szRetVal += CmdCreateAddition( aszNameAddition, aszSet, 1 ).substr( 1 );
    return szRetVal;
 }
 
-string 
+string
 StringInterface::CmdCreateModify( const string& aszLongName, const string& aszUID,
-                                  const vector<Tag>& alstAttrs,
-                                  const vector<Tag>& alstMetaTags )
+   const vector<Tag>& alstAttrs,
+   const vector<Tag>& alstMetaTags, int aiCount )
 {
-   string szRetVal = CmdCreateRemove(aszLongName, aszUID);
+   string szRetVal = CmdCreateRemove( aszLongName, aszUID, aiCount );
    szRetVal[0] = '%';
    szRetVal += " -> ";
    string szTags;
@@ -447,25 +456,49 @@ StringInterface::CmdCreateModify( const string& aszLongName, const string& aszUI
    return szRetVal;
 }
 
-string 
-StringInterface::CmdAppendCount(const string& aszCmd, int Count)
+string
+StringInterface::CmdAppendCount( const string& aszCmd, int Count )
 {
-   return aszCmd.substr(0,1) + " x" + std::to_string(Count) + " " + aszCmd.substr(1);
+   return aszCmd.substr( 0, 1 ) + " x" + std::to_string( Count ) + " " + aszCmd.substr( 1 );
+}
+
+string
+StringInterface::DeltaRemoveCmdString( const string & aszCardName, const vector<Tag>& avecUIDs )
+{
+   return DeltaCmdString( "-", aszCardName, avecUIDs );
+}
+
+string
+StringInterface::DeltaAddCmdString( const string & aszCardName, const vector<Tag>& avecUIDs )
+{
+   return DeltaCmdString( "+", aszCardName, avecUIDs );
 }
 
 string 
-StringInterface::GetNameFromCardLine(const string& aszLongIdentifier)
+StringInterface::DeltaChangeCmdString( const string & aszCardName, const vector<Tag>& avecUIDs )
 {
-   int iLoseAfter = aszLongIdentifier.find_first_of("[{");
+   return DeltaCmdString( "%", aszCardName, avecUIDs );
+}
+
+string
+StringInterface::DeltaCmdString( const string & aszCmd, const string & aszCardName, const vector<Tag>& avecUIDs )
+{
+   return aszCmd + " " + ToCardLine( aszCardName, vector<Tag>(), avecUIDs );
+}
+
+string
+StringInterface::GetNameFromCardLine( const string& aszLongIdentifier )
+{
+   int iLoseAfter = aszLongIdentifier.find_first_of( "[{" );
    if( iLoseAfter == string::npos )
    {
       iLoseAfter = aszLongIdentifier.size();
    }
-   return aszLongIdentifier.substr(0, iLoseAfter);
+   return aszLongIdentifier.substr( 0, iLoseAfter );
 }
 
-string 
-StringInterface::FindTagInList(const vector<Tag>& aszVector, const string& aszKey)
+string
+StringInterface::FindTagInList( const vector<Tag>& aszVector, const string& aszKey )
 {
    for( auto& tag : aszVector )
    {
@@ -478,31 +511,31 @@ StringInterface::FindTagInList(const vector<Tag>& aszVector, const string& aszKe
    return "";
 }
 
-string 
+string
 StringInterface::GetUIDKey()
 {
-   return CopyItem::GetUIDKey();
+   return MetaTag::GetUIDKey();
 }
 
-string 
+string
 StringInterface::GetSessionKey()
 {
-   return CopyItem::GetSessionKey();
+   return MetaTag::GetSessionKey();
 }
 
-string 
+string
 StringInterface::GetHashKey()
 {
-   return CopyItem::GetHashKey();
+   return MetaTag::GetHashKey();
 }
 
-string 
+string
 StringInterface::GetAddressKey()
 {
-   return CopyItem::GetAddressKey();
+   return MetaTag::GetAddressKey();
 }
 
-bool 
+bool
 StringInterface::IsCollectionOverheadPropertyLine( const string& aszLine )
 {
    string szDefKey( Config::CollectionDefinitionKey );

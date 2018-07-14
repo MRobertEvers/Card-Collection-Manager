@@ -34,7 +34,7 @@ PseudoIdentifier::~PseudoIdentifier() {
 
 CollectionObject::CollectionObject( const string& aszItemName, 
                                     const vector<Tag>& alstCommon,
-                                    const vector<TraitItem>& alstRestrictions )
+                                    const vector<CardVariantField>& alstRestrictions )
 {
    m_szName          = aszItemName;
    m_lstCommonTraits = map<string,string>(alstCommon.begin(), alstCommon.end());
@@ -47,7 +47,7 @@ CollectionObject::CollectionObject( const string& aszItemName,
 
 CollectionObject::~CollectionObject()
 {
-   m_lstCopies.clear();
+   m_vecCopies.clear();
 }
 
 std::shared_ptr<CopyItem>
@@ -55,7 +55,16 @@ CollectionObject::CreateCopy( const Identifier& aAddrColID,
                               const vector<Tag>& alstAttrs,
                               const vector<Tag>& alstMetaTags )
 {
-   return CopyItem::CreateCopyItem( this, aAddrColID, alstAttrs, alstMetaTags );
+   auto pCopy = CopyItem::CreateCopyItem( this, aAddrColID );
+
+   pCopy->SetAttributes( alstAttrs );
+  
+   for( auto& attr : alstMetaTags )
+   {
+      pCopy->SetMetaTag( attr.first, attr.second );
+   }
+
+   return pCopy;
 }
 
 shared_ptr<CopyItem>
@@ -63,14 +72,13 @@ CollectionObject::AddCopy( const Location& aAddrColID,
                            const vector<Tag>& alstAttrTags,
                            const vector<Tag>& alstMetaTags )
 {
-   auto newCopy = CreateCopy(aAddrColID, alstAttrTags, alstMetaTags);
-   return AddCopy( newCopy );
+   return AddCopy( CreateCopy( aAddrColID, alstAttrTags, alstMetaTags ) );
 }
 
 shared_ptr<CopyItem> 
 CollectionObject::AddCopy( const shared_ptr<CopyItem>& aCopy )
 {
-   m_lstCopies.push_back( aCopy );
+   m_vecCopies.push_back( aCopy );
    ledgerCopy( aCopy );
    return aCopy;
 }
@@ -79,149 +87,69 @@ bool
 CollectionObject::RemoveCopy( const Location& aAddrColID,
                               const string aszUniqueID )
 {
-   shared_ptr<CopyItem> ptCopy;
-   auto nCopy = FindCopy( aszUniqueID );
-
-   if( nCopy.Good() )
+   auto copy = FindCopy( aszUniqueID );
+   bool bRes = copy->RemoveResident( aAddrColID );
+   if( copy->IsVirtual() )
    {
-      ptCopy = *nCopy.Value();
-      int iRefCnt = ptCopy->RemoveResident( (const Location)aAddrColID );
-
-      if( iRefCnt == 0 )
-      {
-         DeleteCopy( ptCopy );
-      }
-      return true;
+      DeleteCopy( copy.Value() );
    }
-   return false;
+
+   return bRes;
 }
 
 string 
 CollectionObject::GenerateHash( const Identifier& aAddrIdentifier,
-                              const vector<Tag>& alstAttrs,
-                              const vector<Tag>& alstMetaTags )
+                                const vector<Tag>& alstAttrs,
+                                const vector<Tag>& alstMetaTags )
 {
    auto hashCopy = CreateCopy( aAddrIdentifier, alstAttrs, alstMetaTags );
    return hashCopy->GetHash();
 }
 
-void 
-CollectionObject::DeleteCopy( const string& aszUniqueHash )
-{
-   auto copy = FindCopy( aszUniqueHash );
-   if( copy.Good() )
-   {
-      DeleteCopy( *copy.Value() );
-   }
-}
 
 void 
 CollectionObject::DeleteCopy( shared_ptr<CopyItem> aptCopy )
 {
-   auto iter_found = find( m_lstCopies.begin(), 
-                           m_lstCopies.end(), 
+   auto iter_found = find( m_vecCopies.begin(), 
+                           m_vecCopies.end(), 
                            aptCopy );
 
-   if ( iter_found != m_lstCopies.end() )
+   if ( iter_found != m_vecCopies.end() )
    {
-      m_lstCopies.erase(iter_found);
+      m_vecCopies.erase(iter_found);
    }
-}
-
-string 
-CollectionObject::CopyToString( shared_ptr<CopyItem> aptItem,
-                                const MetaTagType& aAccessType,
-                                const Identifier& aAddrCompareID ) const
-{
-   return ToCardLine( aptItem->GetAddress(), GetName(),
-                      aptItem->GetIdentifyingAttributes(),
-                      aptItem->GetMetaTags(aAccessType),
-                      aAddrCompareID );
 }
 
 TryGetCopy<shared_ptr<CopyItem>>
-CollectionObject::FindCopy( const string& aszUID, 
-                            FindType aiType  ) const
+CollectionObject::FindCopy( const string& aszUID ) const
 {
-   return FindCopy( aszUID, aiType, m_lstCopies );
-}
-
-TryGetCopy<shared_ptr<CopyItem>> 
-CollectionObject::FindCopy( const string& aszUID, FindType aiType,
-                            const vector<shared_ptr<CopyItem>>& avecCopies ) const
-{
-   TryGetCopy<shared_ptr<CopyItem>> oRetval;
-   bool match = false;
-   for( auto ptCopy : avecCopies )
+   TryGetCopy<shared_ptr<CopyItem>> pRetval;
+   for( auto& copy : m_vecCopies )
    {
-      match |= (aiType & UID)  > 0 && ptCopy->GetUID() == aszUID;
-      match |= (aiType & Hash) > 0 && ptCopy->GetHash() == aszUID;
-      if( match )
+      if( copy->GetUID() == aszUID )
       {
-         oRetval.Set( shared_ptr<CopyItem>( ptCopy ) );
-         break;
+         pRetval.Set( copy );
+         return pRetval;
       }
    }
 
-   return oRetval;
+   return pRetval;
 }
 
 // Returns each copy
 vector<shared_ptr<CopyItem>> 
-CollectionObject::FindCopies( const Identifier& aCollection,
-                              CollectionObjectType aSearchType ) const
+CollectionObject::FindCopies( const Location& aCollection ) const
 {
-   vector<shared_ptr<CopyItem>> copies;
-   for( auto iSub : aCollection.GetSubAddresses() )
+   vector<shared_ptr<CopyItem>> pRetval;
+   for( auto& copy : m_vecCopies )
    {
-      Location location = Location(aCollection.GetMain(), iSub);
-
-      auto newCopies = FindCopies(location, aSearchType);
-      for( auto copy : newCopies )
+      if( aCollection.IsSuperset( copy->GetAddress() ) )
       {
-         bool bAlreadyHave = false;
-         for( auto alreadyCopy : copies )
-         {
-            bAlreadyHave |= copy.get() == alreadyCopy.get();
-         }
-
-         if( !bAlreadyHave )
-         {
-            copies.push_back(copy);
-         }
+         pRetval.push_back( copy );
       }
    }
 
-   return copies;
-}
-
-vector<shared_ptr<CopyItem>> 
-CollectionObject::FindCopies( const Location& aCollection,
-                            CollectionObjectType aSearchType ) const
-{
-   vector<shared_ptr<CopyItem>> lstRetVal;
-   for( auto copy : m_lstCopies )
-   {
-      if( ( aSearchType & Local )         &&
-          ( copy->IsParent(aCollection) ) )
-      {
-         lstRetVal.push_back(copy);
-      }
-      else if( ( aSearchType & Borrowed )        &&
-               ( !copy->IsParent(aCollection) )  && 
-               ( copy->IsResidentIn(aCollection) ) )
-      {
-         lstRetVal.push_back(copy);
-      }
-      else if( ( aSearchType & Virtual )         &&
-               ( copy->IsVirtual() )             &&
-               ( copy->IsResidentIn(aCollection) ) )
-      {
-         lstRetVal.push_back(copy);
-      }
-   }
-
-   return lstRetVal;
+   return pRetval;
 }
 
 
@@ -229,28 +157,6 @@ string
 CollectionObject::GetName() const
 {
    return m_szName;
-}
-
-string 
-CollectionObject::GetProtoType() const
-{
-   string szResult;
-   
-   // Start with static common traits
-   vector<Tag> lstAllCommonTraits( m_lstCommonTraits.begin(),
-                                   m_lstCommonTraits.end() );
-
-   // Include identifying traits
-   // These appear as <Key>, *Val1::Val2...
-   for( auto trait : m_lstIdentifyingTraits )
-   {
-      auto vals = trait.second.GetAllowedValues();
-      StringInterface::ListToDelimStr(vals.cbegin(), vals.cend(), szResult);
-      
-      lstAllCommonTraits.push_back(make_pair(trait.second.GetKeyName(), szResult));
-   }
-
-   return CollectionObject::ToCardLine(Address(), "", lstAllCommonTraits);
 }
 
 string 
@@ -278,166 +184,10 @@ CollectionObject::ledgerCopy( shared_ptr<CopyItem> aptCopy )
    aptCopy->SetAddressBook( ptLedger );
 }
 
-std::map<string, TraitItem>
-CollectionObject::GetIdentifyingTraits()
+const std::map<string, CardVariantField>& 
+CollectionObject::GetIdentifyingTraits() const
 {
    return m_lstIdentifyingTraits;
-}
-
-// Returns the first trait key that has the input value
-bool 
-CollectionObject::MatchIdentifyingTrait( const std::string& aszValue, 
-                                         std::string& rszKey )
-{
-   for( auto trait : m_lstIdentifyingTraits )
-   {
-      auto values = trait.second.GetAllowedValues();
-      auto iter_found = find( values.begin(),
-                              values.end(),
-                              aszValue);
-      if( iter_found != values.end() )
-      {
-         rszKey = trait.second.GetKeyName();
-         return true;
-      }
-   }
-
-   return false;
-}
-
-bool 
-CollectionObject::SetIdentifyingTraits( shared_ptr<CopyItem> aptCopy, 
-                                        const vector<Tag>& avecTraits,
-                                        const vector<Tag>& avecMeta,
-                                        bool bSession ) const
-{
-   vector<string> vecTraits;
-   for( auto& tagTrait : avecTraits )
-   {
-      vecTraits.push_back( tagTrait.first );
-   }
-
-   for( auto& tagTrait : avecTraits )
-   {
-      SetIdentifyingTrait( aptCopy, tagTrait.first, tagTrait.second, vecTraits, bSession );
-   }
-
-   for( auto& tagMeta : avecMeta )
-   {
-      aptCopy->SetMetaTag( tagMeta.first, tagMeta.second, Public, bSession );
-   }
-
-   return true;
-}
-
-bool 
-CollectionObject::SetIdentifyingTrait( shared_ptr<CopyItem> aptCopy,
-                                       const string& aszTraitKey,
-                                       const string& aszTraitValue,
-                                       bool bSession ) const
-{
-   return SetIdentifyingTrait( aptCopy, aszTraitKey, aszTraitValue, vector<string>(), bSession );
-}
-
-bool 
-CollectionObject::SetIdentifyingTrait( shared_ptr<CopyItem> aptCopy,
-                                       const string& aszTraitKey,
-                                       const string& aszTraitValue,
-                                       const vector<string> avecUpComingTraits,
-                                       bool bSession ) const
-{
-   auto iter_found = m_lstIdentifyingTraits.find(aszTraitKey);
-   if( iter_found == m_lstIdentifyingTraits.end() ) {
-      Debug::Log("CollectionObject", "Treid to set non-existant trait");
-      return false; 
-   }
-
-   TraitItem trait = iter_found->second;
-   auto vecAllowVals = trait.GetAllowedValues();
-   auto iter_found_val = find( vecAllowVals.begin(),
-                               vecAllowVals.end(),
-                               aszTraitValue );
-   if( iter_found_val == vecAllowVals.end()) {
-      Debug::Log("CollectionObject", "Treid to set trait to unallowed value");
-      return false; 
-   }
-
-   // Set the trait
-   aptCopy->SetIdentifyingAttribute( aszTraitKey, aszTraitValue, bSession );
-   setCopyPairAttrs( aptCopy, aszTraitKey,
-                     distance(vecAllowVals.begin(), iter_found_val),
-                     avecUpComingTraits );
-
-   return true;
-}
-
-// Sets all the ident traits to their defaults.
-void 
-CollectionObject::SetIdentifyingTraitDefaults( shared_ptr<CopyItem> aptItem ) const
-{
-   // Include default values for IDAttrs NOT specified.
-   for( auto IDAttrsPair : m_lstIdentifyingTraits )
-   {
-      auto IDAttrs = IDAttrsPair.second;
-      SetIdentifyingTrait( aptItem, IDAttrs.GetKeyName(), IDAttrs.GetDefaultValue(), false );
-   }
-}
-
-
-// Does not update session.
-void 
-CollectionObject::setCopyPairAttrs( shared_ptr<CopyItem> aptItem, const string& aszKey, int iVal ) const
-{
-   setCopyPairAttrs( aptItem, aszKey, iVal, vector<string>() );
-}
-
-void 
-CollectionObject::setCopyPairAttrs( shared_ptr<CopyItem> aptItem,
-                                    const string& aszKey, int iVal,
-                                    vector<string> avecSkipAttrs ) const
-{
-   vector<string> lstPartners;
-
-   // Find any traits paied with the key.
-   vector<Tag> lstPairs = Config::Instance()->GetPairedKeysList();
-   for( Tag var : lstPairs )
-   {
-      string szSearch = "";
-      if( var.first == aszKey )
-      {
-         szSearch = var.second;
-      }
-      else if( var.second == aszKey )
-      {
-         szSearch = var.first;
-      }
-
-      if( szSearch != "" )
-      {
-         auto iter_found = find( lstPartners.begin(), lstPartners.end(), szSearch );
-         if( iter_found == lstPartners.end() )
-         {
-            lstPartners.push_back( szSearch );
-         }
-      }
-   }
-
-   // Search for the trait and asign it.
-   for( string szKey : lstPartners )
-   {
-      if( find( avecSkipAttrs.begin(), avecSkipAttrs.end(), szKey ) != avecSkipAttrs.end() )
-      {
-         continue;
-      }
-      
-      // Verify the trait is an identifying trait.
-      auto iter_attr = m_lstIdentifyingTraits.find( szKey );
-      if( iter_attr != m_lstIdentifyingTraits.end() )
-      {
-         TraitItem foundTrait = iter_attr->second;
-         aptItem->SetIdentifyingAttribute( szKey, foundTrait.GetAllowedValues().at( iVal ), false );
-      }
-   }
 }
 
 bool
@@ -474,7 +224,7 @@ CollectionObject::ToCardLine( const Identifier& aAddrParentID,
                               const unsigned int aiCount)
 {
    Config* config = Config::Instance();
-   string szAddressKey = CopyItem::GetAddressKey();
+   string szAddressKey = MetaTag::GetAddressKey();
    multimap<string, string> mapMetaTags(alstMetaTags.begin(), alstMetaTags.end());
 
    // Don't specify the parent if the parent is requesting the
@@ -483,7 +233,7 @@ CollectionObject::ToCardLine( const Identifier& aAddrParentID,
 
    // If the parent is empty and the compare is default(empty) then the
    // parent will not be included.
-   bExcludeParent = aAddrCompareID.IsEmpty() || aAddrCompareID == aAddrParentID;
+   bExcludeParent = aAddrCompareID.IsEmpty() || aAddrCompareID.Compare( aAddrParentID ) == 0;
 
    // Check if the parent is specified in the metatags.
    auto iter_found = mapMetaTags.find(szAddressKey);
@@ -500,7 +250,7 @@ CollectionObject::ToCardLine( const Identifier& aAddrParentID,
    else if( iter_found == mapMetaTags.end() )
    {
       // Add the parent if it wasn't already found in the metatags.
-      auto pairParent = make_pair(szAddressKey, aAddrParentID.GetFullAddress());
+      auto pairParent = make_pair(szAddressKey, aAddrParentID.ToString());
       mapMetaTags.insert(pairParent);
    }
 

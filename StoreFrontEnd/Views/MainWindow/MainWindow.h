@@ -33,7 +33,7 @@ public:
    ~MainFrame();
 
 private:
-   CMainWindow * m_Controller;
-   VMainWindow* m_View;
+   CMainWindow * m_pController;
+   VMainWindow* m_pView;
    
 };

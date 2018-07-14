@@ -171,12 +171,19 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="StoreFrontEnd\CollectionInterface.cpp" />
     <ClCompile Include="StoreFrontEnd\CURLAPI.cpp" />
     <ClCompile Include="StoreFrontEnd\Group.cpp" />
-    <ClCompile Include="StoreFrontEnd\GroupItemData.cpp" />
     <ClCompile Include="StoreFrontEnd\ImageFetcher.cpp" />
-    <ClCompile Include="StoreFrontEnd\ImageHandler.cpp" />
     <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp" />
     <ClCompile Include="StoreFrontEnd\SourceDownloader.cpp" />
     <ClCompile Include="StoreFrontEnd\StoreFrontEnd.cpp" />
+    <ClCompile Include="Views\CardAttributesEditor\CardAttributesEditor.cpp" />
+    <ClCompile Include="Views\CardAttributesEditor\CCardAttributesEditor.cpp" />
+    <ClCompile Include="Views\CardAttributesEditor\VCardAttributesEditor.cpp" />
+    <ClCompile Include="Views\CardEditor\CardEditor.cpp" />
+    <ClCompile Include="Views\CardEditor\CCardEditor.cpp" />
+    <ClCompile Include="Views\CardEditor\VCardEditor.cpp" />
+    <ClCompile Include="Views\CardInventoryViewer\CardInventoryViewer.cpp" />
+    <ClCompile Include="Views\CardInventoryViewer\CCardInventoryViewer.cpp" />
+    <ClCompile Include="Views\CardInventoryViewer\VCardInventoryViewer.cpp" />
     <ClCompile Include="Views\CardView\CardRenderer.cpp" />
     <ClCompile Include="Views\CardView\CardView.cpp" />
     <ClCompile Include="Views\CardView\CCardView.cpp" />
@@ -204,6 +211,7 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\CollectionStats\vStatsViewer.cpp" />
     <ClCompile Include="Views\CollectionView\CCollectionView.cpp" />
     <ClCompile Include="Views\CollectionView\CollectionView.cpp" />
+    <ClCompile Include="Views\CollectionView\CollectionViewMenu.cpp" />
     <ClCompile Include="Views\CollectionView\CubeRenderer.cpp" />
     <ClCompile Include="Views\CollectionView\VCollectionView.cpp" />
     <ClCompile Include="Views\ImageViewer\ImageViewer.cpp" />
@@ -213,7 +221,6 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClCompile Include="Views\MainWindow\VMainWindow.cpp" />
     <ClCompile Include="Views\ViewTemplates\IControlledView.cpp" />
     <ClCompile Include="Views\ViewTemplates\IMenuEventHandler.cpp" />
-    <ClCompile Include="Views\ViewTemplates\IMenuEventSource.cpp" />
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp" />
     <ClCompile Include="Views\wxExtras\wxInfiniteGrid.cpp" />
     <ClInclude Include="include\curl\curl.h" />
@@ -247,13 +254,20 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="StoreFrontEnd\CollectionInterface.h" />
     <ClInclude Include="StoreFrontEnd\CURLAPI.h" />
     <ClInclude Include="StoreFrontEnd\Group.h" />
-    <ClInclude Include="StoreFrontEnd\GroupItemData.h" />
     <ClInclude Include="StoreFrontEnd\ImageFetcher.h" />
-    <ClInclude Include="StoreFrontEnd\ImageHandler.h" />
     <ClInclude Include="StoreFrontEnd\ScryFallAPI.h" />
     <ClInclude Include="StoreFrontEnd\SourceDownloader.h" />
     <ClInclude Include="StoreFrontEnd\StorefrontConfig.h" />
     <ClInclude Include="StoreFrontEnd\StoreFrontEnd.h" />
+    <ClInclude Include="Views\CardAttributesEditor\CardAttributesEditor.h" />
+    <ClInclude Include="Views\CardAttributesEditor\CCardAttributesEditor.h" />
+    <ClInclude Include="Views\CardAttributesEditor\VCardAttributesEditor.h" />
+    <ClInclude Include="Views\CardEditor\CardEditor.h" />
+    <ClInclude Include="Views\CardEditor\CCardEditor.h" />
+    <ClInclude Include="Views\CardEditor\VCardEditor.h" />
+    <ClInclude Include="Views\CardInventoryViewer\CardInventoryViewer.h" />
+    <ClInclude Include="Views\CardInventoryViewer\CCardInventoryViewer.h" />
+    <ClInclude Include="Views\CardInventoryViewer\VCardInventoryViewer.h" />
     <ClInclude Include="Views\CardView\CardRenderer.h" />
     <ClInclude Include="Views\CardView\CardView.h" />
     <ClInclude Include="Views\CardView\CCardView.h" />
@@ -281,6 +295,7 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\CollectionStats\vStatsViewer.h" />
     <ClInclude Include="Views\CollectionView\CCollectionView.h" />
     <ClInclude Include="Views\CollectionView\CollectionView.h" />
+    <ClInclude Include="Views\CollectionView\CollectionViewMenu.h" />
     <ClInclude Include="Views\CollectionView\CubeRenderer.h" />
     <ClInclude Include="Views\CollectionView\VCollectionView.h" />
     <ClInclude Include="Views\ImageViewer\ImageViewer.h" />
@@ -290,7 +305,7 @@ xcopy /y /d  "$(ProjectDir)Images\*.jpg" "$(TargetDir)Config\Resources\Sprites\"
     <ClInclude Include="Views\MainWindow\VMainWindow.h" />
     <ClInclude Include="Views\ViewTemplates\IControlledView.h" />
     <ClInclude Include="Views\ViewTemplates\IMenuEventHandler.h" />
-    <ClInclude Include="Views\ViewTemplates\IMenuEventSource.h" />
+    <ClInclude Include="Views\ViewTemplates\IViewFactory.h" />
     <ClInclude Include="Views\wxExtras\wxImagePanel.h" />
     <ClInclude Include="Views\wxExtras\wxInfiniteGrid.h" />
   </ItemGroup>

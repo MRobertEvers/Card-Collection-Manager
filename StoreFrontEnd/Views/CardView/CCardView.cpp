@@ -15,6 +15,9 @@ CCardView::~CCardView()
 void 
 CCardView::SetModel( CardInterface* apModel )
 {
-   m_pModel = apModel;
-   m_pView->ViewCard( apModel );
+   if( apModel != nullptr )
+   {
+      m_pModel = apModel;
+      m_pView->ViewCard( apModel );
+   }
 }

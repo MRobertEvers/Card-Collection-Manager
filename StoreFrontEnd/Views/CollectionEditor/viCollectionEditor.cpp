@@ -1,6 +1,7 @@
 #include "viCollectionEditor.h"
 #include "vicCollectionEditorList.h"
 #include "../StoreFrontEnd/StoreFrontEnd.h"
+#include "../StoreFrontEnd/CollectionInterface.h"
 #include <chrono>
 
 #define TIMER_ID 5
@@ -226,14 +227,16 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
          // Its an addition.
          szCmd =
             StringInterface::CmdCreateAddition( deltaItem.DisplayOne.ToStdString(),
-                                                deltaItem.SelectionOne.ToStdString());
+                                                deltaItem.SelectionOne.ToStdString(),
+                                                deltaItem.Count );
       }
-      else if(deltaItem.DisplayTwo == "")
+      else if(deltaItem.DisplayTwo.IsEmpty())
       {
          // Its a remove
          szCmd =
             StringInterface::CmdCreateRemove( deltaItem.DisplayOne.ToStdString(),
-                                              deltaItem.SelectionOne.ToStdString());
+                                              deltaItem.SelectionOne.ToStdString(),
+                                              deltaItem.Count );
       }
       else
       {
@@ -242,15 +245,20 @@ viCollectionEditor::onAccept(wxCommandEvent& awxEvt)
             StringInterface::CmdCreateReplace( deltaItem.DisplayOne.ToStdString(),
                                                deltaItem.SelectionOne.ToStdString(),
                                                deltaItem.DisplayTwo.ToStdString(),
-                                               deltaItem.SelectionTwo.ToStdString() );
+                                               deltaItem.SelectionTwo.ToStdString(),
+                                               deltaItem.Count );
       }
-      szCmd = StringInterface::CmdAppendCount(szCmd, deltaItem.Count);
+
       vecCmds.push_back(szCmd);
    }
+   if( vecCmds.size() > 0 )
+   {
+      auto vecChanges = StoreFrontEnd::Server()->
+         SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
+      m_vListView->ClearList();
 
-   StoreFrontEnd::Server()->
-      SubmitBulkChanges(m_szCollectionID.ToStdString(), vecCmds);
-   m_vListView->ClearList();
+      awxEvt.SetClientData( new CollectionDelta( vecChanges ) );
+   }
    m_vAddSelector->ResetOption();
    m_vRemSelector->ResetOption();
    awxEvt.Skip();

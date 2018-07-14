@@ -1,25 +1,27 @@
 #include "StoreFront.h"
+#include "StringInterface.h"
+#include "Support/JSONImporter.h"
+#include "Config.h"
+#include "../src/Tests/AddressTest.h"
+#include "../src/Tests/CollectionTest.h"
+#include "../src/Tests/CollectionItemTest.h"
+#include "../src/Tests/CopyTest.h"
 
 #include <iostream>
 #include <fstream>
 #include <iterator>
 #include <process.h>
 
-#include "../src/Tests/AddressTest.h"
-#include "../src/Tests/CollectionTest.h"
-#include "../src/Tests/CollectionItemTest.h"
-#include "../src/Tests/CopyTest.h"
-#include "Support/JSONImporter.h"
-#include "Config.h"
-
 StoreFront::StoreFront()
 {
+   AddresserTest::Test();
+
    //SelfTest();
    // No Server for now
    m_ColSource = new CollectionSource();
-   m_ColSource->LoadLib(Config::Instance()->GetSourceFilePath());
+   m_ColSource->LoadLib( Config::Instance()->GetSourceFilePath() );
 
-   m_ColFactory = new CollectionFactory(m_ColSource);
+   m_ColFactory = new CollectionFactory( m_ColSource );
 }
 
 
@@ -31,51 +33,51 @@ bool
 StoreFront::SelfTest()
 {
    bool bTest = true;
-   CollectionItemTest cit;
-   bTest &= cit.AddCopy_Test();
-   bTest &= cit.RemoveCopy_EntireChain_Test();
-   bTest &= cit.RemoveCopy_PartialChain_Test();
-   bTest &= cit.FindCopies_All_Test();
-   bTest &= cit.FindCopies_Virtual_Test();
-   bTest &= cit.FindCopies_Borrowed_Test();
-   bTest &= cit.FindCopies_Local_Test();
+   //CollectionItemTest cit;
+   //bTest &= cit.AddCopy_Test();
+   //bTest &= cit.RemoveCopy_EntireChain_Test();
+   //bTest &= cit.RemoveCopy_PartialChain_Test();
+   //bTest &= cit.FindCopies_All_Test();
+   //bTest &= cit.FindCopies_Virtual_Test();
+   //bTest &= cit.FindCopies_Borrowed_Test();
+   //bTest &= cit.FindCopies_Local_Test();
 
-   CopyTest ct;
-   bTest &= ct.CreateCopy_Test();
-   bTest &= ct.SetMetaTag_Test();
-   bTest &= ct.Hash_Test();
-   bTest &= ct.SetParent_Test();
-   bTest &= ct.AddResident_InParent_AlreadyDesignated_Test();
-   bTest &= ct.AddResident_InParent_ExistingChain_NotDesignatedByParentChain_Test();
-   bTest &= ct.AddResident_InParent_NewChain_NotDesignatedByParentChain_Test();
-   bTest &= ct.AddResident_InResidentNotParent_AlreadyDesignated_Test();
-   bTest &= ct.AddResident_InResidentNotParent_ExistingChain_NotDesignated_Test();
-   bTest &= ct.AddResident_InResidentNotParent_NewChain_NotDesignated_Test();
-   bTest &= ct.ResidentIn_ChainOfParent_Test();
-   bTest &= ct.ResidentIn_NotParent_AddedResident_Test();
-   bTest &= ct.ResidentIn_NotParent_ChainOfAddedResident_Test();
-   bTest &= ct.ResidentIn_Parent_ParentIsNotResident_Test();
-   bTest &= ct.ResidentIn_Parent_ParentIsResident_Test();
-   bTest &= ct.ResidentIn_ChainOfParent_Test();
-   bTest &= ct.RemoveResident_NotParent_InChainOfResident_EntireChain_Test();
-   bTest &= ct.RemoveResident_NotParent_InChainOfResident_NotEntireChain_Test();
-   bTest &= ct.RemoveResident_NotParent_NotInChainOfResident_Test();
-   bTest &= ct.RemoveResident_Parent_InChainOfParent_EntireChain();
-   bTest &= ct.RemoveResident_Parent_InChainOfParent_NotEntireChain();
-   bTest &= ct.IsParent_Test();
+   //CopyTest ct;
+   //bTest &= ct.CreateCopy_Test();
+   //bTest &= ct.SetMetaTag_Test();
+   //bTest &= ct.Hash_Test();
+   //bTest &= ct.SetParent_Test();
+   //bTest &= ct.AddResident_InParent_AlreadyDesignated_Test();
+   //bTest &= ct.AddResident_InParent_ExistingChain_NotDesignatedByParentChain_Test();
+   //bTest &= ct.AddResident_InParent_NewChain_NotDesignatedByParentChain_Test();
+   //bTest &= ct.AddResident_InResidentNotParent_AlreadyDesignated_Test();
+   //bTest &= ct.AddResident_InResidentNotParent_ExistingChain_NotDesignated_Test();
+   //bTest &= ct.AddResident_InResidentNotParent_NewChain_NotDesignated_Test();
+   //bTest &= ct.ResidentIn_ChainOfParent_Test();
+   //bTest &= ct.ResidentIn_NotParent_AddedResident_Test();
+   //bTest &= ct.ResidentIn_NotParent_ChainOfAddedResident_Test();
+   //bTest &= ct.ResidentIn_Parent_ParentIsNotResident_Test();
+   //bTest &= ct.ResidentIn_Parent_ParentIsResident_Test();
+   //bTest &= ct.ResidentIn_ChainOfParent_Test();
+   //bTest &= ct.RemoveResident_NotParent_InChainOfResident_EntireChain_Test();
+   //bTest &= ct.RemoveResident_NotParent_InChainOfResident_NotEntireChain_Test();
+   //bTest &= ct.RemoveResident_NotParent_NotInChainOfResident_Test();
+   //bTest &= ct.RemoveResident_Parent_InChainOfParent_EntireChain();
+   //bTest &= ct.RemoveResident_Parent_InChainOfParent_NotEntireChain();
+   //bTest &= ct.IsParent_Test();
 
-   AddressTest at;
-   bTest &= at.InceptLocationTest();
-   bTest &= at.IsResidentInTest();
-   bTest &= at.ParseTestManySub();
-   bTest &= at.ParseTestSingle();
-   bTest &= at.PitheLocationTest();
+   //AddressTest at;
+   //bTest &= at.InceptLocationTest();
+   //bTest &= at.IsResidentInTest();
+   //bTest &= at.ParseTestManySub();
+   //bTest &= at.ParseTestSingle();
+   //bTest &= at.PitheLocationTest();
 
-   CollectionTest clt;
-   bTest &= clt.AddItem_Test();
-   bTest &= clt.RemoveItem_Test();
-   bTest &= clt.AddItemFrom_Test();
-   bTest &= clt.RemoveItem_OtherCollectionsRef_Test();
+   //CollectionTest clt;
+   //bTest &= clt.AddItem_Test();
+   //bTest &= clt.RemoveItem_Test();
+   //bTest &= clt.AddItemFrom_Test();
+   //bTest &= clt.RemoveItem_OtherCollectionsRef_Test();
 
    return bTest;
 }
@@ -86,44 +88,44 @@ StoreFront::ConfigIsLoaded()
    return Config::Instance()->IsLoaded();
 }
 
-void 
-StoreFront::SaveCollection(const string& aszCollectionID)
+void
+StoreFront::SaveCollection( const string& aszCollectionID )
 {
-   m_ColFactory->SaveCollection(aszCollectionID);
+   m_ColFactory->SaveCollection( aszCollectionID );
 }
 
-void 
+void
 StoreFront::ExportCollection( const string& aszCollectionName, Query aQuery )
 {
    m_ColFactory->ExportCollection( aszCollectionName, aQuery );
 }
 
-string 
-StoreFront::LoadCollection(const string& aszCollectionFile)
+string
+StoreFront::LoadCollection( const string& aszCollectionFile )
 {
-   return m_ColFactory->LoadCollectionFromFile(aszCollectionFile);
+   return m_ColFactory->LoadCollectionFromFile( aszCollectionFile );
 }
 
-string 
+string
 StoreFront::CreateNewCollection( const string& aszCollectionName,
-                                 const string& aszParent )
+   const string& aszParent )
 {
-   return m_ColFactory->CreateNewCollection(aszCollectionName, aszParent);
+   return m_ColFactory->CreateNewCollection( aszCollectionName, aszParent );
 }
 
-vector<string> 
+vector<string>
 StoreFront::GetLoadedCollections()
 {
    return m_ColFactory->GetLoadedCollections();
 }
 
 // Requires Collection ID
-string 
-StoreFront::GetCollectionName(const string& aszCollectionID)
+string
+StoreFront::GetCollectionName( const string& aszCollectionID )
 {
-   if( m_ColFactory->CollectionExists(aszCollectionID) )
+   if( m_ColFactory->CollectionExists( aszCollectionID ) )
    {
-      return m_ColFactory->GetCollection(aszCollectionID)->GetName();
+      return m_ColFactory->GetCollection( aszCollectionID )->GetName();
    }
    else
    {
@@ -131,22 +133,23 @@ StoreFront::GetCollectionName(const string& aszCollectionID)
    }
 }
 
-string 
-StoreFront::GetCollectionID(const string& aszCollectionName)
+string
+StoreFront::GetCollectionID( const string& aszCollectionName )
 {
-   return m_ColFactory->GetCollectionID(aszCollectionName);
+   return m_ColFactory->GetCollectionID( aszCollectionName );
 }
 
-vector<string> 
-StoreFront::GetAllCardsStartingWith( const string& aszColID, 
-                                     const Query& aszSearch )
+vector<string>
+StoreFront::GetAllCardsStartingWith( const string& aszColID,
+   const Query& aszSearch )
 {
-   if( m_ColFactory->CollectionExists(aszColID) )
+   vector<string> vecRetval;
+   if( m_ColFactory->CollectionExists( aszColID ) )
    {
-      return m_ColFactory->GetCollection(aszColID)->
-         QueryCollection(aszSearch);
+      vecRetval = m_ColFactory->GetCollection( aszColID )->
+         QueryCollection( aszSearch );
    }
-   return vector<string>();
+   return vecRetval;
 }
 
 map<unsigned long, vector<string>>
@@ -154,7 +157,7 @@ StoreFront::GetHistoryLines( const string& aszColID, unsigned int aiStart )
 {
    if( m_ColFactory->CollectionExists( aszColID ) )
    {
-      return m_ColFactory->GetCollection( aszColID )->GetHistoryLines(aiStart, -1);
+      return m_ColFactory->GetCollection( aszColID )->GetHistoryLines( aiStart, -1 );
    }
    else
    {
@@ -175,47 +178,127 @@ StoreFront::GetHistoryLines( const string& aszColID, unsigned int aiStart, unsig
    }
 }
 
-vector<pair<string, string>> 
+vector<pair<string, string>>
 StoreFront::GetPeekValues( const string& aszColID )
 {
    return m_ColFactory->PeekCollection( aszColID );
 }
 
-void
-StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
-                          const string& aszKey, const string& aszVal )
+string
+StoreFront::SetAttributes( const string & aszCardName, const string & aszUID,
+   const vector<pair<string, string>>& avecAttrs )
 {
-   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
    {
-      auto copy = item->FindCopy(aszUID);
+      auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         item->SetIdentifyingTrait(*copy.Value(), aszKey, aszVal);
+         if( copy->SetAttributes( avecAttrs ) )
+         {
+            // TODO: See note in colfactory
+            m_ColFactory->InvalidateAllCaches();
+
+            auto szUID = copy->GetUID();
+            return StringInterface::DeltaChangeCmdString( aszCardName,
+               vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
+         }
       }
    }
+
+   return "";
+}
+
+// If setting more than one attribute, SetAttributes should be used
+string
+StoreFront::SetAttribute( const string& aszCardName, const string& aszUID,
+   const string& aszKey, const string& aszVal )
+{
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         if( copy->SetAttribute( aszKey, aszVal ) )
+         {
+            // TODO: See note in colfactory
+            m_ColFactory->InvalidateAllCaches();
+
+            auto szUID = copy->GetUID();
+            return StringInterface::DeltaChangeCmdString( aszCardName,
+               vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
+         }
+      }
+   }
+
+   return "";
+}
+
+string 
+StoreFront::SetMetaTags( const string & aszCardName, const string & aszUID, const vector<pair<string, string>>& avecMeta )
+{
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         for( auto& tag : avecMeta )
+         {
+            copy->SetMetaTag( tag.first, tag.second );
+         }
+         // TODO: See note in colfactory
+         m_ColFactory->InvalidateAllCaches();
+         return StringInterface::DeltaChangeCmdString( aszCardName,
+            vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), copy->GetUID() ) ) );
+      }
+   }
+
+   return "";
+}
+
+string
+StoreFront::SetMetaTag( const string & aszCardName, const string & aszUID, const string & aszKey, const string & aszVal )
+{
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
+   if( item.Good() )
+   {
+      auto copy = item->FindCopy( aszUID );
+      if( copy.Good() )
+      {
+         // TODO: See note in colfactory
+         m_ColFactory->InvalidateAllCaches();
+         copy->SetMetaTag( aszKey, aszVal, MetaTag::DetermineMetaTagType( aszKey ) );
+         auto szUID = copy->GetUID();
+         return StringInterface::DeltaAddCmdString( aszCardName,
+            vector<Tag>( 1, make_pair( MetaTag::GetUIDKey(), szUID ) ) );
+      }
+   }
+
+   return "";
 }
 
 vector<pair<string, string>>
-StoreFront::GetMetaTags(const string& aszCardName, const string& aszUID)
+StoreFront::GetMetaTags( const string& aszCardName, const string& aszUID )
 {
    vector<pair<string, string>> vecRetval;
-   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
    {
-      auto copy = item->FindCopy(aszUID);
+      auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         vecRetval = copy->get()->GetMetaTags(MetaTagType::Any);
+         vecRetval = copy.Value()->GetMetaTags( MetaTag::Type::Any );
       }
    }
 
    return vecRetval;
 }
 
-string 
-StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID, 
-                        const string& aszTagKey )
+string
+StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID,
+   const string& aszTagKey )
 {
    auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
@@ -223,29 +306,29 @@ StoreFront::GetMetaTag( const string& aszCardName, const string& aszUID,
       auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         return (*copy.Value())->GetMetaTag( aszTagKey, MetaTagType::Public );
+         return copy->GetMetaTag( aszTagKey, MetaTag::Type::Public );
       }
    }
 
    return "";
 }
 
-string 
-StoreFront::GetCommonAttribute(const string& aszCardName, const string& aszAttribute)
+string
+StoreFront::GetCommonAttribute( const string& aszCardName, const string& aszAttribute )
 {
-   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
    {
-      return item->GetCommonTrait(aszAttribute);
+      return item->GetCommonTrait( aszAttribute );
    }
 
    return "";
 }
 
-string 
-StoreFront::GetIdentifyingAttribute( const string& aszCardName, 
-                                     const string& aszUID, 
-                                     const string& aszTrait )
+string
+StoreFront::GetIdentifyingAttribute( const string& aszCardName,
+   const string& aszUID,
+   const string& aszTrait )
 {
    auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
@@ -253,7 +336,7 @@ StoreFront::GetIdentifyingAttribute( const string& aszCardName,
       auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         return copy->get()->GetIdentifyingAttribute(aszTrait);
+         return copy->GetAttribute( aszTrait );
       }
    }
 
@@ -262,41 +345,43 @@ StoreFront::GetIdentifyingAttribute( const string& aszCardName,
 
 vector<pair<string, string>>
 StoreFront::GetIdentifyingAttributes( const string& aszCardName,
-                                      const string& aszUID )
+   const string& aszUID )
 {
    vector<pair<string, string>> vecRetval;
-   auto item = m_ColSource->GetCardPrototype(aszCardName);
+   auto item = m_ColSource->GetCardPrototype( aszCardName );
    if( item.Good() )
    {
-      auto copy = item->FindCopy(aszUID);
+      auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         vecRetval = copy->get()->GetIdentifyingAttributes();
+         vecRetval = copy->GetIdentifyingAttributes();
       }
    }
 
    return vecRetval;
 }
 
-map<string, vector<string>> 
-StoreFront::GetIdentifyingAttributeOptions(const string& aszCardName)
+map<string, vector<string>>
+StoreFront::GetIdentifyingAttributeOptions( const string& aszCardName )
 {
    map<string, vector<string>> mapRetVal;
-   auto card = m_ColSource->GetCardPrototype(aszCardName);
+   auto card = m_ColSource->GetCardPrototype( aszCardName );
    if( card.Good() )
    {
       auto vecAttrID = card->GetIdentifyingTraits();
       for( auto& trait : vecAttrID )
       {
-         vector<string> vecOptions = trait.second.GetAllowedValues();
-         auto pairItem = make_pair(trait.first, vecOptions);
-         mapRetVal.insert(pairItem);
+         auto setAllowed = trait.second.GetAllowedValues();
+         vector<string> vecOptions = vector<string>( setAllowed.begin(),
+            setAllowed.end() );
+         auto pairItem = make_pair( trait.first, vecOptions );
+         mapRetVal.insert( pairItem );
       }
    }
    return mapRetVal;
 }
 
-string 
+string
 StoreFront::GetDefaultIdentifyingAttributeValue( const string& aszCardName, const string aszKey )
 {
    auto card = m_ColSource->GetCardPrototype( aszCardName );
@@ -313,22 +398,23 @@ StoreFront::GetDefaultIdentifyingAttributeValue( const string& aszCardName, cons
 }
 
 string
-StoreFront::GetCardString(const string& aszCardname, const string& aszUID)
+StoreFront::GetCardString( const string& aszCardname, const string& aszUID )
 {
-   auto item = m_ColSource->GetCardPrototype(aszCardname);
+   auto item = m_ColSource->GetCardPrototype( aszCardname );
    if( item.Good() )
    {
-      auto copy = item->FindCopy(aszUID);
+      auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         return item->CopyToString(*copy.Value(), Any);
+         // TODO:
+         return copy->ToString();
       }
    }
 
    return "";
 }
 
-string 
+string
 StoreFront::GetMetaTagHash( const string& aszCardName, const string& aszUID )
 {
    string szRetVal;
@@ -338,31 +424,17 @@ StoreFront::GetMetaTagHash( const string& aszCardName, const string& aszUID )
       auto copy = item->FindCopy( aszUID );
       if( copy.Good() )
       {
-         szRetVal = copy->get()->GetMetaTag( CopyItem::GetHashKey(), MetaTagType::Any );
+         szRetVal = copy->GetMetaTag( MetaTag::GetHashKey(), MetaTag::Type::Any );
       }
    }
 
    return szRetVal;
 }
 
-string
-StoreFront::GetCardPrototype(const string& aszCardName)
-{
-   int iValidCard = m_ColSource->LoadCard(aszCardName);
-   if( iValidCard != -1 )
-   {
-      return m_ColSource->GetCardPrototype(iValidCard)->GetProtoType();
-   }
-   else
-   {
-      return "";
-   }
-}
-
 vector<string>
-StoreFront::GetAllCardsStartingWith(const Query& aszSearch)
+StoreFront::GetAllCardsStartingWith( const Query& aszSearch )
 {
-   return m_ColSource->GetAllCardsStartingWith(aszSearch);
+   return m_ColSource->GetAllCardsStartingWith( aszSearch );
 }
 
 vector<pair<string, string>>
@@ -371,100 +443,102 @@ StoreFront::GetPairedAttributes()
    return Config::Instance()->GetPairedKeysList();
 }
 
-string 
+string
 StoreFront::GetImagesDirectory()
 {
    return Config::Instance()->GetImagesDirectory();
 }
 
-string 
+string
 StoreFront::GetCollectionsDirectory()
 {
    return Config::Instance()->GetCollectionsDirectory();
 }
 
-string 
+string
 StoreFront::GetCollectionsMetaDirectory()
 {
    return Config::Instance()->GetCollectionsMetaDirectory();
 }
 
-string 
+string
 StoreFront::GetCollectionsHistoryDirectory()
 {
    return Config::Instance()->GetCollectionsHistoryDirectory();
 }
 
-string 
+string
 StoreFront::GetCollectionsOverheadDirectory()
 {
    return Config::Instance()->GetCollectionsOverheadDirectory();
 }
 
-string 
+string
 StoreFront::GetImportSourceFileName()
 {
    return Config::Instance()->GetImportSourceFileName();
 }
 
-string 
+string
 StoreFront::GetSourceDirectory()
 {
    return Config::Instance()->GetSourceDirectory();
 }
 
-string 
+string
 StoreFront::GetSourceFileName()
 {
    return Config::Instance()->GetSourceFileName();
 }
 
-string 
+string
 StoreFront::GetSourceFilePath()
 {
    return Config::Instance()->GetSourceFilePath();
 }
 
-string 
+string
 StoreFront::GetImportSourceFilePath()
 {
    return Config::Instance()->GetImportSourceFilePath();
 }
 
-string 
+string
 StoreFront::GetConfigDirectory()
 {
    return Config::Instance()->GetConfigDirectory();
 }
 
-string 
+string
 StoreFront::GetImageFilePath( const string& aszCardName, const string& aszSet )
 {
    return Config::Instance()->GetImageFilePath( aszCardName, aszSet );
 }
 
-string 
-StoreFront::CollapseCardLine(const string& aszCard, bool abIncludeCount)
+string
+StoreFront::CollapseCardLine( const string& aszCard, bool abIncludeCount )
 {
    string szCard = aszCard;
-   m_ColSource->CollapseCardLine(szCard, abIncludeCount);
+   m_ColSource->CollapseCardLine( szCard, abIncludeCount );
    return szCard;
 }
 
-void 
+vector<string>
 StoreFront::SubmitBulkChanges( const string& aszCollection,
-                               vector<string> alstChanges )
+   vector<string> alstChanges )
 {
-   if( m_ColFactory->CollectionExists(aszCollection) )
+   if( m_ColFactory->CollectionExists( aszCollection ) )
    {
-      m_ColFactory->GetCollection(aszCollection)->LoadChanges(alstChanges);
+      return m_ColFactory->GetCollection( aszCollection )->LoadChanges( alstChanges );
    }
+
+   return vector<string>();
 }
 
-void 
+void
 StoreFront::ImportCollectionSource()
 {
    JSONImporter JI;
-   JI.ImportJSON(Config::Instance()->GetImportSourceFilePath());
-   m_ColSource->HotSwapLib(Config::Instance()->GetSourceFilePath());
+   JI.ImportJSON( Config::Instance()->GetImportSourceFilePath() );
+   m_ColSource->HotSwapLib( Config::Instance()->GetSourceFilePath() );
 }

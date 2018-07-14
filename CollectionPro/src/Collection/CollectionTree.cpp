@@ -40,7 +40,7 @@ CollectionNode::FindNode( const Location& aNode )
    // Check the children first.
    for( auto& child : m_vecChildren )
    {
-      if( aNode == child->GetLocation() )
+      if( child->GetLocation().Compare(aNode) == 0 )
       {
          ptRetVal.Set(child);
          break;
@@ -50,13 +50,13 @@ CollectionNode::FindNode( const Location& aNode )
    // Check the childrens children
    for( auto& child : m_vecChildren )
    {
-       auto addrChild = child->GetLocation().ToAddress();
-       if( addrChild.ContainsLocation( aNode ) )
+       auto addrChild = child->GetLocation();
+       if( addrChild.IsSuperset( aNode ) )
        {
           auto foundNode = child->FindNode( aNode );
           if( foundNode.Good() )
           {
-             ptRetVal.Set( *foundNode.Value() );
+             ptRetVal.Set( foundNode.Value() );
              break;
           }
        }
@@ -74,7 +74,7 @@ CollectionNode::InsertNode( CollectionNode* aptNode )
    // 3. Dont add a duplicate.
    for( auto& child : m_vecChildren )
    {
-      if( aptNode->GetLocation() == child->GetLocation() )
+      if( 0 == child->GetLocation().Compare( aptNode->GetLocation() ) )
       {
          return false;
       }
@@ -87,16 +87,16 @@ CollectionNode::InsertNode( CollectionNode* aptNode )
       auto child = *iter_Child;
 
       // 4. Check if new node is a child of child.
-      auto addrChildAddr = child->GetLocation().ToAddress();
-      bool bChildIsParent = addrChildAddr.ContainsLocation( aptNode->GetLocation() );
+      auto addrChildAddr = child->GetLocation();
+      bool bChildIsParent = addrChildAddr.IsSuperset( aptNode->GetLocation() );
       if( bChildIsParent )
       {
          return child->InsertNode( aptNode );
       }
 
       // 5. If the new node is a parent of a child node
-      auto addrNewAddr = aptNode->GetLocation().ToAddress();
-      bool bNodeIsParentOfChild = addrNewAddr.ContainsLocation( child->GetLocation() );
+      auto addrNewAddr = aptNode->GetLocation();
+      bool bNodeIsParentOfChild = addrNewAddr.IsSuperset( child->GetLocation() );
       if( bNodeIsParentOfChild )
       {
          bIsParentOfChild = true;
@@ -159,6 +159,8 @@ CollectionNode::RemoveNode( CollectionNode* aptChild )
          }
       }
    }
+
+   return false;
 }
 
 Location 
@@ -228,14 +230,14 @@ CollectionTree::AddCollectionNode( const Location& aNode, CollectionLedger* aptL
    else
    {
       // 0. Verify its not a duplicate.
-      bool bIsDuplicate = aNode == m_ptRootNode->GetLocation();
+      bool bIsDuplicate = 0 == m_ptRootNode->GetLocation().Compare( aNode );
       if( bIsDuplicate )
       {
          return;
       }
 
       // 1. Check if we need to replace the root node.
-      bool bIsParent = aNode.ToAddress().ContainsLocation( m_ptRootNode->GetLocation() );
+      bool bIsParent = aNode.IsSuperset( m_ptRootNode->GetLocation() );
       if( bIsParent )
       {
          ptNode->AddNode( m_ptRootNode );
@@ -258,7 +260,7 @@ CollectionTree::FindCollectionNode( const Location& aNode )
    {
 
    }
-   else if( m_ptRootNode->GetLocation() == aNode )
+   else if( m_ptRootNode->GetLocation().Compare( aNode ) == 0 )
    {
       ptRetVal.Set( m_ptRootNode );
    }
@@ -267,7 +269,7 @@ CollectionTree::FindCollectionNode( const Location& aNode )
       auto iter_find = m_ptRootNode->FindNode( aNode );
       if( iter_find.Good() )
       {
-         ptRetVal.Set( *iter_find.Value() );
+         ptRetVal.Set( iter_find.Value() );
       }
    }
 
@@ -280,7 +282,7 @@ CollectionTree::RemoveNode( const Location& aNode )
    auto find_node = FindCollectionNode( aNode );
    if( find_node.Good() )
    {
-      CollectionTree::CollectionNode* ptNode = *find_node.Value();
+      CollectionTree::CollectionNode* ptNode = find_node.Value();
       bool bIsRoot = m_ptRootNode == ptNode;
 
       if( bIsRoot )
@@ -299,7 +301,7 @@ CollectionTree::RemoveNode( const Location& aNode )
       else
       {
          auto ptParent = ptNode->GetParent();
-         ptNode->RemoveNode( ptNode );
+         ptParent->RemoveNode( ptNode );
          if( ptParent != nullptr && ptParent->IsVirtual() )
          {
             RemoveNode( ptParent->GetLocation() );

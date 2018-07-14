@@ -34,6 +34,9 @@ public:
 
    std::vector<std::string> GetLoadedCollections();
 
+   // TODO: Invalidating caches should be triggered on the editing of a card
+   // on collections that watch that card. I don't have a good way to do this atm.
+   void InvalidateAllCaches();
 private:
    std::unordered_set<std::string> m_setInLoading;
    std::vector<std::shared_ptr<Collection>> m_lstCollections;

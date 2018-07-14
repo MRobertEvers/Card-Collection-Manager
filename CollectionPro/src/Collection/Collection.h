@@ -17,8 +17,8 @@ class Collection
 {
 public:
    Collection( string aszName,
-               CollectionSource* aoSource,
-               string aszID = "" );
+      CollectionSource* aoSource,
+      string aszID = "" );
    ~Collection();
 
    string GetName();
@@ -27,26 +27,26 @@ public:
    void ChildAdded();
    bool IsLoaded();
    vector<Tag> GetPeekValues();
-   map<unsigned long, vector<string>> GetHistoryLines( unsigned int aiStart, 
-                                                       unsigned int aiEnd = 0 );
+   map<unsigned long, vector<string>> GetHistoryLines( unsigned int aiStart,
+      unsigned int aiEnd = 0 );
 
-   void AddItem( string aszName,
-                 vector<Tag> alstAttrs,
-                 vector<Tag> alstMetaTags );
+   string AddItem( string aszName,
+      vector<Tag> alstAttrs,
+      vector<Tag> alstMetaTags );
 
-   void RemoveItem( string aszName,
-                    string aszUID );
+   string RemoveItem( string aszName,
+      string aszUID );
 
-   void ChangeItem( string aszName,
-                    string aszUID,
-                    vector<Tag> alstIdChanges,
-                    vector<Tag> alstMetaChanges );
+   Tag ChangeItem( string aszName,
+      string aszUID,
+      vector<Tag> alstIdChanges,
+      vector<Tag> alstMetaChanges );
 
-   void ReplaceItem( string aszName,
-                     string aszUID,
-                     string aszNewName,
-                     vector<Tag> alstIdChanges,
-                     vector<Tag> alstMetaChanges );
+   Tag ReplaceItem( string aszName,
+      string aszUID,
+      string aszNewName,
+      vector<Tag> alstIdChanges,
+      vector<Tag> alstMetaChanges );
 
    void SaveCollection();
 
@@ -57,9 +57,9 @@ public:
    bool InitializeCollection( string aszFileName );
 
    void LoadCollection( const string& aszFileName,
-                        CollectionFactory* aoFactory );
+      CollectionFactory* aoFactory );
 
-   void LoadChanges(vector<string> aszLines);
+   vector<string> LoadChanges( vector<string> aszLines );
 
    vector<string> QueryCollection( Query aiQueryParms );
 
@@ -80,29 +80,32 @@ private:
 
    // These all locate by name and hash for a second 
    // time so we dont risk dangling references.
-   void addItem( const string& aszName,
-                 const vector<Tag>& alstAttrs,
-                 const vector<Tag>& alstMetaTags);
+   string addItem( const string& aszName,
+      const vector<Tag>& alstAttrs,
+      const vector<Tag>& alstMetaTags );
 
-   bool removeItem( const string& aszName,
-                    const string& aszUID );
+   // Returns removed UID
+   string removeItem( const string& aszName,
+      const string& aszUID );
 
-   bool changeItem( const string& aszName,
-                    const string& aszUID,
-                    const vector<Tag>& alstChanges,
-                    const vector<Tag>& alstMetaChanges );
+   // Returns UID before and after
+   Tag changeItem( const string& aszName,
+      const string& aszUID,
+      const vector<Tag>& alstChanges,
+      const vector<Tag>& alstMetaChanges );
 
-   bool replaceItem( const string& aszName,
-                     const string& aszUID,
-                     const string& aszNewName,
-                     const vector<Tag>& alstChanges,
-                     const vector<Tag>& alstMetaChanges );
+   // Returns UID before and after
+   Tag replaceItem( const string& aszName,
+      const string& aszUID,
+      const string& aszNewName,
+      const vector<Tag>& alstChanges,
+      const vector<Tag>& alstMetaChanges );
 
-   void loadInterfaceLine(const string& aszLine);
+   // Returns + name : { uids } and/or - name : { uids }
+   vector<string> loadInterfaceLine( const string& aszLine );
 
-   void loadAdditionLine(const string& aszLine);
-   void loadRemoveLine(const string& aszLine);
-   void loadDeltaLine(const string& aszLine);
+   string loadAdditionLine( const string& aszLine );
+   string loadRemoveLine( const string& aszLine );
+   vector<string> loadDeltaLine( const string& aszLine );
 };
-
 

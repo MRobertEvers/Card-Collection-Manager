@@ -1,17 +1,18 @@
 #pragma once
-#include "../ViewTemplates/IMenuEventSource.h"
 #include <wx/wxprec.h>
 
-class CMainWindow;
-class ivCollectionView;
+#include <wx/aui/framemanager.h>
 
-class VMainWindow : public IMenuEventSource
+class CMainWindow;
+
+class VMainWindow : public wxFrame
 {
 public:
    VMainWindow(const wxString& title);
    ~VMainWindow();
 
    void SetController( CMainWindow* aptController );
+   wxMenuBar* GetMenu();
 
    void OnQuit(wxCommandEvent& event);
    void OnAbout(wxCommandEvent& event);
@@ -26,10 +27,11 @@ public:
 private:
    wxDECLARE_EVENT_TABLE();
 
+   wxMenuBar* m_wxMenuBar;
    CMainWindow* m_Controller;
    wxPanel* m_CurrentPanel;
+   wxAuiManager m_mgr;
 
    void uiBuildDefaultMenus();
-   void uiSetView();
 };
 

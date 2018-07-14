@@ -68,12 +68,12 @@ public:
       return m_FoundValue != 0;
    }
 
-   T* Value()
+   T& Value()
    {
-      return &m_FoundValue;
+      return m_FoundValue;
    }
 
-   T* operator ->()
+   T& operator ->()
    {
       return Value();
    }

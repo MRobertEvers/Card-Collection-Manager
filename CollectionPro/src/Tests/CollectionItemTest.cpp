@@ -152,7 +152,7 @@ CollectionItemTest::FindCopies_Borrowed_Test()
    testItem.AddCopy( borrowerParent, vecIDs, vecMeta );
 
    // Create 1 copy that borrowerParent is borrowing
-   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(), copyParent.GetFullAddress()));
+   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(), copyParent.ToString()));
    testItem.AddCopy( borrowerParent, vecIDs, vecMeta );
 
    // Try to get virtual copies, there should be any.
@@ -179,7 +179,7 @@ CollectionItemTest::FindCopies_Local_Test()
    testItem.AddCopy( borrowerParent, vecIDs, vecMeta );
 
    // Create 1 copy that borrowerParent is borrowing
-   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(), copyParent.GetFullAddress()));
+   vecMeta.push_back(make_pair(CopyItem::GetAddressKey(), copyParent.ToString()));
    testItem.AddCopy( borrowerParent, vecIDs, vecMeta );
 
    // Try to get virtual copies, there should be any.

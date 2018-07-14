@@ -77,6 +77,11 @@ VCollectionsOverview::getLoadedCollections()
    }
 }
 
+void 
+VCollectionsOverview::SetController( CCollectionsOverview* aptController )
+{
+   m_pController = aptController;
+}
 
 void
 VCollectionsOverview::OnLoadCollection(wxCommandEvent& awxEvt)

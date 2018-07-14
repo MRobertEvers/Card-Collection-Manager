@@ -24,6 +24,8 @@ public:
    void ImportSource();
 
 private:
+   void uiSetMainPanel( std::shared_ptr<IControlledView> apView );
+
    VMainWindow* m_View;
    std::shared_ptr<IControlledView> m_ptrControlledView;
 };

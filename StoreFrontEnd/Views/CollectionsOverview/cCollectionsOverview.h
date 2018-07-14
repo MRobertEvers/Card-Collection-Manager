@@ -4,23 +4,13 @@
 #include <wx/wxprec.h>
 
 class VCollectionsOverview;
-class MainFrame;
 
-class CCollectionsOverview : public IMenuEventHandler
+class CCollectionsOverview
 {
 public:
-
-   CCollectionsOverview( IMenuEventSource* aParent );
+   CCollectionsOverview( VCollectionsOverview* apView );
    virtual ~CCollectionsOverview();
 
-   wxPanel* GetView();
-
-   void BindEventHandler();
-
-protected:
-   void handleEvent(unsigned int aiEvent);
-
 private:
-   VCollectionsOverview * m_wxOverview;
-   std::map<wxString, unsigned int> m_mapTitleToEventID;
+   VCollectionsOverview* m_pView;
 };

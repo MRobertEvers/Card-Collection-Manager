@@ -1,5 +1,5 @@
 #include "CubeRenderer.h"
-#include "..\StoreFrontEnd\CardInterface.h"
+#include "../StoreFrontEnd/CardInterface.h"
 #include <algorithm>
 
 using namespace std;
@@ -74,26 +74,30 @@ CubeRenderer::~CubeRenderer()
 }
 
 void
-CubeRenderer::Draw( std::vector<CardInterface*> avecItemData )
+CubeRenderer::Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData )
 {
    this->Freeze();
    for( auto& existing : m_mapColumns )
    {
       existing.second->Destroy();
    }
+   m_mapColumns.clear();
 
    uiBuildColumns( avecItemData );
+  
+   InitRenderer( avecItemData );
    this->Thaw();
 }
 
 // Returns true if the item was successfully removed.
 bool
-CubeRenderer::RemoveItem( CardInterface* aptItem )
+CubeRenderer::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
    auto szGroup = GetGrouping().GetGroup( *aptItem );
    auto iter_findgroup = m_mapColumns.find( szGroup );
    if( iter_findgroup != m_mapColumns.end() )
    {
+      ItemRemoved( aptItem );
       return iter_findgroup->second->RemoveItem( aptItem );
    }
    else
@@ -103,18 +107,19 @@ CubeRenderer::RemoveItem( CardInterface* aptItem )
 }
 
 void
-CubeRenderer::AddItem( CardInterface* aptItem )
+CubeRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
    auto szGroup = GetGrouping().GetGroup( *aptItem );
    auto iter_findgroup = m_mapColumns.find( szGroup );
    if( iter_findgroup != m_mapColumns.end() )
    {
-      //iter_findgroup->second->AddItem( aptItem );
+      iter_findgroup->second->AddItem( aptItem );
    }
    else
    {
       uiAddColumn( szGroup, { aptItem } );
    }
+   ItemAdded( aptItem );
 }
 
 Group 
@@ -148,9 +153,9 @@ CubeRenderer::uiGetColumnRenderer( const wxString& aszGroupName, const Group& aG
 }
 
 void
-CubeRenderer::uiBuildColumns( vector<CardInterface*> avecItems )
+CubeRenderer::uiBuildColumns( vector<std::shared_ptr<IRendererItem>> avecItems )
 {
-   map<wxString, vector<CardInterface*>, Group::Sorting> mapGroups( *GetGrouping().GetSortingFunctor() );
+   map<wxString, vector<std::shared_ptr<IRendererItem>>, Group::Sorting> mapGroups( *GetGrouping().GetSortingFunctor() );
 
    for( auto& data : avecItems )
    {
@@ -167,7 +172,7 @@ CubeRenderer::uiBuildColumns( vector<CardInterface*> avecItems )
 }
 
 void 
-CubeRenderer::uiAddColumn( const wxString& aszColumnName, vector<CardInterface*> avecItemData )
+CubeRenderer::uiAddColumn( const wxString& aszColumnName, vector<std::shared_ptr<IRendererItem>> avecItemData )
 {
    auto grouping = GetGrouping();
    auto ptColumn = uiGetColumnRenderer( aszColumnName, grouping.GetSubGroup(aszColumnName) );
@@ -207,7 +212,6 @@ CubeRenderer::uiBuildGrouping()
       .AliasGroup( "Black::Green", "Golgari" )
       .AliasGroup( "Red::Green", "Gruul" );
 
-   defaultGrp.AddSubGroup( "Multicolor", subGroup );
 
    Group defaultSubGroup;
    defaultSubGroup.GroupOn( "type", false )
@@ -222,6 +226,38 @@ CubeRenderer::uiBuildGrouping()
    Group defaultSubGroupOrdering;
    defaultSubGroupOrdering.GroupOn( "cmc", false )
       .SetGroupSortingFunctor( new CubeDisplayItemSorter() );
+
+   Group metatagColorOverrideGroup;
+   metatagColorOverrideGroup.GroupOn( "colors" )
+      .SetGroupSortingFunctor( new CubeDisplayColumnSorter() )
+      .AliasGroup( "White", "W" )
+      .AliasGroup( "Blue", "U" )
+      .AliasGroup( "Black", "B" )
+      .AliasGroup( "Red", "R" )
+      .AliasGroup( "Green", "G" )
+      .BroadenGroup( "::" )
+      .AliasGroup( "::", "Multicolor" );
+   // TODO: Override subgroups have no good way to be chosen.
+   // Just add this subgroup to each
+   // metatagColorOverrideGroup.AddSubGroup( "Multicolor", subGroup );
+
+   Group subGroupOverride;
+   subGroupOverride.GroupOn( "colors" );
+   subGroupOverride.AliasGroup( "White::Blue", "Azorius" )
+      .AliasGroup( "White::Black", "Orzhov" )
+      .AliasGroup( "White::Red", "Boros" )
+      .AliasGroup( "White::Green", "Selesnya" )
+      .AliasGroup( "Blue::Black", "Dimir" )
+      .AliasGroup( "Blue::Red", "Izzet" )
+      .AliasGroup( "Blue::Green", "Simic" )
+      .AliasGroup( "Black::Red", "Rakdos" )
+      .AliasGroup( "Black::Green", "Golgari" )
+      .AliasGroup( "Red::Green", "Gruul" );
+
+   subGroup.OverrideGrouping( subGroupOverride );
+    
+   defaultGrp.AddSubGroup( "Multicolor", subGroup );
+   defaultGrp.OverrideGrouping( metatagColorOverrideGroup );
 
    defaultSubGroup.SetDefaultSubGroup( defaultSubGroupOrdering );
 
@@ -264,6 +300,7 @@ CubeRenderer::uiGetColumnColor( const wxString& aszColumnName )
 
    return wxColour();
 }
+
 
 wxBEGIN_EVENT_TABLE( ColoredGroupColumnRenderer, wxInfiniteGrid )
 EVT_SIZE( ColoredGroupColumnRenderer::onResize )
@@ -365,20 +402,21 @@ ColoredGroupColumnRenderer::onResize( wxSizeEvent& awxEvt )
 void 
 ColoredGroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
 {
-   auto arrCells = this->GetSelectedCells();
-   for( size_t i = 0; i < GetNumberRows(); i++ )
-   {
-      this->DeselectCell( i, 0 );
-   }
+   //auto arrCells = this->GetSelectedCells();
+   //for( size_t i = 0; i < GetNumberRows(); i++ )
+   //{
+   //   this->DeselectCell( i, 0 );
+   //}
+   awxEvt.Skip();
 }
 
 DisplayGroup::DisplayGroup( ColumnRenderer* apRenderer, DisplayNodeSource* apSource, wxString aszGroupName, Group aGroup,
-                            std::vector<CardInterface*> avecItems, DisplayGroup* aParent )
+                            std::vector<std::shared_ptr<IRendererItem>> avecItems, DisplayGroup* aParent )
    : m_pRenderer( apRenderer ), m_pSource(apSource), m_Group(aGroup), m_Parent(aParent), m_szGroupName(aszGroupName)
 {
    if( !aGroup.IsEmpty() )
    {
-      auto tmpMap = std::map<wxString, std::vector<CardInterface*>, Group::Sorting>( *aGroup.GetSortingFunctor() );
+      auto tmpMap = std::map<wxString, std::vector<std::shared_ptr<IRendererItem>>, Group::Sorting>( *aGroup.GetSortingFunctor() );
       m_mapChildren = std::map<wxString, DisplayGroup*, Group::Sorting>( *aGroup.GetSortingFunctor() );
 
       for( auto& data : avecItems )
@@ -421,7 +459,7 @@ DisplayGroup::~DisplayGroup()
 }
 
 bool 
-DisplayGroup::RemoveItem( CardInterface* aptItem )
+DisplayGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
    if( m_setItems.size() > 0 )
    {
@@ -429,6 +467,7 @@ DisplayGroup::RemoveItem( CardInterface* aptItem )
       if( iter_find != m_setItems.end() )
       {
          int iPos = distance( m_setItems.begin(), iter_find );
+         m_mapDrawnItems.erase( *iter_find );
          m_setItems.erase( iter_find );
          m_pRenderer->UndisplayItem( GetFirstItemRow() + iPos );
          return true;
@@ -441,60 +480,114 @@ DisplayGroup::RemoveItem( CardInterface* aptItem )
    else
    {
       bool bDidRemove = false;
-      wxString removeChild = "";
-      for( auto& children : m_mapChildren )
+      bool bDidErase = false;
+      wxString szBefore = "";
+      wxString szAfter = "";
+      auto iter_child = m_mapChildren.begin();
+      for( ; iter_child != m_mapChildren.end(); iter_child++ )
       {
+         auto& children = *iter_child;
          if( children.second->RemoveItem( aptItem ) )
          {
             // TODO: Check for empty child
             if( children.second->IsEmpty() )
             {
                children.second->UnDraw();
-               removeChild = children.first;
+
+               // Store the following element
+               auto next = iter_child;
+               next++;
+               if( next != m_mapChildren.end() )
+               {
+                  szAfter = next->first;
+               }
+               bDidErase = true;
+               m_mapChildren.erase( children.first );
             }
             bDidRemove = true;
             break;
          }
+         szBefore = iter_child->first;
       }
 
-      if( bDidRemove )
+      if( bDidErase && szAfter == "" && szBefore != "" )
       {
-         if( removeChild != "" )
-         {
-            m_mapChildren.erase( removeChild );
-         }
+         m_mapChildren[szBefore]->UnDraw();
+         m_mapChildren[szBefore]->Draw();
+      }
 
-         return true;
+      if( bDidErase && szBefore == "" && szAfter != "" )
+      {
+         m_mapChildren[szAfter]->UnDraw();
+         m_mapChildren[szAfter]->Draw();
+      }
+
+
+      return bDidRemove;
+   }
+}
+
+bool 
+DisplayGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( !m_Group.IsEmpty() )
+   {
+
+      auto szGroup = m_Group.GetGroup( *aptItem );
+      if( !szGroup.IsEmpty() )
+      {
+         // Do we have a group for this?
+         auto iter_sub = m_mapChildren.find( szGroup );
+         if( iter_sub != m_mapChildren.end() )
+         {
+            return iter_sub->second->AddItem( aptItem );
+         }
+         else
+         {
+            auto subGroup = m_Group.GetSubGroup( szGroup );
+            DisplayGroup* node = m_pSource->GetDisplayGroup( GetLevel()+1, szGroup, subGroup, { aptItem }, this );
+            auto iter_insert = m_mapChildren.insert( std::make_pair( szGroup, node ) );
+            node->Draw();
+            // Redo siblings.
+            // TODO: maybe we should just redraw adjacent siblings for generality...
+            if( iter_insert.first == m_mapChildren.begin() )
+            {
+               if( ++iter_insert.first != m_mapChildren.end() )
+               {
+                  iter_insert.first->second->UnDraw();
+                  iter_insert.first->second->Draw();
+               }
+            }
+            else if( iter_insert.first->first == m_mapChildren.rbegin()->first && m_mapChildren.size() > 1)
+            {
+               iter_insert.first--;
+               iter_insert.first->second->UnDraw();
+               iter_insert.first->second->Draw();
+            }
+            return true;
+         }
       }
       else
       {
          return false;
       }
    }
-}
-
-void 
-DisplayGroup::AddItem( CardInterface* aptItem )
-{
-   auto szGroup = m_Group.GetGroup( *aptItem );
-   auto subGroup = m_Group.GetSubGroup( szGroup );
-   if( !subGroup.IsEmpty() )
+   else
    {
-      // Do we have a group for this?
-      auto iter_sub = m_mapChildren.find( szGroup );
-      if( iter_sub != m_mapChildren.end() )
-      {
-         iter_sub->second->AddItem( aptItem );
-      }
-      else
-      {
-         DisplayGroup* node = m_pSource->GetDisplayGroup( GetLevel(), szGroup, subGroup, {aptItem}, this );
-         m_mapChildren[szGroup] = node;
-      }
+      auto iter_insert = m_setItems.insert( aptItem );
+      int iPos = distance( m_setItems.begin(), iter_insert );
+      int iInsert = GetFirstItemRow() + iPos;
+      m_pRenderer->DisplayItem( aptItem->GetName(), aptItem->GetHash(),
+                                wxFont(), false, wxColour(),
+                                m_pRenderer->GetBackgroundColor(),
+                                iInsert );
+      m_mapDrawnItems[*iter_insert] = true;
+      // Redraw is not needed for a simple insert.
+      return true;
    }
 }
 
-CardInterface* 
+std::shared_ptr<IRendererItem> 
 DisplayGroup::GetItem( unsigned int auiItemRow )
 {
    auto iFirstItem = (unsigned int)GetFirstItemRow();
@@ -654,7 +747,7 @@ TypeGroup::TypeGroup( ColumnRenderer* apRenderer,
                       DisplayNodeSource* apSource,
                       wxString aszGroupName,
                       Group aGroup,
-                      vector<CardInterface*> avecItems,
+                      vector<std::shared_ptr<IRendererItem>> avecItems,
                       DisplayGroup* aParent )
    : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent), m_bHasDrawnLast(false), m_bHasDrawnHeader(false)
 {
@@ -665,6 +758,48 @@ OrderedSubgroupColumnRenderer::
 TypeGroup::~TypeGroup()
 {
 
+}
+
+bool 
+OrderedSubgroupColumnRenderer::TypeGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( DisplayGroup::RemoveItem( aptItem ) )
+   {
+      if( m_bHasDrawnHeader )
+      {
+         m_pRenderer->UndisplayItem( GetFirstRow() );
+         wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+         m_pRenderer->DisplayItem( buf, "",
+                                   wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                   true, wxColour( "BLACK" ),
+                                   m_pRenderer->GetBackgroundColor(), 
+                                   GetFirstRow() );
+         m_bHasDrawnHeader = true;
+      }
+      return true;
+   }
+   return false;
+}
+
+bool 
+OrderedSubgroupColumnRenderer::TypeGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( DisplayGroup::AddItem( aptItem ) )
+   {
+      if( m_bHasDrawnHeader )
+      {
+         m_pRenderer->UndisplayItem( GetFirstRow() );
+         wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+         m_pRenderer->DisplayItem( buf, "",
+                                   wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                   true, wxColour( "BLACK" ),
+                                   m_pRenderer->GetBackgroundColor(), 
+                                   GetFirstRow() );
+         m_bHasDrawnHeader = true;
+      }
+      return true;
+   }
+   return false;
 }
 
 int 
@@ -743,8 +878,17 @@ TypeGroup::UnDraw()
 
    if( m_bHasDrawnLast )
    {
-      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
+      // Subtract one because GetDrawSize() counts the footer too.
+      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() - 1);
       m_bHasDrawnLast = false;
+   }
+
+   // Do these in reverse.
+   for( auto iter_child = m_mapChildren.rbegin(); 
+      iter_child != m_mapChildren.rend();
+      iter_child++ )
+   {
+      iter_child->second->UnDraw();
    }
 }
 
@@ -784,7 +928,7 @@ CMCGroup::CMCGroup( ColumnRenderer* apRenderer,
                     DisplayNodeSource* apSource,
                     wxString aszGroupName,
                     Group aGroup,
-                    vector<CardInterface*> avecItems,
+                    vector<std::shared_ptr<IRendererItem>> avecItems,
                     DisplayGroup* aParent )
    : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent), m_bHasDrawnFirst(false)
 {
@@ -838,6 +982,13 @@ CMCGroup::UnDraw()
       m_pRenderer->UndisplayItem( GetFirstRow() );
       m_bHasDrawnFirst = false;
    }
+
+   // Collapse it like a dominoe
+   for( int i = 0; i < m_mapDrawnItems.size(); i++ )
+   {
+      m_pRenderer->UndisplayItem( GetFirstRow() );
+   }
+   m_mapDrawnItems.clear();
 }
 
 int 
@@ -889,7 +1040,7 @@ OrderedSubgroupColumnRenderer::~OrderedSubgroupColumnRenderer()
 }
 
 void 
-OrderedSubgroupColumnRenderer::Draw( vector<CardInterface*> avecItemData )
+OrderedSubgroupColumnRenderer::Draw( vector<std::shared_ptr<IRendererItem>> avecItemData )
 {
    m_Root = new RootGroup( this, this, m_Group, avecItemData );
 
@@ -900,28 +1051,35 @@ OrderedSubgroupColumnRenderer::Draw( vector<CardInterface*> avecItemData )
 }
 
 bool 
-OrderedSubgroupColumnRenderer::RemoveItem( CardInterface* aptItem )
+OrderedSubgroupColumnRenderer::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
+   this->Freeze();
    if( m_Root->RemoveItem( aptItem ) )
    {
       this->SetColLabelValue( 0, uiGetDisplayTitle() );
+      this->Thaw();
       return true;
    }
+   this->Thaw();
    return false;
 }
 
 void 
-OrderedSubgroupColumnRenderer::AddItem( CardInterface* aptItem )
+OrderedSubgroupColumnRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
-   m_Root->AddItem( aptItem );
-   this->SetColLabelValue( 0, uiGetDisplayTitle() );
+   this->Freeze();
+   if( m_Root->AddItem( aptItem ) )
+   {
+      this->SetColLabelValue( 0, uiGetDisplayTitle() );
+   }
+   this->Thaw();
 }
 
 DisplayGroup* 
 OrderedSubgroupColumnRenderer::GetDisplayGroup( int aiType,
                                                 wxString aszGroupName,
                                                 Group aGroup,
-                                                std::vector<CardInterface*> avecItems,
+                                                std::vector<std::shared_ptr<IRendererItem>> avecItems,
                                                 DisplayGroup* aParent )
 {
    if( aiType == 1 )
@@ -942,7 +1100,7 @@ OrderedSubgroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
    auto pClickedItem = m_Root->GetItem( iSelectedRow );
    if( pClickedItem != nullptr )
    {
-      awxEvt.SetClientData( pClickedItem );
+      awxEvt.SetClientData( &*pClickedItem );
       awxEvt.Skip();
    }
 }
@@ -966,7 +1124,7 @@ MultiDistinctGroupColumnRenderer::~MultiDistinctGroupColumnRenderer()
 
 // ColoredGroupColumnRenderer
 void 
-MultiDistinctGroupColumnRenderer::Draw( std::vector<CardInterface*> avecItemData )
+MultiDistinctGroupColumnRenderer::Draw( std::vector<std::shared_ptr<IRendererItem>> avecItemData )
 {
    m_Root = new RootGroup( this, this, m_Group, avecItemData );
 
@@ -977,7 +1135,7 @@ MultiDistinctGroupColumnRenderer::Draw( std::vector<CardInterface*> avecItemData
 }
 
 bool 
-MultiDistinctGroupColumnRenderer::RemoveItem( CardInterface* aptItem )
+MultiDistinctGroupColumnRenderer::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
 {
    if( m_Root->RemoveItem( aptItem ) )
    {
@@ -988,7 +1146,7 @@ MultiDistinctGroupColumnRenderer::RemoveItem( CardInterface* aptItem )
 }
 
 void 
-MultiDistinctGroupColumnRenderer::AddItem( CardInterface* aptItem )
+MultiDistinctGroupColumnRenderer::AddItem( std::shared_ptr<IRendererItem> aptItem )
 {
    m_Root->AddItem( aptItem );
    this->SetColLabelValue( 0, uiGetDisplayTitle() );
@@ -997,7 +1155,7 @@ MultiDistinctGroupColumnRenderer::AddItem( CardInterface* aptItem )
 // DisplayNodeSource
 DisplayGroup* 
 MultiDistinctGroupColumnRenderer::GetDisplayGroup( int aiType, wxString aszGroupName, Group aGroup,
-                                                   std::vector<CardInterface*> avecItems,
+                                                   std::vector<std::shared_ptr<IRendererItem>> avecItems,
                                                    DisplayGroup* aParent )
 {
    if( aiType == 1 )
@@ -1013,7 +1171,7 @@ MultiDistinctGroupColumnRenderer::onItemClicked( wxGridEvent& awxEvt )
    auto pClickedItem = m_Root->GetItem( iSelectedRow );
    if( pClickedItem != nullptr )
    {
-      awxEvt.SetClientData( pClickedItem );
+      awxEvt.SetClientData( &*pClickedItem );
       awxEvt.Skip();
    }
    ColoredGroupColumnRenderer::onItemClicked( awxEvt );
@@ -1030,7 +1188,7 @@ GuildGroup::GuildGroup( ColumnRenderer* apRenderer,
                         DisplayNodeSource* apSource,
                         wxString aszGroupName,
                         Group aGroup,
-                        std::vector<CardInterface*> avecItems,
+                        std::vector<std::shared_ptr<IRendererItem>> avecItems,
                         DisplayGroup* aParent )
    : DisplayGroup( apRenderer, apSource, aszGroupName, aGroup, avecItems, aParent ), 
    m_bHasDrawnHeader( false ),
@@ -1043,6 +1201,48 @@ MultiDistinctGroupColumnRenderer::
 GuildGroup::~GuildGroup()
 {
 
+}
+
+bool 
+MultiDistinctGroupColumnRenderer::GuildGroup::RemoveItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( DisplayGroup::RemoveItem( aptItem ) )
+   {
+      if( m_bHasDrawnHeader )
+      {
+         m_pRenderer->UndisplayItem( GetFirstRow() );
+         wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+         m_pRenderer->DisplayItem( buf, "",
+                                   wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                   true, wxColour( "BLACK" ),
+                                   m_pRenderer->GetBackgroundColor(), 
+                                   GetFirstRow() );
+         m_bHasDrawnHeader = true;
+      }
+      return true;
+   }
+   return false;
+}
+
+bool 
+MultiDistinctGroupColumnRenderer::GuildGroup::AddItem( std::shared_ptr<IRendererItem> aptItem )
+{
+   if( DisplayGroup::AddItem( aptItem ) )
+   {
+      if( m_bHasDrawnHeader )
+      {
+         m_pRenderer->UndisplayItem( GetFirstRow() );
+         wxString buf = m_szGroupName + " (" + std::to_string( GetSize() ) + ")";
+         m_pRenderer->DisplayItem( buf, "",
+                                   wxFont( wxFontInfo( 11 ).FaceName( "Trebuchet MS" ) ).Bold(),
+                                   true, wxColour( "BLACK" ),
+                                   m_pRenderer->GetBackgroundColor(), 
+                                   GetFirstRow() );
+         m_bHasDrawnHeader = true;
+      }
+      return true;
+   }
+   return false;
 }
 
 void 
@@ -1099,12 +1299,21 @@ GuildGroup::UnDraw()
    if( m_bHasDrawnHeader )
    {
       m_pRenderer->UndisplayItem( GetFirstRow() );
+      m_bHasDrawnHeader = false;
    }
 
    if( m_bHasDrawnLastSpacer )
    {
-      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() );
+      // Subtract 1 because getDrawSize() includes the footer in the count.
+      m_pRenderer->UndisplayItem( GetFirstRow() + GetDrawSize() - 1 );
+      m_bHasDrawnLastSpacer = false;
    }
+
+   for( int i = 0; i < m_mapDrawnItems.size(); i++ )
+   {
+      m_pRenderer->UndisplayItem( GetFirstRow() );
+   }
+   m_mapDrawnItems.clear();
 }
 
 int 
@@ -1135,4 +1344,97 @@ GuildGroup::GetTotalOverhead()
    }
 
    return iSize;
+}
+
+// Make a copy... TODO: Something better.
+RendererItem::RendererItem( CardInterface * apIFace )
+   : m_pCard( std::shared_ptr<CardInterface>( new CardInterface(*apIFace) ) ) 
+{
+
+}
+
+RendererItem::~RendererItem()
+{
+}
+
+CardInterface *
+RendererItem::GetBase()
+{
+   return m_pCard.get();
+}
+
+std::string
+RendererItem::GetHash() const
+{
+   if( m_hashMemo.IsEmpty() )
+   {
+      auto self = const_cast<RendererItem*>(this);
+      self->m_hashMemo = m_pCard->GetHash();
+   }
+   return m_hashMemo.ToStdString();
+}
+
+bool 
+RendererItem::RepresentsUID(const std::string& aszUID) const
+{
+   auto iter_memo = m_mapUIDMemo.find( aszUID );
+   if( iter_memo != m_mapUIDMemo.end() )
+   {
+      return iter_memo->second;
+   }
+   else
+   {
+      bool bMatch = false;
+      for( auto& szUID : m_pCard->GetRepresentingUIDs() )
+      {
+         if( szUID == aszUID )
+         {
+            bMatch = true;
+            break;
+         }
+      }
+      auto self = const_cast<RendererItem*>(this);
+      self->m_mapUIDMemo[aszUID] = bMatch;
+      return bMatch;
+   }
+}
+
+std::string
+RendererItem::GetName() const
+{
+   return m_pCard->GetName();
+}
+
+std::string
+RendererItem::GetMetaTag( const std::string & aszKey ) const
+{
+   auto iter_memo = m_mapMetaMemo.find( aszKey );
+   if( iter_memo != m_mapMetaMemo.end() )
+   {
+      return iter_memo->second.ToStdString();
+   }
+   else
+   {
+      auto szVal = m_pCard->GetMetaTag( aszKey );
+      auto self = const_cast<RendererItem*>(this);
+      self->m_mapMetaMemo[aszKey] = szVal;
+      return szVal;
+   }
+}
+
+std::string
+RendererItem::GetAttribute( const std::string & aszKey ) const
+{
+   auto iter_memo = m_mapAttrMemo.find( aszKey );
+   if( iter_memo != m_mapAttrMemo.end() )
+   {
+      return iter_memo->second.ToStdString();
+   }
+   else
+   {
+      auto szVal = m_pCard->GetAttribute( aszKey );
+      auto self = const_cast<RendererItem*>(this);
+      self->m_mapAttrMemo[aszKey] = szVal;
+      return szVal;
+   }
 }

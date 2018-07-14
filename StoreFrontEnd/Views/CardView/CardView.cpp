@@ -2,23 +2,23 @@
 #include "VCardView.h"
 #include "CCardView.h"
 
-CardView::CardView( wxPanel* aptParent )
+CardView::CardView( )
 {
-   m_pView = new VCardView( aptParent, wxID_ANY );
-
-   m_pController = new CCardView( m_pView );
-   m_pView->SetController( m_pController );
+   
 }
 
 CardView::~CardView()
 {
-   // View is deleted by wxWidgets
-   delete m_pController;
 }
 
-wxPanel* 
-CardView::GetView()
+wxWindow*
+CardView::GetView( wxWindow* apParent)
 {
+   m_pView = new VCardView( apParent, wxID_ANY );
+
+   m_pController = new CCardView( m_pView );
+   m_pView->SetController( m_pController );
+
    return m_pView;
 }
 

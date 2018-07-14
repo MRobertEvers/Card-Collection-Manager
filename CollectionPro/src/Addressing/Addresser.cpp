@@ -1,101 +1,257 @@
 #include "../stdafx.h"
 #include "Addresser.h"
-
-#include <time.h>
-#include <algorithm>
 #include "../Config.h"
 #include "../Support/StringHelper.h"
 
+#include <time.h>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+#include <stack>
+
 using namespace std;
 
-// 1 is included for search algorithms.
-const vector<int> 
-Addresser::Primes({ 1,2,3,5,7,11,13,17,19,23,29,31,37,41 });
 unsigned int
 Addresser::ms_iRandom = 0;
 
-Addresser::Addresser()
-{
-
-}
-
-Addresser::~Addresser()
-{
-
-}
-
-int 
-Addresser::GetPrime( unsigned int aiPrimeIndex ) const
-{
-   return Primes.at(aiPrimeIndex);
-}
-
-int 
-Addresser::GetLowPrimeIndex( unsigned int aiComposite ) const
-{
-   size_t iPC = Primes.size();
-   for (size_t i = 1; i < iPC; i++)
-   {
-      if ( aiComposite % Primes[i] == 0)
-      {
-         return i;
-      }
-   }
-
-   return 0;
-}
-
-int 
-Addresser::GetLowPrime( unsigned int aiComposite ) const
-{
-   return Primes[GetLowPrimeIndex(aiComposite)];
-}
-
-int 
-Addresser::GetHighPrimeIndex( unsigned int aiComposite ) const
-{
-   size_t iPC = Primes.size();
-   for (size_t i = iPC; i > 1; i--)
-   {
-      if (aiComposite % Primes[i-1] == 0)
-      {
-         return i-1;
-      }
-   }
-
-   return 0;
-}
-
-int 
-Addresser::GetHighPrime( unsigned int aiComposite ) const
-{
-   return Primes[GetHighPrimeIndex(aiComposite)];
-}
-
-unsigned int
-Addresser::PopFactor( unsigned int aiComp ) const
-{
-   unsigned int iHigh = GetHighPrime( aiComp );
-
-   return aiComp / iHigh;
-}
-   
-int 
+int
 Addresser::GetRandom()
 {
-   ms_iRandom+=rand();
-   srand(time(0) - ms_iRandom);
+   ms_iRandom += rand();
+
+   srand( time( 0 ) - ms_iRandom );
+
    return rand();
+}
+
+SubAddress::SubAddress( const std::string& aszBranch )
+   : m_szBranch( aszBranch )
+{
+}
+
+// -2 not related, -1 this is a subset, 0 same, 1 this is a superset.
+int 
+SubAddress::Compare( const ISubAddress & other ) const
+{
+   if( m_szBranch == "" )
+   {
+      return 1;
+   }
+   else if( other.ToString() == "" )
+   {
+      return -1;
+   }
+
+   std::string szLeft = m_szBranch;
+   std::string szRight = other.ToString();
+   size_t iLeft = szLeft.size();
+   size_t iRight = szRight.size();
+   if( iLeft < iRight )
+   {
+      if( iLeft == 0 )
+      {
+         return 1;
+      }
+      else if( szRight.substr( 0, iLeft ) == szLeft )
+      {
+         return 1;
+      }
+      else
+      {
+         return -2;
+      }
+   }
+   else if( iRight < iLeft )
+   {
+      if( iRight == 0 )
+      {
+         return -1;
+      }
+      else if( szLeft.substr( 0, iRight ) == szRight )
+      {
+         return -1;
+      }
+      else
+      {
+         return -2;
+      }
+   }
+   else if( szLeft == szRight )
+   {
+      return 0;
+   }
+   else
+   {
+      return -2;
+   }
+}
+
+std::string 
+SubAddress::ToString() const
+{
+   return m_szBranch;
+}
+
+void 
+SubAddress::Push( const std::string & aszNextStep )
+{
+   m_szBranch += aszNextStep;
+}
+
+std::string 
+SubAddress::Pop( )
+{
+   if( m_szBranch.size() <= 1 )
+   {
+      m_szBranch = "";
+   }
+   else
+   {
+      m_szBranch = m_szBranch.substr( 0, m_szBranch.size() - 1 );
+   }
+   return m_szBranch;
+}
+
+bool 
+SubAddress::operator<( const ISubAddress& rhs ) const
+{
+   auto cmp = Compare( rhs );
+   bool bRetVal = cmp == 1;
+   if( cmp == -2 )
+   {
+      auto szLeft = m_szBranch;
+      auto szRight = rhs.ToString();
+      if( szLeft.size() == szRight.size() && szRight.size() > 0 )
+      {
+         bRetVal = szLeft.back() < szRight.back();
+      }
+      else
+      {
+         bRetVal = szLeft.size() < szRight.size();
+      }
+   }
+   else if( rhs.ToString() == ToString() )
+   {
+      bRetVal = false;
+   }
+   return bRetVal;
+}
+
+std::vector<std::string>
+SubAddress::ParseLeafString( const std::string & aszTree )
+{
+   std::vector<std::string> vecParsed;
+
+   size_t index = 0;
+   std::string szCurrentBase = "";
+   std::string szCurrentBranch = "";
+   std::stack<std::string> stackChar;
+   while( index < aszTree.size() )
+   {
+      char cCurrentChar = aszTree[index];
+      if( cCurrentChar == '<' )
+      {
+         // Append to current base and continue
+         szCurrentBase = szCurrentBase + szCurrentBranch;
+         szCurrentBranch = "";
+         // Push current base onto stack
+         stackChar.push( szCurrentBase );
+      }
+      else if( cCurrentChar == ')' )
+      {
+         // Append to current base and continue
+         if( szCurrentBranch.size() > 0 )
+         {
+            vecParsed.push_back( szCurrentBase + szCurrentBranch );
+         }
+         szCurrentBranch = "";
+
+         if( stackChar.size() > 0 )
+         {
+            szCurrentBase = stackChar.top();
+            stackChar.pop();
+         }
+         else
+         {
+            // Malformed!!
+            return vecParsed;
+         }
+      }
+      else
+      {
+         szCurrentBranch += cCurrentChar;
+      }
+
+      if( ++index == aszTree.size() && szCurrentBranch.size() > 0 )
+      {
+         vecParsed.push_back( szCurrentBase + szCurrentBranch );
+      }
+   }
+
+   return vecParsed;
+}
+
+std::string
+SubAddress::ToLeafString( const std::vector<std::string>& aszSubAddresses )
+{
+   if( aszSubAddresses.size() == 0 )
+   {
+      return std::string();
+   }
+   std::string szRetval;
+
+
+   std::map<std::string, std::vector<std::string>> myMap;
+   for( auto string : aszSubAddresses )
+   {
+      if( string.size() < 1 )
+      {
+         continue;
+      }
+      myMap[string.substr( 0, 1 )].push_back( string.substr( 1 ) );
+   }
+
+
+   for( auto branch : myMap )
+   {
+      szRetval += "<";
+      szRetval += branch.first;
+      szRetval += ToLeafString( branch.second );
+      szRetval += ")";
+   }
+
+   // String < and )
+   if( myMap.size() == 1 )
+   {
+      szRetval = szRetval.substr( 1, szRetval.size() - 2 );
+   }
+
+   return szRetval;
+}
+
+std::string
+SubAddress::CleanLeafString( const std::string & aszTree )
+{
+   return ToLeafString( ParseLeafString( aszTree ) );
 }
 
 Identifier::Identifier()
 {
-
+   // Create random identifier
+   // TODO: Random here
 }
 
 Identifier::Identifier(const string& aszId)
 {
-   parseIdName(aszId);
+   auto vecIdSplit = StringHelper::Str_Split( aszId, "-" );
+   if( vecIdSplit.size() > 0 )
+   {
+      m_szMain = vecIdSplit[0];
+   }
+   else
+   {
+      m_szMain = aszId;
+   }
 }
 
 Identifier::~Identifier()
@@ -103,261 +259,123 @@ Identifier::~Identifier()
 
 }
 
+std::set<Location> 
+Identifier::GetLocations() const
+{
+   std::set<Location> leaves;
+   leaves.insert( Location( m_szMain ) );
+   for( auto leaf : GetLeaves() )
+   {
+      leaves.insert( Location( m_szMain, leaf.ToString() ) );
+   }
+   return leaves;
+}
+
 bool 
 Identifier::IsEmpty() const
 {
-   return m_veciSubAddresses.size()==0;
+   return (ToString() == "");
 }
 
-vector<unsigned int> 
-Identifier::GetSubAddresses() const
+int
+Identifier::Compare( const Identifier & other ) const
 {
-   return m_veciSubAddresses;
-}
-
-vector<Location> 
-Identifier::GetLocations() const
-{
-   vector<Location> vecRetVal;
-   for( auto iSub : m_veciSubAddresses )
+   if( GetMain() != other.GetMain() )
    {
-      vecRetVal.push_back( Location( m_szMain, iSub ) );
+      return -2;
    }
-   return vecRetVal;
+
+   if( ToString() == other.ToString() )
+   {
+      return 0;
+   }
+
+   if( IsSuperset( other ) )
+   {
+      return 1;
+   }
+   else if( other.IsSuperset( *this ) )
+   {
+      return -1;
+   }
+   else
+   {
+      return -2;
+   }
 }
 
-string 
+string
 Identifier::GetMain() const
 {
    return m_szMain;
 }
 
+void
+Identifier::SetMain( const std::string & aszMain )
+{
+   m_szMain = aszMain;
+}
+
 string 
-Identifier::GetFullAddress() const
+Identifier::ToString() const
 {
-   string szFullString = GetMain();
-   bool first = true;
-   for(unsigned int subAddr : m_veciSubAddresses)
+   if( m_szMain == "" )
    {
-      if (!first) { szFullString += ","; }
-      else { szFullString += "-"; }
-      szFullString += to_string(subAddr);
-      first = false;
+      return "";
+   }
+   else if( GetLeafString() == "" )
+   {
+      return m_szMain;
    }
 
-   return szFullString;
+   return m_szMain + "-" + GetLeafString();
 }
 
-Location
-Identifier::GetBase() const
-{
-   return Location(GetMain());
-}
-
-Address 
-Identifier::ToAddress() const
-{
-   return Address(GetFullAddress());
-}
-   
+// Returns true if ANY leaf of the input identifier is a subset or equal to of one of these.
 bool 
-Identifier::operator==( const Identifier& rhs ) const
+Identifier::IsSuperset( const Identifier & aSet ) const
 {
-   return GetFullAddress()==rhs.GetFullAddress();
+   return IsPartOfRootPath( aSet );
 }
 
 bool 
-Identifier::operator!=( const Identifier& rhs ) const
+Identifier::IsPartOfRootPath( const Identifier& aSet ) const
 {
-   return !(*this == rhs);
-}
-
-bool 
-Identifier::operator<( const Identifier& rhs ) const
-{
-   return false;
-}
-
-void 
-Identifier::parseIdName( const string& aszID )
-{
-   string szSubAddress; 
-   unsigned int iNumChars; 
-   unsigned int iSubAddress;
-   vector<string> lstUIandPF;
-   vector<string> lstSubAddresses;
-
-   // Record the family name.
-   lstUIandPF = StringHelper::Str_Split(aszID, string("-"));
-   if( lstUIandPF.size() > 0 )
-   {
-      m_szMain = lstUIandPF[0];
-   }
-   else
-   {
-      m_szMain = Config::NotFoundString;
-   }
-
-   // Add the parsed subAddresses, default to 1 if none named.
-   lstUIandPF.push_back("1");
-   if( lstUIandPF.size() > 1 )
-   {
-      lstSubAddresses = StringHelper::Str_Split(lstUIandPF[1], string(","));
-      size_t iSAC = lstSubAddresses.size();
-      for (size_t i = 0; i < iSAC; i++)
-      {
-         szSubAddress = lstSubAddresses[i];
-         iSubAddress = stoi(szSubAddress, &iNumChars);
-         if (iNumChars > 0)
-         {
-            addSubAddress(m_veciSubAddresses, iSubAddress);
-         }
-      }
-   }
-
-   // Remove the default if this address is empty
-   if( aszID == "" )
-   {
-       m_veciSubAddresses.clear();
-   }
-}
-
-// Returns
-// -1 := Did not add b/c it is already specified.
-// 0 := Failed to Add
-// 1 := Replaced Exisiting aisa
-// 2 := Inserted ordered
-int 
-Identifier::addSubAddress(vector<unsigned int>& avecSAs, unsigned int aiSA)
-{
-   int iAdded = 0;
-
-   // Replace a less specific set with this more
-   // general set.
-   // or do nothing because this SA is less specific.
-   for( size_t i = 0; i < avecSAs.size(); i++ )
-   {
-      int SA = avecSAs[i];
-      if( isSuperSet( SA, aiSA ) )
-      {
-         avecSAs[i] = aiSA;
-         iAdded = 1;
-         break;
-      }
-
-      if( isSuperSet( aiSA, SA ) )
-      {
-         iAdded = -1;
-         break;
-      }
-   }
-   
-   // Add the sub address in an ordered manner.
-   if( iAdded == 0 )
-   {
-      int iCmp = 0;
-      auto iter = avecSAs.begin();
-      for(; iter != avecSAs.end(); ++iter)
-      {
-         iCmp = compareSubAddress(aiSA, *iter);
-         if (iCmp <= 0) { break; }
-      }
-   
-      if( ( iter == avecSAs.begin() ) || 
-          ( iCmp != 0               ) )
-      {
-         avecSAs.insert(iter, aiSA);
-      }
-
-      iAdded = 2;
-   }
-
-   return iAdded;
-}
-
-// Returns true if
-// 1. The values are equal.
-// 2. Superset divides Subset AND the smallest remaining prime factor
-//    is larger than the largest prime factor in the super set.
-//    e.g. 6 (superset), and 150 (subset). 150 / 6 = 25 (Divides), min(5, 5) >= max(2, 3, 5, 5)
-//
-// The reason for the second requirement (the smallest remaining prime
-//  factor is smaller than the largest prime factor) is due to the fact that divides
-//  does not filter all non-parent branches. Take 6 and 12 for example.
-//  2*3 and 2*2*3. They are not on the same branch. See circled Below.
-// ===========================================
-// 1---------2---------4---------8---------16
-//  \-3-9-27  \-(2*3)   \-(4*3)
-//     \-3*5     \-2*3*5
-bool
-Identifier::isSuperSet(unsigned int aiSuperSet, unsigned int aiSubSet) const
-{
-   if (aiSubSet == aiSuperSet) { return true; }
-   Addresser addresser;
-
-   // The subset will have a larger code, ie 30. The superset will be, e.g. 6.
-   if (aiSubSet % aiSuperSet == 0)
-   {
-      int iSmallPrime = addresser.GetLowPrimeIndex(aiSubSet / aiSuperSet);
-      int iSuperLargePrime = addresser.GetHighPrimeIndex(aiSuperSet);
-
-      return iSmallPrime >= iSuperLargePrime;
-   }
-   else
+   if( GetMain() != aSet.GetMain() )
    {
       return false;
    }
-}
 
-int 
-Identifier::compareSubAddress( unsigned int aiSOne,
-                               unsigned int aiSTwo ) const
-{
-   Addresser addr;
-   unsigned int sOne = aiSOne;
-   unsigned int sTwo = aiSTwo;
-   bool bDone = false;
-   while( !bDone )
+   if( GetLeaves().size() == 0 )
    {
-      int lowPrimeOne = addr.GetLowPrime(sOne);
-      int lowPrimeTwo = addr.GetLowPrime(sTwo);
-      if( lowPrimeOne < lowPrimeTwo )
-      {
-         return -1;
-      }
-      else if( lowPrimeTwo < lowPrimeOne )
-      {
-         return 1;
-      }
-      else
-      {
-         int iSmallestCount = 0;
-         while( addr.GetLowPrime( sOne ) == lowPrimeOne && sOne != 1)
-         {
-            sOne /= lowPrimeOne;
-            iSmallestCount++;
-         }
-
-         while( addr.GetLowPrime( sTwo ) == lowPrimeTwo && sTwo != 1 )
-         {
-            sTwo /= lowPrimeTwo;
-            iSmallestCount--;
-         }
-
-         if( iSmallestCount > 0 )
-         {
-            return -1;
-         }
-         else if( iSmallestCount < 0 )
-         {
-            return 1;
-         }
-      }
-
-      bDone = sOne == sTwo;
+      return true;
    }
 
-   return 0;
+   for( auto oTargetNode : aSet.GetLeaves() )
+   {
+      for( auto oLeafNode : GetLeaves() )
+      {
+         int iComp = oTargetNode.Compare( oLeafNode );
+         if( iComp == -2 || iComp == -1 )
+         {
+            continue;
+         }
+         else
+         {
+            // If the target node is a superset (part of root path) or equal
+            return true;
+         }
+      }
+   }
+
+   // If we haven't found a match
+   return false;
+}
+
+bool 
+Identifier::operator<( const Identifier & rhs ) const
+{
+   return Compare( rhs ) == -1;
 }
 
 Address::Address()
@@ -365,8 +383,26 @@ Address::Address()
 
 }
 
-Address::Address(const string& aszId) : Identifier(aszId)
+Address::Address(const string& aszId)
 {
+   auto vecIdSplit = StringHelper::Str_Split( aszId, "-" );
+   if( vecIdSplit.size() > 0 )
+   {
+      m_szMain = vecIdSplit[0];
+
+      if( vecIdSplit.size() > 1 )
+      {
+         auto vecLeaves = SubAddress::ParseLeafString( SubAddress::CleanLeafString(vecIdSplit[1]) );
+         for( auto& leaf : vecLeaves )
+         {
+            m_setLeaves.insert( leaf );
+         }
+      }
+   }
+   else
+   {
+
+   }
 
 }
 
@@ -375,174 +411,157 @@ Address::~Address()
 
 }
 
-vector<unsigned int> 
-Address::GetSubAddresses() const
+std::string 
+Address::GetLeafString() const
 {
-   return m_veciSubAddresses;
-}
-
-
-// Returns true if ANY of the subaddresses of this address
-// is a superset of the location.
-// There should only ever be exactly 1 subaddress in the found address.
-bool 
-Address::ContainsLocation( const Location& aLoc ) const
-{
-   if( GetMain() != aLoc.GetMain() ){ return false; }
-
-   bool bContains = false;
-   for( auto iSub : m_veciSubAddresses )
+   std::string szRetval = "";
+   for( auto sub : GetLeaves() )
    {
-      if( isSuperSet( iSub, aLoc.GetSubAddress() ) )
-      {
-         bContains = true;
-         break;
-      }
+      szRetval += sub.ToString() + ",";
    }
-
-   return bContains;
+   return szRetval.substr( 0, szRetval.size() - 1 );
 }
 
-bool 
-Address::AddSubAddress( unsigned int aiSub )
+std::set<SubAddress_t> 
+Address::GetLeaves() const
 {
-   return addSubAddress(m_veciSubAddresses, aiSub) > 0;
-}
-
-// TODO: This will completely remove all matchin addresses
-// instead of pithing the subset subaddresses.
-int 
-Address::RemoveSubAddress( unsigned int aiSub )
-{
-   Addresser addresser;
-   int iResult = 0;
-   int iSetVal = aiSub == 1 ? 0 : aiSub/addresser.GetHighPrime(aiSub);
-
-   for( auto iSub : GetSubAddresses() )
-   {
-      if( isSuperSet( aiSub, iSub ) )
-      {
-         SetSubAddress(iSub, iSetVal);
-         iResult = 1;
-      }
-   }
-   return iResult;
-}
-
-// Inputting aiSub = 1 will remove that item.
-// Returns
-// 0 := Item doesn't exist
-// 1 := Perfect Replace
-// 2 := Replaced another and removed old.
-// 3 := Another already specifies, removed old.
-// 4 := Error
-int 
-Address::SetSubAddress(unsigned int aiAlreadySub, unsigned int aiSub)
-{
-   int iResult = 0;
-   auto iter_found = find( m_veciSubAddresses.begin(),
-                           m_veciSubAddresses.end(),
-                           aiAlreadySub );
-
-   if( iter_found != m_veciSubAddresses.end() )
-   {
-      vector<unsigned int> vecAddTest(m_veciSubAddresses);
-      vecAddTest.erase(vecAddTest.begin() + 
-                       distance(m_veciSubAddresses.begin(), iter_found));
-
-      // Now we want the subaddress to be added new
-      int iAdded = addSubAddress(vecAddTest, aiSub);
-      if( aiSub == 0 )
-      {
-         // Set iAdded to -1 so we can remove the value.
-         iAdded = -1;
-      }
-
-      if( iAdded == 2 )
-      {
-         // aiSub is specified by no other SA.
-         *iter_found = aiSub;
-         iResult = 1;
-      }
-      else if( iAdded == 1 )
-      {
-         // aiSub more specific than another SA.
-         // (i.e. specifies MORE sets)
-         m_veciSubAddresses.erase(iter_found);
-         addSubAddress(m_veciSubAddresses, aiSub);
-         iResult = 2;
-      }
-      else if( iAdded == -1 )
-      {
-         // aiSub is less specific
-         // (i.e. specifies fewer sets)
-         m_veciSubAddresses.erase(iter_found);
-         iResult = 3;
-      }
-      else
-      {
-         iResult = 4;
-      }
-   }
-
-   return iResult;
+   return m_setLeaves;
 }
 
 bool 
 Address::MergeIdentifier( const Identifier& aID )
 {
-   if( GetMain() != aID.GetMain() ){ return false; }
-
-   for( auto iSub : aID.GetSubAddresses() )
+   if( GetMain() != aID.GetMain() )
    {
-      return AddSubAddress(iSub);
+      return false;
    }
 
+   std::set<SubAddress_t> setNewSubs;
+   for( auto& sub : GetLeaves() )
+   {
+      bool bAdded = false;
+      auto setLeaves = aID.GetLeaves();
+      auto iter_leaf = setLeaves.begin();
+      while( iter_leaf != setLeaves.end() )
+      {
+         if( iter_leaf->Compare( sub ) == -1 )
+         {
+            setNewSubs.insert( *iter_leaf );
+            bAdded = true;
+
+            iter_leaf = setLeaves.erase( iter_leaf );
+         }
+         else
+         {
+            iter_leaf++;
+         }
+      }
+
+      if( !bAdded )
+      {
+         // We won't have to remove duplicates because the set wont add it if its already added.
+         setNewSubs.insert( sub );
+      }
+   }
+
+   m_setLeaves = setNewSubs;
    return true;
 }
 
 bool
 Address::ExtractIdentifier( const Identifier& aID )
 {
-   if( GetMain() != aID.GetMain() ){ return false; }
-
-   bool bResult = false;
-
-   // This tries to remove all the addresses,
-   // regardless of whether they are present or not.
-   for( auto iSub : aID.GetSubAddresses() )
+   if( GetMain() != aID.GetMain() )
    {
-      bool bSub = RemoveSubAddress( iSub ) != 0;
-      bResult |= bSub;
+      return false;
    }
 
-   return bResult;
+   if( aID.GetLeaves().size() == 0 )
+   {
+      m_setLeaves.clear();
+      return true;
+   }
+
+   std::set<SubAddress_t> setNewSubs;
+   for( auto& sub : GetLeaves() )
+   {
+      bool bAdded = false;
+      for( auto& removeSub : aID.GetLeaves() )
+      {
+         if( removeSub.Compare( sub ) == 1 )
+         {
+            SubAddress_t addSub = removeSub;
+            if( addSub.ToString() != "" )
+            {
+               addSub.Pop();
+            }
+            else
+            {
+               // We are removing the base address...
+               m_setLeaves.clear();
+               return true;
+            }
+            setNewSubs.insert( addSub );
+            bAdded = true;
+         }
+      }
+
+      if( !bAdded )
+      {
+         setNewSubs.insert( sub );
+      }
+   }
+
+   std::set<SubAddress_t> setSubs;
+   for( auto& newSub : setNewSubs )
+   {
+      bool bIsCounted = false;
+      for( auto& sub : setNewSubs )
+      {
+         if( newSub.Compare( sub ) == 1 )
+         {
+            bIsCounted = true;
+            break;
+         }
+      }
+
+      if( !bIsCounted )
+      {
+         setSubs.insert( newSub );
+      }
+   }
+
+   m_setLeaves = setSubs;
+   return true;
 }
 
 Location::Location()
 {
-
+   m_szMain = std::to_string( Addresser::GetRandom() % 1000000 );
 }
 
-Location::Location(const string& aszId) : Identifier(aszId)
+Location::Location( const string& aszId ) : Location()
 {
-   if( m_veciSubAddresses.size() > 0 )
+   auto vecIdSplit = StringHelper::Str_Split( aszId, "-" );
+   if( vecIdSplit.size() > 0 )
    {
-      m_iAddress = m_veciSubAddresses.at(0);
+      m_szMain = vecIdSplit[0];
+
+      if( vecIdSplit.size() > 1 )
+      {
+         m_Leaf = vecIdSplit[1];
+      }
    }
    else
    {
-      m_iAddress = 1;
+         m_szMain = std::to_string( Addresser::GetRandom() % 1000000 );
    }
 }
 
-Location::Location( const string& aszMain, unsigned int aiSA )
+Location::Location( const std::string & aszId, SubAddress_t aSub ) : Location()
 {
-   m_iAddress = aiSA;
-   m_szMain = aszMain;
-
-   // Add the address to this vector so the "IsEmpty" function works.
-   m_veciSubAddresses.push_back(m_iAddress);
+   m_szMain = aszId;
+   m_Leaf = aSub;
 }
 
 Location::~Location()
@@ -550,62 +569,68 @@ Location::~Location()
 
 }
 
-// Returns true if this location is a super set of ANY of the
-// subaddresses in aAddress.
-bool 
-Location::IsSpecifiedBy( const Address& aAddress ) const
+std::set<Location> 
+Location::GetRootPath() const
 {
-   //rAddrIn = Address(aAddress.GetMain());
+   std::set<Location> setRet;
+   Location tmpLoc( *this );
+   setRet.insert( tmpLoc );
 
-   if (aAddress.GetMain() != GetMain()) { return false; }
-
-   bool bFoundSubAddressMatch = false;
-   auto vecSAs = aAddress.GetSubAddresses();
-   for( auto iSub : vecSAs )
+   while( tmpLoc.GetLeafString() != "" )
    {
-      bool bIsSuper = isSuperSet(GetSubAddress(), iSub);
-      if( bIsSuper ) 
-      {
-         //rAddrIn.AddSubAddress(iSub);
-      } 
-      bFoundSubAddressMatch |= bIsSuper;
+      tmpLoc.m_Leaf.Pop();
+      setRet.insert( tmpLoc );
    }
 
-   return bFoundSubAddressMatch;
+   return setRet;
 }
 
-vector<unsigned int> 
-Location::GetSubAddresses() const
+std::string 
+Location::GetLeafString() const
 {
-   return vector<unsigned int>(1, m_iAddress);
+   return m_Leaf.ToString();
 }
 
-vector<Location> 
-Location::GetLocationsSpecified() const
+std::set<SubAddress_t> 
+Location::GetLeaves() const
 {
-   vector<Location> vecRetVal;
-   Addresser addr;
-   vecRetVal.push_back( *this );
-   unsigned int iComp = m_iAddress;
-   iComp = addr.PopFactor( iComp );
-   while( iComp > 1 )
-   {
-      vecRetVal.push_back( Location(m_szMain, iComp) );
-      iComp = addr.PopFactor( iComp );
-   }
-   vecRetVal.push_back( Location( m_szMain, 1 ) );
-
-   return vecRetVal;
+   std::set<SubAddress> set;
+   set.insert( m_Leaf );
+   return set;
 }
 
-unsigned int 
-Location::GetSubAddress() const
+SubAddress_t
+Location::GetLeaf() const
 {
-   return m_iAddress;
+   return m_Leaf;
 }
 
-Address 
-Location::ToAddress() const
+bool
+AddresserTest::Test()
 {
-   return Address(GetFullAddress());
+   Address addr1( "Cat-2<3)<4)" );
+   Address addr2( "Cat-2" );
+   addr1.ExtractIdentifier( addr2 );
+
+   addr1 = Address( "Cat-2<3)<4)" );
+   addr2 = Address( "Cat-2" );
+   addr2.ExtractIdentifier( addr1 );
+
+   addr1 = Address( "Cat-<1)<2<3))" );
+   addr2 = Address( "Cat-123" );
+   addr1.ExtractIdentifier( addr2 );
+
+   addr1 = Address( "Cat-2<3<1)<2))<4)" );
+   addr2 = Address( "Cat-23" );
+   addr1.ExtractIdentifier( addr2 );
+
+   addr1 = Address( "Cat-2<3<1)<2))<4)" );
+   addr2 = Address( "Cat-23" );
+   addr1.MergeIdentifier( addr2 );
+
+   addr1 = Address( "Cat-<1)<2<3))" );
+   addr2 = Address( "Cat-123" );
+   addr1.MergeIdentifier( addr2 );
+
+   return true;
 }

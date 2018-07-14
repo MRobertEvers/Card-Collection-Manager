@@ -162,10 +162,6 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClInclude Include="src\Support\StringHelper.h" />
     <ClInclude Include="src\Support\TryGet.h" />
     <ClInclude Include="src\Support\TypeDefs.h" />
-    <ClInclude Include="src\Tests\AddressTest.h" />
-    <ClInclude Include="src\Tests\CollectionItemTest.h" />
-    <ClInclude Include="src\Tests\CollectionTest.h" />
-    <ClInclude Include="src\Tests\CopyTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Addressing\Addresser.cpp" />
@@ -198,10 +194,6 @@ copy "$(ProjectDir)src\Resource\Config.xml" "$(TargetDir)Config\Config.xml"</Com
     <ClCompile Include="src\Support\JSONImporter.cpp" />
     <ClCompile Include="src\Support\MD5.cpp" />
     <ClCompile Include="src\Support\StringHelper.cpp" />
-    <ClCompile Include="src\Tests\AddressTest.cpp" />
-    <ClCompile Include="src\Tests\CollectionItemTest.cpp" />
-    <ClCompile Include="src\Tests\CollectionTest.cpp" />
-    <ClCompile Include="src\Tests\CopyTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="src\Resource\Config.xml" />

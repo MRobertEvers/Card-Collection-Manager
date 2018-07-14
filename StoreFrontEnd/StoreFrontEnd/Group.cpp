@@ -1,6 +1,4 @@
 #include "Group.h"
-#include "GroupItemData.h"
-#include "CardInterface.h"
 
 Group::ItemSorting::ItemSorting()
 {
@@ -15,13 +13,6 @@ Group::ItemSorting::ItemSorting( SortingOperator* aptSorting )
       m_ptSorter = std::shared_ptr<SortingOperator>( aptSorting );
    }
 }
-
-bool
-Group::ItemSorting::operator()( const CardInterface* agrpLeft, const CardInterface* agrpRight ) const
-{
-   return (*m_ptSorter)(agrpLeft->GetName(), agrpRight->GetName());
-}
-
 
 bool
 Group::SortingOperator::operator()( const wxString& agrpLeft, const wxString& agrpRight ) const
@@ -134,7 +125,7 @@ Group::SetItemSortingFunctor( SortingOperator* aptFunctor )
 
 wxString
 Group::
-GetGroup( const CardInterface& aData ) const
+GetGroup( const IGroupItem& aData ) const
 {
    wxString szGroup;
    // If the item has the override field, then that field is what is used.
@@ -190,6 +181,20 @@ Group::GetSubGroup( const wxString& aszGroup ) const
    }
 
    return *DefaultSubGroup;
+}
+
+Group
+Group::GetSubGroup( const IGroupItem & aData ) const
+{
+   for( auto& over : Overrides )
+   {
+      Group overSub = over.GetSubGroup( GetGroup( aData ) );
+      if( !overSub.IsEmpty() )
+      {
+         return overSub;
+      }
+   }
+   return GetSubGroup( GetGroup(aData) );
 }
 
 std::shared_ptr<Group::Sorting> 

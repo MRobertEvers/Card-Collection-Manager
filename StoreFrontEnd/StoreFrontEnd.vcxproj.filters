@@ -78,6 +78,15 @@
     <Filter Include="Views\Interfaces\CardViewer\EditorModules">
       <UniqueIdentifier>{e6f5e0a8-8edb-4413-882e-7b5d87383eb2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views\CollectionView\Menus">
+      <UniqueIdentifier>{0e16539d-c9ba-4387-838c-4a58d1bad37b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\CardInventoryViewer">
+      <UniqueIdentifier>{880075fa-debe-465e-975e-6194f20d53c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Views\Interfaces\CardAttributesEditor">
+      <UniqueIdentifier>{f0b22426-693e-45db-9336-2e4851931f3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Views\MainWindow\CMainWindow.cpp">
@@ -155,9 +164,6 @@
     <ClCompile Include="Views\ViewTemplates\IMenuEventHandler.cpp">
       <Filter>Views\Template</Filter>
     </ClCompile>
-    <ClCompile Include="Views\ViewTemplates\IMenuEventSource.cpp">
-      <Filter>Views\Template</Filter>
-    </ClCompile>
     <ClCompile Include="Views\wxExtras\wxImagePanel.cpp">
       <Filter>wxExtensions</Filter>
     </ClCompile>
@@ -179,13 +185,7 @@
     <ClCompile Include="StoreFrontEnd\Group.cpp">
       <Filter>StoreFrontEnd</Filter>
     </ClCompile>
-    <ClCompile Include="StoreFrontEnd\GroupItemData.cpp">
-      <Filter>StoreFrontEnd</Filter>
-    </ClCompile>
     <ClCompile Include="StoreFrontEnd\ImageFetcher.cpp">
-      <Filter>StoreFrontEnd</Filter>
-    </ClCompile>
-    <ClCompile Include="StoreFrontEnd\ImageHandler.cpp">
       <Filter>StoreFrontEnd</Filter>
     </ClCompile>
     <ClCompile Include="StoreFrontEnd\ScryFallAPI.cpp">
@@ -199,9 +199,6 @@
     </ClCompile>
     <ClCompile Include="include\json\jsoncpp.cpp">
       <Filter>Libraries</Filter>
-    </ClCompile>
-    <ClCompile Include="Views\CollectionView\CCollectionView.cpp">
-      <Filter>Views\CollectionView</Filter>
     </ClCompile>
     <ClCompile Include="Views\CollectionView\CollectionView.cpp">
       <Filter>Views\CollectionView</Filter>
@@ -232,6 +229,39 @@
     </ClCompile>
     <ClCompile Include="Views\ImageViewer\ImageWrapper.cpp">
       <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionView\CollectionViewMenu.cpp">
+      <Filter>Views\CollectionView\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardInventoryViewer\CardInventoryViewer.cpp">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardInventoryViewer\CCardInventoryViewer.cpp">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardInventoryViewer\VCardInventoryViewer.cpp">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CollectionView\CCollectionView.cpp">
+      <Filter>Views\CollectionView</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardEditor\CardEditor.cpp">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardEditor\CCardEditor.cpp">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardEditor\VCardEditor.cpp">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardAttributesEditor\VCardAttributesEditor.cpp">
+      <Filter>Views\Interfaces\CardAttributesEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardAttributesEditor\CCardAttributesEditor.cpp">
+      <Filter>Views\Interfaces\CardAttributesEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Views\CardAttributesEditor\CardAttributesEditor.cpp">
+      <Filter>Views\Interfaces\CardAttributesEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,9 +338,6 @@
       <Filter>Views\Template</Filter>
     </ClInclude>
     <ClInclude Include="Views\ViewTemplates\IMenuEventHandler.h">
-      <Filter>Views\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="Views\ViewTemplates\IMenuEventSource.h">
       <Filter>Views\Template</Filter>
     </ClInclude>
     <ClInclude Include="Views\wxExtras\wxImagePanel.h">
@@ -412,13 +439,7 @@
     <ClInclude Include="StoreFrontEnd\Group.h">
       <Filter>StoreFrontEnd</Filter>
     </ClInclude>
-    <ClInclude Include="StoreFrontEnd\GroupItemData.h">
-      <Filter>StoreFrontEnd</Filter>
-    </ClInclude>
     <ClInclude Include="StoreFrontEnd\ImageFetcher.h">
-      <Filter>StoreFrontEnd</Filter>
-    </ClInclude>
-    <ClInclude Include="StoreFrontEnd\ImageHandler.h">
       <Filter>StoreFrontEnd</Filter>
     </ClInclude>
     <ClInclude Include="StoreFrontEnd\ScryFallAPI.h">
@@ -465,6 +486,39 @@
     </ClInclude>
     <ClInclude Include="Views\ImageViewer\ImageWrapper.h">
       <Filter>Views\Interfaces\ImageViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CollectionView\CollectionViewMenu.h">
+      <Filter>Views\CollectionView\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardInventoryViewer\CardInventoryViewer.h">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardInventoryViewer\CCardInventoryViewer.h">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardInventoryViewer\VCardInventoryViewer.h">
+      <Filter>Views\Interfaces\CardInventoryViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\ViewTemplates\IViewFactory.h">
+      <Filter>Views\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardEditor\CardEditor.h">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardEditor\CCardEditor.h">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardEditor\VCardEditor.h">
+      <Filter>Views\Interfaces\CardEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardAttributesEditor\CCardAttributesEditor.h">
+      <Filter>Views\Interfaces\CardAttributesEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardAttributesEditor\CardAttributesEditor.h">
+      <Filter>Views\Interfaces\CardAttributesEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Views\CardAttributesEditor\VCardAttributesEditor.h">
+      <Filter>Views\Interfaces\CardAttributesEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

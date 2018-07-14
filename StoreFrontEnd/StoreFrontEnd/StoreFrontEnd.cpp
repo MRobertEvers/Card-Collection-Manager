@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include <Shlobj.h>
 #include <fstream>
+#include <chrono>
 
 StoreFront* StoreFrontEnd::m_ptInstance = nullptr;
 StoreFrontEnd* StoreFrontEnd::m_ptClient = nullptr;
@@ -69,6 +70,18 @@ StoreFrontEnd::DownloadCardImage( CardInterface* apCard,
 }
 
 bool 
+StoreFrontEnd::DownloadCardImage( const wxString & aszCardName, const wxString & aszSet, std::shared_ptr<ImageFetcherCallback> aptCallback )
+{
+   auto ptse = StoreFrontEnd::Server();
+   auto szFilePath = ptse->GetImageFilePath( aszCardName.ToStdString(), aszSet.ToStdString() );
+   auto szMUD = ptse->GetDefaultIdentifyingAttributeValue( aszCardName.ToStdString(), "multiverseid" );
+   ImageFetcher::Instance()->PDownloadImage( szFilePath, aszCardName.ToStdString(), aszSet.ToStdString(),
+                                             szMUD, aptCallback );
+
+   return true;
+}
+
+bool
 StoreFrontEnd::DownloadImportSourceFile()
 {
    SourceDownloader SD;
@@ -189,4 +202,18 @@ StoreFrontEnd::GetCollection( const wxString& aszID )
       auto pair = std::make_pair( aszID, new CollectionInterface( aszID.ToStdString() ) );
       return m_mapCollections.insert( pair ).first->second;
    }
+}
+
+long long
+StoreFrontEnd::StartStopWatch()
+{
+   m_now = std::chrono::system_clock::now();
+   return std::chrono::duration_cast<std::chrono::milliseconds>(m_now.time_since_epoch()).count();
+}
+
+long long 
+StoreFrontEnd::EndStopWatch()
+{
+   auto now = std::chrono::system_clock::now();
+   return std::chrono::duration_cast<std::chrono::milliseconds>(now-m_now).count();
 }

@@ -1,11 +1,10 @@
 #include "CollectionTracker.h"
-
-#include <functional>
-
 #include "CollectionObject.h"
 #include "CopyItem.h"
 #include "Collection.h"
 #include "../Support/TryGet.h"
+
+#include <functional>
 
 CollectionTracker::CollectionTracker(Collection* aptrTCollection)
 {
@@ -34,7 +33,7 @@ CollectionTracker::Track()
             iter_Copy++ )
       {
          // Map a copy of the current state so that it may be used to track.
-         CopyItem copyOfCopy = CopyItem(**iter_Copy);
+         CopyItem copyOfCopy(**iter_Copy);
          
          // This points to the actual copy. When we come back to track changes,
          // if the item at the pointer is different from the copy of it, then it
@@ -178,7 +177,7 @@ CollectionTracker::CalculateChanges()
             iter_CurrentSnapshot->first->GetAddress(),
             item->GetName(),
             iter_CurrentSnapshot->first->GetIdentifyingAttributes(),
-            iter_CurrentSnapshot->first->GetMetaTags(MetaTagType::Visible),
+            iter_CurrentSnapshot->first->GetMetaTags(MetaTag::Type::Visible),
             colAddress);
          lstAdds.push_back(szNote);
       }
@@ -198,7 +197,7 @@ CollectionTracker::CalculateChanges()
             oldSnapshot->GetAddress(),
             item->GetName(),
             oldSnapshot->GetIdentifyingAttributes(),
-            oldSnapshot->GetMetaTags(MetaTagType::Visible),
+            oldSnapshot->GetMetaTags(MetaTag::Type::Visible),
             colAddress);
          lstRemoves.push_back(szNote);
       }
@@ -220,13 +219,13 @@ CollectionTracker::CalculateChanges()
             oldSnapshot->GetAddress(),
             item->GetName(),
             oldSnapshot->GetIdentifyingAttributes(),
-            oldSnapshot->GetMetaTags(MetaTagType::Visible),
+            oldSnapshot->GetMetaTags(MetaTag::Type::Visible),
             colAddress);
          szNote += "-> " + CollectionObject::ToCardLine(
             currentSnapshot->GetAddress(),
             item->GetName(),
             currentSnapshot->GetIdentifyingAttributes(),
-            currentSnapshot->GetMetaTags(MetaTagType::Visible),
+            currentSnapshot->GetMetaTags(MetaTag::Type::Visible),
             colAddress);
          lstChanges.push_back(szNote);
       }

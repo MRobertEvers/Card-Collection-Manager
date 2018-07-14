@@ -22,6 +22,9 @@ public:
    {
    public:
       ImageDownloadCallback( CardRenderer* apHost,
+                             const std::string& aszCardName, const std::string& aszSet,
+                             std::shared_ptr<std::recursive_mutex> aCallBackMutex );
+      ImageDownloadCallback( CardRenderer* apHost,
                              CardInterface* apCallbackCard,
                              std::shared_ptr<std::recursive_mutex> aCallBackMutex );
       ~ImageDownloadCallback();
@@ -33,7 +36,10 @@ public:
    private:
       unsigned int m_uiRenderCountTarget;
       CardRenderer* m_pCardEditor;
-      CardInterface* m_pCardInterface;
+
+      std::string m_szCardName;
+      std::string m_szSet;
+
       std::shared_ptr<std::recursive_mutex> m_mutex;
    };
 
@@ -42,6 +48,7 @@ public:
    ~CardRenderer();
 
    void DisplayImage( CardInterface* apCard );
+   void DisplayImage( const wxString& aszCardname, const wxString& aszSet );
 
 private:
    wxDECLARE_EVENT_TABLE();
@@ -49,12 +56,12 @@ private:
    // If a callback comesback with an older render count, ignore it.
    unsigned int m_uiRenderCount;
    ImageViewer* m_pImagePanel;
-   CardInterface* m_pCardInterface;
+   std::shared_ptr<CardInterface> m_pCardInterface;
    std::shared_ptr<std::recursive_mutex> m_mutex;
    std::shared_ptr<ImageDownloadCallback> m_pCurrentCallback;
 
-   std::string getCardImageFile( CardInterface* apCard );
+   std::string getCardImageFile( const wxString& aszCardname, const wxString& aszSet );
 
    void onImageCallback( wxCommandEvent& awxEvt );
-   void uiDisplayCard( CardInterface* apCard );
+   void uiDisplayCard( const wxString& aszCardname, const wxString& aszSet );
 };

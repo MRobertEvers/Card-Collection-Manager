@@ -25,8 +25,8 @@ CollectionFactory::SaveCollection( string aszCollectionID ) const
       Location oColLocation = collection->GetIdentifier();
       for( auto lCol : m_lstCollections )
       {
-         Address olColLocation = lCol->GetIdentifier().ToAddress();
-         if( olColLocation.ContainsLocation( oColLocation ) )
+         auto olColLocation = lCol->GetIdentifier();
+         if( olColLocation.IsSuperset( oColLocation ) )
          {
             lCol->SaveCollection();
          }
@@ -44,8 +44,8 @@ CollectionFactory::ExportCollection( std::string aszCollectionID, Query aQuery )
       Location oColLocation = collection->GetIdentifier();
       for( auto lCol : m_lstCollections )
       {
-         Address olColLocation = lCol->GetIdentifier().ToAddress();
-         if( olColLocation.ContainsLocation( oColLocation ) )
+         auto olColLocation = lCol->GetIdentifier();
+         if( olColLocation.IsSuperset( oColLocation ) )
          {
             lCol->ExportCollection(aQuery);
          }
@@ -91,7 +91,7 @@ CollectionFactory::LoadCollectionFromFile(string aszFileName)
       if( oCol->IsLoaded() )
       {
          m_lstCollections.push_back(shared_ptr<Collection>(oCol));
-         szRetVal = szFoundID.GetFullAddress();
+         szRetVal = szFoundID.ToString();
 
          bKeepCol = true;
       }
@@ -134,7 +134,7 @@ CollectionFactory::CreateNewCollection(string aszColName, string aszParentID)
    }
 
    m_lstCollections.push_back(shared_ptr<Collection>(oCol));
-   return oCol->GetIdentifier().GetFullAddress();
+   return oCol->GetIdentifier().ToString();
 }
 
 vector<string>
@@ -147,9 +147,18 @@ CollectionFactory::GetLoadedCollections()
          ++iter_Colo)
    {
       Collection* curr_Col = iter_Colo->get();
-      lstRetval.push_back(curr_Col->GetIdentifier().GetFullAddress());
+      lstRetval.push_back(curr_Col->GetIdentifier().ToString());
    }
    return lstRetval;
+}
+
+void 
+CollectionFactory::InvalidateAllCaches()
+{
+   for( auto& col : m_lstCollections )
+   {
+      col->InvalidateState();
+   }
 }
 
 bool 
@@ -197,7 +206,7 @@ CollectionFactory::GetCollection(const Location& aAddrColID) const
          ++iter_cols)
    {
       Collection* curr_Col = iter_cols->get();
-      if (aAddrColID == curr_Col->GetIdentifier())
+      if (curr_Col->GetIdentifier().Compare(aAddrColID) == 0)
       {
          oRetVal.Set(iter_cols->get());
          break;
@@ -236,7 +245,7 @@ CollectionFactory::GetCollectionID(const std::string& aszCollectionName)
       Collection* curr_Col = iter_cols->get();
       if ( aszCollectionName == curr_Col->GetName())
       {
-         return curr_Col->GetIdentifier().GetFullAddress();
+         return curr_Col->GetIdentifier().ToString();
       }
    }
 
@@ -313,12 +322,7 @@ CollectionFactory::performAction( const string& aszActionCmd,
 string 
 CollectionFactory::getNextChildName(string aszParentID) const
 {
-   Addresser addresser;
-   unsigned int iHighPrime, iHighPrimeIndex, iCurrentSA;
-
    Location currentName(aszParentID);
-   iCurrentSA = currentName.GetSubAddress();
-   iHighPrimeIndex = addresser.GetHighPrimeIndex(iCurrentSA);
 
    string szSubAddress;
    string szRetval = aszParentID;
@@ -326,10 +330,11 @@ CollectionFactory::getNextChildName(string aszParentID) const
    if (oCol.Good())
    {
       int iChildren = oCol->GetChildCount();
-      iHighPrimeIndex += iChildren + 1;
       
-      iHighPrime = addresser.GetPrime(iHighPrimeIndex);
-      szSubAddress = to_string(iCurrentSA*iHighPrime);
+      auto sub = currentName.GetLeaf();
+      sub.Push( "0" );
+
+      szSubAddress = sub.ToString();
       szRetval = currentName.GetMain() + "-" + szSubAddress;
    }
 

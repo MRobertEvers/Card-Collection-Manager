@@ -11,8 +11,8 @@ using namespace std;
 
 // An ID will be given to the collection if there is a parent.
 Collection::Collection( string aszName,
-                        CollectionSource* aoSource,
-                        string aszID )
+   CollectionSource* aoSource,
+   string aszID )
 {
    m_ptrCollectionTracker = new CollectionTracker( this );
    m_ptrCollectionDetails = new CollectionDetails();
@@ -23,7 +23,7 @@ Collection::Collection( string aszName,
    m_ptrCollectionDetails->SetChildrenCount( 0 );
    m_ptrCollectionDetails->AssignAddress( aszID );
 
-   m_ptrCollectionLedger = new CollectionLedger(this->GetIdentifier());
+   m_ptrCollectionLedger = new CollectionLedger( this->GetIdentifier() );
 
    m_ptrCollectionSource = aoSource;
 
@@ -61,13 +61,13 @@ Collection::ChildAdded()
    m_ptrCollectionDetails->IncrementChildCount();
 }
 
-bool 
+bool
 Collection::IsLoaded()
 {
    return m_ptrCollectionDetails->IsLoaded();
 }
 
-vector<Tag> 
+vector<Tag>
 Collection::GetPeekValues()
 {
    return m_ptrCollectionDetails->GetPeekValues();
@@ -77,41 +77,41 @@ map<unsigned long, vector<string>>
 Collection::GetHistoryLines( unsigned int aiStart, unsigned int aiEnd )
 {
    CollectionIO io( this );
-   return io.GetHistoryTransactions(aiStart, aiEnd);
+   return io.GetHistoryTransactions( aiStart, aiEnd );
 }
 
-void
+string
 Collection::AddItem( string aszName,
-                     vector<Tag> alstAttrs,
-                     vector<Tag> alstMetaTags )
+   vector<Tag> alstAttrs,
+   vector<Tag> alstMetaTags )
 {
-   addItem( aszName, alstAttrs, alstMetaTags );
+   return addItem( aszName, alstAttrs, alstMetaTags );
 }
 
-void
+string
 Collection::RemoveItem( string aszName,
-                        string aszUID )
+   string aszUID )
 {
-   removeItem( aszName, aszUID );
+   return removeItem( aszName, aszUID );
 }
 
-void
+Tag
 Collection::ChangeItem( string aszName,
-                        string aszUID,
-                        vector<Tag> alstChanges,
-                        vector<Tag> alstMetaChanges )
+   string aszUID,
+   vector<Tag> alstChanges,
+   vector<Tag> alstMetaChanges )
 {
-   changeItem( aszName, aszUID, alstChanges, alstMetaChanges );
+   return changeItem( aszName, aszUID, alstChanges, alstMetaChanges );
 }
 
-void
+Tag
 Collection::ReplaceItem( string aszName,
-                         string aszIdentifyingHash,
-                         string aszNewName,
-                         vector<Tag> alstIdChanges,
-                         vector<Tag> alstMetaChanges )
+   string aszIdentifyingHash,
+   string aszNewName,
+   vector<Tag> alstIdChanges,
+   vector<Tag> alstMetaChanges )
 {
-   replaceItem( aszName, aszIdentifyingHash, aszNewName, alstIdChanges, alstMetaChanges );
+   return replaceItem( aszName, aszIdentifyingHash, aszNewName, alstIdChanges, alstMetaChanges );
 }
 
 void
@@ -121,11 +121,11 @@ Collection::SaveCollection()
    IO.SaveCollection();
 }
 
-void 
+void
 Collection::ExportCollection( Query aQuery )
 {
    CollectionIO IO( this );
-   IO.ExportCollection(aQuery);
+   IO.ExportCollection( aQuery );
 }
 
 bool
@@ -136,7 +136,7 @@ Collection::InitializeCollection()
 }
 
 
-bool 
+bool
 Collection::InitializeCollection( string aszFileName )
 {
    CollectionIO loader( this );
@@ -145,21 +145,28 @@ Collection::InitializeCollection( string aszFileName )
 
 void
 Collection::LoadCollection( const string& aszFileName,
-                            CollectionFactory* aoFactory )
+   CollectionFactory* aoFactory )
 {
 
-   CollectionIO loader(this);
+   CollectionIO loader( this );
    loader.LoadCollection( aszFileName, aoFactory );
 }
 
 // Returns all the copies impacted by this function.
-void
+vector<string>
 Collection::LoadChanges( vector<string> lstLines )
 {
+   vector<string> vecRetVal;
    for( auto& szLine : lstLines )
    {
-      loadInterfaceLine( szLine );
+      auto vecRes = loadInterfaceLine( szLine );
+      for( auto& item : vecRes )
+      {
+         vecRetVal.push_back( item );
+      }
    }
+
+   return vecRetVal;
 }
 
 vector<string>
@@ -175,7 +182,7 @@ Collection::GetCollectionItems()
    //return m_ptrCollectionSource->GetCollectionCache( GetIdentifier(), All );
 }
 
-void 
+void
 Collection::InvalidateState()
 {
    // For any component that may cache data for speed,
@@ -183,113 +190,141 @@ Collection::InvalidateState()
    m_ptrCollectionQueryHelper->InvalidateState();
 }
 
-void 
+// Returns UID of newly created item
+string
 Collection::addItem( const string& aszName,
-                     const vector<Tag>& alstAttrs,
-                     const vector<Tag>& alstMetaTags )
+   const vector<Tag>& alstAttrs,
+   const vector<Tag>& alstMetaTags )
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    if( !item.Good() )
    {
-      return;
+      return "";
    }
-   
-   item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags );
+
+   // TODO:
+   auto copy = item->AddCopy( GetIdentifier(), alstAttrs, alstMetaTags );
    InvalidateState();
+
+   return copy->GetUID();
 }
 
-bool
+string
 Collection::removeItem( const string& aszName,
-                        const string& aszUID )
+   const string& aszUID )
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    if( !item.Good() )
    {
-      return false;
+      return "";
    }
 
    bool bSuccess = item->RemoveCopy( GetIdentifier(), aszUID );
    if( bSuccess )
    {
       InvalidateState();
+      return aszUID;
    }
-   return bSuccess;
+
+   return "";
 }
 
-bool
+Tag
 Collection::changeItem( const string& aszName,
-                        const string& aszUID,
-                        const vector<Tag>& alstChanges,
-                        const vector<Tag>& alstMetaChanges )
+   const string& aszUID,
+   const vector<Tag>& alstChanges,
+   const vector<Tag>& alstMetaChanges )
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    if( !item.Good() )
    {
-      return false;
+      return Tag();
    }
 
    auto cItem = item->FindCopy( aszUID );
-   if( !cItem.Good() ) 
-   { 
-      return false;
+   if( !cItem.Good() )
+   {
+      return Tag();
    }
 
-   item->SetIdentifyingTraits( *cItem.Value(), alstChanges, alstMetaChanges );
+   auto szBefore = cItem->GetUID();
+   cItem.Value()->SetAttributes( alstChanges );
+
+   for( auto& attr : alstMetaChanges )
+   {
+      cItem.Value()->SetMetaTag( attr.first, attr.second );
+   }
+   auto szAfter = cItem->GetUID();
+
    InvalidateState();
-   return true;
+
+   return Tag( szBefore, szAfter );
 }
 
 
-bool
+Tag
 Collection::replaceItem( const string& aszName,
-                         const string& aszUID,
-                         const string& aszNewName,
-                         const vector<Tag>& alstIdChanges,
-                         const vector<Tag>& alstMetaChanges )
+   const string& aszUID,
+   const string& aszNewName,
+   const vector<Tag>& alstIdChanges,
+   const vector<Tag>& alstMetaChanges )
 {
    auto item = m_ptrCollectionSource->GetCardPrototype( aszName );
    if( !item.Good() )
    {
-      return false;
+      return Tag();
    }
 
    auto newItem = m_ptrCollectionSource->GetCardPrototype( aszNewName );
    if( !newItem.Good() )
    {
-      return false;
+      return Tag();
    }
 
-   if( removeItem( item->GetName(), aszUID ) )
+   string szBefore = "";
+   string szAfter = "";
+   if( removeItem( item->GetName(), aszUID ) != "" )
    {
-      addItem( newItem->GetName(), alstIdChanges, alstMetaChanges );
+      szBefore = aszUID;
+      szAfter = addItem( newItem->GetName(), alstIdChanges, alstMetaChanges );
       InvalidateState();
-      return true;
+
+      return Tag( szBefore, szAfter );
    }
 
-   return false;
+   return Tag();
 }
 
-void
+// Returns -> { uid } for addition
+// Returns { uid } -> for removal
+// Returns { uid } -> { uid2 } for delta (they can be the same)
+vector<string>
 Collection::loadInterfaceLine( const string& aszLine )
 {
    string szLine = aszLine;
    auto iLineType = StringInterface::ParseInterfaceLine( szLine );
 
+   vector<string> vecRetval;
    if( iLineType == StringInterface::AddLine )
    {
-      loadAdditionLine( szLine );
+      auto res = loadAdditionLine( szLine );
+      vecRetval.push_back( res );
    }
    else if( iLineType == StringInterface::RemoveLine )
    {
-      loadRemoveLine( szLine );
+      auto res = loadRemoveLine( szLine );
+      vecRetval.push_back( res );
    }
    else if( iLineType == StringInterface::ChangeLine )
    {
-      loadDeltaLine( szLine );
+      auto res = loadDeltaLine( szLine );
+      vecRetval = res;
    }
+
+   return vecRetval;
 }
 
-void 
+string
 Collection::loadAdditionLine( const string& aszLine )
 {
    string szID = "";
@@ -303,17 +338,18 @@ Collection::loadAdditionLine( const string& aszLine )
 
    CollectionObject::ParseCardLine( szLine, sudoItem );
 
-   auto szAddr = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetAddressKey() );
+   auto szAddr = StringInterface::FindTagInList( sudoItem.MetaTags, MetaTag::GetAddressKey() );
    if( szAddr != "" )
    {
       aParentAddress = Address( szAddr );
-      szID = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetHashKey() );
-      bThisIsParent = !(aParentAddress == GetIdentifier());
+      szID = StringInterface::FindTagInList( sudoItem.MetaTags, MetaTag::GetHashKey() );
+      bThisIsParent = (0 == GetIdentifier().Compare( aParentAddress ));
    }
 
+   vector<Tag> vecRetval;
    // If the ID is specified, then we assume the card already exists.
    if( (!bThisIsParent) && // This is not the parent
-       (szID != "") )       // and the id was specified.
+      (szID != "") )       // and the id was specified.
    {
       for( size_t i = 0; i < sudoItem.Count; i++ )
       {
@@ -326,29 +362,44 @@ Collection::loadAdditionLine( const string& aszLine )
    {
       for( size_t i = 0; i < sudoItem.Count; i++ )
       {
-         AddItem( sudoItem.Name, sudoItem.Identifiers, sudoItem.MetaTags );
+         auto evt = AddItem( sudoItem.Name, sudoItem.Identifiers, sudoItem.MetaTags );
+         if( evt.size() > 0 )
+         {
+            vecRetval.emplace_back( MetaTag::GetUIDKey(), evt );
+         }
       }
    }
+
+   // TODO: Create a more generic string interface
+   return StringInterface::DeltaAddCmdString( sudoItem.Name, vecRetval );
 }
 
 // This needs "Card Name : { __hash="hashval" }" All other values are irrelevant.
-void 
+string
 Collection::loadRemoveLine( const string& aszLine )
 {
    CollectionObject::PseudoIdentifier sudoItem;
    CollectionObject::ParseCardLine( aszLine, sudoItem );
 
-   string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, CopyItem::GetUIDKey() );;
-   for( size_t i = 0; i < sudoItem.Count; i++ )
+   vector<Tag> vecRetval;
+   string szUID = StringInterface::FindTagInList( sudoItem.MetaTags, MetaTag::GetUIDKey() );
+   if( szUID != "" )
    {
-      if( szUID != "" )
+      for( size_t i = 0; i < sudoItem.Count; i++ )
       {
-         RemoveItem( sudoItem.Name, szUID );
+         auto evt = RemoveItem( sudoItem.Name, szUID );
+         if( evt.size() > 0 )
+         {
+            vecRetval.emplace_back( MetaTag::GetUIDKey(), evt );
+         }
       }
-      else { break; }
    }
+
+   return StringInterface::DeltaRemoveCmdString( sudoItem.Name, vecRetval );
 }
-void 
+
+// This should return two lines a + and a -
+vector<string>
 Collection::loadDeltaLine( const string& aszLine )
 {
    vector<string> lstOldNew = StringHelper::Str_Split( aszLine, "->" );
@@ -363,37 +414,66 @@ Collection::loadDeltaLine( const string& aszLine )
    if( !oldItem.Good() )
    {
       // TODO: Log this.
-      return;
+      return vector<string>();
    }
-   
-   string szUID  = StringInterface::FindTagInList( sudoOldItem.MetaTags, CopyItem::GetUIDKey() );
+
+   string szUID = StringInterface::FindTagInList( sudoOldItem.MetaTags, MetaTag::GetUIDKey() );
    auto cItem = oldItem->FindCopy( szUID );
    if( !cItem.Good() )
    {
       // TODO: Error.
-      return;
+      return vector<string>();
    }
 
+   // TODO: Doesn't really make sense to have more than one of these.
+   vector<Tag> vecAdd;
+   vector<Tag> vecRemoved;
    for( size_t i = 0; i < sudoOldItem.Count; i++ )
    {
       if( sudoOldItem.Name == sudoNewItem.Name )
       {
-         ChangeItem( sudoOldItem.Name,
-                     szUID,
-                     sudoNewItem.Identifiers,
-                     sudoNewItem.MetaTags );
+         auto evt = ChangeItem( sudoOldItem.Name,
+            szUID,
+            sudoNewItem.Identifiers,
+            sudoNewItem.MetaTags );
+         if( evt.first.size() > 0 )
+         {
+            vecRemoved.emplace_back( MetaTag::GetUIDKey(), evt.first );
+         }
+         if( evt.second.size() > 0 )
+         {
+            vecAdd.emplace_back( MetaTag::GetUIDKey(), evt.second );
+         }
       }
       else
       {
          auto newItem = m_ptrCollectionSource->GetCardPrototype( sudoNewItem.Name );
          if( newItem.Good() )
          {
-            ReplaceItem( sudoOldItem.Name,
-                           szUID,
-                           sudoNewItem.Name,
-                           sudoNewItem.Identifiers,
-                           sudoNewItem.MetaTags );
+            auto evt = ReplaceItem( sudoOldItem.Name,
+               szUID,
+               sudoNewItem.Name,
+               sudoNewItem.Identifiers,
+               sudoNewItem.MetaTags );
+            if( evt.first.size() > 0 )
+            {
+               vecRemoved.emplace_back( MetaTag::GetUIDKey(), evt.first );
+            }
+            if( evt.second.size() > 0 )
+            {
+               vecAdd.emplace_back( MetaTag::GetUIDKey(), evt.second );
+            }
          }
       }
    }
+
+   vector<string> vecRetval;
+
+   string szAdded = StringInterface::DeltaAddCmdString( sudoNewItem.Name, vecAdd );
+   vecRetval.push_back( szAdded );
+
+   string szRemoved = StringInterface::DeltaAddCmdString( sudoNewItem.Name, vecRemoved );
+   vecRetval.push_back( szRemoved );
+
+   return vecRetval;
 }

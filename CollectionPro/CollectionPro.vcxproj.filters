@@ -23,9 +23,6 @@
     <Filter Include="Collection\DataHelpers">
       <UniqueIdentifier>{e7986947-339c-4624-8ed8-3cf9f71d94ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests">
-      <UniqueIdentifier>{5d54d0ad-8374-4d43-8e61-8361ce3170fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -100,18 +97,6 @@
     </ClInclude>
     <ClInclude Include="src\Collection\CollectionFactory.h">
       <Filter>Collection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tests\AddressTest.h">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tests\CollectionItemTest.h">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tests\CollectionTest.h">
-      <Filter>Tests</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tests\CopyTest.h">
-      <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="src\Support\JSONImporter.h">
       <Filter>Support</Filter>
@@ -213,18 +198,6 @@
     </ClCompile>
     <ClCompile Include="src\Collection\CollectionFactory.cpp">
       <Filter>Collection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\AddressTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\CollectionItemTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\CollectionTest.cpp">
-      <Filter>Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tests\CopyTest.cpp">
-      <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="src\Support\JSONImporter.cpp">
       <Filter>Support</Filter>

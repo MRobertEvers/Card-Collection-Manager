@@ -1,18 +1,19 @@
 #pragma once
 #include "../ViewTemplates/IControlledView.h"
+#include "../ViewTemplates/IViewFactory.h"
 #include <wx/wxprec.h>
 
 class CardInterface;
 class VCardView;
 class CCardView;
 
-class CardView : public IControlledView
+class CardView : public IViewFactory
 {
 public:
-   CardView( wxPanel* aptParent );
+   CardView();
    ~CardView();
 
-   wxPanel* GetView();
+   wxWindow* GetView( wxWindow* apParent );
    CCardView* GetController();
 
 private:

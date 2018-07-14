@@ -22,11 +22,7 @@ CMainWindow::~CMainWindow()
 void 
 CMainWindow::ShowCollectionsOverview()
 {
-   m_View->ReleaseMenuEventHandler();
-
-   auto tmp = new CollectionsOverview( m_View );
-   m_ptrControlledView = std::shared_ptr<IControlledView>( tmp );
-   m_View->SetView( tmp->GetView() );
+   uiSetMainPanel( std::shared_ptr<IControlledView>( new CollectionsOverview( m_View ) ) );
 }
 
 void 
@@ -43,12 +39,7 @@ CMainWindow::ShowCollection( const wxString& aszColID, CollectionViewType aType 
 
    if( aType == Cube_View )
    {
-      m_View->ReleaseMenuEventHandler();
-
-      auto tmp = new CollectionView( m_View, m_View, ptse->GetCollection( szID ) );
-
-      m_ptrControlledView = std::shared_ptr<IControlledView>( tmp );
-      m_View->SetView( tmp->GetView() );
+      uiSetMainPanel( std::shared_ptr<IControlledView>( new CollectionView( m_View, ptse->GetCollection( szID ) ) ) );
    }
 }
 
@@ -57,4 +48,28 @@ CMainWindow::ImportSource()
 {
    StoreFrontEnd::Client()->DownloadImportSourceFile();
    StoreFrontEnd::Server()->ImportCollectionSource();
+}
+
+void 
+CMainWindow::uiSetMainPanel( std::shared_ptr<IControlledView> apView )
+{
+   // Release then bind the new menu
+   if( m_ptrControlledView != nullptr )
+   {
+      auto pMenuHandler = m_ptrControlledView->GetEventHandler();
+      if( pMenuHandler != nullptr )
+      {
+         pMenuHandler->ReleaseMenu( m_View->GetMenu(), m_View );
+      }
+   }
+
+   m_ptrControlledView = apView;
+   auto pMenuHandler = m_ptrControlledView->GetEventHandler();
+   if( pMenuHandler != nullptr )
+   {
+      pMenuHandler->BindToMenu( m_View->GetMenu(), m_View );
+   }
+
+   // Set the view.
+   m_View->SetView( m_ptrControlledView->GetView() );
 }

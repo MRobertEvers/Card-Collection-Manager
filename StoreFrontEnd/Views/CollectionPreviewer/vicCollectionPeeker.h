@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-class ImageViewer;
+class CardRenderer;
 
 class vicCollectionPeeker : public wxPanel
 {
@@ -23,7 +23,7 @@ public:
 
 private:
    wxGrid* m_Grid;
-   ImageViewer* m_Viewer;
+   CardRenderer* m_Viewer;
    void setPeek( const wxString& aszColName, 
                  const std::vector<std::pair<std::string, std::string>> amapPeekVals);
 

@@ -5,11 +5,11 @@
 
 MainFrame::MainFrame(const wxString& title)
 {
-   m_View = new VMainWindow( title );
-   m_Controller = new CMainWindow( m_View );
-   m_View->SetController( m_Controller );
+   m_pView = new VMainWindow( title );
+   m_pController = new CMainWindow( m_pView );
+   m_pView->SetController( m_pController );
 
-   m_View->Show();
+   m_pView->Show();
 }
 
 MainFrame::~MainFrame()
