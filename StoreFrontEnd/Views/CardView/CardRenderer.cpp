@@ -84,7 +84,7 @@ CardRenderer::DisplayImage( CardInterface* apCard )
    // Display the image.
    m_pCardInterface = std::shared_ptr<CardInterface>( new CardInterface(*apCard) );
 
-   uiDisplayCard( m_pCardInterface->GetName(), m_pCardInterface->GetSet() );
+   uiDisplayCard( m_pCardInterface->GetName(), m_pCardInterface->GetSet(), m_pCardInterface->GetMultiverseID() );
 }
 
 void
@@ -98,7 +98,8 @@ CardRenderer::DisplayImage( const wxString & aszCardname, const wxString & aszSe
       auto vecFound = ptSF->GetAllCardsStartingWith( cardSearch );
       if( vecFound.size() > 0 )
       {
-         uiDisplayCard( aszCardname, aszSet );
+         auto szMud = ptSF->GetDefaultIdentifyingAttributeValue( aszCardname.ToStdString(), "multiverseid" );
+         uiDisplayCard( aszCardname, aszSet, szMud );
       }
    }
 }
@@ -132,7 +133,7 @@ CardRenderer::onImageCallback( wxCommandEvent& awxEvt )
 }
 
 void 
-CardRenderer::uiDisplayCard( const wxString & aszCardname, const wxString & aszSet )
+CardRenderer::uiDisplayCard( const wxString & aszCardname, const wxString & aszSet, const wxString& aszMud )
 {
    auto szFilePath = getCardImageFile( aszCardname, aszSet );
 
@@ -157,6 +158,6 @@ CardRenderer::uiDisplayCard( const wxString & aszCardname, const wxString & aszS
 
       // The thread keeps a shared pointer to the callback so we don't have to worry about randomly deleting
       // callbacks. 
-      ptse->DownloadCardImage( aszCardname, aszSet, std::shared_ptr<ImageFetcherCallback>( callBack ) );
+      ptse->DownloadCardImage( aszCardname, aszSet, aszMud, std::shared_ptr<ImageFetcherCallback>( callBack ) );
    }
 }

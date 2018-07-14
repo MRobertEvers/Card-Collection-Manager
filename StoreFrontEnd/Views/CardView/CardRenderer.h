@@ -63,5 +63,5 @@ private:
    std::string getCardImageFile( const wxString& aszCardname, const wxString& aszSet );
 
    void onImageCallback( wxCommandEvent& awxEvt );
-   void uiDisplayCard( const wxString& aszCardname, const wxString& aszSet );
+   void uiDisplayCard( const wxString& aszCardname, const wxString& aszSet, const wxString& aszMud );
 };

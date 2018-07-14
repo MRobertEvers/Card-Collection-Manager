@@ -25,6 +25,7 @@ public:
 
    bool DownloadCardImage( const wxString& aszCardName,
                            const wxString& aszSet,
+                           const wxString& aszMud,
                            std::shared_ptr<ImageFetcherCallback> aptCallback );
    bool DownloadImportSourceFile();
 
