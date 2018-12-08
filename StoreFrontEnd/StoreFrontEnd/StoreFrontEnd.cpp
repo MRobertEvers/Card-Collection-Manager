@@ -2,6 +2,7 @@
 #include "ImageFetcher.h"
 #include "SourceDownloader.h"
 #include "CollectionInterface.h"
+#include "ScryFallAPI.h"
 #include "../StoreFrontEnd/CardInterface.h"
 #include <wx\wxprec.h>
 #include <Windows.h>
@@ -15,6 +16,10 @@ StoreFrontEnd* StoreFrontEnd::m_ptClient = nullptr;
 StoreFrontEnd::StoreFrontEnd()
 {
    EstablishFolderStructure();
+
+   ScryFallAPI api;
+   std::string szPrice = api.GetCardPrice( "409626" );
+   std::string szURL = api.GetCardImageURL( "Foe-Razer Regent", "ptkdf" );
 }
 
 StoreFrontEnd::~StoreFrontEnd()
