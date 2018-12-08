@@ -3,24 +3,49 @@ Program to manage cards. Built for Magic The Gathering (MtG) collection manageme
 
 Features
 ========
-Collections maintain lists of each card you put in it. Adding cards to a collection is simplified by the convenient search function that maintains a 
-lightweight database of all possible cards. Card auto-completion enabled fast additions and removals for efficient collection editting. 
-Collections can also be assigned as subsets of another. A collection may represent all cards you own. You can then make a deck that is a subset of those cards. Cards that
-you don't own may be included as 'virtual' cards or marked a 'wants'.  
+Stores card collections in a human readable format. Provides UI to sort/organize and add/remove cards from your collections. You can import collections in the simple format like below
 
-Cards can have tags and features assigned to them. Acquisition date, quality, etc.. can be tracked on a per-card basis.  
+	"My Deck"
+	x3 Giant Growth
+	Lightning Bolt
+	x1 Giant Growth [5ED]
+	
+The list will be imported with the collection name `My Deck`. Each card in the list will be added with the number of copies specified, assuming 1 if not specified. You can specify the set
+by include it in brackets `[SetCode]`, and that version of the card will be added to the set. Otherwise, a default copy will be added (any set).
 
-Anytime a card or collection is changed, that is tracked in the history. This is a nice way to see changes and decisions over-time about deck-building or sales.
+
+Images
+======
+
+The UI is currently inspired by CubeTutor.
+
+![Collection View](ReadmeResources/CollectionView.PNG)
+
+You can visualize collection statistics in the 'stats' view.
+
+![Stats View](ReadmeResources/Stats.PNG)
+
+You can modify/override card traits in the traits editor. For example, you can sort 'colorless' cards by a custom color by adding the `colors` trait. Colors are `White`, `Blue`, `Black`, `Red`, `Green`.
+Combinations of colors can be added too like so `Blue::Black`. This will work as long as the colors are in WUBRG order.
+
+![Color Sorting](ReadmeResources/ColorOverride.PNG)
 
 Details
 =======
-Architecture based on Client-Server. Client written in C++ utilizing the wxWidgets library. Server written in C++.  
-Server maintains a buffer of all MtG cards for fast searching. Card data is cached on first use for faster data manipulation. Utilizes MtGJSON as its source of card data. 
-Collection history automatically tracked for convenience. Card details (such as acquisition date, quality, foil, etc) are maintained for each card.
-Collections saved in common, readable format. Additionally, a history file is maintained for historical tracking of a collection. 
-Cards are maintained as an identifying string that includes the set and the name. Additional meta-data is included as a list of tags or key-value pairs.
+Utilizes MtGJSON as its source of card data and wxWidgets for the UI. Currently this can only run on windows as it relies on some Windows UI features.
+
+Build Instructions
+==================
+I don't have any build instructions 
+outside of visual studio. I don't plan to build with other compilers.
 
 
-Notes
-=====
-Client originally implemented in WPF, C#, and C++/CLI. This is now deprecated but is maintained in a separate repository.
+You must have wxWidgets installed and the `WXWIN` defined in your environment variables as the wxWidgets installation directory. 
+Additonally, you must have the custom `wxFreeCharts` build found at https://github.com/MRobertEvers/Interactive-wxFreeChart. That repository must be installed at 
+`$(WXWIN)\wxFreeChart-master`.
+
+The static link libraries for wxFreeChart must be built with unicode. For the debug build of the Collection Manager to succeed wxFreeChart must be built so that there is a wxFreeChart17u.lib (release), and a wxFreeChart17ud.lib (debug).
+See the https://github.com/MRobertEvers/Interactive-wxFreeChart repository for build instructions (also only visual studio).
+
+Build wxWidgets normally for `vc_mswu` and `vc_mswud`.
+
