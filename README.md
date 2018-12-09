@@ -30,9 +30,24 @@ Combinations of colors can be added too like so `Blue::Black`. This will work as
 
 ![Color Sorting](ReadmeResources/ColorOverride.PNG)
 
-Details
-=======
-Utilizes MtGJSON as its source of card data and wxWidgets for the UI. Currently this can only run on windows as it relies on some Windows UI features.
+Dependencies
+============
+Currently the Collection manager only runs on windows as it relies on some Windows API calls.
+
+	Installed dependencies:
+	wxWidgets 3.1.1
+	wxFreeChart https://github.com/MRobertEvers/Interactive-wxFreeChart
+	
+	Web API dependecies:
+	MtGJSON (Card data)
+	
+	Header only (included in repo):
+	nlohmann json https://github.com/nlohmann/json
+	
+	Included in Repo as static libs:
+	zlib
+	openSSL (for cURL)
+	cURL
 
 Build Instructions
 ==================
